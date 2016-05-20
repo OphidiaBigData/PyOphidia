@@ -200,8 +200,10 @@ def submit(username, password, server, port, query):
 				jobid = str(res_jobid)
 				index = jobid.rfind(OPH_WORKFLOW_DELIMITER)
 				if index == -1:
-					return (None, None, None, 3, "Invalid jobid string")
-				newsession = jobid[:index]
+					newsession = jobid
+					jobid = None
+				else:
+					newsession = jobid[:index]
 			else:
 				newsession = str()
 		return (response, jobid, newsession, return_value, error)
