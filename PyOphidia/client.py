@@ -1,4 +1,3 @@
-#
 #     PyOphidia - Python bindings for Ophidia
 #     Copyright (C) 2012-2016 CMCC Foundation
 #
@@ -22,13 +21,11 @@ import subprocess
 sys.path.append(os.path.dirname(__file__))
 import ophsubmit as _ophsubmit
 import json
-
 from inspect import currentframe
 
 def get_linenumber():
 	cf = currentframe()
 	return __file__, cf.f_back.f_lineno
-
 
 class Client():
 	"""Client(username,password,server,port='11732') -> obj
@@ -171,9 +168,7 @@ class Client():
 					if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Working Directory':
 						self.cwd = response_i['objcontent'][0]['message']
 						
-										
 					self.pretty_print(response_i, response)
-					
 					break
 		except Exception as e:
 			print(get_linenumber(),"Something went wrong in submitting the request:", e)
@@ -353,7 +348,6 @@ class Client():
 								"\t[label=\""+response_i['objcontent'][0]['nodelinks'][i][j]['description'], end="")
 							print("\"]\n")
 					print("\n}\n")
-		
 		return self
 
 	
@@ -380,7 +374,6 @@ class Client():
 						self.session = response_i['objcontent'][0]['rowvalues'][0][1]
 
 					self.pretty_print(response_i, response)	
-
 					break
 		except Exception as e:
 			print(get_linenumber(),"Something went wrong in resuming last session:", e)
@@ -410,7 +403,6 @@ class Client():
 						self.cwd = response_i['objcontent'][0]['rowvalues'][0][1]
 
 					self.pretty_print(response_i, response)	
-											
 					break
 		except Exception as e:
 			print(get_linenumber(),"Something went wrong in resuming last cwd:", e)
@@ -440,7 +432,6 @@ class Client():
 						self.cube = response_i['objcontent'][0]['rowvalues'][0][1]
 
 					self.pretty_print(response_i, response)		
-					
 					break
 		except Exception as e:
 			print(get_linenumber(),"Something went wrong in resuming last cube:", e)
@@ -476,7 +467,6 @@ class Client():
 					buffer = buffer.replace('${' + str(index) + '}', str(param))
 					buffer = re.sub('(\$' + str(index) + ')([^0-9]|$)', str(param) + '\g<2>', buffer)
 				request = json.loads(buffer)
-				
 
 			except Exception as e:
 				print(get_linenumber(),"Something went wrong in reading and/or parsing the file:", e)
@@ -488,7 +478,6 @@ class Client():
 					buffer = buffer.replace('${' + str(index) + '}', str(param))
 					buffer = re.sub('(\$' + str(index) + ')([^0-9]|$)', str(param) + '\g<2>', buffer)
 				request = json.loads(buffer)
-				
 
 			except Exception as e:
 				print(get_linenumber(),"Something went wrong in parsing the string:", e)
@@ -527,22 +516,18 @@ class Client():
 
 						#pretty_print(response)
 					self.pretty_print(response_i, response)	
-					
 					break
-
 				for response_i in response['response']:
 					if response_i['objclass'] == 'text'and response_i['objcontent'][0]['title'] == 'Current Working Directory':
 						#pretty_print(response)
 						self.cwd = response_i['objcontent'][0]['message']
 
 					self.pretty_print(response_i, response)	
-					
 					break
 		except Exception as e:
 			print(get_linenumber(),"Something went wrong in submitting the request:", e)
 			return None
 		return self
-					
 		
 	def wisvalid(self, workflow):
 		"""wisvalid(workflow) -> bool : Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
@@ -559,7 +544,6 @@ class Client():
 		if isinstance(workflow, str):
 			try:
 				w = json.loads(workflow)
-
 				
 			except:
 				return False

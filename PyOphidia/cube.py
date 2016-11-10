@@ -1,6 +1,5 @@
-#
 #     PyOphidia - Python bindings for Ophidia
-#     Copyright (C) 2012-2016 CMCC Foundation
+#     Copyright (C) 2015 CMCC
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -14,20 +13,16 @@
 #
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
 
 import sys
 import os
 sz = os.get_terminal_size()
 sys.path.append(os.path.dirname(__file__))
-
 import client as _client
 from inspect import currentframe
-
 def get_linenumber():
 	cf = currentframe()
 	return __file__, cf.f_back.f_lineno
-
 
 class Cube():
 	"""Cube(container=None, cwd=None, exp_dim=None, host_partition=None, imp_dim=None, measure=None, src_path=None, compressed='no', exp_concept_level='c', filesystem='local', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=1, nhost=1, subset_dims='none', subset_filter='all', subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-') -> obj or Cube(pid=None) -> obj
@@ -219,7 +214,6 @@ class Cube():
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
 
-
 	@classmethod
 	def deletecontainer(cls, container=None, cwd=None, delete_type='physical', hidden='no', ncores=1, exec_mode='sync'):
 		"""deletecontainer(container=None, cwd=None, delete_type='physical', hidden='no', ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_DELETECONTAINER
@@ -273,7 +267,6 @@ class Cube():
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
 
-
 	@classmethod
 	def folder(cls, command=None, cwd=None, path=None, ncores=1, exec_mode='sync'):
 		"""folder(command=None, cwd=None, path=None, ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_FOLDER
@@ -322,7 +315,6 @@ class Cube():
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-
 
 	@classmethod
 	def list(cls, level=1, path=None, container_filter=None, cube=None, host_filter=None, dbms_filter=None, db_filter=None, measure_filter=None, ntransform=None, src_filter=None, recursive='no', hidden='no', cwd=None, ncores=1,exec_mode='sync'):
@@ -411,7 +403,6 @@ class Cube():
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
 
-			
 	@classmethod
 	def randcube(cls, path=None, container=None, nhost=None ,ndbms=None, ndb=None, nfrag=None, ntuple=None, measure=None, measure_type='manual', exp_ndim=None,dim=None, dim_size=None , grid=None,compressed= 'auto' , concept_level=None, host_partition= None, filesystem='local',hidden='no', cwd=None, ncores=1,exec_mode='sync'):
 		"""Generate a random compressed data cube:(path=None, container=None, nhost=None ,ndbms=None, ndb=None, nfrag=None, ntuple=None, measure=None, measure_type='manual', exp_ndim=None,dim=None, dim_size=None , grid=None,compressed= 'auto' , concept_level=None, host_partition= None, filesystem='local',hidden='no', cwd=None, ncores=1,exec_mode='sync') -> dict or None : wrapper of the operator OPH_RANDCUBE
@@ -510,7 +501,6 @@ class Cube():
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
 
-	
 	@classmethod
 	def explorenc(cls, force='no',measure= None, src_path= None, exp_dim= None, imp_dim= None , ncores=1, exec_mode='sync'):
 		"""Read the NetCDF file(force='no',measure= None, src_path= None, exp_dim= None, imp_dim= None , ncores=1, exec_mode='sync') -> None : wrapper of the operator OPH_EXPLORENC
@@ -560,7 +550,6 @@ class Cube():
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
 	
-
 	@classmethod
 	def importnc(cls, path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync'):
 		"""Import a NetCDF file excluding metadata into the session directory:(path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync') -> dict or None : wrapper of the operator OPH_IMPORTNC
@@ -629,7 +618,6 @@ class Cube():
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
 
-
 	@classmethod
 	def importnc2(cls, path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync'):
 		"""Import a NetCDF file excluding metadata into the session directory:(path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync') -> dict or None : wrapper of the operator OPH_IMPORTNC2
@@ -696,7 +684,6 @@ class Cube():
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-
 
 	@classmethod
 	def importnc3(cls, path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync'):
@@ -765,7 +752,6 @@ class Cube():
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
 
-
 	@classmethod
 	def man(cls, function=None, function_type='operator', function_version='latest', ncores=1, exec_mode='sync'):
 		"""man(function=None, function_type='operator', function_version='latest', ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_MAN
@@ -815,7 +801,6 @@ class Cube():
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
 
-			
 	@classmethod
 	def movecontainer(cls, container=None, cwd=None, ncores=1, exec_mode='sync'):
 		"""movecontainer(container=None, cwd=None, ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_MOVECONTAINER
@@ -860,7 +845,6 @@ class Cube():
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-				
 			
 	@classmethod
 	def operators(cls, operator_filter=None, limit_filter=0, ncores=1, exec_mode='sync'):
@@ -906,7 +890,6 @@ class Cube():
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
 
-					
 	@classmethod
 	def primitives(cls, dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, ncores=1, exec_mode='sync'):
 		"""primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
@@ -965,7 +948,6 @@ class Cube():
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
 
-
 	@classmethod
 	def restorecontainer(cls, container=None, cwd=None, ncores=1, exec_mode='sync'):
 		"""restorecontainer(container=None, cwd=None, ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_RESTORECONTAINER
@@ -1009,7 +991,6 @@ class Cube():
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-
 
 	@classmethod
 	def script(cls, script=None, args=None, stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync'):
@@ -1063,7 +1044,6 @@ class Cube():
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
 
-
 	@classmethod
 	def intercomparison(cls, cube=None, cube2= None, container=None, exec_mode='sync', ncores=1):
 		"""intercomparison(cubes=None, container=None, exec_mode='sync', ncores=1) -> Cube : wrapper of the operator OPH_INTERCOMPARISON
@@ -1110,7 +1090,6 @@ class Cube():
 			raise RuntimeError()
 		else:
 			return newcube
-
 
 	@classmethod
 	def mergecubes(cls, cubes=None, container=None, exec_mode='sync', ncores=1):
@@ -1371,7 +1350,6 @@ class Cube():
 		del self.nelements
 		del self.dim_info
 
-	
 	def info(self):
 		"""info() -> None : call OPH_CUBESIZE, OPH_CUBEELEMENTS and OPH_CUBESCHEMA to fill all Cube attributes
 
@@ -1425,7 +1403,6 @@ class Cube():
 						element['level'] = row_i[6]
 						element['lattice_name'] = row_i[7]
 						self.dim_info.append(element)
-
 	
 	def exportnc(self, export_metadata='no', force='no', output_path='default', output_name='default', ncores=1, exec_mode='sync'):
 		"""exportnc(export_metadata='no', force='no', output_path='default', output_name='default', ncores=1, exec_mode='sync') -> None : wrapper of the operator OPH_EXPORTNC
@@ -1521,7 +1498,6 @@ class Cube():
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
 
-
 	def aggregate(self, operation=None, container=None, grid='-', group_size='all', ncores=1, exec_mode='sync'):
 		"""aggregate(operation=None, container=None, grid='-', group_size='all', ncores=1, exec_mode='sync') -> Cube or None : wrapper of the operator OPH_AGGREGATE
 
@@ -1575,7 +1551,6 @@ class Cube():
 			raise RuntimeError()
 		else:
 			return newcube
-
 	
 	def aggregate2(self, dim=None, operation=None, concept_level='A', container=None, grid='-', midnight='24', ncores=1, exec_mode='sync'):
 		"""aggregate2(dim=None, operation=None, concept_level='A', container=None, grid='-', midnight='24', ncores=1, exec_mode='sync') -> Cube or None : wrapper of the operator OPH_AGGREGATE2
@@ -1803,7 +1778,6 @@ class Cube():
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
 
-
 	def delete(self, ncores=1, exec_mode='sync'):
 		"""delete(ncores=1, exec_mode='sync') -> None : wrapper of the operator OPH_DELETE
 
@@ -1994,7 +1968,6 @@ class Cube():
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-		
 
 	def publish (self, ncores=1, container=None,exec_mode='sync', content=None, show_id= 'no' ,show_index='no'):
 		""" Publish data from the datacube “URL/1/1”:( ncores=1, container=None,exec_mode='sync', content=None, show_id= 'no' ,show_index='no') -> None : wrapper of the operator OPH_PUBLISH
@@ -2087,7 +2060,6 @@ class Cube():
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
 
-
 	def cubeschema (self, ncores=1, container=None,exec_mode='sync'):
 		""" Show metadata information about the datacube identified by the PID “URL/1/1”:( cores=1, container=None, exec_mode='sync') -> None : wrapper of the operator OPH_CUBESCHEMA
 
@@ -2128,7 +2100,6 @@ class Cube():
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
 
-
 	def cubesize (self, ncores=1, container=None,exec_mode='sync'):
 		""" Compute the size of the datacube “URL/1/1”:( cores=1, container=None,exec_mode='sync') -> None : wrapper of the operator OPH_CUBESIZE
 
@@ -2168,7 +2139,6 @@ class Cube():
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-				
 
 	def cubeelements (self, ncores=1, container=None,exec_mode='sync'):
 		""" Compute the number of elements in the datacube “URL/1/1”:( cores=1, container=None,exec_mode='sync') -> None : wrapper of the operator OPH_CUBEELEMENTS
@@ -2209,7 +2179,6 @@ class Cube():
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-
 
 	def showgrid (self, ncores=1, container=None,exec_mode='sync', grid='-'):
 		""" Show the grid ‘grid1’ related to container ‘container1’:( cores=1, container=None,exec_mode='sync') -> None : wrapper of the operator OPH_SHOWGRID
@@ -2252,7 +2221,6 @@ class Cube():
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-	
 
 	def tasks (self, ncores=1, container=None,exec_mode='sync', cube_filter='all', operator_filter='all'):
 		""" Compute the number of elements in the datacube “URL/1/1”:( cores=1, container=None,exec_mode='sync') -> None : wrapper of the operator OPH_TASKS
@@ -2297,7 +2265,6 @@ class Cube():
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-
 
 	def intercube(self, cube2=None, operation=None, output_measure=None, container=None, exec_mode='sync', ncores=1):
 		"""intercube(cube2=None, operation=None, output_measure=None, container=None, exec_mode='sync', ncores=1) -> Cube or None : wrapper of the operator OPH_INTERCUBE
@@ -2470,7 +2437,6 @@ class Cube():
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
 
-
 	def search(self, mode='read', metadata_key='all', variable='global', metadata_value=None, metadata_value_filter=None, force='no', ncores=1, exec_mode='sync', metadata_key_filter=None):
 		"""search(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, metadata_type_filter=None, metadata_value_filter=None, force='no', ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_SEARCH
 
@@ -2539,7 +2505,6 @@ class Cube():
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-
 
 	def permute(self, dim_pos=None, container=None, exec_mode='sync', ncores=1):
 		"""permute(dim_pos=None, container=None, exec_mode='sync', ncores=1) -> Cube or None : wrapper of the operator OPH_PERMUTE
