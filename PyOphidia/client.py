@@ -18,17 +18,12 @@
 
 import sys
 import os
-
+import subprocess
 sys.path.append(os.path.dirname(__file__))
-
 import ophsubmit as _ophsubmit
 import json
 
-del sys
-del os
-
 from inspect import currentframe
-
 
 def get_linenumber():
 	cf = currentframe()
@@ -60,6 +55,7 @@ class Client():
 		resume_cube() -> self : Resume the last cube produced by the user.
 		wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
 		wisvalid(workflow) -> bool : Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
+		pretty_print(response, response_i) -> self : Turn the last_response JSON string attribute into a formatted response	
 	"""
 
 	def __init__(self, username, password, server, port='11732'):
@@ -166,15 +162,19 @@ class Client():
 			response = self.deserialize_response()
 			if response is not None:
 				for response_i in response['response']:
-					if response_i['objclass'] == 'text':
-						if response_i['objcontent'][0]['title'] == 'Output Cube':
-							self.cube = response_i['objcontent'][0]['message']
-							break
+					if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Output Cube':
+						self.cube = response_i['objcontent'][0]['message']
+		
+						break
+	
 				for response_i in response['response']:
-					if response_i['objclass'] == 'text':
-						if response_i['objcontent'][0]['title'] == 'Current Working Directory':
-							self.cwd = response_i['objcontent'][0]['message']
-							break
+					if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Working Directory':
+						self.cwd = response_i['objcontent'][0]['message']
+						
+										
+					self.pretty_print(response_i, response)
+					
+					break
 		except Exception as e:
 			print(get_linenumber(),"Something went wrong in submitting the request:", e)
 			return None
@@ -191,6 +191,172 @@ class Client():
 			return None
 		return json.loads(self.last_response)
 
+	def pretty_print(self,response, response_i):
+		"""pretty_print(response, response_i) -> self : Turn the last_response JSON string attribute into a formatted response
+			:param response: Python dictionary derived from the last_response JSON string 
+			:type response: dict
+            :param response_i: each of the responses included in the list given by the dictionary key response['response']
+            :type response_i: dict
+            :returns: self or None
+	        :rtype: Client or None
+		"""
+
+		response = self.deserialize_response()
+		sz = os.get_terminal_size()
+
+		VERTICAL_CHAR = "|"
+		HORIZONTAL_CHAR = "-"
+		BORDER_CHAR = "="
+		JUNCTION_CHAR = "+"
+
+		if response is not None:
+			for response_i in response['response']:
+				if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] != 'SUCCESS':
+					print(response_i['objcontent'][0]['title'])
+					title_length = len(response_i['objcontent'][0]['title'])
+					print("-"*title_length)
+					print(response_i['objcontent'][0]['message'])
+					print("\n")
+				if response_i['objclass'] == 'grid':
+
+					print(response_i['objcontent'][0]['title'])
+					title_length = len(response_i['objcontent'][0]['title'])
+					print(HORIZONTAL_CHAR*title_length)
+					num_columns = len(response_i['objcontent'][0]['rowkeys'])
+					columns = range(num_columns)
+					num_rows = len(response_i['objcontent'][0]['rowvalues'])
+					rows = range(num_rows)
+					max_column_width = []
+					for j in columns:
+						max_column_width.append(j)
+						max_column_width[j]=len(response_i['objcontent'][0]['rowkeys'][j])
+						for i in rows:
+							if len(response_i['objcontent'][0]['rowvalues'][i][j]) > max_column_width[j]:
+								max_column_width[j] = len(response_i['objcontent'][0]['rowvalues'][i][j])
+					available_width = sz.columns
+					needed_width = sum(i for i in max_column_width)+(num_columns+1)+(2*num_columns) 
+					while(needed_width > available_width):
+						if response_i['objkey'] == 'explorecube_data':
+							max_column_width[len(max_column_width)-1] -= 1
+						else:
+							for i in range(len(max_column_width)):
+								if max_column_width[i]>1:
+									max_column_width[i] -= 1
+						needed_width = sum(i for i in max_column_width)+(num_columns+1)+(2*num_columns)
+					for j in columns:
+						print(JUNCTION_CHAR+BORDER_CHAR*(max_column_width[j]+2), end="")
+					print(JUNCTION_CHAR)
+
+					header_length = []
+					start = []
+					num_rows_per_column=[]
+					for j in columns:
+						header_length.append(j)
+						start.append(j)
+						num_rows_per_column.append(j)
+						header_length[j]=len(response_i['objcontent'][0]['rowkeys'][j])
+						start[j]=0
+						num_rows_per_column[j]=(int)(header_length[j]/max_column_width[j])+1
+						
+					maximum_rows=num_rows_per_column[0]
+					for j in columns:
+						if num_rows_per_column[j]>maximum_rows:
+							maximum_rows=num_rows_per_column[j]
+								
+					for x in range(maximum_rows):
+						for j in columns:
+
+							if start[j] < header_length[j]:
+								print(VERTICAL_CHAR+" "+response_i['objcontent'][0]['rowkeys'][j][start[j]:start[j]+max_column_width[j]]+\
+								" "*((max_column_width[j]+2)-(len(response_i['objcontent'][0]['rowkeys'][j][start[j]:start[j]+max_column_width[j]])+1)),end="")
+								start[j] = start[j] + max_column_width[j]
+							else:
+								print(VERTICAL_CHAR+" "*(max_column_width[j]+2),end="")
+						print(VERTICAL_CHAR)   
+					for j in columns:
+						print(JUNCTION_CHAR+BORDER_CHAR*(max_column_width[j]+2), end="")
+					print(JUNCTION_CHAR)
+
+					text_length=[]
+					start = []
+
+					num_rows_per_column = []
+					maximum_rows = []
+					for i in rows:
+						maximum_rows.append(i)
+						text_length.append(i)
+						start.append(i)
+						num_rows_per_column.append(i)
+
+						text_length[i] = []
+						start[i] = []
+						num_rows_per_column[i] = []
+						for j in columns:
+							text_length[i].append(j)
+							start[i].append(j)
+							num_rows_per_column[i].append(j)
+							text_length[i][j]=len(response_i['objcontent'][0]['rowvalues'][i][j])
+							start[i][j]=0
+							num_rows_per_column[i][j]=(int)(text_length[i][j]/max_column_width[j])+1
+						
+						maximum_rows[i]=num_rows_per_column[i][0]
+						for j in columns:
+							if maximum_rows[i]< num_rows_per_column[i][j]:
+								maximum_rows[i]=num_rows_per_column[i][j]		
+					for i in rows:
+						for x in range(maximum_rows[i]):
+							for j in columns:
+							
+								if start[i][j] < text_length[i][j]:
+									print(VERTICAL_CHAR+" "+response_i['objcontent'][0]['rowvalues'][i][j][start[i][j]:start[i][j]+max_column_width[j]]+\
+									" "*((max_column_width[j]+2)-(len(response_i['objcontent'][0]['rowvalues'][i][j][start[i][j]:start[i][j]+max_column_width[j]])+1)),end="")
+									start[i][j] = start[i][j] + max_column_width[j]
+								else:
+									print(VERTICAL_CHAR+" "*(max_column_width[j]+2),end="")
+							print(VERTICAL_CHAR)
+			
+						if i!= rows[len(rows)-1]:
+							for j in columns:
+								print(VERTICAL_CHAR+HORIZONTAL_CHAR*(max_column_width[j]+2), end="")
+							print(VERTICAL_CHAR)
+						else:
+							for j in columns:
+								print(JUNCTION_CHAR+BORDER_CHAR*(max_column_width[j]+2), end="")
+							print(JUNCTION_CHAR)   
+
+	
+				if response_i['objclass'] == 'digraph':
+					print(response_i['objcontent'][0]['title'])
+					title_length = len(response_i['objcontent'][0]['title'])
+					print("-"*title_length)
+					print("Directed Graph DOT string :\n")
+					print("digraph DG {\n")
+					print("\tnode	[shape=box]\n")
+					num_nodevalues = len(response_i['objcontent'][0]['nodevalues'])
+					nodevalues = range(num_nodevalues)
+					for i in nodevalues:
+						print("\t"+str(i)+"\t[label=", end="")
+						num_labels = len(response_i['objcontent'][0]['nodekeys'])
+						labels = range(num_labels)
+						print("\"", end="")
+						for j in labels:
+							print(response_i['objcontent'][0]['nodekeys'][j]+" : ", end="")
+							print(response_i['objcontent'][0]['nodevalues'][i][j]+"  ", end="")
+						print("\"]\n")
+					print("\tedge\n")
+					num_nodelinks = len(response_i['objcontent'][0]['nodelinks'])
+					nodelinks = range(num_nodelinks)
+					for i in nodelinks:
+						if response_i['objcontent'][0]['nodelinks'][i]: 
+							for j in range(len(response_i['objcontent'][0]['nodelinks'][i])):
+								print("\t"+str(i)+"=>"+response_i['objcontent'][0]['nodelinks'][i][j]['node']+ \
+								"\t[label=\""+response_i['objcontent'][0]['nodelinks'][i][j]['description'], end="")
+							print("\"]\n")
+					print("\n}\n")
+		
+		return self
+
+	
 	def resume_session(self):
 		"""resume_session() -> self : Resume the last session the user was connected to.
 
@@ -212,7 +378,10 @@ class Client():
 				for response_i in response['response']:
 					if response_i['objkey'] == 'get_config':
 						self.session = response_i['objcontent'][0]['rowvalues'][0][1]
-						break
+
+					self.pretty_print(response_i, response)	
+
+					break
 		except Exception as e:
 			print(get_linenumber(),"Something went wrong in resuming last session:", e)
 			return None
@@ -239,7 +408,10 @@ class Client():
 				for response_i in response['response']:
 					if response_i['objkey'] == 'get_config':
 						self.cwd = response_i['objcontent'][0]['rowvalues'][0][1]
-						break
+
+					self.pretty_print(response_i, response)	
+											
+					break
 		except Exception as e:
 			print(get_linenumber(),"Something went wrong in resuming last cwd:", e)
 			return None
@@ -266,7 +438,10 @@ class Client():
 				for response_i in response['response']:
 					if response_i['objkey'] == 'get_config':
 						self.cube = response_i['objcontent'][0]['rowvalues'][0][1]
-						break
+
+					self.pretty_print(response_i, response)		
+					
+					break
 		except Exception as e:
 			print(get_linenumber(),"Something went wrong in resuming last cube:", e)
 			return None
@@ -301,6 +476,8 @@ class Client():
 					buffer = buffer.replace('${' + str(index) + '}', str(param))
 					buffer = re.sub('(\$' + str(index) + ')([^0-9]|$)', str(param) + '\g<2>', buffer)
 				request = json.loads(buffer)
+				
+
 			except Exception as e:
 				print(get_linenumber(),"Something went wrong in reading and/or parsing the file:", e)
 				return None
@@ -311,6 +488,8 @@ class Client():
 					buffer = buffer.replace('${' + str(index) + '}', str(param))
 					buffer = re.sub('(\$' + str(index) + ')([^0-9]|$)', str(param) + '\g<2>', buffer)
 				request = json.loads(buffer)
+				
+
 			except Exception as e:
 				print(get_linenumber(),"Something went wrong in parsing the string:", e)
 				return None
@@ -343,20 +522,28 @@ class Client():
 			response = self.deserialize_response()
 			if response is not None:
 				for response_i in response['response']:
-					if response_i['objclass'] == 'text':
-						if response_i['objcontent'][0]['title'] == 'Output Cube':
-							self.cube = response_i['objcontent'][0]['message']
-							break
+					if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Output Cube':
+						self.cube = response_i['objcontent'][0]['message']
+
+						#pretty_print(response)
+					self.pretty_print(response_i, response)	
+					
+					break
+
 				for response_i in response['response']:
-					if response_i['objclass'] == 'text':
-						if response_i['objcontent'][0]['title'] == 'Current Working Directory':
-							self.cwd = response_i['objcontent'][0]['message']
-							break
+					if response_i['objclass'] == 'text'and response_i['objcontent'][0]['title'] == 'Current Working Directory':
+						#pretty_print(response)
+						self.cwd = response_i['objcontent'][0]['message']
+
+					self.pretty_print(response_i, response)	
+					
+					break
 		except Exception as e:
 			print(get_linenumber(),"Something went wrong in submitting the request:", e)
 			return None
 		return self
-
+					
+		
 	def wisvalid(self, workflow):
 		"""wisvalid(workflow) -> bool : Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
 
@@ -372,6 +559,8 @@ class Client():
 		if isinstance(workflow, str):
 			try:
 				w = json.loads(workflow)
+
+				
 			except:
 				return False
 		elif isinstance(workflow, dict):
@@ -510,3 +699,4 @@ class Client():
 
 		#	else return success (graph has no cycles)
 		return True
+

@@ -18,16 +18,11 @@
 
 import sys
 import os
-
+sz = os.get_terminal_size()
 sys.path.append(os.path.dirname(__file__))
 
 import client as _client
-
-del sys
-del os
-
 from inspect import currentframe
-
 
 def get_linenumber():
 	cf = currentframe()
@@ -68,11 +63,18 @@ class Cube():
 		concatnc(src_path=None, check_exp_dim='yes', grid='-', import_metadata='no', ncores=1, exec_mode='sync') -> Cube or None : wrapper of the operator OPH_CONCATNC
 		provenance(branch='all', ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_CUBEIO
 		delete(ncores=1, exec_mode='sync') -> None : wrapper of the operator OPH_DELETE
+		Cubeschema(ncores=1, exec_mode='sync') -> None : wrapper of the operator OPH_CUBESCHEMA
 		drilldown(ndim=1, container=None, ncores=1, exec_mode='sync') -> Cube or None : wrapper of the operator OPH_DRILLDOWN
 		duplicate(container=None, ncores=1, exec_mode='sync') -> Cube or None : wrapper of the operator OPH_DUPLICATE
 		explore(level=1, limit_filter=10, output_path='default', output_name='default', show_id='no', show_index='no', show_time='no', subset_dims=None, subset_filter=None, exec_mode='sync', ncores=1) -> dict or None : wrapper of the operator OPH_EXPLORECUBE
 		intercube(cube2=None, operation=None, output_measure=None, container=None, exec_mode='sync', ncores=1) -> Cube or None : wrapper of the operator OPH_INTERCUBE
 		merge(nmerge=0, container=None, exec_mode='sync', ncores=1) -> Cube or None : wrapper of the operator OPH_MERGE
+		showgrid ( cores=1, container=None,exec_mode='sync') -> None : wrapper of the operator OPH_SHOWGRID
+		search ( mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, metadata_type_filter=None, metadata_value_filter=None, force='no', ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_SEARCH
+		tasks ( cores=1, container=None,exec_mode='sync') -> None : wrapper of the operator OPH_TASKS
+		publish  ( ncores=1, container=None,exec_mode='sync', content=None, show_id= 'no' ,show_index='no') -> None : wrapper of the operator OPH_PUBLISH
+		unpublish ( ncores=1, container=None,exec_mode='sync', content=None) -> None : wrapper of the operator OPH_UNPUBLISH		
+		exportnc2 (export_metadata='no', force='no', output_path='default', output_name='default', ncores=1, exec_mode='sync') -> None : wrapper of the operator OPH_EXPORTNC2
 		metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, metadata_type_filter=None, metadata_value_filter=None, force='no', ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_METADATA
 		permute(dim_pos=None, container=None, exec_mode='sync', ncores=1) -> Cube or None : wrapper of the operator OPH_PERMUTE
 		reduce(operation=None, container=None, exec_mode='sync', grid='-', group_size='all', ncores=1) -> Cube or None : wrapper of the operator OPH_REDUCE
@@ -95,6 +97,12 @@ class Cube():
 		restorecontainer(container=None, cwd=None, ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_RESTORECONTAINER
 		script(script=None, args=None, stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_SCRIPT
 		mergecubes(cubes=None, container=None, exec_mode='sync', ncores=1) -> Cube : wrapper of the operator OPH_MERGECUBES
+		explorenc (force='no',measure= None, src_path= None, exp_dim= None, imp_dim= None , ncores=1, exec_mode='sync') -> None : wrapper of the operator OPH_EXPLORENC
+		randcube (path=None, container=None, nhost=None ,ndbms=None, ndb=None, nfrag=None, ntuple=None, measure=None, measure_type='manual', exp_ndim=None,dim=None, dim_size=None , grid=None,compressed= 'auto' , concept_level=None, host_partition= None, filesystem='local',hidden='no', cwd=None, ncores=1,exec_mode='sync') -> dict or None : wrapper of the operator OPH_RANDCUBE
+		intercomparison (cubes=None, container=None, exec_mode='sync', ncores=1) -> Cube : wrapper of the operator OPH_INTERCOMPARISON
+		importnc (path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync') -> dict or None : wrapper of the operator OPH_IMPORTNC
+		importnc2 (path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync') -> dict or None : wrapper of the operator OPH_IMPORTNC2
+		importnc3 (path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync') -> dict or None : wrapper of the operator OPH_IMPORTNC3
 	"""
 
 	client = None
@@ -123,7 +131,7 @@ class Cube():
 			pass
 
 	@classmethod
-	def createcontainer(cls, container=None, cwd=None, dim=None, dim_type=None, base_time='1900 - 01 - 01 00:00:00', calendar='standard', compressed='no', hierarchy='oph_base',leap_month=2,leap_year=0, month_lengths='31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31', ncores=1, units='d', vocabulary='-', exec_mode='sync'):
+	def createcontainer(cls, container=None, cwd=None, dim=None, dim_type=None, base_time='1900-01-01 00:00:00', calendar='standard', compressed='no', hierarchy='oph_base',leap_month=2,leap_year=0, month_lengths='31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31', ncores=1, units='d', vocabulary='-', exec_mode='sync'):
 		"""createcontainer(container=None, cwd=None, dim=None, dim_type=None, base_time='1900 - 01 - 01 00:00:00', calendar='standard', compressed='no', hierarchy='oph_base',leap_month=2,leap_year=0, month_lengths='31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31', ncores=1, units='d', vocabulary='-', exec_mode='sync') -> dict or None : wrapper of the operator OPH_CREATECONTAINER
 
 		:param container: container name
@@ -206,11 +214,11 @@ class Cube():
 
 			if Cube.client.last_response is not None:
 				response = Cube.client.deserialize_response()
+				
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-		else:
-			return response
+
 
 	@classmethod
 	def deletecontainer(cls, container=None, cwd=None, delete_type='physical', hidden='no', ncores=1, exec_mode='sync'):
@@ -260,11 +268,11 @@ class Cube():
 
 			if Cube.client.last_response is not None:
 				response = Cube.client.deserialize_response()
+				
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-		else:
-			return response
+
 
 	@classmethod
 	def folder(cls, command=None, cwd=None, path=None, ncores=1, exec_mode='sync'):
@@ -310,11 +318,11 @@ class Cube():
 
 			if Cube.client.last_response is not None:
 				response = Cube.client.deserialize_response()
+				
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-		else:
-			return response
+
 
 	@classmethod
 	def list(cls, level=1, path=None, container_filter=None, cube=None, host_filter=None, dbms_filter=None, db_filter=None, measure_filter=None, ntransform=None, src_filter=None, recursive='no', hidden='no', cwd=None, ncores=1,exec_mode='sync'):
@@ -398,11 +406,365 @@ class Cube():
 
 			if Cube.client.last_response is not None:
 				response = Cube.client.deserialize_response()
+				
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-		else:
-			return response
+
+			
+	@classmethod
+	def randcube(cls, path=None, container=None, nhost=None ,ndbms=None, ndb=None, nfrag=None, ntuple=None, measure=None, measure_type='manual', exp_ndim=None,dim=None, dim_size=None , grid=None,compressed= 'auto' , concept_level=None, host_partition= None, filesystem='local',hidden='no', cwd=None, ncores=1,exec_mode='sync'):
+		"""Generate a random compressed data cube:(path=None, container=None, nhost=None ,ndbms=None, ndb=None, nfrag=None, ntuple=None, measure=None, measure_type='manual', exp_ndim=None,dim=None, dim_size=None , grid=None,compressed= 'auto' , concept_level=None, host_partition= None, filesystem='local',hidden='no', cwd=None, ncores=1,exec_mode='sync') -> dict or None : wrapper of the operator OPH_RANDCUBE
+
+		:param path: absolute or relative path
+		:param container_filter: filter on container name
+		:type container_filter: str
+		:param cube: filter on cube
+		:type cube: str
+		:param host_filter: filter on host
+		:type host_filter: str
+		:param dbms_filter: filter on DBMS
+		:type dbms_filter: str
+		:param db_filter: filter on db
+		:type db_filter: str
+		:param measure_filter: filter on measure
+		:type measure_filter: str
+		:param ntransform: filter on cube level
+		:type ntransform: int
+		:param src_filter: filter on source file
+		:type src_filter: str
+		:param recursive: yes|no
+		:type recursive: str
+		:param hidden: yes|no
+		:type hidden: str
+		:param cwd: current working directory
+		:type cwd: str
+		:param ncores: number of cores to use
+		:type ncores: int
+		:param exec_mode: async or sync
+		:type exec_mode: str
+		:returns: response or None
+		:rtype: dict or None
+		:raises: RuntimeError
+		"""
+
+		response = None
+		try:
+			if Cube.client is None:
+				raise RuntimeError('Cube.client is None')
+
+			query = 'oph_randcube '
+
+			
+			if path is not None:
+				query += 'path=' + str(path) + ';'
+			if container is not None:
+				query += 'container=' + str(container) + ';'
+			if nhost is not None:
+				query += 'nhost=' + str(nhost) + ';'
+			
+			if ndbms is not None:
+				query += 'ndbms=' + str(ndbms) + ';'
+			if ndb is not None:
+				query += 'ndb=' + str(ndb) + ';'
+			if nfrag is not None:
+				query += 'nfrag=' + str(nfrag) + ';'
+			if ntuple is not None:
+				query += 'ntuple=' + str(ntuple) + ';'
+			if measure is not None:
+				query += 'measure=' + str(measure) + ';'
+			if measure_type is not None:
+				query += 'measure_type=' + str(measure_type) + ';'
+			if exp_ndim is not None:
+				query += 'exp_ndim=' + str(exp_ndim) + ';'		
+			if dim is not None:
+				query += 'dim=' + str(dim) + ';'
+			if dim_size is not None:
+				query += 'dim_size=' + str(dim_size) + ';'
+			if grid is not None:
+				query += 'grid=' + str(grid) + ';'
+			if compressed is not None:
+				query += 'compressed=' + str(compressed) + ';'
+			if concept_level is not None:
+				query += 'concept_level=' + str(concept_level) + ';'
+			if host_partition is not None:
+				query += 'host_partition=' + str(host_partition) + ';'
+			if filesystem is not None:
+				query += 'filesystem=' + str(filesystem) + ';'						
+			if hidden is not None:
+				query += 'hidden=' + str(hidden) + ';'
+			if cwd is not None:
+				query += 'cwd=' + str(cwd) + ';'
+			if ncores is not None:
+				query += 'ncores=' + str(ncores) + ';'
+			if exec_mode is not None:
+				query += 'exec_mode=' + str(exec_mode) + ';'
+
+			if Cube.client.submit(query) is None:
+				raise RuntimeError()
+
+			if Cube.client.last_response is not None:
+				response = Cube.client.deserialize_response()
+				
+		except Exception as e:
+			print(get_linenumber(), "Something went wrong:", e)
+			raise RuntimeError()
+
+	
+	@classmethod
+	def explorenc(cls, force='no',measure= None, src_path= None, exp_dim= None, imp_dim= None , ncores=1, exec_mode='sync'):
+		"""Read the NetCDF file(force='no',measure= None, src_path= None, exp_dim= None, imp_dim= None , ncores=1, exec_mode='sync') -> None : wrapper of the operator OPH_EXPLORENC
+
+		:param force: yes|no
+		:type force: str
+		:param ncores: number of cores to use
+		:type ncores: int
+		:param exec_mode: async or sync
+		:type exec_mode: str
+		:returns: None
+		:rtype: None
+		:raises: RuntimeError
+		"""
+
+		response = None
+		try:
+			if Cube.client is None:
+				raise RuntimeError('Cube.client is None')
+
+			query = 'oph_explorenc '
+
+		
+			if force is not None:
+				query += 'force=' + str(force) + ';'
+			if measure is not None:
+				query += 'measure=' + str(measure) + ';'
+			if src_path is not None:
+				query += 'src_path=' + str(src_path) + ';'
+			if exp_dim is not None:
+				query += 'exp_dim=' + str(exp_dim) + ';'
+			if imp_dim is not None:
+				query += 'imp_dim=' + str(imp_dim) + ';'		
+			if ncores is not None:
+				query += 'ncores=' + str(ncores) + ';'
+			if exec_mode is not None:
+				query += 'exec_mode=' + str(exec_mode) + ';'
+
+			if Cube.client.submit(query) is None:
+				raise RuntimeError()
+
+			if Cube.client.last_response is not None:
+				response = Cube.client.deserialize_response()	
+
+	
+		except Exception as e:
+			print(get_linenumber(), "Something went wrong:", e)
+			raise RuntimeError()
+	
+
+	@classmethod
+	def importnc(cls, path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync'):
+		"""Import a NetCDF file excluding metadata into the session directory:(path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync') -> dict or None : wrapper of the operator OPH_IMPORTNC
+
+		:param path: absolute or relative path
+		:param container_filter: filter on container name
+		:type container_filter: str
+		:param cube: filter on cube
+		:type cube: str
+		:type measure_filter: str
+		:param ntransform: filter on cube level
+		:type ntransform: int
+		:param src_filter: filter on source file
+		:type src_filter: str
+		:param recursive: yes|no
+		:type recursive: str
+		:param hidden: yes|no
+		:type hidden: str
+		:param cwd: current working directory
+		:type cwd: str
+		:param ncores: number of cores to use
+		:type ncores: int
+		:param exec_mode: async or sync
+		:type exec_mode: str
+		:returns: response or None
+		:rtype: dict or None
+		:raises: RuntimeError
+		"""
+
+		response = None
+		try:
+			if Cube.client is None:
+				raise RuntimeError('Cube.client is None')
+
+			query = 'oph_importnc '
+
+			
+			if path is not None:
+				query += 'path=' + str(path) + ';'
+			if container is not None:
+				query += 'container=' + str(container) + ';'			
+			if measure is not None:
+				query += 'measure=' + str(measure) + ';'
+			if src_path is not None:
+				query += 'src_path=' + str(src_path) + ';'
+			if imp_concept_level is not None:
+				query += 'imp_concept_level=' + str(imp_concept_level) + ';'		
+			if import_metadata is not None:
+				query += 'import_metadata=' + str(import_metadata) + ';'			
+			if concept_level is not None:
+				query += 'concept_level=' + str(concept_level) + ';'
+			if cwd is not None:
+				query += 'cwd=' + str(cwd) + ';'
+			if ncores is not None:
+				query += 'ncores=' + str(ncores) + ';'
+			if exec_mode is not None:
+				query += 'exec_mode=' + str(exec_mode) + ';'
+
+			if Cube.client.submit(query) is None:
+				raise RuntimeError()
+
+			if Cube.client.last_response is not None:
+				response = Cube.client.deserialize_response()
+				
+		except Exception as e:
+			print(get_linenumber(), "Something went wrong:", e)
+			raise RuntimeError()
+
+
+	@classmethod
+	def importnc2(cls, path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync'):
+		"""Import a NetCDF file excluding metadata into the session directory:(path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync') -> dict or None : wrapper of the operator OPH_IMPORTNC2
+
+		:param path: absolute or relative path
+		:param container_filter: filter on container name
+		:param cube: filter on cube
+		:type cube: str
+		:type measure_filter: str
+		:param ntransform: filter on cube level
+		:type ntransform: int
+		:param src_filter: filter on source file
+		:type src_filter: str
+		:param recursive: yes|no
+		:type recursive: str
+		:param hidden: yes|no
+		:type hidden: str
+		:param cwd: current working directory
+		:type cwd: str
+		:param ncores: number of cores to use
+		:type ncores: int
+		:param exec_mode: async or sync
+		:type exec_mode: str
+		:returns: response or None
+		:rtype: dict or None
+		:raises: RuntimeError
+		"""
+
+		response = None
+		try:
+			if Cube.client is None:
+				raise RuntimeError('Cube.client is None')
+
+			query = 'oph_importnc2 '
+
+			
+			if path is not None:
+				query += 'path=' + str(path) + ';'
+			if container is not None:
+				query += 'container=' + str(container) + ';'			
+			if measure is not None:
+				query += 'measure=' + str(measure) + ';'
+			if src_path is not None:
+				query += 'src_path=' + str(src_path) + ';'
+			if imp_concept_level is not None:
+				query += 'imp_concept_level=' + str(imp_concept_level) + ';'		
+			if import_metadata is not None:
+				query += 'import_metadata=' + str(import_metadata) + ';'			
+			if concept_level is not None:
+				query += 'concept_level=' + str(concept_level) + ';'
+			if cwd is not None:
+				query += 'cwd=' + str(cwd) + ';'
+			if ncores is not None:
+				query += 'ncores=' + str(ncores) + ';'
+			if exec_mode is not None:
+				query += 'exec_mode=' + str(exec_mode) + ';'
+
+			if Cube.client.submit(query) is None:
+				raise RuntimeError()
+
+			if Cube.client.last_response is not None:
+				response = Cube.client.deserialize_response()
+				
+		except Exception as e:
+			print(get_linenumber(), "Something went wrong:", e)
+			raise RuntimeError()
+
+
+	@classmethod
+	def importnc3(cls, path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync'):
+		"""Import a NetCDF file excluding metadata into the session directory:(path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync') -> dict or None : wrapper of the operator OPH_IMPORTNC3
+
+		:param path: absolute or relative path
+		:type container_filter: str
+		:param cube: filter on cube
+		:type cube: str
+		:type measure_filter: str
+		:param ntransform: filter on cube level
+		:type ntransform: int
+		:param src_filter: filter on source file
+		:type src_filter: str
+		:param recursive: yes|no
+		:type recursive: str
+		:param hidden: yes|no
+		:type hidden: str
+		:param cwd: current working directory
+		:type cwd: str
+		:param ncores: number of cores to use
+		:type ncores: int
+		:param exec_mode: async or sync
+		:type exec_mode: str
+		:returns: response or None
+		:rtype: dict or None
+		:raises: RuntimeError
+		"""
+
+		response = None
+		try:
+			if Cube.client is None:
+				raise RuntimeError('Cube.client is None')
+
+			query = 'oph_importnc3 '
+
+			
+			if path is not None:
+				query += 'path=' + str(path) + ';'
+			if container is not None:
+				query += 'container=' + str(container) + ';'			
+			if measure is not None:
+				query += 'measure=' + str(measure) + ';'
+			if src_path is not None:
+				query += 'src_path=' + str(src_path) + ';'
+			if imp_concept_level is not None:
+				query += 'imp_concept_level=' + str(imp_concept_level) + ';'		
+			if import_metadata is not None:
+				query += 'import_metadata=' + str(import_metadata) + ';'			
+			if concept_level is not None:
+				query += 'concept_level=' + str(concept_level) + ';'
+			if cwd is not None:
+				query += 'cwd=' + str(cwd) + ';'
+			if ncores is not None:
+				query += 'ncores=' + str(ncores) + ';'
+			if exec_mode is not None:
+				query += 'exec_mode=' + str(exec_mode) + ';'
+
+			if Cube.client.submit(query) is None:
+				raise RuntimeError()
+
+			if Cube.client.last_response is not None:
+				response = Cube.client.deserialize_response()
+				
+		except Exception as e:
+			print(get_linenumber(), "Something went wrong:", e)
+			raise RuntimeError()
+
 
 	@classmethod
 	def man(cls, function=None, function_type='operator', function_version='latest', ncores=1, exec_mode='sync'):
@@ -448,12 +810,12 @@ class Cube():
 
 			if Cube.client.last_response is not None:
 				response = Cube.client.deserialize_response()
+				
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-		else:
-			return response
 
+			
 	@classmethod
 	def movecontainer(cls, container=None, cwd=None, ncores=1, exec_mode='sync'):
 		"""movecontainer(container=None, cwd=None, ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_MOVECONTAINER
@@ -494,12 +856,12 @@ class Cube():
 
 			if Cube.client.last_response is not None:
 				response = Cube.client.deserialize_response()
+				
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-		else:
-			return response
-
+				
+			
 	@classmethod
 	def operators(cls, operator_filter=None, limit_filter=0, ncores=1, exec_mode='sync'):
 		"""operators(operator_filter=None, limit_filter=0, ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_OPERATORS_LIST
@@ -536,14 +898,15 @@ class Cube():
 			if Cube.client.submit(query) is None:
 				raise RuntimeError()
 
-			if Cube.client.last_response is not None:
+			if  Cube.client.last_response is not None:
 				response = Cube.client.deserialize_response()
+				
+											
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-		else:
-			return response
 
+					
 	@classmethod
 	def primitives(cls, dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, ncores=1, exec_mode='sync'):
 		"""primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
@@ -601,8 +964,7 @@ class Cube():
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-		else:
-			return response
+
 
 	@classmethod
 	def restorecontainer(cls, container=None, cwd=None, ncores=1, exec_mode='sync'):
@@ -647,8 +1009,7 @@ class Cube():
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-		else:
-			return response
+
 
 	@classmethod
 	def script(cls, script=None, args=None, stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync'):
@@ -701,8 +1062,55 @@ class Cube():
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
+
+
+	@classmethod
+	def intercomparison(cls, cube=None, cube2= None, container=None, exec_mode='sync', ncores=1):
+		"""intercomparison(cubes=None, container=None, exec_mode='sync', ncores=1) -> Cube : wrapper of the operator OPH_INTERCOMPARISON
+
+		:param cubes: pipe (|) separated list of cubes
+		:type cubes: str
+		:param container: optional container name
+		:type container: str
+		:param ncores: number of cores to use
+		:type ncores: int
+		:param exec_mode: async or sync
+		:type exec_mode: str
+		:returns: new cube or None
+		:rtype: Cube or None
+		:raises: RuntimeError
+		"""
+
+		if Cube.client is None or cube is None or cube2 is None:
+			raise RuntimeError('Cube.client is None or cubes is None')
+		newcube = None
+
+		query = 'oph_intercomparison '
+
+		if cube is not None:
+			query += 'cube=' + str(cube) + ';'
+		if cube2 is not None:
+			query += 'cube2=' + str(cube2) + ';'	
+		if container is not None:
+			query += 'container=' + str(container) + ';'
+		if ncores is not None:
+			query += 'ncores=' + str(ncores) + ';'
+		if exec_mode is not None:
+			query += 'exec_mode=' + str(exec_mode) + ';'
+
+		try:
+			if Cube.client.submit(query) is None:
+				raise RuntimeError()
+
+			if Cube.client.last_response is not None:
+				if Cube.client.cube:
+					newcube = Cube(pid=Cube.client.cube)
+		except Exception as e:
+			print(get_linenumber(), "Something went wrong:", e)
+			raise RuntimeError()
 		else:
-			return response
+			return newcube
+
 
 	@classmethod
 	def mergecubes(cls, cubes=None, container=None, exec_mode='sync', ncores=1):
@@ -749,6 +1157,7 @@ class Cube():
 		else:
 			return newcube
 
+		
 	def __init__(self, container=None, cwd=None, exp_dim=None, host_partition=None, imp_dim=None, measure=None, src_path=None, compressed='no', exp_concept_level='c', filesystem='local', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=1, nhost=1, subset_dims='none', subset_filter='all', subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', pid=None):
 		"""Cube(container=None, cwd=None, exp_dim=None, host_partition=None, imp_dim=None, measure=None, src_path=None, compressed='no', exp_concept_level='c', filesystem='local', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=1, nhost=1, subset_dims='none', subset_filter='all', subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-') -> obj or Cube(pid=None) -> obj
 
@@ -962,6 +1371,7 @@ class Cube():
 		del self.nelements
 		del self.dim_info
 
+	
 	def info(self):
 		"""info() -> None : call OPH_CUBESIZE, OPH_CUBEELEMENTS and OPH_CUBESCHEMA to fill all Cube attributes
 
@@ -1016,6 +1426,7 @@ class Cube():
 						element['lattice_name'] = row_i[7]
 						self.dim_info.append(element)
 
+	
 	def exportnc(self, export_metadata='no', force='no', output_path='default', output_name='default', ncores=1, exec_mode='sync'):
 		"""exportnc(export_metadata='no', force='no', output_path='default', output_name='default', ncores=1, exec_mode='sync') -> None : wrapper of the operator OPH_EXPORTNC
 
@@ -1062,6 +1473,54 @@ class Cube():
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
+
+	def exportnc2(self, export_metadata='no', force='no', output_path='default', output_name='default', ncores=1, exec_mode='sync'):
+		"""exportnc(export_metadata='no', force='no', output_path='default', output_name='default', ncores=1, exec_mode='sync') -> None : wrapper of the operator OPH_EXPORTNC2
+
+		:param export_metadata: yes|no
+		:type export_metadata: str
+		:param force: yes|no
+		:type force: str
+		:param output_path: directory of the output file
+		:type output_path: str
+		:param output_name: name of the output file
+		:type output_name: str
+		:param ncores: number of cores to use
+		:type ncores: int
+		:param exec_mode: async or sync
+		:type exec_mode: str
+		:returns: None
+		:rtype: None
+		:raises: RuntimeError
+		"""
+
+		if Cube.client is None or self.pid is None:
+			raise RuntimeError('Cube.client is None or pid is None')
+
+		query = 'oph_exportnc2 '
+
+		if export_metadata is not None:
+			query += 'export_metadata=' + str(export_metadata) + ';'
+		if force is not None:
+			query += 'force=' + str(force) + ';'
+		if output_path is not None:
+			query += 'output_path=' + str(output_path) + ';'
+		if output_name is not None:
+			query += 'output_name=' + str(output_name) + ';'
+		if ncores is not None:
+			query += 'ncores=' + str(ncores) + ';'
+		if exec_mode is not None:
+			query += 'exec_mode=' + str(exec_mode) + ';'
+
+		query += 'cube=' + str(self.pid) + ';'
+
+		try:
+			if Cube.client.submit(query) is None:
+				raise RuntimeError()
+		except Exception as e:
+			print(get_linenumber(), "Something went wrong:", e)
+			raise RuntimeError()
+
 
 	def aggregate(self, operation=None, container=None, grid='-', group_size='all', ncores=1, exec_mode='sync'):
 		"""aggregate(operation=None, container=None, grid='-', group_size='all', ncores=1, exec_mode='sync') -> Cube or None : wrapper of the operator OPH_AGGREGATE
@@ -1117,6 +1576,7 @@ class Cube():
 		else:
 			return newcube
 
+	
 	def aggregate2(self, dim=None, operation=None, concept_level='A', container=None, grid='-', midnight='24', ncores=1, exec_mode='sync'):
 		"""aggregate2(dim=None, operation=None, concept_level='A', container=None, grid='-', midnight='24', ncores=1, exec_mode='sync') -> Cube or None : wrapper of the operator OPH_AGGREGATE2
 
@@ -1338,11 +1798,11 @@ class Cube():
 
 			if Cube.client.last_response is not None:
 				response = Cube.client.deserialize_response()
+				
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-		else:
-			return response
+
 
 	def delete(self, ncores=1, exec_mode='sync'):
 		"""delete(ncores=1, exec_mode='sync') -> None : wrapper of the operator OPH_DELETE
@@ -1530,11 +1990,314 @@ class Cube():
 
 			if Cube.client.last_response is not None:
 				response = Cube.client.deserialize_response()
+				
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-		else:
-			return response
+		
+
+	def publish (self, ncores=1, container=None,exec_mode='sync', content=None, show_id= 'no' ,show_index='no'):
+		""" Publish data from the datacube “URL/1/1”:( ncores=1, container=None,exec_mode='sync', content=None, show_id= 'no' ,show_index='no') -> None : wrapper of the operator OPH_PUBLISH
+
+		:returns: None
+		:rtype: None
+		:raises: RuntimeError
+		:param container: name of the container to be used to store the output cube, by default it is the input container
+		:type container: str
+		:param ncores: number of cores to use
+		:type ncores: int
+		:param exec_mode: async or sync
+		:type exec_mode: str
+		"""
+
+		if Cube.client is None or self.pid is None:
+			raise RuntimeError('Cube.client is None or pid is None')
+		response = None
+
+		query = 'oph_publish '
+
+		if ncores is not None:
+			query += 'ncores=' + str(ncores) + ';'
+		if container is not None:
+			query += 'container=' + str(container) + ';'
+		if exec_mode is not None:
+			query += 'exec_mode=' + str(exec_mode) + ';'
+		if content is not None:
+			query += 'content=' + str(content) + ';'
+		if show_id is not None:
+			query += 'show_id=' + str(show_id) + ';'
+		if show_index is not None:
+			query += 'show_index=' + str(show_index) + ';'			
+
+		query += 'cube=' + str(self.pid) + ';'
+
+		try:
+			if Cube.client.submit(query) is None:
+				raise RuntimeError()
+
+			if Cube.client.last_response is not None:
+				response = Cube.client.deserialize_response()
+				
+		except Exception as e:
+			print(get_linenumber(), "Something went wrong:", e)
+			raise RuntimeError()
+
+	def unpublish (self, ncores=1, container=None,exec_mode='sync', content=None):
+		""" unpublish data of the datacube “URL/1/1”:( ncores=1, container=None,exec_mode='sync', content=None) -> None : wrapper of the operator OPH_UNPUBLISH
+
+		:param ncores: number of cores to use
+		:type exec_mode: str
+		:returns: None
+		:rtype: None
+		:raises: RuntimeError
+		:param exec_mode: async or sync
+		:type exec_mode: str
+		:param container: name of the container to be used to store the output cube, by default it is the input container
+		:type container: str
+		:param ncores: number of cores to use
+		:type ncores: int
+		"""
+
+		if Cube.client is None or self.pid is None:
+			raise RuntimeError('Cube.client is None or pid is None')
+		response = None
+
+		query = 'oph_unpublish '
+
+		if ncores is not None:
+			query += 'ncores=' + str(ncores) + ';'
+		if container is not None:
+			query += 'container=' + str(container) + ';'
+		if exec_mode is not None:
+			query += 'exec_mode=' + str(exec_mode) + ';'
+		if content is not None:
+			query += 'content=' + str(content) + ';'
+				
+
+		query += 'cube=' + str(self.pid) + ';'
+
+		try:
+			if Cube.client.submit(query) is None:
+				raise RuntimeError()
+
+			if Cube.client.last_response is not None:
+				response = Cube.client.deserialize_response()
+				
+		except Exception as e:
+			print(get_linenumber(), "Something went wrong:", e)
+			raise RuntimeError()
+
+
+	def cubeschema (self, ncores=1, container=None,exec_mode='sync'):
+		""" Show metadata information about the datacube identified by the PID “URL/1/1”:( cores=1, container=None, exec_mode='sync') -> None : wrapper of the operator OPH_CUBESCHEMA
+
+		:param container: name of the container to be used to store the output cube, by default it is the input container
+		:type container: str
+		:param ncores: number of cores to use
+		:type ncores: int
+		:param exec_mode: async or sync
+		:type exec_mode: str
+		:returns: None
+		:rtype: None
+		:raises: RuntimeError
+		"""
+
+		if Cube.client is None or self.pid is None:
+			raise RuntimeError('Cube.client is None or pid is None')
+		response = None
+
+		query = 'oph_cubeschema '
+
+		if ncores is not None:
+			query += 'ncores=' + str(ncores) + ';'
+		if container is not None:
+			query += 'container=' + str(container) + ';'
+		if exec_mode is not None:
+			query += 'exec_mode=' + str(exec_mode) + ';'
+
+		query += 'cube=' + str(self.pid) + ';'
+
+		try:
+			if Cube.client.submit(query) is None:
+				raise RuntimeError()
+
+			if Cube.client.last_response is not None:
+				response = Cube.client.deserialize_response()
+				
+		except Exception as e:
+			print(get_linenumber(), "Something went wrong:", e)
+			raise RuntimeError()
+
+
+	def cubesize (self, ncores=1, container=None,exec_mode='sync'):
+		""" Compute the size of the datacube “URL/1/1”:( cores=1, container=None,exec_mode='sync') -> None : wrapper of the operator OPH_CUBESIZE
+
+		:param container: name of the container to be used to store the output cube, by default it is the input container
+		:type container: str
+		:param ncores: number of cores to use
+		:type ncores: int
+		:param exec_mode: async or sync
+		:type exec_mode: str
+		:returns: None
+		:rtype: None
+		:raises: RuntimeError
+		"""
+
+		if Cube.client is None or self.pid is None:
+			raise RuntimeError('Cube.client is None or pid is None')
+		response = None
+
+		query = 'oph_cubesize '
+
+		if ncores is not None:
+			query += 'ncores=' + str(ncores) + ';'
+		if container is not None:
+			query += 'container=' + str(container) + ';'
+		if exec_mode is not None:
+			query += 'exec_mode=' + str(exec_mode) + ';'
+
+		query += 'cube=' + str(self.pid) + ';'
+
+		try:
+			if Cube.client.submit(query) is None:
+				raise RuntimeError()
+
+			if Cube.client.last_response is not None:
+				response = Cube.client.deserialize_response()
+
+		except Exception as e:
+			print(get_linenumber(), "Something went wrong:", e)
+			raise RuntimeError()
+				
+
+	def cubeelements (self, ncores=1, container=None,exec_mode='sync'):
+		""" Compute the number of elements in the datacube “URL/1/1”:( cores=1, container=None,exec_mode='sync') -> None : wrapper of the operator OPH_CUBEELEMENTS
+
+		:param container: name of the container to be used to store the output cube, by default it is the input container
+		:type container: str
+		:param ncores: number of cores to use
+		:type ncores: int
+		:param exec_mode: async or sync
+		:type exec_mode: str
+		:returns: None
+		:rtype: None
+		:raises: RuntimeError
+		"""
+
+		if Cube.client is None or self.pid is None:
+			raise RuntimeError('Cube.client is None or pid is None')
+		response = None
+
+		query = 'oph_cubeelements '
+
+		if ncores is not None:
+			query += 'ncores=' + str(ncores) + ';'
+		if container is not None:
+			query += 'container=' + str(container) + ';'
+		if exec_mode is not None:
+			query += 'exec_mode=' + str(exec_mode) + ';'
+
+		query += 'cube=' + str(self.pid) + ';'
+
+		try:
+			if Cube.client.submit(query) is None:
+				raise RuntimeError()
+
+			if Cube.client.last_response is not None:
+				response = Cube.client.deserialize_response()
+				
+		except Exception as e:
+			print(get_linenumber(), "Something went wrong:", e)
+			raise RuntimeError()
+
+
+	def showgrid (self, ncores=1, container=None,exec_mode='sync', grid='-'):
+		""" Show the grid ‘grid1’ related to container ‘container1’:( cores=1, container=None,exec_mode='sync') -> None : wrapper of the operator OPH_SHOWGRID
+
+		:param container: name of the container to be used to store the output cube, by default it is the input container
+		:type container: str
+		:param ncores: number of cores to use
+		:type ncores: int
+		:param exec_mode: async or sync
+		:type exec_mode: str
+		:returns: None
+		:rtype: None
+		:raises: RuntimeError
+		"""
+
+		if Cube.client is None or self.pid is None:
+			raise RuntimeError('Cube.client is None or pid is None')
+		response = None
+
+		query = 'oph_showgrid '
+
+		if ncores is not None:
+			query += 'ncores=' + str(ncores) + ';'
+		if container is not None:
+			query += 'container=' + str(container) + ';'
+		if exec_mode is not None:
+			query += 'exec_mode=' + str(exec_mode) + ';'
+		if grid is not None:
+			query += 'grid=' + str(grid) + ';'	
+
+		query += 'cube=' + str(self.pid) + ';'
+
+		try:
+			if Cube.client.submit(query) is None:
+				raise RuntimeError()
+
+			if Cube.client.last_response is not None:
+				response = Cube.client.deserialize_response()
+				
+		except Exception as e:
+			print(get_linenumber(), "Something went wrong:", e)
+			raise RuntimeError()
+	
+
+	def tasks (self, ncores=1, container=None,exec_mode='sync', cube_filter='all', operator_filter='all'):
+		""" Compute the number of elements in the datacube “URL/1/1”:( cores=1, container=None,exec_mode='sync') -> None : wrapper of the operator OPH_TASKS
+
+		:param container: name of the container to be used to store the output cube, by default it is the input container
+		:type container: str
+		:param ncores: number of cores to use
+		:type ncores: int
+		:param exec_mode: async or sync
+		:type exec_mode: str
+		:returns: None
+		:rtype: None
+		:raises: RuntimeError
+		"""
+
+		if Cube.client is None or self.pid is None:
+			raise RuntimeError('Cube.client is None or pid is None')
+		response = None
+
+		query = 'oph_tasks '
+
+		if ncores is not None:
+			query += 'ncores=' + str(ncores) + ';'
+		if container is not None:
+			query += 'container=' + str(container) + ';'
+		if exec_mode is not None:
+			query += 'exec_mode=' + str(exec_mode) + ';'
+		if cube_filter is not None:
+			query += 'cube_filter=' + str(cube_filter) + ';'
+		if operator_filter is not None:
+			query += 'operator_filter=' + str(operator_filter) + ';'	
+
+		query += 'cube=' + str(self.pid) + ';'
+
+		try:
+			if Cube.client.submit(query) is None:
+				raise RuntimeError()
+
+			if Cube.client.last_response is not None:
+				response = Cube.client.deserialize_response()
+				
+		except Exception as e:
+			print(get_linenumber(), "Something went wrong:", e)
+			raise RuntimeError()
+
 
 	def intercube(self, cube2=None, operation=None, output_measure=None, container=None, exec_mode='sync', ncores=1):
 		"""intercube(cube2=None, operation=None, output_measure=None, container=None, exec_mode='sync', ncores=1) -> Cube or None : wrapper of the operator OPH_INTERCUBE
@@ -1706,8 +2469,77 @@ class Cube():
 		except Exception as e:
 			print(get_linenumber(), "Something went wrong:", e)
 			raise RuntimeError()
-		else:
-			return response
+
+
+	def search(self, mode='read', metadata_key='all', variable='global', metadata_value=None, metadata_value_filter=None, force='no', ncores=1, exec_mode='sync', metadata_key_filter=None):
+		"""search(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, metadata_type_filter=None, metadata_value_filter=None, force='no', ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_SEARCH
+
+		:param mode: insert|read|update|delete
+		:type mode: str
+		:type metadata_id: int
+		:param metadata_key: name of the key (or the enumeration of keys) identifying requested metadata
+		:type metadata_key: str
+		:param variable: name of the variable to which we can associate a new metadata key
+		:type variable: str
+		:param metadata_type: text|image|video|audio|url
+		:type metadata_type: str
+		:param metadata_value: string value to be assigned to specified metadata
+		:type metadata_value: str
+		:param metadata_type_filter: filter on metadata type
+		:type metadata_type_filter: str
+		:param metadata_value_filter: filter on metadata value
+		:type metadata_value_filter: str
+		:param force: force update or deletion of functional metadata associated to a vocabulary, default is no
+		:type force: str
+		:param ncores: number of cores to use
+		:type ncores: int
+		:param exec_mode: async or sync
+		:type exec_mode: str
+		:returns: response or None
+		:rtype: dict or None
+		:raises: RuntimeError
+		"""
+
+		if Cube.client is None or self.pid is None:
+			raise RuntimeError('Cube.client is None or pid is None')
+		response = None
+
+		query = 'oph_search '
+
+		if mode is not None:
+			query += 'mode=' + str(mode) + ';'
+
+		if metadata_key is not None:
+			query += 'metadata_key=' + str(metadata_key) + ';'
+		if variable is not None:
+			query += 'variable=' + str(variable) + ';'
+
+		if metadata_value is not None:
+			query += 'metadata_value=' + str(metadata_value) + ';'
+		
+		if metadata_value_filter is not None:
+			query += 'metadata_value_filter=' + str(metadata_value_filter) + ';'
+		if force is not None:
+			query += 'force=' + str(force) + ';'
+		if ncores is not None:
+			query += 'ncores=' + str(ncores) + ';'
+		if exec_mode is not None:
+			query += 'exec_mode=' + str(exec_mode) + ';'
+		if metadata_key_filter is not None:
+			query += 'metadata_key_filter=' + str(metadata_key_filter) + ';'
+		
+		query += 'cube=' + str(self.pid) + ';'
+
+		try:
+			if Cube.client.submit(query) is None:
+				raise RuntimeError()
+
+			if Cube.client.last_response is not None:
+				response = Cube.client.deserialize_response()
+		except Exception as e:
+			print(get_linenumber(), "Something went wrong:", e)
+			raise RuntimeError()
+
 
 	def permute(self, dim_pos=None, container=None, exec_mode='sync', ncores=1):
 		"""permute(dim_pos=None, container=None, exec_mode='sync', ncores=1) -> Cube or None : wrapper of the operator OPH_PERMUTE
@@ -1877,7 +2709,6 @@ class Cube():
 		:param ndim: number of explicit dimensions that will be transformed in implicit dimensions
 		:type ndim: int
 		:param container: name of the container to be used to store the output cube, by default it is the input container
-		:type container: str
 		:param ncores: number of cores to use
 		:type ncores: int
 		:param exec_mode: async or sync
