@@ -5,12 +5,20 @@ PyOphidia: Python bindings for Ophidia
 
 It is an alternative to Oph_Term, the no-GUI interpreter component bundled with Ophidia, and a convenient way to submit SOAP HTTPS requests to an Ophidia server or to develop your own client using Python.
 
-It runs on Python 2.6, 2.7, and 3.4, has no dependencies and is pure-Python.
+It runs on Python 2.6, 2.7, 3.4 and 3.5 has no dependencies and is pure-Python.
 
 It provides 2 main modules:
 
 - client.py: generic *low level* class to submit any type of requests (simple tasks and workflows), using SSL and SOAP with the client ophsubmit.py;
-- cube.py: *high level* cube-oriented class to interact directly with cubes, with several methods wrapping some of the most useful operators.
+- cube.py: *high level* cube-oriented class to interact directly with cubes, with several methods wrapping all of the operators.
+
+Installation
+--------
+To install the *PyOphidia* package Run the following command:
+
+.. code-block:: bash 
+
+   pip install pyophidia
 
 
 Examples
@@ -66,15 +74,6 @@ Execute the request *oph_list level=2*:
 
    ophclient.submit("oph_list level=2")
 
-View the result
-^^^^^^^^^^^^^^^
-View the *JobID* of the last request and the returned JSON response:
-
-.. code-block:: python
-
-   print("Last JobID: " + ophclient.last_jobid)
-   print("Last response: " + ophclient.last_response)
-
 Set a Client for the Cube class
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Instantiate a new Client common to all Cube instances:
@@ -108,13 +107,39 @@ Instantiate a new Cube using the PID of an existing cube:
 
    mycube2 = cube.Cube(pid='http://127.0.0.1/1/2')
 
-Pretty print information on a Cube
+Cube Schema
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Print in a structured way the main information regarding a Cube object:
+It shows metadata information about a datacube and the dimensions related to it.
 
 .. code-block:: python
 
-   print(mycube2)
+   mycube2.cubeschema()
+
+Subset2
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+It performs a subsetting operation along dimensions of a datacube. Dimension values are used as input filters.
+
+.. code-block:: python
+
+   mycube2.subset2(subset_dims='lat|lon',subset_filter='1:10|20:30')
+
+Explore Cube
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+It prints the data stored into a datacube, and offers the possibility to subset the data along its dimensions. Dimension values are used as input filters for subsetting.
+
+.. code-block:: python
+
+   mycube2.explore(subset_dims='lat|lon',subset_filter='1:10|20:30')
+
+Exportnc2
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+It exports data of a datacube into a single NetCDF file.
+
+.. code-block:: python
+
+   mycube2.exportnc2(output_name='subset.pyophidia',output_path='/home/ophuser')
+
+
 
 .. _GPLv3: http://www.gnu.org/licenses/gpl-3.0.txt
 .. _Ophidia: http://ophidia.cmcc.it
