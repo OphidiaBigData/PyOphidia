@@ -66,13 +66,15 @@ Client methods
 - *wsubmit(workflow,\*params) -> self*: Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
 - *wisvalid(workflow) -> bool*: Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
 
+* In both the "ophclient.submit" and "cube class" to display the output pass the "display= True" * 
+
 Submit a request
 ^^^^^^^^^^^^^^^^
 Execute the request *oph_list level=2*:
 
 .. code-block:: python
 
-   ophclient.submit("oph_list level=2")
+   ophclient.submit("oph_list level=2", display=True)
 
 Set a Client for the Cube class
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
