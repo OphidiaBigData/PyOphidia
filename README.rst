@@ -66,7 +66,7 @@ Client methods
 - *wsubmit(workflow,\*params) -> self*: Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
 - *wisvalid(workflow) -> bool*: Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
 
-* In both the "ophclient.submit" and "cube class" to display the output pass the "display= True" * 
+*In both the "ophclient.submit" and "cube class" to display the output set the "display=True"* 
 
 Submit a request
 ^^^^^^^^^^^^^^^^
@@ -109,6 +109,12 @@ Instantiate a new Cube using the PID of an existing cube:
 
    mycube2 = cube.Cube(pid='http://127.0.0.1/1/2')
 
+To display the result of *cube* run the following command
+
+.. code-block:: python
+
+   mycube2 = cube.Cube(pid='http://127.0.0.1/1/2',display=True)    
+
 Cube Schema
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 It shows metadata information about a datacube and the dimensions related to it.
@@ -117,6 +123,8 @@ It shows metadata information about a datacube and the dimensions related to it.
 
    mycube2.cubeschema()
 
+*For the operators such as "cubeschema", "cubesize", "cubeelements", "info","list", "operators", "search", "showgrid", "metadata" and "provenance" the display by default is "True". But, for the rest of operators to display the result of operation, "dispay=True" should be set.*
+
 Subset2
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 It performs a subsetting operation along dimensions of a datacube. Dimension values are used as input filters.
@@ -124,6 +132,12 @@ It performs a subsetting operation along dimensions of a datacube. Dimension val
 .. code-block:: python
 
    mycube2.subset2(subset_dims='lat|lon',subset_filter='1:10|20:30')
+
+To display the result of *subset cube* run the following command
+
+.. code-block:: python
+
+   mycube2.subset2(subset_dims='lat|lon',subset_filter='1:10|20:30',display=True)
 
 Explore Cube
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
