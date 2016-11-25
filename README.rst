@@ -5,7 +5,9 @@ PyOphidia: Python bindings for Ophidia
 
 It is an alternative to Oph_Term, the no-GUI interpreter component bundled with Ophidia, and a convenient way to submit SOAP HTTPS requests to an Ophidia server or to develop your own client using Python.
 
-It runs on Python 2.6, 2.7, 3.4 and 3.5 has no dependencies and is pure-Python.
+It runs on Python 3.4 and 3.5 has no dependencies and is pure-Python.
+
+The *PyOphidia* is compatible with *jupyter Notebook*
 
 It provides 2 main modules:
 
@@ -13,13 +15,23 @@ It provides 2 main modules:
 - cube.py: *high level* cube-oriented class to interact directly with cubes, with several methods wrapping all of the operators.
 
 Installation
---------
+------------
 To install the *PyOphidia* package Run the following command:
 
 .. code-block:: bash 
 
    pip install pyophidia
 
+Installation from developer Source
+----------------------------------
+To install the latest developer version Run the following commands.
+
+.. code-block:: bash 
+
+   git clone https://github.com/OphidiaBigData/PyOphidia
+
+   python setup.py install
+   
 
 Examples
 --------
@@ -116,7 +128,7 @@ To display the result of *cube* run the following command
    mycube2 = cube.Cube(pid='http://127.0.0.1/1/2',display=True)    
 
 Cube Schema
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^
 It shows metadata information about a datacube and the dimensions related to it.
 
 .. code-block:: python
@@ -126,7 +138,7 @@ It shows metadata information about a datacube and the dimensions related to it.
 *For the operators such as "cubeschema", "cubesize", "cubeelements", "info","list", "operators", "search", "showgrid", "metadata" and "provenance" the display by default is "True". But, for the rest of operators to display the result of operation, "dispay=True" should be set.*
 
 Subset2
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^
 It performs a subsetting operation along dimensions of a datacube. Dimension values are used as input filters.
 
 .. code-block:: python
@@ -140,7 +152,7 @@ To display the result of *subset cube* run the following command
    mycube2.subset2(subset_dims='lat|lon',subset_filter='1:10|20:30',display=True)
 
 Explore Cube
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^
 It prints the data stored into a datacube, and offers the possibility to subset the data along its dimensions. Dimension values are used as input filters for subsetting.
 
 .. code-block:: python
@@ -148,7 +160,7 @@ It prints the data stored into a datacube, and offers the possibility to subset 
    mycube2.explore(subset_dims='lat|lon',subset_filter='1:10|20:30')
 
 Exportnc2
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^
 It exports data of a datacube into a single NetCDF file.
 
 .. code-block:: python

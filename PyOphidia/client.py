@@ -20,8 +20,10 @@ import os
 import json
 from inspect import currentframe
 import subprocess
-sys.path.append(os.path.dirname(__file__))
 import ophsubmit as _ophsubmit
+import traceback
+import shutil
+sys.path.append(os.path.dirname(__file__))
 
 
 def get_linenumber():
@@ -52,7 +54,8 @@ class Client():
         resume_session() -> self : Resume the last session the user was connected to.
         resume_cwd() -> self : Resume the last cwd (current working directory) the user was located into.
         resume_cube() -> self : Resume the last cube produced by the user.
-        wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
+        wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow.
+            The workflow will be validated against the Ophidia Workflow JSON Schema.
         wisvalid(workflow) -> bool : Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
         pretty_print(response, response_i) -> self : Turn the last_response JSON string attribute into a formatted response
     """
@@ -200,7 +203,7 @@ class Client():
         """
 
         response = self.deserialize_response()
-        sz = os.get_terminal_size()
+        sz = shutil.get_terminal_size(fallback=(120, 10000))
 
         VERTICAL_CHAR = "|"
         HORIZONTAL_CHAR = "-"
@@ -264,7 +267,8 @@ class Client():
                         for j in columns:
 
                             if start[j] < header_length[j]:
-                                print(VERTICAL_CHAR + " " + response_i['objcontent'][0]['rowkeys'][j][start[j]:start[j] + max_column_width[j]] + " " * ((max_column_width[j] + 2) - (len(response_i['objcontent'][0]['rowkeys'][j][start[j]:start[j] + max_column_width[j]]) + 1)), end="")
+                                print(VERTICAL_CHAR + " " + response_i['objcontent'][0]['rowkeys'][j][start[j]:start[j] + max_column_width[j]] + " " * ((max_column_width[j] + 2) -
+                                      (len(response_i['objcontent'][0]['rowkeys'][j][start[j]:start[j] + max_column_width[j]]) + 1)), end="")
                                 start[j] = start[j] + max_column_width[j]
                             else:
                                 print(VERTICAL_CHAR + " " * (max_column_width[j] + 2), end="")
@@ -302,7 +306,8 @@ class Client():
                             for j in columns:
 
                                 if start[i][j] < text_length[i][j]:
-                                    print(VERTICAL_CHAR + " " + response_i['objcontent'][0]['rowvalues'][i][j][start[i][j]:start[i][j] + max_column_width[j]] + " " * ((max_column_width[j] + 2) - (len(response_i['objcontent'][0]['rowvalues'][i][j][start[i][j]:start[i][j] + max_column_width[j]]) + 1)), end="")
+                                    print(VERTICAL_CHAR + " " + response_i['objcontent'][0]['rowvalues'][i][j][start[i][j]:start[i][j] + max_column_width[j]] + " " * ((max_column_width[j] + 2) -
+                                          (len(response_i['objcontent'][0]['rowvalues'][i][j][start[i][j]:start[i][j] + max_column_width[j]]) + 1)), end="")
                                     start[i][j] = start[i][j] + max_column_width[j]
                                 else:
                                     print(VERTICAL_CHAR + " " * (max_column_width[j]+2), end="")
@@ -437,7 +442,8 @@ class Client():
         return self
 
     def wsubmit(self, workflow, *params):
-        """wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
+        """wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow.
+           The workflow will be validated against the Ophidia Workflow JSON Schema.
         :param workflow: JSON string or path of a JSON file containing an Ophidia workflow
         :type workflow: str
         :param params: list of positional parameters that will replace $1, $2 etc. in the workflow
