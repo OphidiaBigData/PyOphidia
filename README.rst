@@ -16,6 +16,8 @@ It provides 2 main modules:
 
 Installation
 ------------
+The *PyOphidia* is compatible with Linux operating systems.
+
 To install the *PyOphidia* package Run the following command:
 
 .. code-block:: bash 
