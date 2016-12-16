@@ -7,7 +7,33 @@ It is an alternative to Oph_Term, the no-GUI interpreter component bundled with 
 
 It runs on Python 3.4 and 3.5 has no dependencies and is pure-Python.
 
+The *PyOphidia* is compatible with *Anaconda*
+To install the *PyOphidia* in *Anaconda* run the following commands:
+
+for Linux, OS X:
+
+.. code-block:: bash 
+
+   source activate bunnies
+
+For Windows:
+
+.. code-block:: bash 
+
+   activate bunnies
+
+.. code-block:: bash 
+
+   pip install see
+   pip install pyophidia
+
 The *PyOphidia* is compatible with *jupyter Notebook*
+To install the *PyOphidia* in jupyter run the following command:
+
+.. code-block:: bash 
+
+   pip install pyophidia
+
 
 It provides 2 main modules:
 
