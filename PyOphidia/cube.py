@@ -974,8 +974,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def randcube(cls, container=None, cwd=None, nhost=0, ndbms=1, ndb=1, nfrag=1, ntuple=1, measure=None, measure_type='manual', exp_ndim=None, dim=None, dim_size=None, grid='-', compressed='yes',
-                 concept_level='c', host_partition='auto', filesystem='auto', hidden='no', ncores=1, exec_mode='sync', ioserver='mysql_table', schedule=0, objkey_filter='all', display=False):
+    def randcube(cls, path=None, container=None, cwd=None, nhost=0, ndbms=1, ndb=1, nfrag=1, ntuple=1, measure=None, measure_type='manual', exp_ndim=None, dim=None, dim_size=None, grid='-', compressed='yes',
+                 concept_level='c', host_partition='auto', filesystem='auto', hidden='no', ncores=1, exec_mode='sync', ioserver='mysql_table', schedule=0, objkey_filter='all', display=True):
         """Generate a random compressed data cube:( container=None, nhost=0, ndbms=1, ndb=1, nfrag=1, ntuple=1, measure=None, measure_type='manual', exp_ndim=None, dim=None, dim_size=None , grid='-',
            compressed= 'auto' , concept_level='c', host_partition='auto', filesystem='auto',hidden='no', cwd=None, ncores=1, exec_mode='sync', ioserver='mysql_table',schedule=0, objkey_filter='all',
            display=False) -> dict or None : wrapper of the operator OPH_RANDCUBE
@@ -1161,7 +1161,7 @@ class Cube():
     def importnc(cls, path='-', container=None, measure=None, src_path=None, imp_concept_level=None, import_metadata=None, concept_level=None, cwd=None, ncores=1, exec_mode='sync', imp_dim=None,
                  exp_dim=None, subset_dims=None, grid=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', check_compliance='no', schedule=0, nhost=0, ndbms=0, ndb=1, nfrag=0,
                  subset_filter='all', time_filter='enabled', offset='', exp_concept_level='c', compressed='no', subset_type='index', base_time='1900-01-01 00:00:00', calendar='standard',
-                 hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', display=False):
+                 hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', display=True):
         """Import a NetCDF file excluding metadata into the session directory:(path='-', container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None ,
            concept_level=None, cwd=None, ncores=1,exec_mode='sync', imp_dim=None, exp_dim=None, subset_dims=None, grid=None, host_partition='auto', filesystem='auto', ioserver='mysql_table',
            check_compliance='no', schedule=0, nhost=0, ndbms=0, ndb=1, nfrag=0, subset_filter='all', time_filter='enabled', offset='', exp_concept_level='c', compressed='no', subset_type='index',
@@ -1287,7 +1287,7 @@ class Cube():
     def importnc2(cls, path='-', container=None, measure=None, src_path=None, imp_concept_level=None, import_metadata=None, concept_level=None, cwd=None, ncores=1, exec_mode='sync', imp_dim=None,
                   exp_dim=None, subset_dims=None, grid=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', check_compliance='no', schedule=0, nhost=0, ndbms=0, ndb=1, nfrag=0,
                   subset_filter='all', time_filter='enabled', offset='', exp_concept_level='c', compressed='no', subset_type='index', base_time='1900-01-01 00:00:00', calendar='standard',
-                  hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', display=False):
+                  hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', display=True):
         """Import a NetCDF file excluding metadata into the session directory:(path='-', container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None,
            cwd=None, ncores=1,exec_mode='sync', imp_dim=None, exp_dim=None, subset_dims=None, grid=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', check_compliance='no',
            schedule=0, nhost=0, ndbms=0, ndb=1, nfrag=0, subset_filter='all', time_filter='enabled', offset='', exp_concept_level='c', compressed='no', subset_type='index', base_time='1900-01-01 00:00:00',
@@ -1412,7 +1412,7 @@ class Cube():
     def importnc3(cls, path='-', container=None, measure=None, src_path=None, imp_concept_level=None, import_metadata=None, concept_level=None, cwd=None, ncores=1, exec_mode='sync', imp_dim=None,
                   exp_dim=None, subset_dims=None, grid=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', check_compliance='no', schedule=0, nhost=0, ndbms=0, ndb=1, nfrag=0,
                   subset_filter='all', time_filter='enabled', offset='', exp_concept_level='c', compressed='no', subset_type='index', base_time='1900-01-01 00:00:00', calendar='standard',
-                  hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', display=False):
+                  hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', display=True):
         """Import a NetCDF file excluding metadata into the session directory:(path='-', container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None,
            cwd=None, ncores=1,exec_mode='sync', imp_dim=None, exp_dim=None, subset_dims=None, grid=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', check_compliance='no', schedule=0,
            nhost=0, ndbms=0, ndb=1, nfrag=0, subset_filter='all', time_filter='enabled', offset='', exp_concept_level='c', compressed='no', subset_type='index', base_time='1900-01-01 00:00:00',
@@ -2576,35 +2576,35 @@ class Cube():
             raise RuntimeError('Cube.client is None or pid is None or query is None')
         newcube = None
 
-        query = 'oph_apply '
+        main_query = 'oph_apply '
 
         if query is not None:
-            query += 'query=' + str(query) + ';'
+            main_query += 'query=' + str(query) + ';'
         if check_type is not None:
-            query += 'check_type=' + str(check_type) + ';'
+            main_query += 'check_type=' + str(check_type) + ';'
         if compressed is not None:
-            query += 'compressed=' + str(compressed) + ';'
+            main_query += 'compressed=' + str(compressed) + ';'
         if container is not None:
-            query += 'container=' + str(container) + ';'
+            main_query += 'container=' + str(container) + ';'
         if dim_query is not None:
-            query += 'dim_query=' + str(dim_query) + ';'
+            main_query += 'dim_query=' + str(dim_query) + ';'
         if dim_type is not None:
-            query += 'dim_type=' + str(dim_type) + ';'
+            main_query += 'dim_type=' + str(dim_type) + ';'
         if measure is not None:
-            query += 'measure=' + str(measure) + ';'
+            main_query += 'measure=' + str(measure) + ';'
         if measure_type is not None:
-            query += 'measure_type=' + str(measure_type) + ';'
+            main_query += 'measure_type=' + str(measure_type) + ';'
         if ncores is not None:
-            query += 'ncores=' + str(ncores) + ';'
+            main_query += 'ncores=' + str(ncores) + ';'
         if exec_mode is not None:
-            query += 'exec_mode=' + str(exec_mode) + ';'
+            main_query += 'exec_mode=' + str(exec_mode) + ';'
         if description is not None:
-            query += 'description=' + str(description) + ';'
+            main_query += 'description=' + str(description) + ';'
 
-        query += 'cube=' + str(self.pid) + ';'
+        main_query += 'cube=' + str(self.pid) + ';'
 
         try:
-            if Cube.client.submit(query, display) is None:
+            if Cube.client.submit(main_query, display) is None:
                 raise RuntimeError()
 
             if Cube.client.last_response is not None:
