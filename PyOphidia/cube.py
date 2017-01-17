@@ -1409,7 +1409,7 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def importnc3(cls, path='-', container=None, measure=None, src_path=None, imp_concept_level=None, import_metadata=None, concept_level=None, cwd=None, ncores=1, exec_mode='sync', imp_dim=None,
+    def importnc3(cls, container=None, measure=None, src_path=None, imp_concept_level=None, import_metadata=None, concept_level=None, cwd=None, ncores=1, exec_mode='sync', imp_dim=None,
                   exp_dim=None, subset_dims=None, grid=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', check_compliance='no', schedule=0, nhost=0, ndbms=0, ndb=1, nfrag=0,
                   subset_filter='all', time_filter='enabled', offset='', exp_concept_level='c', compressed='no', subset_type='index', base_time='1900-01-01 00:00:00', calendar='standard',
                   hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', display=True):
@@ -2616,7 +2616,7 @@ class Cube():
         else:
             return newcube
 
-    def concatnc(self, src_path=None, check_exp_dim='yes', grid='-', import_metadata='no', ncores=1, exec_mode='sync', display=False):
+    # def concatnc(self, src_path=None, check_exp_dim='yes', grid='-', import_metadata='no', ncores=1, exec_mode='sync', display=False):
         """concatnc(src_path=None, check_exp_dim='yes', grid='-', import_metadata='no', ncores=1, exec_mode='sync', display=False) -> Cube or None : wrapper of the operator OPH_CONCATNC
 
         :param src_path: file to be concatenated
@@ -2636,39 +2636,39 @@ class Cube():
         :raises: RuntimeError
         """
 
-        if Cube.client is None or self.pid is None or src_path is None:
-            raise RuntimeError('Cube.client is None or pid is None or src_path is None')
-        newcube = None
+        # if Cube.client is None or self.pid is None or src_path is None:
+        #     raise RuntimeError('Cube.client is None or pid is None or src_path is None')
+        # newcube = None
 
-        query = 'oph_concatnc '
+        # query = 'oph_concatnc '
 
-        if src_path is not None:
-            query += 'src_path=' + str(src_path) + ';'
-        if check_exp_dim is not None:
-            query += 'check_exp_dim=' + str(check_exp_dim) + ';'
-        if grid is not None:
-            query += 'grid=' + str(grid) + ';'
-        if import_metadata is not None:
-            query += 'import_metadata=' + str(import_metadata) + ';'
-        if ncores is not None:
-            query += 'ncores=' + str(ncores) + ';'
-        if exec_mode is not None:
-            query += 'exec_mode=' + str(exec_mode) + ';'
+        # if src_path is not None:
+        #     query += 'src_path=' + str(src_path) + ';'
+        # if check_exp_dim is not None:
+        #     query += 'check_exp_dim=' + str(check_exp_dim) + ';'
+        # if grid is not None:
+        #     query += 'grid=' + str(grid) + ';'
+        # if import_metadata is not None:
+        #     query += 'import_metadata=' + str(import_metadata) + ';'
+        # if ncores is not None:
+        #     query += 'ncores=' + str(ncores) + ';'
+        # if exec_mode is not None:
+        #     query += 'exec_mode=' + str(exec_mode) + ';'
 
-        query += 'cube=' + str(self.pid) + ';'
+        # query += 'cube=' + str(self.pid) + ';'
 
-        try:
-            if Cube.client.submit(query, display) is None:
-                raise RuntimeError()
+        # try:
+        #     if Cube.client.submit(query, display) is None:
+        #         raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                if Cube.client.cube:
-                    newcube = Cube(pid=Cube.client.cube)
-        except Exception as e:
-            print(get_linenumber(), "Something went wrong:", e)
-            raise RuntimeError()
-        else:
-            return newcube
+        #     if Cube.client.last_response is not None:
+        #         if Cube.client.cube:
+        #             newcube = Cube(pid=Cube.client.cube)
+        # except Exception as e:
+        #     print(get_linenumber(), "Something went wrong:", e)
+        #     raise RuntimeError()
+        # else:
+        #     return newcube
 
     def provenance(self, branch='all', ncores=1, exec_mode='sync', display=True):
         """provenance(branch='all', ncores=1, exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_CUBEIO
