@@ -1211,33 +1211,33 @@ class Cube():
 			raise RuntimeError('Cube.client is None or pid is None or query is None')
 		newcube = None
 
-		query = 'oph_apply '
+		internal_query = 'oph_apply '
 
 		if query is not None:
-			query += 'query=' + str(query) + ';'
+			internal_query += 'query=' + str(query) + ';'
 		if check_type is not None:
-			query += 'check_type=' + str(check_type) + ';'
+			internal_query += 'check_type=' + str(check_type) + ';'
 		if compressed is not None:
-			query += 'compressed=' + str(compressed) + ';'
+			internal_query += 'compressed=' + str(compressed) + ';'
 		if container is not None:
-			query += 'container=' + str(container) + ';'
+			internal_query += 'container=' + str(container) + ';'
 		if dim_query is not None:
-			query += 'dim_query=' + str(dim_query) + ';'
+			internal_query += 'dim_query=' + str(dim_query) + ';'
 		if dim_type is not None:
-			query += 'dim_type=' + str(dim_type) + ';'
+			internal_query += 'dim_type=' + str(dim_type) + ';'
 		if measure is not None:
-			query += 'measure=' + str(measure) + ';'
+			internal_query += 'measure=' + str(measure) + ';'
 		if measure_type is not None:
-			query += 'measure_type=' + str(measure_type) + ';'
+			internal_query += 'measure_type=' + str(measure_type) + ';'
 		if ncores is not None:
-			query += 'ncores=' + str(ncores) + ';'
+			internal_query += 'ncores=' + str(ncores) + ';'
 		if exec_mode is not None:
-			query += 'exec_mode=' + str(exec_mode) + ';'
+			internal_query += 'exec_mode=' + str(exec_mode) + ';'
 
-		query += 'cube=' + str(self.pid) + ';'
+		internal_query += 'cube=' + str(self.pid) + ';'
 
 		try:
-			if Cube.client.submit(query) is None:
+			if Cube.client.submit(internal_query) is None:
 				raise RuntimeError()
 
 			if Cube.client.last_response is not None:
