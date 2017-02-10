@@ -123,7 +123,7 @@ class Cube():
 			pass
 
 	@classmethod
-	def createcontainer(cls, container=None, cwd=None, dim=None, dim_type=None, base_time='1900 - 01 - 01 00:00:00', calendar='standard', compressed='no', hierarchy='oph_base',leap_month=2,leap_year=0, month_lengths='31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31', ncores=1, units='d', vocabulary='-', exec_mode='sync'):
+	def createcontainer(cls, container=None, cwd=None, dim=None, dim_type=None, base_time='1900-01-01 00:00:00', calendar='standard', compressed='no', hierarchy='oph_base',leap_month=2,leap_year=0, month_lengths='31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31', ncores=1, units='d', vocabulary='-', exec_mode='sync'):
 		"""createcontainer(container=None, cwd=None, dim=None, dim_type=None, base_time='1900 - 01 - 01 00:00:00', calendar='standard', compressed='no', hierarchy='oph_base',leap_month=2,leap_year=0, month_lengths='31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31', ncores=1, units='d', vocabulary='-', exec_mode='sync') -> dict or None : wrapper of the operator OPH_CREATECONTAINER
 
 		:param container: container name
