@@ -5,7 +5,7 @@ PyOphidia: Python bindings for Ophidia
 
 It is an alternative to Oph_Term, the no-GUI interpreter component bundled with Ophidia, and a convenient way to submit SOAP HTTPS requests to an Ophidia server or to develop your own client using Python.
 
-It runs on Python 3.4 and 3.5 has no dependencies and is pure-Python.
+It runs on Python 2.7, 3.3, 3.4 and 3.5 has no dependencies and is pure-Python coding.
 
 The *PyOphidia* is compatible with *Anaconda*
 To install the *PyOphidia* in *Anaconda* run the following commands:
