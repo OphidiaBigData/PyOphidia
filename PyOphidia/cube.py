@@ -27,7 +27,8 @@ del sys
 del os
 
 from inspect import currentframe
-
+import base64
+import struct
 
 def get_linenumber():
 	cf = currentframe()
@@ -859,7 +860,7 @@ class Cube():
 			if Cube.client is None:
 				raise RuntimeError('Cube.client is None')
 
-			query = 'oph_importnc '
+			query = 'oph_importnc3 '
 
 			if container is not None:
 				query += 'container=' + str(container) + ';'
@@ -2070,6 +2071,203 @@ class Cube():
 			raise RuntimeError()
 		else:
 			return newcube
+
+	def export_array(self, show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no'):
+		"""explore(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no') ->
+		dict or None : wrapper of the operator OPH_EXPLORECUBE
+
+		:param show_id: yes|no
+		:type show_id: str
+		:param show_time: yes|no
+		:type show_time: str
+		:param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+		:type subset_dims: str
+		:param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+		:type subset_filter: str
+		:param time_filter: yes|no
+		:type time_filter: str
+		:returns: data_values or None
+		:rtype: dict or None
+		:raises: RuntimeError
+		"""
+
+		if Cube.client is None or self.pid is None:
+			raise RuntimeError('Cube.client is None or pid is None')
+		response = None
+
+		#Get number of max rows
+		maxRows = 0
+		for d in self.dim_info:
+			if d['array'] == 'no':
+				if maxRows == 0:
+					maxRows = 1
+				if d['size'].upper() != "ALL":
+					maxRows = maxRows * int(d['size'])
+
+		if maxRows == 0:
+			raise RuntimeError('Number of rows in cube is 0')
+
+		query = 'oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;limit_filter=' + str(maxRows) + ';'
+
+		if time_filter is not None:
+			query += 'time_filter=' + str(time_filter) + ';'
+		if show_id is not None:
+			query += 'show_id=' + str(show_id) + ';'
+		if show_time is not None:
+			query += 'show_time=' + str(show_time) + ';'
+		if subset_dims is not None:
+			query += 'subset_dims=' + str(subset_dims) + ';'
+		if subset_filter is not None:
+			query += 'subset_filter=' + str(subset_filter) + ';'
+
+		query += 'cube=' + str(self.pid) + ';'
+
+		try:
+			if Cube.client.submit(query) is None:
+				raise RuntimeError()
+
+			if Cube.client.last_response is not None:
+				response = Cube.client.deserialize_response()
+
+		except Exception as e:
+			print(get_linenumber(), "Something went wrong:", e)
+			raise RuntimeError()
+
+		def get_unpack_format(element_num, output_type):
+			if output_type == 'float':
+				format = str(element_num) + 'f'
+			elif output_type == 'double':
+				format = str(element_num) + 'd'
+			elif output_type == 'int':
+				format = str(element_num) + 'i'
+			elif output_type == 'long':
+				format = str(element_num) + 'l'
+			else:
+				raise RuntimeError('The value type is not valid')
+			return format
+
+		def calculate_decoded_length(decoded_string, output_type):
+			if output_type == 'float' or output_type == 'int':
+				num = int(float(len(decoded_string))/float(4))
+			elif output_type == 'double' or output_type == 'long':
+				num = int(float(len(decoded_string))/float(8))
+			else:
+				raise RuntimeError('The value type is not valid')
+			return num
+
+		data_values = {}
+
+		data_values["dimension"] = {}
+		data_values["measure"] = {}
+
+		#Get dimensions
+		try:
+			dimensions = []
+			for response_i in response['response']:
+				if response_i['objkey'] == 'explorecube_dimvalues':
+
+					for response_j in response_i['objcontent']:
+						if response_j['title'] and response_j['rowfieldtypes'] and response_j['rowfieldtypes'][1] and response_j['rowvalues']:
+							curr_dim = {}
+							curr_dim['name'] = response_j['title']
+
+							#Append actual values
+							dim_array = []
+
+							#Special case for time
+							if show_time == 'yes' and response_j['title'] == 'time':
+								for val in response_j['rowvalues']:
+									dims = [s.strip() for s in val[1].split(',')]
+									for v in dims:
+										dim_array.append(v)
+							else:
+								for val in response_j['rowvalues']:
+									decoded_bin = base64.b64decode(val[1])
+									length = calculate_decoded_length(decoded_bin, response_j['rowfieldtypes'][1])
+									format = get_unpack_format(length, response_j['rowfieldtypes'][1])
+									dims = struct.unpack(format, decoded_bin)
+									for v in dims:
+										dim_array.append(v)
+
+							curr_dim['values'] = dim_array
+							dimensions.append(curr_dim)
+
+						else:
+							raise RuntimeError("Unable to get dimension name or values in response")
+
+					break
+
+			dim_num = len(dimensions)
+			if dim_num == 0:
+				raise RuntimeError("No dimension found")
+
+			data_values["dimension"] = dimensions
+
+		except Exception as e:
+			print(get_linenumber(), "Unable to get dimensions from response:", e)
+			return None
+
+		#Read values
+		try:
+			measures = []
+			for response_i in response['response']:
+				if response_i['objkey'] == 'explorecube_data':
+
+					for response_j in response_i['objcontent']:
+						if response_j['title'] and response_j['rowkeys'] and response_j['rowfieldtypes'] and response_j['rowvalues']:
+							curr_mes = {}
+							measure_name = ""
+							measure_index = 0
+
+							#Check that implicit dimension is just one
+							if dim_num - (len(response_j['rowkeys']) - 1)/2.0 > 1:
+								raise RuntimeError("More than one implicit dimension")
+
+							for i, t in enumerate(response_j['rowkeys']):
+								if response_j['title'] == t:
+									measure_name = t
+									measure_index = i
+									break
+
+							if measure_index == 0:
+								raise RuntimeError("Unable to get measure name in response")
+
+							curr_mes['name'] = measure_name
+
+							#Append actual values
+							measure_value = []
+							for val in response_j['rowvalues']:
+								decoded_bin = base64.b64decode(val[measure_index])
+								length = calculate_decoded_length(decoded_bin, response_j['rowfieldtypes'][measure_index])
+								format = get_unpack_format(length, response_j['rowfieldtypes'][measure_index])
+								measure = struct.unpack(format, decoded_bin)
+								curr_line = []
+								for v in measure:
+									curr_line.append(v)
+
+								measure_value.append(curr_line)
+
+							curr_mes['values'] = measure_value
+							measures.append(curr_mes)
+
+						else:
+							raise RuntimeError("Unable to get measure values in response")
+
+						break
+
+					break
+
+			measure_num = len(measures)
+			if measure_num == 0:
+				raise RuntimeError("No measure found")
+
+			data_values["measure"] = measures
+
+		except Exception as e:
+			print(get_linenumber(), "Unable to get measure from response:", e)
+			return None
+		else:
+			return data_values
 
 	def __str__(self):
 		buf = "-" * 30 + "\n"
