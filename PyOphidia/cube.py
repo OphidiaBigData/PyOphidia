@@ -94,7 +94,7 @@ class Cube():
 
     Class Methods:
         setclient(username, password, server, port='11732') -> None : Instantiate the Client, common for all Cube objects, for submitting requests
-        createcontainer(container=None, cwd=None, dim=None, dim_type=None, base_time='1900 - 01 - 01 00:00:00', calendar='standard', compressed='no', hierarchy='oph_base',leap_month=2,leap_year=0,
+        createcontainer(container=None, cwd=None, dim=None, dim_type=None, base_time='1900-01-01 00:00:00', calendar='standard', compressed='no', hierarchy='oph_base',leap_month=2,leap_year=0,
                         month_lengths='31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31', ncores=1, units='d', vocabulary='-', exec_mode='sync') -> dict or None : wrapper of the operator OPH_CREATECONTAINER
         deletecontainer(container=None, cwd=None, delete_type='physical', hidden='no', ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_DELETECONTAINER
         folder(command=None, cwd=None, path=None, ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_FOLDER
@@ -2620,39 +2620,39 @@ class Cube():
             raise RuntimeError('Cube.client is None or pid is None or query is None')
         newcube = None
 
-        main_query = 'oph_apply '
+        internal_query = 'oph_apply '
 
         if ncores is not None:
-            main_query += 'ncores=' + str(ncores) + ';'
+            internal_query += 'ncores=' + str(ncores) + ';'
         if exec_mode is not None:
-            main_query += 'exec_mode=' + str(exec_mode) + ';'
+            internal_query += 'exec_mode=' + str(exec_mode) + ';'
         if query is not None:
-            main_query += 'query=' + str(query) + ';'
+            internal_query += 'query=' + str(query) + ';'
         if dim_query is not None:
-            main_query += 'dim_query=' + str(dim_query) + ';'
+            internal_query += 'dim_query=' + str(dim_query) + ';'
         if measure is not None:
-            main_query += 'measure=' + str(measure) + ';'
+            internal_query += 'measure=' + str(measure) + ';'
         if measure_type is not None:
-            main_query += 'measure_type=' + str(measure_type) + ';'
+            internal_query += 'measure_type=' + str(measure_type) + ';'
         if dim_type is not None:
-            main_query += 'dim_type=' + str(dim_type) + ';'
+            internal_query += 'dim_type=' + str(dim_type) + ';'
         if check_type is not None:
-            main_query += 'check_type=' + str(check_type) + ';'
+            internal_query += 'check_type=' + str(check_type) + ';'
         if compressed is not None:
-            main_query += 'compressed=' + str(compressed) + ';'
+            internal_query += 'compressed=' + str(compressed) + ';'
         if schedule is not None:
-            main_query += 'schedule=' + str(schedule) + ';'
+            internal_query += 'schedule=' + str(schedule) + ';'
         if container is not None:
-            main_query += 'container=' + str(container) + ';'
+            internal_query += 'container=' + str(container) + ';'
         if description is not None:
-            main_query += 'description=' + str(description) + ';'
+            internal_query += 'description=' + str(description) + ';'
         if objkey_filter is not None:
-            main_query += 'objkey_filter=' + str(objkey_filter) + ';'
+            internal_query += 'objkey_filter=' + str(objkey_filter) + ';'
 
-        main_query += 'cube=' + str(self.pid) + ';'
+        internal_query += 'cube=' + str(self.pid) + ';'
 
         try:
-            if Cube.client.submit(main_query, display) is None:
+            if Cube.client.submit(internal_query, display) is None:
                 raise RuntimeError()
 
             if Cube.client.last_response is not None:

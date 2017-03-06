@@ -23,6 +23,7 @@ else:
 	import http.client as httplib
 
 import base64
+import re
 from xml.dom import minidom
 
 from inspect import currentframe
@@ -95,7 +96,7 @@ def submit(username, password, server, port, query):
 				return (None, None, None, 3, "Invalid request")
 		if wrapped_query.startswith('oph_'):
 			wrapped_query = 'operator=' + wrapped_query[:wrapped_query.find(' ')] + ';' + wrapped_query[wrapped_query.find(' ') + 1:]
-		query_list = wrapped_query.split(';')
+		query_list = re.split(r'(?![^\[]*\]);+', wrapped_query)
 		if not query_list:
 			return (None, None, None, 3, "Invalid request")
 		# operator
