@@ -5,13 +5,61 @@ PyOphidia: Python bindings for Ophidia
 
 It is an alternative to Oph_Term, the no-GUI interpreter component bundled with Ophidia, and a convenient way to submit SOAP HTTPS requests to an Ophidia server or to develop your own client using Python.
 
-It runs on Python 2.6, 2.7, and 3.4, has no dependencies and is pure-Python.
+It runs on Python 2.7, 3.3, 3.4 and 3.5 has no dependencies and is pure-Python coding.
+
+The *PyOphidia* is compatible with *Anaconda*
+To install the *PyOphidia* in *Anaconda* run the following commands:
+
+for Linux, OS X:
+
+.. code-block:: bash 
+
+   source activate bunnies
+
+For Windows:
+
+.. code-block:: bash 
+
+   activate bunnies
+
+.. code-block:: bash 
+
+   pip install see
+   pip install pyophidia
+
+The *PyOphidia* is compatible with *jupyter Notebook*
+To install the *PyOphidia* in jupyter run the following command:
+
+.. code-block:: bash 
+
+   pip install pyophidia
+
 
 It provides 2 main modules:
 
 - client.py: generic *low level* class to submit any type of requests (simple tasks and workflows), using SSL and SOAP with the client ophsubmit.py;
-- cube.py: *high level* cube-oriented class to interact directly with cubes, with several methods wrapping some of the most useful operators.
+- cube.py: *high level* cube-oriented class to interact directly with cubes, with several methods wrapping all of the operators.
 
+Installation
+------------
+The *PyOphidia* is compatible with Linux operating systems.
+
+To install the *PyOphidia* package Run the following command:
+
+.. code-block:: bash 
+
+   pip install pyophidia
+
+Installation from developer Source
+----------------------------------
+To install the latest developer version Run the following commands.
+
+.. code-block:: bash 
+
+   git clone https://github.com/OphidiaBigData/PyOphidia
+
+   python setup.py install
+   
 
 Examples
 --------
@@ -58,22 +106,15 @@ Client methods
 - *wsubmit(workflow,\*params) -> self*: Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
 - *wisvalid(workflow) -> bool*: Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
 
+*In both the "ophclient.submit" and "cube class" to display the output set the "display=True"* 
+
 Submit a request
 ^^^^^^^^^^^^^^^^
 Execute the request *oph_list level=2*:
 
 .. code-block:: python
 
-   ophclient.submit("oph_list level=2")
-
-View the result
-^^^^^^^^^^^^^^^
-View the *JobID* of the last request and the returned JSON response:
-
-.. code-block:: python
-
-   print("Last JobID: " + ophclient.last_jobid)
-   print("Last response: " + ophclient.last_response)
+   ophclient.submit("oph_list level=2", display=True)
 
 Set a Client for the Cube class
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -108,13 +149,53 @@ Instantiate a new Cube using the PID of an existing cube:
 
    mycube2 = cube.Cube(pid='http://127.0.0.1/1/2')
 
-Pretty print information on a Cube
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Print in a structured way the main information regarding a Cube object:
+To display the result of *cube* run the following command
 
 .. code-block:: python
 
-   print(mycube2)
+   mycube2 = cube.Cube(pid='http://127.0.0.1/1/2',display=True)    
+
+Cube Schema
+^^^^^^^^^^^
+It shows metadata information about a datacube and the dimensions related to it.
+
+.. code-block:: python
+
+   mycube2.cubeschema()
+
+*For the operators such as "cubeschema", "cubesize", "cubeelements", "info","list", "operators", "search", "showgrid", "metadata" and "provenance" the display by default is "True". But, for the rest of operators to display the result of operation, "dispay=True" should be set.*
+
+Subset2
+^^^^^^^
+It performs a subsetting operation along dimensions of a datacube. Dimension values are used as input filters.
+
+.. code-block:: python
+
+   mycube2.subset2(subset_dims='lat|lon',subset_filter='1:10|20:30')
+
+To display the result of *subset cube* run the following command
+
+.. code-block:: python
+
+   mycube2.subset2(subset_dims='lat|lon',subset_filter='1:10|20:30',display=True)
+
+Explore Cube
+^^^^^^^^^^^^
+It prints the data stored into a datacube, and offers the possibility to subset the data along its dimensions. Dimension values are used as input filters for subsetting.
+
+.. code-block:: python
+
+   mycube2.explore(subset_dims='lat|lon',subset_filter='1:10|20:30')
+
+Exportnc2
+^^^^^^^^^
+It exports data of a datacube into a single NetCDF file.
+
+.. code-block:: python
+
+   mycube2.exportnc2(output_name='subset.pyophidia',output_path='/home/ophuser')
+
+
 
 .. _GPLv3: http://www.gnu.org/licenses/gpl-3.0.txt
 .. _Ophidia: http://ophidia.cmcc.it
