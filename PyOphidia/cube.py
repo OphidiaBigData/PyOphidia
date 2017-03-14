@@ -15,11 +15,10 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
 from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import generators
 import sys
 import os
 import client as _client
@@ -112,10 +111,6 @@ class Cube():
         randcube (path=None, container=None, nhost=None ,ndbms=None, ndb=None, nfrag=None, ntuple=None, measure=None, measure_type='manual', exp_ndim=None,dim=None, dim_size=None , grid=None,compressed= 'auto' ,
                   concept_level=None, host_partition= None, filesystem='local',hidden='no', cwd=None, ncores=1,exec_mode='sync') -> dict or None : wrapper of the operator OPH_RANDCUBE
         intercomparison (cubes=None, container=None, exec_mode='sync', ncores=1) -> Cube : wrapper of the operator OPH_INTERCOMPARISON
-        importnc (path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync')
-                  -> dict or None : wrapper of the operator OPH_IMPORTNC
-        importnc2 (path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync')
-                   -> dict or None : wrapper of the operator OPH_IMPORTNC2
         importnc3 (path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync')
                    -> dict or None : wrapper of the operator OPH_IMPORTNC3
         Cancel( cores=1, id=None, type=None,  display=True) -> None : wrapper of the operator OPH_CANCEL.
@@ -126,7 +121,7 @@ class Cube():
         manage_session: Request or set session data: session list, session creation date, authorized users, etc.  (cls, key='all', objkey_filter='all', display=False) ->
                         dict or None : wrapper of the operator OPH_MANAGE_SESSION
         instances: It shows information about host partitions, hosts and dbms instances. (cls, level=1, host_filter='all', host_partition='all', filesystem_filter='all', ioserver='all',
-                   host_status='all', dbms_status='all', exec_mode='async', sessionid='null', ncores=1, objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_INSTANCES
+                   host_status='all', dbms_status='all', exec_mode='async', ncores=1, objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_INSTANCES
         log_info: It reads the last lines from the server log or from a specific container log.(cls, log_type='server', container_id=0, ioserver='mysql', nlines=10, sessionid='null',
                   objkey_filter='all', ncores=1, exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_LOG_INFO
         loggingbk: It shows info about jobs and sessions (logging bookkeeping). Any filter can use SQL wildcards (%, _, etc.).(cls, session_level=0, job_level=0,
@@ -1165,257 +1160,6 @@ class Cube():
                 query += 'wavelet_coeff=' + str(wavelet_coeff) + ';'
             if objkey_filter is not None:
                 query += 'objkey_filter=' + str(objkey_filter) + ';'
-
-            if Cube.client.submit(query, display) is None:
-                raise RuntimeError()
-
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
-        except Exception as e:
-            print(get_linenumber(), "Something went wrong:", e)
-            raise RuntimeError()
-
-    @classmethod
-    def importnc(cls, path='-', container=None, measure=None, src_path=None, imp_concept_level=None, import_metadata=None, concept_level=None, cwd=None, ncores=1, exec_mode='sync', imp_dim=None,
-                 exp_dim=None, subset_dims=None, grid=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', check_compliance='no', schedule=0, nhost=0, ndbms=0, ndb=1, nfrag=0,
-                 subset_filter='all', time_filter='enabled', offset='', exp_concept_level='c', compressed='no', subset_type='index', base_time='1900-01-01 00:00:00', calendar='standard',
-                 hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', display=True):
-        """Import a NetCDF file excluding metadata into the session directory:(path='-', container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None ,
-           concept_level=None, cwd=None, ncores=1,exec_mode='sync', imp_dim=None, exp_dim=None, subset_dims=None, grid=None, host_partition='auto', filesystem='auto', ioserver='mysql_table',
-           check_compliance='no', schedule=0, nhost=0, ndbms=0, ndb=1, nfrag=0, subset_filter='all', time_filter='enabled', offset='', exp_concept_level='c', compressed='no', subset_type='index',
-           base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-',
-           description='-', display=False) -> dict or None : wrapper of the operator OPH_IMPORTNC
-
-        :param path: absolute or relative path
-        :param container_filter: filter on container name
-        :type container_filter: str
-        :param cube: filter on cube
-        :type cube: str
-        :type measure_filter: str
-        :param ntransform: filter on cube level
-        :type ntransform: int
-        :param src_filter: filter on source file
-        :type src_filter: str
-        :param recursive: yes|no
-        :type recursive: str
-        :param hidden: yes|no
-        :type hidden: str
-        :param cwd: current working directory
-        :type cwd: str
-        :param ncores: number of cores to use
-        :type ncores: int
-        :param exec_mode: async or sync
-        :type exec_mode: str
-        :returns: response or None
-        :rtype: dict or None
-        :raises: RuntimeError
-        """
-
-        response = None
-        try:
-            if Cube.client is None:
-                raise RuntimeError('Cube.client is None')
-
-            query = 'oph_importnc '
-
-            if container is not None:
-                query += 'container=' + str(container) + ';'
-            if cwd is not None:
-                query += 'cwd=' + str(cwd) + ';'
-            if exp_dim is not None:
-                query += 'exp_dim=' + str(exp_dim) + ';'
-            if host_partition is not None:
-                query += 'host_partition=' + str(host_partition) + ';'
-            if imp_dim is not None:
-                query += 'imp_dim=' + str(imp_dim) + ';'
-            if measure is not None:
-                query += 'measure=' + str(measure) + ';'
-            if src_path is not None:
-                query += 'src_path=' + str(src_path) + ';'
-            if compressed is not None:
-                query += 'compressed=' + str(compressed) + ';'
-            if exp_concept_level is not None:
-                query += 'exp_concept_level=' + str(exp_concept_level) + ';'
-            if filesystem is not None:
-                query += 'filesystem=' + str(filesystem) + ';'
-            if grid is not None:
-                query += 'grid=' + str(grid) + ';'
-            if imp_concept_level is not None:
-                query += 'imp_concept_level=' + str(imp_concept_level) + ';'
-            if import_metadata is not None:
-                query += 'import_metadata=' + str(import_metadata) + ';'
-            if check_compliance is not None:
-                query += 'check_compliance=' + str(check_compliance) + ';'
-            if ioserver is not None:
-                query += 'ioserver=' + str(ioserver) + ';'
-            if ncores is not None:
-                query += 'ncores=' + str(ncores) + ';'
-            if ndb is not None:
-                query += 'ndb=' + str(ndb) + ';'
-            if ndbms is not None:
-                query += 'ndbms=' + str(ndbms) + ';'
-            if nfrag is not None:
-                query += 'nfrag=' + str(nfrag) + ';'
-            if nhost is not None:
-                query += 'nhost=' + str(nhost) + ';'
-            if subset_dims is not None:
-                query += 'subset_dims=' + str(subset_dims) + ';'
-            if subset_filter is not None:
-                query += 'subset_filter=' + str(subset_filter) + ';'
-            if subset_type is not None:
-                query += 'subset_type=' + str(subset_type) + ';'
-            if exec_mode is not None:
-                query += 'exec_mode=' + str(exec_mode) + ';'
-            if base_time is not None:
-                query += 'base_time=' + str(base_time) + ';'
-            if calendar is not None:
-                query += 'calendar=' + str(calendar) + ';'
-            if hierarchy is not None:
-                query += 'hierarchy=' + str(hierarchy) + ';'
-            if leap_month is not None:
-                query += 'leap_month=' + str(leap_month) + ';'
-            if leap_year is not None:
-                query += 'leap_year=' + str(leap_year) + ';'
-            if month_lengths is not None:
-                query += 'month_lengths=' + str(month_lengths) + ';'
-            if run is not None:
-                query += 'run=' + str(run) + ';'
-            if units is not None:
-                query += 'units=' + str(units) + ';'
-            if vocabulary is not None:
-                query += 'vocabulary=' + str(vocabulary) + ';'
-            if offset is not None:
-                query += 'offset=' + str(offset) + ';'
-            if schedule is not None:
-                query += 'schedule=' + str(schedule) + ';'
-            if description is not None:
-                query += 'description=' + str(description) + ';'
-
-            if Cube.client.submit(query, display) is None:
-                raise RuntimeError()
-
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
-        except Exception as e:
-            print(get_linenumber(), "Something went wrong:", e)
-            raise RuntimeError()
-
-    @classmethod
-    def importnc2(cls, path='-', container=None, measure=None, src_path=None, imp_concept_level=None, import_metadata=None, concept_level=None, cwd=None, ncores=1, exec_mode='sync', imp_dim=None,
-                  exp_dim=None, subset_dims=None, grid=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', check_compliance='no', schedule=0, nhost=0, ndbms=0, ndb=1, nfrag=0,
-                  subset_filter='all', time_filter='enabled', offset='', exp_concept_level='c', compressed='no', subset_type='index', base_time='1900-01-01 00:00:00', calendar='standard',
-                  hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', display=True):
-        """Import a NetCDF file excluding metadata into the session directory:(path='-', container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None,
-           cwd=None, ncores=1,exec_mode='sync', imp_dim=None, exp_dim=None, subset_dims=None, grid=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', check_compliance='no',
-           schedule=0, nhost=0, ndbms=0, ndb=1, nfrag=0, subset_filter='all', time_filter='enabled', offset='', exp_concept_level='c', compressed='no', subset_type='index', base_time='1900-01-01 00:00:00',
-           calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', display=False) ->
-           dict or None : wrapper of the operator OPH_IMPORTNC2
-
-        :param path: absolute or relative path
-        :param container_filter: filter on container name
-        :param cube: filter on cube
-        :type cube: str
-        :type measure_filter: str
-        :param ntransform: filter on cube level
-        :type ntransform: int
-        :param src_filter: filter on source file
-        :type src_filter: str
-        :param recursive: yes|no
-        :type recursive: str
-        :param hidden: yes|no
-        :type hidden: str
-        :param cwd: current working directory
-        :type cwd: str
-        :param ncores: number of cores to use
-        :type ncores: int
-        :param exec_mode: async or sync
-        :type exec_mode: str
-        :returns: response or None
-        :rtype: dict or None
-        :raises: RuntimeError
-        """
-
-        response = None
-        try:
-            if Cube.client is None:
-                raise RuntimeError('Cube.client is None')
-
-            query = 'oph_importnc2 '
-
-            if container is not None:
-                query += 'container=' + str(container) + ';'
-            if cwd is not None:
-                query += 'cwd=' + str(cwd) + ';'
-            if exp_dim is not None:
-                query += 'exp_dim=' + str(exp_dim) + ';'
-            if host_partition is not None:
-                query += 'host_partition=' + str(host_partition) + ';'
-            if imp_dim is not None:
-                query += 'imp_dim=' + str(imp_dim) + ';'
-            if measure is not None:
-                query += 'measure=' + str(measure) + ';'
-            if src_path is not None:
-                query += 'src_path=' + str(src_path) + ';'
-            if compressed is not None:
-                query += 'compressed=' + str(compressed) + ';'
-            if exp_concept_level is not None:
-                query += 'exp_concept_level=' + str(exp_concept_level) + ';'
-            if filesystem is not None:
-                query += 'filesystem=' + str(filesystem) + ';'
-            if grid is not None:
-                query += 'grid=' + str(grid) + ';'
-            if imp_concept_level is not None:
-                query += 'imp_concept_level=' + str(imp_concept_level) + ';'
-            if import_metadata is not None:
-                query += 'import_metadata=' + str(import_metadata) + ';'
-            if check_compliance is not None:
-                query += 'check_compliance=' + str(check_compliance) + ';'
-            if ioserver is not None:
-                query += 'ioserver=' + str(ioserver) + ';'
-            if ncores is not None:
-                query += 'ncores=' + str(ncores) + ';'
-            if ndb is not None:
-                query += 'ndb=' + str(ndb) + ';'
-            if ndbms is not None:
-                query += 'ndbms=' + str(ndbms) + ';'
-            if nfrag is not None:
-                query += 'nfrag=' + str(nfrag) + ';'
-            if nhost is not None:
-                query += 'nhost=' + str(nhost) + ';'
-            if subset_dims is not None:
-                query += 'subset_dims=' + str(subset_dims) + ';'
-            if subset_filter is not None:
-                query += 'subset_filter=' + str(subset_filter) + ';'
-            if subset_type is not None:
-                query += 'subset_type=' + str(subset_type) + ';'
-            if exec_mode is not None:
-                query += 'exec_mode=' + str(exec_mode) + ';'
-            if base_time is not None:
-                query += 'base_time=' + str(base_time) + ';'
-            if calendar is not None:
-                query += 'calendar=' + str(calendar) + ';'
-            if hierarchy is not None:
-                query += 'hierarchy=' + str(hierarchy) + ';'
-            if leap_month is not None:
-                query += 'leap_month=' + str(leap_month) + ';'
-            if leap_year is not None:
-                query += 'leap_year=' + str(leap_year) + ';'
-            if month_lengths is not None:
-                query += 'month_lengths=' + str(month_lengths) + ';'
-            if run is not None:
-                query += 'run=' + str(run) + ';'
-            if units is not None:
-                query += 'units=' + str(units) + ';'
-            if vocabulary is not None:
-                query += 'vocabulary=' + str(vocabulary) + ';'
-            if offset is not None:
-                query += 'offset=' + str(offset) + ';'
-            if schedule is not None:
-                query += 'schedule=' + str(schedule) + ';'
-            if description is not None:
-                query += 'description=' + str(description) + ';'
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
