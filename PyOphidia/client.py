@@ -362,6 +362,8 @@ class Client():
 
     def resume_session(self, display=False):
         """resume_session() -> self : Resume the last session the user was connected to.
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: self or None
         :rtype: Client or None
         :raises: RuntimeError
@@ -392,6 +394,8 @@ class Client():
 
     def resume_cwd(self, display=False):
         """resume_cwd() -> self : Resume the last cwd (current working directory) the user was located into.
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: self or None
         :rtype: Client or None
         :raises: RuntimeError
@@ -422,6 +426,8 @@ class Client():
 
     def resume_cube(self, display=False):
         """resume_cube() -> self : Resume the last cube produced by the user.
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: self or None
         :rtype: Client or None
         :raises: RuntimeError

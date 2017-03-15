@@ -195,6 +195,8 @@ class Cube():
         :type vocabulary: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -264,6 +266,8 @@ class Cube():
         :type hidden: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -311,6 +315,8 @@ class Cube():
         :type objkey_filter: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :raises: RuntimeError
         """
         response = None
@@ -334,11 +340,13 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def service(cls, status='', level=1, objkey_filter='all', display=True):
+    def service(cls, status='', level=1, objkey_filter='all', display=False):
         """service: Request or set the service status.(cls, status='', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_SERVICE
 
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :raises: RuntimeError
         """
 
@@ -368,10 +376,12 @@ class Cube():
 
     @classmethod
     def get_config(cls, key='all', objkey_filter='all', display=True):
-        """get_config: Request the configuration parameters. (cls, key='all', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_GET_CONFIG
+        """get_config: Request the configuration parameters. (cls, key='all', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_GET_CONFIG
 
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :raises: RuntimeError
         """
 
@@ -408,6 +418,8 @@ class Cube():
         type: str
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :raises: RuntimeError
         """
 
@@ -451,6 +463,8 @@ class Cube():
         :type: str
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :raises: RuntimeError
         """
         response = None
@@ -490,9 +504,9 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def log_info(cls, log_type='server', container_id=0, ioserver='mysql', nlines=10, exec_mode='sync', objkey_filter='all', display=False):
+    def log_info(cls, log_type='server', container_id=0, ioserver='mysql', nlines=10, exec_mode='sync', objkey_filter='all', display=True):
         """log_info: It reads the last lines from the server log or from a specific container log.(cls, log_type='server', container_id=0, ioserver='mysql', nlines=10,
-           objkey_filter='all', exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_LOG_INFO
+           objkey_filter='all', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_LOG_INFO
 
         :param type: type of method
         :type type: str
@@ -500,6 +514,8 @@ class Cube():
         :type objkey_filter: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :raises: RuntimeError
         """
         response = None
@@ -551,6 +567,8 @@ class Cube():
         :type cube: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -618,6 +636,8 @@ class Cube():
         :type path: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -670,6 +690,8 @@ class Cube():
         :type cwd: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -716,6 +738,8 @@ class Cube():
         :type container: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: None
         :rtype: None
         :raises: RuntimeError
@@ -776,6 +800,8 @@ class Cube():
         :type force: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -820,6 +846,8 @@ class Cube():
 
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -885,6 +913,8 @@ class Cube():
         :type cwd: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -939,7 +969,7 @@ class Cube():
 
     @classmethod
     def randcube(cls, ncores=1, exec_mode='sync', path=None, container=None, cwd=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', schedule=0, nhost=0, ndbms=1, ndb=1, run='yes', nfrag=1,
-                  ntuple=1, measure=None, measure_type='manual', exp_ndim=None, dim=None, concept_level='c', dim_size=None, compressed='yes', grid='-', description='-', objkey_filter='all', display=True):
+                  ntuple=1, measure=None, measure_type='manual', exp_ndim=None, dim=None, concept_level='c', dim_size=None, compressed='yes', grid='-', description='-', objkey_filter='all', display=False):
         """Generate a random compressed data cube:( container=None, nhost=0, ndbms=1, ndb=1, nfrag=1, ntuple=1, measure=None, measure_type='manual', exp_ndim=None, dim=None, dim_size=None , grid='-',
            compressed= 'auto' , concept_level='c', host_partition='auto', filesystem='auto',hidden='no', cwd=None, ncores=1, exec_mode='sync', ioserver='mysql_table',schedule=0, objkey_filter='all',
            display=False) -> dict or None : wrapper of the operator OPH_RANDCUBE
@@ -971,6 +1001,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -1056,6 +1088,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: None
         :rtype: None
         :raises: RuntimeError
@@ -1132,11 +1166,11 @@ class Cube():
                    check_compliance='no', schedule=0, nhost=0, ndbms=0, ndb=1, nfrag=0, run='yes', measure=None, src_path=None, exp_dim=None, imp_dim=None, subset_dims=None,
                    subset_type='index', subset_filter='all', time_filter='enabled', offset='O', exp_concept_level='c', imp_concept_level='c', compressed='no', grid=None, hierarchy='oph_base',  
                    vocabulary='-', base_time='1900-01-01 00:00:00', units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', leap_year=0, leap_month=2,  
-                   description='-', objkey_filter='all', display=True):
+                   description='-', objkey_filter='all', display=False):
         """Import a NetCDF file excluding metadata into the session directory:(path='-', container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None,
            cwd=None, ncores=1,exec_mode='sync', imp_dim=None, exp_dim=None, subset_dims=None, grid=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', check_compliance='no', schedule=0,
            nhost=0, ndbms=0, ndb=1, nfrag=0, subset_filter='all', time_filter='enabled', offset='', exp_concept_level='c', compressed='no', subset_type='index', base_time='1900-01-01 00:00:00',
-           calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', diplay=False) ->
+           calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', display=False) ->
            dict or None : wrapper of the operator OPH_IMPORTNC3
 
         :param path: absolute or relative path
@@ -1158,6 +1192,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -1267,6 +1303,8 @@ class Cube():
         :type function_version: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -1312,6 +1350,8 @@ class Cube():
         :type cwd: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -1355,6 +1395,8 @@ class Cube():
         :type limit_filter: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -1388,7 +1430,7 @@ class Cube():
 
     @classmethod
     def primitives(cls, level=1, dbms_filter='-', return_type='all', primitive_type='all', primitive_filter='', limit_filter=0, exec_mode='sync', objkey_filter='all', display=True):
-        """primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync', objkey_filter='all', display=False) ->
+        """primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync', objkey_filter='all', display=True) ->
            dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
 
         :param dbms_filter: filter on DBMS
@@ -1405,6 +1447,8 @@ class Cube():
         :type return_type: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -1453,6 +1497,8 @@ class Cube():
         :type cwd: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -1502,6 +1548,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -1551,6 +1599,8 @@ class Cube():
         :type container: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: None
         :rtype: None
         :raises: RuntimeError
@@ -1593,8 +1643,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def intercomparison(cls, ncores=1, exec_mode='sync', cube=None, cube2=None, missingvalue='NAN', schedule=0, container=None, discription='-', objkey_filter='all', display=True):
-        """intercomparison(cubes=None, container=None, schedule=0, exec_mode='sync', ncores=1, display=True) -> Cube : wrapper of the operator OPH_INTERCOMPARISON
+    def intercomparison(cls, ncores=1, exec_mode='sync', cube=None, cube2=None, missingvalue='NAN', schedule=0, container=None, discription='-', objkey_filter='all', display=False):
+        """intercomparison(cubes=None, container=None, schedule=0, exec_mode='sync', ncores=1, display=False) -> Cube : wrapper of the operator OPH_INTERCOMPARISON
 
         :param cubes: pipe (|) separated list of cubes
         :type cubes: str
@@ -1604,6 +1654,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -1659,6 +1711,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -1710,6 +1764,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -1828,6 +1884,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: None
         :rtype: None
         :raises: RuntimeError
@@ -1973,6 +2031,8 @@ class Cube():
     def info(self, display=True):
         """info(display=True) -> None : call OPH_CUBESIZE, OPH_CUBEELEMENTS and OPH_CUBESCHEMA to fill all Cube attributes
 
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: None
         :rtype: None
         :raises: RuntimeError
@@ -2039,6 +2099,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: None
         :rtype: None
         :raises: RuntimeError
@@ -2093,6 +2155,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: None
         :rtype: None
         :raises: RuntimeError
@@ -2146,6 +2210,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -2215,6 +2281,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -2289,6 +2357,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -2357,6 +2427,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -2403,6 +2475,8 @@ class Cube():
         :type branch: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -2441,6 +2515,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: None
         :rtype: None
         :raises: RuntimeError
@@ -2480,6 +2556,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -2521,7 +2599,7 @@ class Cube():
         else:
             return newcube
 
-    def duplicate(self, ncores=1, exec_mode='sync', schedule=0, container=None, description='-', objkey_filter='all', display=True):
+    def duplicate(self, ncores=1, exec_mode='sync', schedule=0, container=None, description='-', objkey_filter='all', display=False):
         """duplicate(container=None, ncores=1, exec_mode='sync', description='-', display=False) -> Cube or None : wrapper of the operator OPH_DUPLICATE
 
         :param container: name of the container to be used to store the output cube, by default it is the input container
@@ -2530,6 +2608,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -2597,6 +2677,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -2657,15 +2739,17 @@ class Cube():
         """ Publish data from the datacube "URL/1/1":( ncores=1, content='all',exec_mode='sync', show_id= 'no' ,show_index='no', schedule=0, objkey_filter='all', show_time='no', display=True) ->
             None : wrapper of the operator OPH_PUBLISH
 
-        :returns: None
-        :rtype: None
-        :raises: RuntimeError
         :param container: name of the container to be used to store the output cube, by default it is the input container
         :type container: str
         :param ncores: number of cores to use
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
+        :returns: None
+        :rtype: None
+        :raises: RuntimeError
         """
 
         if Cube.client is None or self.pid is None:
@@ -2707,17 +2791,17 @@ class Cube():
     def unpublish(self, ncores=1, exec_mode='sync', objkey_filter='all', display=False):
         """ unpublish data of the datacube "URL/1/1":( ncores=1, exec_mode='sync', objkey_filter='all', display=False) -> None : wrapper of the operator OPH_UNPUBLISH
 
-        :param ncores: number of cores to use
-        :type exec_mode: str
-        :returns: None
-        :rtype: None
-        :raises: RuntimeError
         :param exec_mode: async or sync
         :type exec_mode: str
         :param container: name of the container to be used to store the output cube, by default it is the input container
         :type container: str
         :param ncores: number of cores to use
         :type ncores: int
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
+        :returns: None
+        :rtype: None
+        :raises: RuntimeError
         """
 
         if Cube.client is None or self.pid is None:
@@ -2753,6 +2837,8 @@ class Cube():
         :type container: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: None
         :rtype: None
         :raises: RuntimeError
@@ -2802,6 +2888,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: None
         :rtype: None
         :raises: RuntimeError
@@ -2846,6 +2934,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
         :returns: None
         :rtype: None
         :raises: RuntimeError
@@ -2896,6 +2986,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -2954,6 +3046,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -3022,6 +3116,8 @@ class Cube():
         :type force: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is Ture)
+        :type display: bool
         :returns: response or None
         :rtype: dict or None
         :raises: RuntimeError
@@ -3079,6 +3175,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -3120,7 +3218,7 @@ class Cube():
         else:
             return newcube
 
-    def reduce(self, ncores=1, exec_mode='sync', schedule=0, group_size='all', operation=None, order=2, missingvalue='NAN', grid='-', container=None, description='-', objkey_filter='all', display=True):
+    def reduce(self, ncores=1, exec_mode='sync', schedule=0, group_size='all', operation=None, order=2, missingvalue='NAN', grid='-', container=None, description='-', objkey_filter='all', display=False):
         """reduce(operation=None, container=None, exec_mode='sync', grid='-', group_size='all', ncores=1, schedule=0, order=2, description='-', objkey_filter='all', display=False) ->
            Cube or None : wrapper of the operator OPH_REDUCE
 
@@ -3136,6 +3234,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -3186,7 +3286,7 @@ class Cube():
             return newcube
 
     def reduce2(self, ncores=1, exec_mode='sync', schedule=0, dim=None, concept_level='A', midnight='24', operation=None, order=2, missingvalue='NAN', grid='-', container=None, description='-',
-                objkey_filter='all', display=True):
+                objkey_filter='all', display=False):
         """reduce2(dim=None, operation=None, concept_level='A', container=None, exec_mode='sync', grid='-', midnight='24', order=2, description='-',
            objkey_filter='all', schedule=0, ncores=1, display=False) -> Cube or None : wrapper of the operator OPH_REDUCE2
 
@@ -3206,6 +3306,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -3260,7 +3362,7 @@ class Cube():
         else:
             return newcube
 
-    def rollup(self, ncores=1, exec_mode='sync', schedule=0, ndim=1, container=None, description='-', objkey_filter='all', display=True):
+    def rollup(self, ncores=1, exec_mode='sync', schedule=0, ndim=1, container=None, description='-', objkey_filter='all', display=False):
         """rollup(ndim=1, container=None, exec_mode='sync', ncores=1, schedule=0, description='-', objkey_filter='all', display=False) -> Cube or None : wrapper of the operator OPH_ROLLUP
 
         :param ndim: number of explicit dimensions that will be transformed in implicit dimensions
@@ -3270,6 +3372,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -3311,7 +3415,7 @@ class Cube():
         else:
             return newcube
 
-    def split(self, ncores=1, exec_mode='sync', schedule=0, nsplit=2, container=None, description='-', objkey_filter='all', display=True):
+    def split(self, ncores=1, exec_mode='sync', schedule=0, nsplit=2, container=None, description='-', objkey_filter='all', display=False):
         """split(nsplit=2, container=None, exec_mode='sync', ncores=1, schedule=0, description='-', objkey_filter='all', display=False) -> Cube or None : wrapper of the operator OPH_SPLIT
 
         :param nsplit: number of output fragments per input fragment
@@ -3322,6 +3426,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -3379,6 +3485,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
@@ -3441,6 +3549,8 @@ class Cube():
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
