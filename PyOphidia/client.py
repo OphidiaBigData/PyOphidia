@@ -1,4 +1,4 @@
-#     
+#
 #     PyOphidia - Python bindings for Ophidia
 #     Copyright (C) 2012-2016 CMCC Foundation
 #
@@ -15,11 +15,10 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
 from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import generators
 import sys
 import os
 import json
@@ -208,7 +207,12 @@ class Client():
         """
 
         response = self.deserialize_response()
-        sz = shutil.get_terminal_size(fallback=(120, 10000))
+        if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] < 3):
+		    from collections import namedtuple
+            terminal_size = namedtuple('terminal_size', ['columns', 'lines'])
+            sz = terminal_size(120, 10000)
+        else:
+            sz = shutil.get_terminal_size(fallback=(120, 10000))
 
         VERTICAL_CHAR = "|"
         HORIZONTAL_CHAR = "-"
@@ -240,7 +244,7 @@ class Client():
                             if len(response_i['objcontent'][0]['rowvalues'][i][j]) > max_column_width[j]:
                                 max_column_width[j] = len(response_i['objcontent'][0]['rowvalues'][i][j])
                     available_width = sz.columns
-                    needed_width = sum(i for i in max_column_width) + (num_columns + 1)+(2 * num_columns)
+                    needed_width = sum(i for i in max_column_width) + (num_columns + 1) + (2 * num_columns)
                     while(needed_width > available_width):
                         if response_i['objkey'] == 'explorecube_data':
                             max_column_width[len(max_column_width)-1] -= 1
@@ -248,9 +252,9 @@ class Client():
                             for i in range(len(max_column_width)):
                                 if max_column_width[i] > 1:
                                     max_column_width[i] -= 1
-                        needed_width = sum(i for i in max_column_width)+(num_columns + 1)+(2 * num_columns)
+                        needed_width = sum(i for i in max_column_width)+(num_columns + 1) + (2 * num_columns)
                     for j in columns:
-                        print(JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j]+2), end="")
+                        print(JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j] + 2), end="")
                     print(JUNCTION_CHAR)
                     header_length = []
                     start = []
@@ -315,15 +319,15 @@ class Client():
                                           (len(response_i['objcontent'][0]['rowvalues'][i][j][start[i][j]:start[i][j] + max_column_width[j]]) + 1)), end="")
                                     start[i][j] = start[i][j] + max_column_width[j]
                                 else:
-                                    print(VERTICAL_CHAR + " " * (max_column_width[j]+2), end="")
+                                    print(VERTICAL_CHAR + " " * (max_column_width[j] + 2), end="")
                             print(VERTICAL_CHAR)
                         if i != rows[len(rows) - 1]:
                             for j in columns:
-                                print(VERTICAL_CHAR + HORIZONTAL_CHAR * (max_column_width[j]+2), end="")
+                                print(VERTICAL_CHAR + HORIZONTAL_CHAR * (max_column_width[j] + 2), end="")
                             print(VERTICAL_CHAR)
                         else:
                             for j in columns:
-                                print(JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j]+2), end="")
+                                print(JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j] + 2), end="")
                             print(JUNCTION_CHAR)
 
                 if response_i['objclass'] == 'digraph':
@@ -551,7 +555,7 @@ class Client():
             try:
                 w = json.loads(workflow)
             except:
-                return Falseg
+                return False
         elif isinstance(workflow, dict):
             w = workflow
         else:
