@@ -53,12 +53,14 @@ class Client():
         last_jobid: Job ID associated to the last request
 
     Methods:
-        submit(query) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the Ophidia server according to all login parameters of the Client and its state.
+        submit(query) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the Ophidia server
+            according to all login parameters of the Client and its state.
         deserialize_response() -> dict : Return the last_response JSON string attribute as a Python dictionary.
         resume_session() -> self : Resume the last session the user was connected to.
         resume_cwd() -> self : Resume the last cwd (current working directory) the user was located into.
         resume_cube() -> self : Resume the last cube produced by the user.
-        wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow.
+        wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series
+            of parameters that will replace $1, $2 etc. in the workflow.
             The workflow will be validated against the Ophidia Workflow JSON Schema.
         wisvalid(workflow) -> bool : Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
         pretty_print(response, response_i) -> self : Turn the last_response JSON string attribute into a formatted response
@@ -122,7 +124,8 @@ class Client():
         del self.last_jobid
 
     def submit(self, query, display=False):
-        """submit(query,display=False) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the Ophidia server according to all login parameters of the Client and its state.
+        """submit(query,display=False) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the Ophidia server
+               according to all login parameters of the Client and its state.
         :param query: query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;'
         :type query: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
@@ -208,7 +211,7 @@ class Client():
 
         response = self.deserialize_response()
         if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] < 3):
-		    from collections import namedtuple
+            from collections import namedtuple
             terminal_size = namedtuple('terminal_size', ['columns', 'lines'])
             sz = terminal_size(120, 10000)
         else:
@@ -354,7 +357,8 @@ class Client():
                     for i in nodelinks:
                         if response_i['objcontent'][0]['nodelinks'][i]:
                             for j in range(len(response_i['objcontent'][0]['nodelinks'][i])):
-                                print("\t" + str(i) + "=>" + response_i['objcontent'][0]['nodelinks'][i][j]['node'] + "\t[label=\"" + response_i['objcontent'][0]['nodelinks'][i][j]['description'], end="")
+                                print("\t" + str(i) + "=>" + response_i['objcontent'][0]['nodelinks'][i][j]['node'] +
+                                      "\t[label=\"" + response_i['objcontent'][0]['nodelinks'][i][j]['description'], end="")
                             print("\"]\n")
                     print("\n}\n")
 
@@ -574,7 +578,8 @@ class Client():
             return False
         if 'on_error' in w:
             try:
-                if w['on_error'] != 'skip' and w['on_error'] != 'continue' and w['on_error'] != 'break' and (w['on_error'][:7] != 'repeat ' or not w['on_error'][7:].isdigit() or int(w['on_error'][7:]) < 0):
+                if w['on_error'] != 'skip' and w['on_error'] != 'continue' and w['on_error'] != 'break' and \
+                   (w['on_error'][:7] != 'repeat ' or not w['on_error'][7:].isdigit() or int(w['on_error'][7:]) < 0):
                     return False
             except:
                 return False
@@ -604,7 +609,8 @@ class Client():
                             return False
             if 'on_error' in task:
                 try:
-                    if task['on_error'] != 'skip' and task['on_error'] != 'continue' and task['on_error'] != 'break' and (task['on_error'][:7] != 'repeat ' or not task['on_error'][7:].isdigit() or int(task['on_error'][7:]) < 0):
+                    if task['on_error'] != 'skip' and task['on_error'] != 'continue' and task['on_error'] != 'break' and \
+                       (task['on_error'][:7] != 'repeat ' or not task['on_error'][7:].isdigit() or int(task['on_error'][7:]) < 0):
                         return False
                 except:
                     return False
