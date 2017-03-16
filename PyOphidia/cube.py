@@ -27,6 +27,7 @@ import client as _client
 from inspect import currentframe
 sys.path.append(os.path.dirname(__file__))
 
+
 def get_linenumber():
     cf = currentframe()
     return __file__, cf.f_back.f_lineno
@@ -63,6 +64,7 @@ class Cube():
 
     Methods:
         info() -> None : call OPH_CUBESIZE, OPH_CUBEELEMENTS and OPH_CUBESCHEMA to fill all Cube attributes
+        export_array(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no', display=False) -> dict or None : calls OPH_EXPLORECUBE to build a dictionary with cube data
         exportnc(export_metadata='no', force='no', output_path='default', output_name='default', ncores=1, exec_mode='sync') -> None : wrapper of the operator OPH_EXPORTNC
         aggregate(operation=None, container=None, grid='-', group_size='all', ncores=1, exec_mode='sync') -> Cube or None : wrapper of the operator OPH_AGGREGATE
         aggregate2(dim=None, operation=None, concept_level='A', container=None, grid='-', midnight='24', ncores=1, exec_mode='sync') -> Cube or None : wrapper of the operator OPH_AGGREGATE2
@@ -1495,7 +1497,7 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def restorecontainer(cls, exec_mode='sync', container=None, cwd=None,  objkey_filter='all', display=False):
+    def restorecontainer(cls, exec_mode='sync', container=None, cwd=None, objkey_filter='all', display=False):
         """restorecontainer(container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_RESTORECONTAINER
 
         :param container: container name
@@ -1920,12 +1922,6 @@ class Cube():
             if Cube.client is None:
                 raise RuntimeError('Cube.client is None')
             self.pid = pid
-            try:
-                self.info(display)
-            except Exception as e:
-                print(get_linenumber(), "Something went wrong in instantiating the cube", e)
-            finally:
-                pass
         else:
             if exp_dim is None or imp_dim is None or measure is None or src_path is None:
                 raise RuntimeError('one or more required parameters are None')
@@ -2008,7 +2004,6 @@ class Cube():
                 if Cube.client.last_response is not None:
                     if Cube.client.cube:
                         self.pid = Cube.client.cube
-                        self.info(display)
             except Exception as e:
                 print(get_linenumber(), "Something went wrong in instantiating the cube", e)
                 raise RuntimeError()
@@ -2740,7 +2735,7 @@ class Cube():
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def publish(self, content='all', schedule=0, show_index='no', show_id='no', show_time='no', ncores=1,  exec_mode='sync', objkey_filter='all', display=True):
+    def publish(self, content='all', schedule=0, show_index='no', show_id='no', show_time='no', ncores=1, exec_mode='sync', objkey_filter='all', display=True):
         """ Publish data from the datacube "URL/1/1":( ncores=1, content='all',exec_mode='sync', show_id= 'no' ,show_index='no', schedule=0, objkey_filter='all', show_time='no', display=True) ->
             None : wrapper of the operator OPH_PUBLISH
 
@@ -3094,7 +3089,7 @@ class Cube():
         else:
             return newcube
 
-    def metadata(self, mode='read', metadata_key='all', variable='global', metadata_id=0,  metadata_type='text', metadata_value='-', metadata_type_filter='all', metadata_value_filter='all',
+    def metadata(self, mode='read', metadata_key='all', variable='global', metadata_id=0, metadata_type='text', metadata_value='-', metadata_type_filter='all', metadata_value_filter='all',
                  force='no', exec_mode='sync', objkey_filter='all', display=True):
         """metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, metadata_type_filter=None, metadata_value_filter=None, force='no',
            exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_METADATA
@@ -3626,7 +3621,14 @@ class Cube():
             raise RuntimeError('Cube.client is None or pid is None')
         response = None
 
-        #Get number of max rows
+        try:
+            self.info(display)
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong in instantiating the cube", e)
+        finally:
+            pass
+
+        # Get number of max rows
         maxRows = 0
         for d in self.dim_info:
             if d['array'] == 'no':
@@ -3679,9 +3681,9 @@ class Cube():
 
         def calculate_decoded_length(decoded_string, output_type):
             if output_type == 'float' or output_type == 'int':
-                num = int(float(len(decoded_string))/float(4))
+                num = int(float(len(decoded_string)) / float(4))
             elif output_type == 'double' or output_type == 'long':
-                num = int(float(len(decoded_string))/float(8))
+                num = int(float(len(decoded_string)) / float(8))
             else:
                 raise RuntimeError('The value type is not valid')
             return num
@@ -3691,7 +3693,7 @@ class Cube():
         data_values["dimension"] = {}
         data_values["measure"] = {}
 
-        #Get dimensions
+        # Get dimensions
         try:
             dimensions = []
             for response_i in response['response']:
@@ -3702,10 +3704,10 @@ class Cube():
                             curr_dim = {}
                             curr_dim['name'] = response_j['title']
 
-                            #Append actual values
+                            # Append actual values
                             dim_array = []
 
-                            #Special case for time
+                            # Special case for time
                             if show_time == 'yes' and response_j['title'] == 'time':
                                 for val in response_j['rowvalues']:
                                     dims = [s.strip() for s in val[1].split(',')]
@@ -3738,7 +3740,7 @@ class Cube():
             print(get_linenumber(), "Unable to get dimensions from response:", e)
             return None
 
-        #Read values
+        # Read values
         try:
             measures = []
             for response_i in response['response']:
@@ -3750,8 +3752,8 @@ class Cube():
                             measure_name = ""
                             measure_index = 0
 
-                            #Check that implicit dimension is just one
-                            if dim_num - (len(response_j['rowkeys']) - 1)/2.0 > 1:
+                            # Check that implicit dimension is just one
+                            if dim_num - (len(response_j['rowkeys']) - 1) / 2.0 > 1:
                                 raise RuntimeError("More than one implicit dimension")
 
                             for i, t in enumerate(response_j['rowkeys']):
@@ -3765,7 +3767,7 @@ class Cube():
 
                             curr_mes['name'] = measure_name
 
-                            #Append actual values
+                            # Append actual values
                             measure_value = []
                             for val in response_j['rowvalues']:
                                 decoded_bin = base64.b64decode(val[measure_index])
@@ -3829,4 +3831,3 @@ class Cube():
             buf += "%15s %15s %15s %15s %15s %15s %15s %15s" % (dim['name'], dim['type'], dim['size'], dim['hierarchy'], dim['concept_level'], dim['array'], dim['level'], dim['lattice_name']) + "\n"
         buf += "-" * 127 + "\n"
         return buf
-

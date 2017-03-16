@@ -250,12 +250,12 @@ class Client():
                     needed_width = sum(i for i in max_column_width) + (num_columns + 1) + (2 * num_columns)
                     while(needed_width > available_width):
                         if response_i['objkey'] == 'explorecube_data':
-                            max_column_width[len(max_column_width)-1] -= 1
+                            max_column_width[len(max_column_width) - 1] -= 1
                         else:
                             for i in range(len(max_column_width)):
                                 if max_column_width[i] > 1:
                                     max_column_width[i] -= 1
-                        needed_width = sum(i for i in max_column_width)+(num_columns + 1) + (2 * num_columns)
+                        needed_width = sum(i for i in max_column_width) + (num_columns + 1) + (2 * num_columns)
                     for j in columns:
                         print(JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j] + 2), end="")
                     print(JUNCTION_CHAR)
@@ -268,7 +268,7 @@ class Client():
                         num_rows_per_column.append(j)
                         header_length[j] = len(response_i['objcontent'][0]['rowkeys'][j])
                         start[j] = 0
-                        num_rows_per_column[j] = (int)(header_length[j]/max_column_width[j]) + 1
+                        num_rows_per_column[j] = (int)(header_length[j] / max_column_width[j]) + 1
 
                     maximum_rows = num_rows_per_column[0]
                     for j in columns:
@@ -307,7 +307,7 @@ class Client():
                             num_rows_per_column[i].append(j)
                             text_length[i][j] = len(response_i['objcontent'][0]['rowvalues'][i][j])
                             start[i][j] = 0
-                            num_rows_per_column[i][j] = (int)(text_length[i][j]/max_column_width[j]) + 1
+                            num_rows_per_column[i][j] = (int)(text_length[i][j] / max_column_width[j]) + 1
 
                         maximum_rows[i] = num_rows_per_column[i][0]
                         for j in columns:

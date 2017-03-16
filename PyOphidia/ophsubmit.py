@@ -31,6 +31,7 @@ def get_linenumber():
     cf = currentframe()
     return __file__, cf.f_back.f_lineno
 
+
 SOAP_MESSAGE_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope
 xmlns:ns0 = "urn:oph"
