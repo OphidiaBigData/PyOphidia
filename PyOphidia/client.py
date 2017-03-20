@@ -53,12 +53,12 @@ class Client():
         last_jobid: Job ID associated to the last request
 
     Methods:
-        submit(query) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the Ophidia server
-            according to all login parameters of the Client and its state.
+        submit(query, display=False) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the
+            Ophidia server according to all login parameters of the Client and its state.
         deserialize_response() -> dict : Return the last_response JSON string attribute as a Python dictionary.
-        resume_session() -> self : Resume the last session the user was connected to.
-        resume_cwd() -> self : Resume the last cwd (current working directory) the user was located into.
-        resume_cube() -> self : Resume the last cube produced by the user.
+        resume_session(display=False) -> self : Resume the last session the user was connected to.
+        resume_cwd(display=False) -> self : Resume the last cwd (current working directory) the user was located into.
+        resume_cube(display=False) -> self : Resume the last cube produced by the user.
         wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series
             of parameters that will replace $1, $2 etc. in the workflow.
             The workflow will be validated against the Ophidia Workflow JSON Schema.
@@ -365,7 +365,7 @@ class Client():
         return self
 
     def resume_session(self, display=False):
-        """resume_session() -> self : Resume the last session the user was connected to.
+        """resume_session(display=False) -> self : Resume the last session the user was connected to.
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: self or None
@@ -397,7 +397,7 @@ class Client():
         return self
 
     def resume_cwd(self, display=False):
-        """resume_cwd() -> self : Resume the last cwd (current working directory) the user was located into.
+        """resume_cwd(display=False) -> self : Resume the last cwd (current working directory) the user was located into.
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: self or None
@@ -429,7 +429,7 @@ class Client():
         return self
 
     def resume_cube(self, display=False):
-        """resume_cube() -> self : Resume the last cube produced by the user.
+        """resume_cube(display=False) -> self : Resume the last cube produced by the user.
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: self or None
@@ -461,8 +461,8 @@ class Client():
         return self
 
     def wsubmit(self, workflow, *params):
-        """wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow.
-           The workflow will be validated against the Ophidia Workflow JSON Schema.
+        """wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of
+           parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
         :param workflow: JSON string or path of a JSON file containing an Ophidia workflow
         :type workflow: str
         :param params: list of positional parameters that will replace $1, $2 etc. in the workflow
