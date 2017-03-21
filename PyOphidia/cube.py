@@ -39,7 +39,7 @@ class Cube():
             ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
             subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
             leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,
-            pid=None, display=False) -> obj 
+            pid=None, display=False) -> obj
          or Cube(pid=None) -> obj
 
     Attributes:
@@ -79,7 +79,7 @@ class Cube():
               container='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_APPLY
         provenance(branch='all', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CUBEIO
         delete(ncores=1, exec_mode='sync', schedule=0, display=False) -> dict or None : wrapper of the operator OPH_DELETE
-        cubeschema( cores=1, exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', display=True) 
+        cubeschema( cores=1, exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', display=True)
           -> dict or None : wrapper of the operator OPH_CUBESCHEMA
         cubeelements( schedule=0, algorithm='dim_product', cores=1, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
         cubesize( schedule=0, cores=1, byte_unit='MB', objkey_filter='all', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_CUBESIZE
@@ -87,9 +87,9 @@ class Cube():
         duplicate(container='-', ncores=1, exec_mode='sync', description='-', display=False) -> Cube or None : wrapper of the operator OPH_DUPLICATE
         explore(schedule=0, limit_filter=100, subset_dims=None, subset_filter='all', time_filter='yes', show_index='no', show_id='no', show_time='no', level=1, output_path='default',
                 output_name='default', base64='no', ncores=1, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_EXPLORECUBE
-        intercube(cube2=None, operation=None, container='-', exec_mode='sync', ncores=1, description='-', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE        
+        intercube(cube2=None, operation=None, container='-', exec_mode='sync', ncores=1, description='-', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE
         merge(nmerge=0, schedule=0, description='-', container='-', exec_mode='sync', ncores=1, display=False) -> Cube or None : wrapper of the operator OPH_MERGE
-        publish( ncores=1, content='all', exec_mode='sync', show_id= 'no', show_index='no', schedule=0, show_time='no', display=True) -> dict or None : wrapper of the operator OPH_PUBLISH        
+        publish( ncores=1, content='all', exec_mode='sync', show_id= 'no', show_index='no', schedule=0, show_time='no', display=True) -> dict or None : wrapper of the operator OPH_PUBLISH
         unpublish( exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_UNPUBLISH
         metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, metadata_type_filter=None, metadata_value_filter=None, force='no',
                  exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_METADATA
@@ -107,49 +107,58 @@ class Cube():
 
     Class Methods:
         setclient(username, password, server, port='11732') -> None : Instantiate the Client, common for all Cube objects, for submitting requests
-        createcontainer(container=None, cwd=None, dim=None, dim_type=None, base_time='1900-01-01 00:00:00', calendar='standard', compressed='no', hierarchy='oph_base',leap_month=2,leap_year=0,
-                        month_lengths='31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31', units='d', vocabulary='-', exec_mode='sync') -> dict or None : wrapper of the operator OPH_CREATECONTAINER
-        deletecontainer(container=None, cwd=None, delete_type='physical', hidden='no', exec_mode='sync') -> dict or None : wrapper of the operator OPH_DELETECONTAINER
-        folder(command=None, cwd=None, path=None, exec_mode='sync') -> dict or None : wrapper of the operator OPH_FOLDER
-        list(level=1, path=None, container_filter=None, cube=None, host_filter=None, dbms_filter=None, db_filter=None, measure_filter=None, ntransform=None, src_filter=None, recursive='no',
-            hidden='no', cwd=None, exec_mode='sync') -> dict or None : wrapper of the operator OPH_LIST
-        man(function=None, function_type='operator', function_version='latest', exec_mode='sync') -> dict or None : wrapper of the operator OPH_MAN
-        movecontainer(container=None, cwd=None, exec_mode='sync') -> dict or None : wrapper of the operator OPH_MOVECONTAINER
-        operators(operator_filter=None, limit_filter=0, exec_mode='sync') -> dict or None : wrapper of the operator OPH_OPERATORS_LIST
-        primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync')
-            -> dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
-        restorecontainer(container=None, cwd=None, exec_mode='sync') -> dict or None : wrapper of the operator OPH_RESTORECONTAINER
-        script(script=None, args=None, stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync') -> dict or None : wrapper of the operator OPH_SCRIPT
-        mergecubes(cubes=None, container=None, exec_mode='sync', ncores=1) -> Cube : wrapper of the operator OPH_MERGECUBES
-        mergecubes2(cubes=None, container='-', dim='-', description='-', objkey_filter='all', schedule=0, exec_mode='sync', ncores=1, display=False) -> Cube : wrapper of the operator OPH_MERGECUBES2
-        explorenc (force='no',measure= None, ncores=1, src_path= None, exp_dim= None, imp_dim= None , exec_mode='sync')
-            -> None : wrapper of the operator OPH_EXPLORENC
-        randcube (path=None, container=None, nhost=0 ,ndbms=1, ndb=1, nfrag=1, ntuple=None, measure=None, measure_type='manual', exp_ndim=None,dim=None, dim_size=None , grid=None,
-            compressed= 'auto' , concept_level=None, host_partition= None, filesystem='local',hidden='no', cwd=None, ncores=1,exec_mode='sync') -> dict or None : wrapper of the operator OPH_RANDCUBE
-        importnc (path=None, container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None, cwd=None, ncores=1,exec_mode='sync')
-                   -> dict or None : wrapper of the operator OPH_IMPORTNC
-        Cancel( cores=1, id=None, type=None,  display=True) -> None : wrapper of the operator OPH_CANCEL.
-        Hierarchy.(hierarchy='no', hierarchy_version='latest', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_HIERARCHY.
-        Resume_operator:( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
-            -> None : wrapper of the operator OPH_RESUME
-        service: Request or set the service status.(cls, status='', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_SERVICE
-        get_config: Request the configuration parameters. (cls, key='all', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_GET_CONFIG
-        manage_session: Request or set session data: session list, session creation date, authorized users, etc.  (cls, key='all', objkey_filter='all', display=False) ->
-                        dict or None : wrapper of the operator OPH_MANAGE_SESSION
-        instances: It shows information about host partitions, hosts and dbms instances. (cls, level=1, host_filter='all', host_partition='all', filesystem_filter='all', ioserver='all',
-                   host_status='all', dbms_status='all', exec_mode='async', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_INSTANCES
-        log_info: It reads the last lines from the server log or from a specific container log.(cls, log_type='server', container_id=0, ioserver='mysql', nlines=10,
-                  objkey_filter='all', exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_LOG_INFO
-        loggingbk: It shows info about jobs and sessions (logging bookkeeping). Any filter can use SQL wildcards (%, _, etc.).(cls, session_level=0, job_level=0,
-                   mask=000, session_filter='all', session_label_filter='all', session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', workflow_filter='all',
-                   markerid_filter='all', parent_job_filter='all', job_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', job_status_filter='all', submission_string_filter='all',
-                   job_start_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',  nlines=100, objkey_filter='all',
-                   exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_LOGGINGBK.
-        tasks ( cores=1, container=None,exec_mode='sync') -> None : wrapper of the operator OPH_TASKS
-        showgrid ( cores=1, container=None,exec_mode='sync') -> None : wrapper of the operator OPH_SHOWGRID
-        search ( mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, metadata_type_filter=None, metadata_value_filter=None, force='no',
-            exec_mode='sync')
-        -> dict or None : wrapper of the operator OPH_SEARCH
+        createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base',
+                        base_time='1900-01-01 00:00:00', units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
+                        leap_year=0, leap_month=2, vocabulary='CF', compressed='no', display=False) -> dict or None : wrapper of the operator OPH_CREATECONTAINER
+        deletecontainer(container=None, delete_type='physical', hidden='no', cwd=None, exec_mode='sync', objkey_filter='all', display=False)
+             -> dict or None : wrapper of the operator OPH_DELETECONTAINER
+        cancel(id=None, type='kill', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_CANCEL
+        service(status='', level=1, objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_SERVICE
+        get_config(key='all', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_GET_CONFIG
+        manage_session(action=None, session='this', key='user', value='null', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
+        instances(level=1, host_filter='all', host_partition='all', filesystem_filter='all', ioserver_filter='all', host_status='all',
+                  dbms_status='all', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_INSTANCES
+        log_info(log_type='server', container_id=0, ioserver='mysql', nlines=10, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_LOG_INFO
+        loggingbk(session_level=0, job_level=0, mask=000, session_filter='all', session_label_filter='all',
+                  session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', workflowid_filter='all', markerid_filter='all',
+                  parent_job_filter='all', job_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', job_status_filter='all',
+                  submission_string_filter='all', job_start_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
+                  job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', nlines=100, objkey_filter='all', exec_mode='sync', display=True)
+          -> dict or None : wrapper of the operator OPH_LOGGINGBK
+        folder(command=None, cwd=None, path=None, exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_FOLDER
+        tasks(cls, cube_filter='all', path='-', operator_filter='all', cwd=None, container='all', objkey_filter='all', exec_mode='sync', display=True)
+             -> dict or None : wrapper of the operator OPH_tasks
+        showgrid(container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_SHOWGRID
+        search(path='-',  metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all', cwd=None, display=True)
+          -> dict or None : wrapper of the operator OPH_SEARCH
+        hierarchy(hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_HIERARCHY
+        list(level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all', dbms_filter='all',
+             measure_filter='all', ntransform='all', src_filter='all', db_filter='all', recursive='no', hidden='no', objkey_filter='all', display=True)
+          -> dict or None : wrapper of the operator OPH_LIST
+        randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', schedule=0,
+                 nhost=0, ndbms=1, ndb=1, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+                 dim_size=None, compressed='no', grid='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_RANDCUBE
+        explorenc(exec_mode='sync', schedule=0, measure=None, src_path=None, exp_dim=None, imp_dim=None, subset_dims='none', subset_type='index',
+                  subset_filter='all', limit_filter=100, show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no',
+                  level=1, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0, wavelet_coeff='no', objkey_filter='all',
+                  display=False) -> None : wrapper of the operator OPH_EXPLORENC
+        importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, compressed='no',
+                 exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
+                 ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
+                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
+                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,)
+           -> Cube or None : wrapper of the operator OPH_IMPORTNC
+        man(function=None, function_type='operator', function_version='latest', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_MAN
+        movecontainer(container=None, cwd=None, exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_MOVECONTAINER
+        operators(operator_filter=None, limit_filter=0, exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_OPERATORS_LIST
+        primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync',
+                   objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
+        restorecontainer(exec_mode='sync', container=None, cwd=None, display=False) -> dict or None : wrapper of the operator OPH_RESTORECONTAINER
+        script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', display=False) -> dict or None : wrapper of the operator OPH_SCRIPT
+        resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
+          -> dict or None : wrapper of the operator OPH_RESUME
+        mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', description='-', display=False) -> Cube : wrapper of the operator OPH_MERGECUBES
+        mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', description='-', dim='-', display=False) -> Cube or None: wrapper of the operator OPH_MERGECUBES2
     """
 
     client = None
@@ -178,12 +187,15 @@ class Cube():
             pass
 
     @classmethod
-    def createcontainer(cls, exec_mode='sync', container=None, cwd=None, dim=None, dim_type=None, hierarchy='oph_base', base_time='1900-01-01 00:00:00',
-                        units='d', calendar='standard', month_lengths='31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31', leap_year=0, leap_month=2, vocabulary='-',
-                        compressed='no', objkey_filter='all', display=True):
-        """createcontainer(container=None, cwd=None, dim=None, dim_type=None, base_time='1900 - 01 - 01 00:00:00', calendar='standard', compressed='no', hierarchy='oph_base',leap_month=2,leap_year=0,
-           month_lengths='31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31', units='d', vocabulary='-', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_CREATECONTAINER
+    def createcontainer(cls, exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base',
+                        base_time='1900-01-01 00:00:00', units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
+                        leap_year=0, leap_month=2, vocabulary='CF', compressed='no', display=False):
+        """createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base',
+                        base_time='1900-01-01 00:00:00', units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
+                        leap_year=0, leap_month=2, vocabulary='CF', compressed='no', display=False) -> dict or None : wrapper of the operator OPH_CREATECONTAINER
 
+        :param exec_mode: async or sync
+        :type exec_mode: str
         :param container: container name
         :type container: str
         :param cwd: current working directory
@@ -192,26 +204,24 @@ class Cube():
         :type dim: str
         :param dim_type: pipe (|) separated list of dimension types (int|float|long|double)
         :type dim_type: str
-        :param base_time: reference time
-        :type base_time: str
-        :param calendar: calendar used
-        :type calendar: str
-        :param compressed: yes or no
-        :type compressed: str
         :param hierarchy: pipe (|) separated list of dimension hierarchies (oph_base|oph_time)
         :type hierarchy: str
-        :param leap_month: leap month
-        :type leap_month: int
-        :param leap_year: leap year
-        :type leap_year: int
-        :param month_lengths: comma-separated list of month lengths
-        :type month_lengths: str
+        :param base_time: reference time
+        :type base_time: str
         :param units: unit of time
         :type units: str
+        :param calendar: calendar used
+        :type calendar: str
+        :param month_lengths: comma-separated list of month lengths
+        :type month_lengths: str
+        :param leap_year: leap year
+        :type leap_year: int
+        :param leap_month: leap month
+        :type leap_month: int
         :param vocabulary: metadata vocabulary
         :type vocabulary: str
-        :param exec_mode: async or sync
-        :type exec_mode: str
+        :param compressed: yes or no
+        :type compressed: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -221,10 +231,8 @@ class Cube():
 
         response = None
         try:
-            if container is None or dim is None or dim_type is None:
-                raise RuntimeError('one or more required parameters are None')
-            if Cube.client is None:
-                raise RuntimeError('Cube.client is None')
+            if Cube.client is None or container is None or dim is None or dim_type is None or (cwd is None and self.cwd is None):
+                raise RuntimeError('Cube.client, container, dim, dim_type or cwd is None')
 
             query = 'oph_createcontainer '
 
@@ -256,8 +264,6 @@ class Cube():
                 query += 'vocabulary=' + str(vocabulary) + ';'
             if compressed is not None:
                 query += 'compressed=' + str(compressed) + ';'
-            if objkey_filter is not None:
-                query += 'objkey_filter=' + str(objkey_filter) + ';'
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -271,7 +277,8 @@ class Cube():
 
     @classmethod
     def deletecontainer(cls, container=None, delete_type='physical', hidden='no', cwd=None, exec_mode='sync', objkey_filter='all', display=False):
-        """deletecontainer(container=None, cwd=None, delete_type='physical', hidden='no', exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_DELETECONTAINER
+        """deletecontainer(container=None, delete_type='physical', hidden='no', cwd=None, exec_mode='sync', objkey_filter='all', display=False)
+             -> dict or None : wrapper of the operator OPH_DELETECONTAINER
 
         :param container: container name
         :type container: str
@@ -292,10 +299,8 @@ class Cube():
 
         response = None
         try:
-            if container is None:
-                raise RuntimeError('container name is None')
-            if Cube.client is None:
-                raise RuntimeError('Cube.client is None')
+            if Cube.client is None or container is None or (cwd is None and self.cwd is None):
+                raise RuntimeError('Cube.client, container or cwd is None')
 
             query = 'oph_deletecontainer '
 
@@ -323,26 +328,32 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def cancel(cls, id='', type='kill', objkey_filter='all', display=False):
-        """cancel(command=None, cwd=None, path=None, exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_CANCEL
+    def cancel(cls, id=None, type='kill', objkey_filter='all', display=False):
+        """cancel(id=None, type='kill', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_CANCEL
 
-        :param type: type of method
+        :param id: identifier of the workflow to be stopped
+        :type id: int
+        :param type: kill|abort|stop
         :type type: str
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
-        :param exec_mode: async or sync
-        :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
+        :returns: response or None
+        :rtype: dict or None
         :raises: RuntimeError
         """
         response = None
         try:
-            if Cube.client or id is None:
-                raise RuntimeError('Cube.client is None')
+            if Cube.client is None or id is None:
+                raise RuntimeError('Cube.client or id is None')
 
             query = 'oph_cancel '
 
+            if id is not None:
+                query += 'id=' + str(id) + ';'
+            if type is not None:
+                query += 'type=' + str(type) + ';'
             if objkey_filter is not None:
                 query += 'objkey_filter=' + str(objkey_filter) + ';'
 
@@ -358,12 +369,18 @@ class Cube():
 
     @classmethod
     def service(cls, status='', level=1, objkey_filter='all', display=False):
-        """service: Request or set the service status.(cls, status='', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_SERVICE
+        """service(status='', level=1, objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_SERVICE
 
+        :param status: up|down
+        :type status: str
+        :param level: 1|2
+        :type level: int
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
+        :returns: response or None
+        :rtype: dict or None
         :raises: RuntimeError
         """
 
@@ -393,12 +410,16 @@ class Cube():
 
     @classmethod
     def get_config(cls, key='all', objkey_filter='all', display=True):
-        """get_config: Request the configuration parameters. (cls, key='all', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_GET_CONFIG
+        """get_config(key='all', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_GET_CONFIG
 
+        :param key: all|OPH_XML_URL|OPH_SESSION_ID|OPH_EXEC_MODE|OPH_NCORES|OPH_DATACUBE|OPH_CWD
+        :type key: str
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
+        :returns: response or None
+        :rtype: dict or None
         :raises: RuntimeError
         """
 
@@ -425,25 +446,30 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def manage_session(cls, action='', session='this', key='user', value='null', objkey_filter='all', display=False):
-        """manage_session: Request or set session data: session list, session creation date, authorized users, etc.  (cls, key='all', objkey_filter='all', display=False) ->
-           dict or None : wrapper of the operator OPH_MANAGE_SESSION
+    def manage_session(cls, action=None, session='this', key='user', value='null', objkey_filter='all', display=False):
+        """manage_session(action=None, session='this', key='user', value='null', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
 
-        :param action:request action
-        :type action:str
-        :param session: current session
-        type: str
+        :param action: disable|enable|env|grant|list|listusers|new|remove|revoke|setenv
+        :type action: str
+        :param session: link to intended session
+        :type session: str
+        :param key: active|autoremove|label|user
+        :type key: str
+        :param value:  value of the key
+        :type value: str
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
+        :returns: response or None
+        :rtype: dict or None
         :raises: RuntimeError
         """
 
         response = None
         try:
-            if Cube.client is None:
-                raise RuntimeError('Cube.client is None')
+            if Cube.client is None or action is None:
+                raise RuntimeError('Cube.client or action is None')
 
             query = 'oph_manage_session '
 
@@ -469,21 +495,36 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def instances(cls, level=1, host_filter='all', host_partition='all', filesystem_filter='all', ioserver='all', host_status='all',
+    def instances(cls, level=1, host_filter='all', host_partition='all', filesystem_filter='all', ioserver_filter='all', host_status='all',
                   dbms_status='all', exec_mode='sync', objkey_filter='all', display=True):
-        """instances: It shows information about host partitions, hosts and dbms instances. (cls, level=1, host_filter='all', host_partition='all', filesystem_filter='all', ioserver='all',
-           host_status='all', dbms_status='all', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_INSTANCES
+        """instances(level=1, host_filter='all', host_partition='all', filesystem_filter='all', ioserver_filter='all', host_status='all',
+                     dbms_status='all', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_INSTANCES
 
-        :param action:request action
-        :type action:str
-        :param session: current session
-        :type: str
+        :param level: 1|2|3
+        :type level: int
+        :param host_filter: optional filter on host name
+        :type host_filter: str
+        :param host_partition: optional filter on host partition name
+        :type host_partition: str
+        :param filesystem_filter: local|global|all
+        :type filesystem_filter: str
+        :param ioserver_filter: mysql_table|ophidiaio_memory|all
+        :type ioserver_filter: str
+        :param host_status: up|down|all
+        :type host_status: str
+        :param dbms_status: up|down|all
+        :type dbms_status: str
+        :param exec_mode: async or sync
+        :type exec_mode: str
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
+        :returns: response or None
+        :rtype: dict or None
         :raises: RuntimeError
         """
+
         response = None
         try:
             if Cube.client is None:
@@ -499,8 +540,8 @@ class Cube():
                 query += 'host_partition=' + str(host_partition) + ';'
             if filesystem_filter is not None:
                 query += 'filesystem_filter=' + str(filesystem_filter) + ';'
-            if ioserver is not None:
-                query += 'ioserver=' + str(ioserver) + ';'
+            if ioserver_filter is not None:
+                query += 'ioserver_filter=' + str(ioserver_filter) + ';'
             if host_status is not None:
                 query += 'host_status=' + str(host_status) + ';'
             if dbms_status is not None:
@@ -522,22 +563,29 @@ class Cube():
 
     @classmethod
     def log_info(cls, log_type='server', container_id=0, ioserver='mysql', nlines=10, exec_mode='sync', objkey_filter='all', display=True):
-        """log_info: It reads the last lines from the server log or from a specific container log.(cls, log_type='server', container_id=0, ioserver='mysql', nlines=10,
-           objkey_filter='all', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_LOG_INFO
+        """log_info(log_type='server', container_id=0, ioserver='mysql', nlines=10, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_LOG_INFO
 
-        :param type: type of method
-        :type type: str
+        :param log_type: server|container|ioserver
+        :type log_type: str
+        :param container_id: id of the container related to the requested log
+        :type container_id: int
+        :param ioserver: mysql|ophidiaio
+        :type ioserver: str
+        :param nlines: maximum number of lines to be displayed
+        :type nlines: int
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
         :param exec_mode: async or sync
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
+        :returns: response or None
+        :rtype: dict or None
         :raises: RuntimeError
         """
         response = None
         try:
-            if Cube.client or id is None:
+            if Cube.client is None:
                 raise RuntimeError('Cube.client is None')
 
             query = 'oph_log_info '
@@ -566,22 +614,48 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def loggingbk(cls, session_level=0, job_level=0, mask=000, session_filter='all', session_label_filter='all', session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
-                  workflow_filter='all', markerid_filter='all', parent_job_filter='all', job_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', job_status_filter='all',
-                  submission_string_filter='all', job_start_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
-                  nlines=100, objkey_filter='all', exec_mode='sync', display=True):
-        """loggingbk: It shows info about jobs and sessions (logging bookkeeping). Any filter can use SQL wildcards (%, _, etc.).(cls, session_level=0, job_level=0,
-           mask=000, session_filter='all', session_label_filter='all', session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', workflow_filter='all',
-           markerid_filter='all', parent_job_filter='all', job_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', job_status_filter='all', submission_string_filter='all',
-           job_start_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',  nlines=100, objkey_filter='all',
-           exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_LOGGINGBK
+    def loggingbk(cls, session_level=0, job_level=0, mask=000, session_filter='all', session_label_filter='all',
+                  session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', workflowid_filter='all', markerid_filter='all',
+                  parent_job_filter='all', job_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', job_status_filter='all',
+                  submission_string_filter='all', job_start_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
+                  job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', nlines=100, objkey_filter='all', exec_mode='sync', display=True):
+        """loggingbk(session_level=0, job_level=0, mask=000, session_filter='all', session_label_filter='all',
+                     session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', workflowid_filter='all', markerid_filter='all',
+                     parent_job_filter='all', job_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', job_status_filter='all',
+                     submission_string_filter='all', job_start_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
+                     job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', nlines=100, objkey_filter='all', exec_mode='sync', display=True)
+             -> dict or None : wrapper of the operator OPH_LOGGINGBK
 
-        :param path: absolute or relative path
-        :type path: str
-        :param container: container name
-        :type container: str
-        :param cube: filter on cube
-        :type cube: str
+        :param session_level: 0|1
+        :type session_level: int
+        :param job_level: 0|1|2
+        :type job_level: int
+        :param mask: 3-digit mask for job output
+        :type mask: str
+        :param session_filter: filter on a particular sessionID
+        :type session_filter: str
+        :param session_label_filter: filter on a particular session label
+        :type session_label_filter: str
+        :param session_creation_filter: filter on session creation date
+        :type session_creation_filter: str
+        :param workflowid_filter: filter on a particular workflow ID
+        :type workflowid_filter: str
+        :param markerid_filter: filter on a particular marker ID
+        :type markerid_filter: str
+        :param parent_job_filter: filter on a particular parent job ID
+        :type parent_job_filter: str
+        :param job_creation_filter: filter on job submission date as with session_creation_filter
+        :type job_creation_filter: str
+        :param job_status_filter: filter on job status
+        :type job_status_filter: str
+        :param submission_string_filter: filter on submission string
+        :type submission_string_filter: str
+        :param job_start_filter: filter on job start date as with session_creation_filter
+        :type job_start_filter: str
+        :param job_end_filter: filter on job end date as with session_creation_filter
+        :type job_end_filter: str
+        :param nlines: maximum number of lines to be displayed
+        :type nlines: int
         :param exec_mode: async or sync
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
@@ -594,12 +668,9 @@ class Cube():
         try:
             if Cube.client is None:
                 raise RuntimeError('Cube.client is None')
+
             query = 'oph_loggingbk '
 
-            if objkey_filter is not None:
-                query += 'objkey_filter=' + str(objkey_filter) + ';'
-            if exec_mode is not None:
-                query += 'exec_mode=' + str(exec_mode) + ';'
             if session_level is not None:
                 query += 'session_level=' + str(session_level) + ';'
             if job_level is not None:
@@ -614,8 +685,8 @@ class Cube():
                 query += 'session_label_filter=' + str(session_label_filter) + ';'
             if session_creation_filter is not None:
                 query += 'session_creation_filter=' + str(session_creation_filter) + ';'
-            if workflow_filter is not None:
-                query += 'workflow_filter=' + str(workflow_filter) + ';'
+            if workflowid_filter is not None:
+                query += 'workflowid_filter=' + str(workflowid_filter) + ';'
             if markerid_filter is not None:
                 query += 'markerid_filter=' + str(markerid_filter) + ';'
             if parent_job_filter is not None:
@@ -630,6 +701,10 @@ class Cube():
                 query += 'job_start_filter=' + str(job_start_filter) + ';'
             if job_end_filter is not None:
                 query += 'job_end_filter=' + str(job_end_filter) + ';'
+            if objkey_filter is not None:
+                query += 'objkey_filter=' + str(objkey_filter) + ';'
+            if exec_mode is not None:
+                query += 'exec_mode=' + str(exec_mode) + ';'
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -662,10 +737,8 @@ class Cube():
 
         response = None
         try:
-            if command is None:
-                raise RuntimeError('command is None')
-            if Cube.client is None:
-                raise RuntimeError('Cube.client is None')
+            if Cube.client is None or command is None or (cwd is None and self.cwd is None):
+                raise RuntimeError('Cube.client, command or cwd is None')
 
             query = 'oph_folder '
 
@@ -692,19 +765,19 @@ class Cube():
 
     @classmethod
     def tasks(cls, cube_filter='all', operator_filter='all', path='-', cwd=None, container='all', exec_mode='sync', objkey_filter='all', display=True):
-        """tasks(cls, cube_filter='all', path='-', operator_filter='all', cwd=None, container='all', objkey_filter='all', exec_mode='sync', display=True) -> dict or None
-           : wrapper of the operator OPH_tasks
+        """tasks(cls, cube_filter='all', path='-', operator_filter='all', cwd=None, container='all', objkey_filter='all', exec_mode='sync', display=True)
+             -> dict or None : wrapper of the operator OPH_tasks
 
-        :param path: absolute or relative path
+        :param cube_filter: optional filter on cube
+        :type cube_filter: str
+        :param operator_filter: optional filter on the name of the operators
+        :type operator_filter: str
+        :param path: optional filter on absolute or relative path
         :type path: str
-        :param container: container name
-        :type container: str
-        :param cube: filter on cube
-        :type cube: str
-        :param hidden: yes|no
-        :type hidden: str
         :param cwd: current working directory
         :type cwd: str
+        :param container: optional filter on container name
+        :type container: str
         :param exec_mode: async or sync
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
@@ -747,24 +820,31 @@ class Cube():
 
     @classmethod
     def showgrid(cls, container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync', objkey_filter='all', display=True):
-        """ Show the grid 'grid1' related to container 'container1':( cores=1, container=None,exec_mode='sync', grid='all', dim='all', show_index='no', cwd=None,
-            objkey_filter='all', display=True) -> None : wrapper of the operator OPH_SHOWGRID
+        """showgrid(container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_SHOWGRID
 
-        :param container: name of the container to be used to store the output cube, by default it is the input container
+        :param container: name of the input container
         :type container: str
+        :param grid: name of grid to show
+        :type grid: str
+        :param dim: name of dimension to show
+        :type dim: str
+        :param show_index: yes|no
+        :type show_index: str
+        :param cwd: current working directory
+        :type cwd: str
         :param exec_mode: async or sync
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
-        :returns: None
-        :rtype: None
+        :returns: response or None
+        :rtype: dict or None
         :raises: RuntimeError
         """
 
         response = None
         try:
-            if Cube.client is None:
-                raise RuntimeError('Cube.client is None')
+            if Cube.client is None or container is None or (cwd is None and self.cwd is None):
+                raise RuntimeError('Cube.client, container or cwd is None')
 
             query = 'oph_showgrid '
 
@@ -795,25 +875,19 @@ class Cube():
 
     @classmethod
     def search(cls, container_filter='all', metadata_key_filter='all', metadata_value_filter='all', path='-', cwd=None, exec_mode='sync', objkey_filter='all', display=True):
-        """search(path='-',  metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all', cwd=None, display=True) ->
-           dict or None : wrapper of the operator OPH_SEARCH
-        :param mode: insert|read|update|delete
-        :type mode: str
-        :type metadata_id: int
-        :param metadata_key: name of the key (or the enumeration of keys) identifying requested metadata
-        :type metadata_key: str
-        :param variable: name of the variable to which we can associate a new metadata key
-        :type variable: str
-        :param metadata_type: text|image|video|audio|url
-        :type metadata_type: str
-        :param metadata_value: string value to be assigned to specified metadata
-        :type metadata_value: str
-        :param metadata_type_filter: filter on metadata type
-        :type metadata_type_filter: str
-        :param metadata_value_filter: filter on metadata value
+        """search(path='-',  metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all', cwd=None, display=True)
+             -> dict or None : wrapper of the operator OPH_SEARCH
+
+        :param container_filter: filter on container name
+        :type container_filter: str
+        :param metadata_key_filter: name of the key (or the enumeration of keys) identifying requested metadata
+        :type metadata_key_filter: str
+        :param metadata_value_filter: value of the key (or the enumeration of keys) identifying requested metadata
         :type metadata_value_filter: str
-        :param force: force update or deletion of functional metadata associated to a vocabulary, default is no
-        :type force: str
+        :param path: absolute/relative path used as the starting point of the recursive search
+        :type path: str
+        :param cwd: current working directory
+        :type cwd: str
         :param exec_mode: async or sync
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
@@ -825,8 +899,8 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None:
-                raise RuntimeError('Cube.client is None')
+            if Cube.client is None or (cwd is None and self.cwd is None):
+                raise RuntimeError('Cube.client or cwd is None')
 
             query = 'oph_search '
 
@@ -856,10 +930,13 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def hierarchy(cls, hierarchy='all', hierarchy_version='latest', exec_mode='sync', display=True):
-        """It shows the list of the hierarchies or the description of a specified hierarchy.(hierarchy='no', hierarchy_version='latest', exec_mode='sync', display=True) ->
-           dict or None : wrapper of the operator OPH_HIERARCHY.
+    def hierarchy(cls, hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', display=True):
+        """hierarchy(hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_HIERARCHY
 
+        :param hierarchy: name of the requested hierarchy
+        :type hierarchy: str
+        :param hierarchy_version: version of the requested hierarchy
+        :type hierarchy_version: str
         :param exec_mode: async or sync
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
@@ -898,8 +975,8 @@ class Cube():
     @classmethod
     def list(cls, level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all', dbms_filter='all',
              measure_filter='all', ntransform='all', src_filter='all', db_filter='all', recursive='no', hidden='no', objkey_filter='all', display=True):
-        """list(level=1, path='-', container_filter='all', cube='all', host_filter='all', dbms_filter='all', db_filter='all', measure_filter='all', ntransform='all', src_filter='all', recursive='no',
-           hidden='no', cwd=None, exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_LIST
+        """list(level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all', dbms_filter='all', measure_filter='all',
+                ntransform='all', src_filter='all', db_filter='all', recursive='no', hidden='no', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_LIST
 
         :param level: 0|1|2|3|4|5|6|7|8
         :type level: int
@@ -938,8 +1015,8 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None:
-                raise RuntimeError('Cube.client is None')
+            if Cube.client is None or (cwd is None and self.cwd is None):
+                raise RuntimeError('Cube.client or cwd is None')
 
             query = 'oph_list '
 
@@ -947,7 +1024,6 @@ class Cube():
                 query += 'level=' + str(level) + ';'
             if exec_mode is not None:
                 query += 'exec_mode=' + str(exec_mode) + ';'
-
             if path is not None:
                 query += 'path=' + str(path) + ';'
             if cwd is not None:
@@ -972,6 +1048,8 @@ class Cube():
                 query += 'recursive=' + str(recursive) + ';'
             if hidden is not None:
                 query += 'hidden=' + str(hidden) + ';'
+            if objkey_filter is not None:
+                query += 'objkey_filter=' + str(objkey_filter) + ';'
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -984,47 +1062,69 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def randcube(cls, ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', schedule=0, nhost=0, ndbms=1, ndb=1, run='yes', nfrag=1,
-                 ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c', dim_size=None, compressed='yes', grid='-', description='-', objkey_filter='all', display=False):
-        """Generate a random compressed data cube:( container=None, nhost=0, ndbms=1, ndb=1, nfrag=1, ntuple=1, measure=None, measure_type='manual', exp_ndim=None, dim=None, dim_size=None , grid='-',
-           compressed= 'auto' , concept_level='c', host_partition='auto', filesystem='auto',hidden='no', cwd=None, ncores=1, exec_mode='sync', ioserver='mysql_table',schedule=0, objkey_filter='all',
-           display=False) -> dict or None : wrapper of the operator OPH_RANDCUBE
+    def randcube(cls, ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', schedule=0,
+                 nhost=0, ndbms=1, ndb=1, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+                 dim_size=None, compressed='no', grid='-', description='-', display=False):
+        """randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', schedule=0,
+                    nhost=0, ndbms=1, ndb=1, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+                    dim_size=None, compressed='no', grid='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_RANDCUBE
 
-        :param container: container name
-        :type container: str
-        :param cube: filter on cube
-        :type cube: str
-        :param host_filter: filter on host
-        :type host_filter: str
-        :param dbms_filter: filter on DBMS
-        :type dbms_filter: str
-        :param db_filter: filter on db
-        :type db_filter: str
-        :param measure_filter: filter on measure
-        :type measure_filter: str
-        :param ntransform: filter on cube level
-        :type ntransform: int
-        :param src_filter: filter on source file
-        :type src_filter: str
-        :param recursive: yes|no
-        :type recursive: str
-        :param hidden: yes|no
-        :type hidden: str
-        :param cwd: current working directory
-        :type cwd: str
         :param ncores: number of cores to use
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param container: container name
+        :type container: str
+        :param cwd: current working directory
+        :type cwd: str
+        :param host_partition: host partition name
+        :type host_partition: str
+        :param filesystem: auto|local|global
+        :type filesystem: str
+        :param ioserver: mysql_table|ophdiaio_memory
+        :type ioserver: str
+        :param schedule: 0
+        :type schedule: int
+        :param nhost: number of hosts to use
+        :type nhost: int
+        :param ndbms: number of dbms/host to use
+        :type ndbms: int
+        :param ndb: number of db/dbms to use
+        :type ndb: int
+        :param run: yes|no
+        :type run: str
+        :param nfrag: number of fragments/db to use
+        :type nfrag: int
+        :param ntuple: number of tuples/fragment to use
+        :type ntuple: int
+        :param measure: measure to be imported
+        :type measure: str
+        :param measure_type: double|float|int|long|short|byte
+        :type measure_type: str
+        :param exp_ndim: number of explicit dimensions in dim
+        :type exp_ndim: int
+        :param dim: pipe (|) separated list of dimension names
+        :type dim: str
+        :param concept_level: pipe (|) separated list of dimensions hierarchy levels
+        :type concept_level: str
+        :param dim_size: pipe (|) separated list of dimension sizes
+        :type dim_size: str
+        :param compressed: yes|no
+        :type compressed: str
+        :param grid: optionally group dimensions in a grid
+        :type grid: str
+        :param description: additional description to be associated with the output cube
+        :type description: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
-        :returns: response or None
-        :rtype: dict or None
+        :returns: obj or None
+        :rtype: Cube or None
         :raises: RuntimeError
         """
 
-        if Cube.client is None or container is None or measure in None or measure_type is None or exp_ndim is None or dim is None or dim_size is None:
-            raise RuntimeError('Cube.client is None or container is None or measure in None or measure_type is None or exp_ndim is None or dim is None or dim_size is None')
+        if Cube.client is None or (cwd is None and self.cwd is None) or container is None or nfrag is None or ntuple is None or measure in None or measure_type is None or exp_ndim is None or\
+                dim is None or dim_size is None:
+            raise RuntimeError('Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None')
         newcube = None
 
         query = 'oph_randcube '
@@ -1075,8 +1175,6 @@ class Cube():
             query += 'grid=' + str(grid) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
-        if objkey_filter is not None:
-            query += 'objkey_filter=' + str(objkey_filter) + ';'
 
         try:
             if Cube.client.submit(query, display) is None:
@@ -1092,33 +1190,72 @@ class Cube():
             return newcube
 
     @classmethod
-    def explorenc(cls, ncores=1, exec_mode='sync', schedule=0, measure=None, src_path=None, exp_dim=None, imp_dim=None, subset_dims='none', subset_type='index', subset_filter='all',
-                  limit_filter=100, show_index='no', show_id='no', show_time='no', show_stats='no', show_fit='no', level=1, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0,
+    def explorenc(cls, exec_mode='sync', schedule=0, measure=None, src_path=None, exp_dim=None, imp_dim=None, subset_dims='none', subset_type='index', subset_filter='all', limit_filter=100,
+                  show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no', level=1, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0,
                   wavelet_coeff='no', objkey_filter='all', display=False):
-        """Read the NetCDF file(force='no',measure= None, src_path= None, exp_dim= None, imp_dim= None , ncores=1, exec_mode='sync', schedule=0, subset_dims='none', subset_filter='all',
-           subset_type='index', limit_filter=0, show_id='no', show_index='no', show_time='no', show_stats='no', show_fit='no', level=1, imp_num_point=0, wavelet='no', display=False)
-           -> None : wrapper of the operator OPH_EXPLORENC
+        """explorenc(exec_mode='sync', schedule=0, measure=None, src_path=None, exp_dim=None, imp_dim=None, subset_dims='none', subset_type='index', subset_filter='all', limit_filter=100,
+                     show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no', level=1, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0,
+                     wavelet_coeff='no', objkey_filter='all', display=False)
+             -> None : wrapper of the operator OPH_EXPLORENC
 
-        :param ncores: number of cores to use
-        :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param schedule: 0
+        :type schedule: int
+        :param measure: name of the measure related to the NetCDF file
+        :type measure: str
+        :param src_path: path of file to be imported
+        :type src_path: str
+        :param exp_dim: pipe (|) separated list of explicit dimension names
+        :type exp_dim: str
+        :param imp_dim: pipe (|) separated list of implicit dimension names
+        :type imp_dim: str
+        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :type subset_dims: str
+        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :type subset_filter: str
+        :param subset_type: index|coord
+        :type subset_type: str
+        :param limit_filter: max number of lines
+        :type limit_filter: int
+        :param show_index: yes|no
+        :type show_index: str
+        :param show_id: yes|no
+        :type show_id: str
+        :param show_time: yes|no
+        :type show_time: str
+        :param show_stats: (15-bit) mask to set statistics to be computed for each time serie
+        :type show_stats: str
+        :param show_fit: yes|no
+        :type show_fit: str
+        :param level: 1|2
+        :type level: int
+        :param imp_num_point: number of points which measure values must be distribuited along by interpolation
+        :type imp_num_point: int
+        :param offset: relative offset to be used to set reduction interval bounds (percentage)
+        :type offset: float
+        :param operation: max|min|avg|sum
+        :type operation: str
+        :param wavelet: yes|no|only
+        :type wavelet: str
+        :param wavelet_ratio: fraction of wavelet transform coefficients that are cleared by the filter (percentage)
+        :type wavelet_ratio: float
+        :param wavelet_coeff: yes|no
+        :type wavelet_coeff: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
-        :returns: None
-        :rtype: None
+        :returns: response or None
+        :rtype: dict or None
         :raises: RuntimeError
         """
 
         response = None
         try:
-            if Cube.client is None:
-                raise RuntimeError('Cube.client is None')
+            if Cube.client is None or measure is None or src_path is None or exp_dim is None or imp_dim is None:
+                raise RuntimeError('Cube.client, measure, src_path, exp_dim or imp_dim is None')
 
             query = 'oph_explorenc '
 
-            if ncores is not None:
-                query += 'ncores=' + str(ncores) + ';'
             if exec_mode is not None:
                 query += 'exec_mode=' + str(exec_mode) + ';'
             if schedule is not None:
@@ -1177,45 +1314,102 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def importnc(cls, ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', import_metadata=None,
-                 check_compliance='no', schedule=0, nhost=0, ndbms=1, ndb=1, nfrag=0, run='yes', measure=None, src_path=None, exp_dim=None, imp_dim=None, subset_dims=None,
-                 subset_type='index', subset_filter='all', time_filter='enabled', offset='O', exp_concept_level='c', imp_concept_level='c', compressed='no', grid=None, hierarchy='oph_base',
-                 vocabulary='-', base_time='1900-01-01 00:00:00', units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', leap_year=0, leap_month=2,
-                 description='-', objkey_filter='all', display=False):
-        """Import a NetCDF file excluding metadata into the session directory:(path='-', container=None, measure=None, src_path=None, imp_concept_level=None,import_metadata=None , concept_level=None,
-           cwd=None, ncores=1,exec_mode='sync', imp_dim=None, exp_dim=None, subset_dims=None, grid=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', check_compliance='no',
-           schedule=0, nhost=0, ndbms=1, ndb=1, nfrag=0, subset_filter='all', time_filter='enabled', offset='', exp_concept_level='c', compressed='no', subset_type='index',
-           base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d',
-           vocabulary='-', description='-', display=False) -> dict or None : wrapper of the operator OPH_IMPORTNC
+    def importnc(cls, container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, compressed='no',
+                 exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
+                 ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
+                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
+                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,
+                 display=False):
+        """importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, compressed='no',
+                    exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
+                    ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
+                    subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
+                    leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,)
+             -> Cube or None : wrapper of the operator OPH_IMPORTNC
 
-        :param path: absolute or relative path
-        :type container_filter: str
-        :param cube: filter on cube
-        :type cube: str
-        :type measure_filter: str
-        :param ntransform: filter on cube level
-        :type ntransform: int
-        :param src_filter: filter on source file
-        :type src_filter: str
-        :param recursive: yes|no
-        :type recursive: str
-        :param hidden: yes|no
-        :type hidden: str
-        :param cwd: current working directory
-        :type cwd: str
         :param ncores: number of cores to use
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param schedule: 0
+        :type schedule: int
+        :param container: container name
+        :type container: str
+        :param cwd: current working directory
+        :type cwd: str
+        :param exp_dim: pipe (|) separated list of explicit dimension names
+        :type exp_dim: str
+        :param host_partition: host partition name
+        :type host_partition: str
+        :param imp_dim: pipe (|) separated list of implicit dimension names
+        :type imp_dim: str
+        :param measure: measure to be imported
+        :type measure: str
+        :param src_path: path of file to be imported
+        :type src_path: str
+        :param compressed: yes|no
+        :type compressed: str
+        :param exp_concept_level: pipe (|) separated list of explicit dimensions hierarchy levels
+        :type exp_concept_level: str
+        :param filesystem: auto|local|global
+        :type filesystem: str
+        :param grid: optionally group dimensions in a grid
+        :type grid: str
+        :param imp_concept_level: pipe (|) separated list of implicit dimensions hierarchy levels
+        :type imp_concept_level: str
+        :param import_metadata: yes|no
+        :type import_metadata: str
+        :param check_compliance: yes|no
+        :type check_compliance: str
+        :param offset: it is added to the bounds of subset intervals
+        :type offset: int
+        :param ioserver: mysql_table|ophdiaio_memory
+        :type ioserver: str
+        :param ndb: number of db/dbms to use
+        :type ndb: int
+        :param ndbms: number of dbms/host to use
+        :type ndbms: int
+        :param nfrag: number of fragments/db to use
+        :type nfrag: int
+        :param nhost: number of hosts to use
+        :type nhost: int
+        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :type subset_dims: str
+        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :type subset_filter: str
+        :param time_filter: yes|no
+        :type time_filter: str
+        :param subset_type: index|coord
+        :type subset_type: str
+        :param base_time: reference time
+        :type base_time: str
+        :param calendar: calendar used (standard|gregorian|proleptic_gregorian|julian|360_day|no_leap|all_leap|user_defined)
+        :type calendar: str
+        :param hierarchy: pipe (|) separated list of dimension hierarchies (oph_base|oph_time)
+        :type hierarchy: str
+        :param leap_month: leap month
+        :type leap_month: int
+        :param leap_year: leap year
+        :type leap_year: int
+        :param month_lengths: comma-separated list of month lengths
+        :type month_lengths: str
+        :param run: yes|no
+        :type run: str
+        :param units: unit of time (s|m|h|3|6|d)
+        :type units: str
+        :param vocabulary: metadata vocabulary
+        :type vocabulary: str
+        :param description: additional description to be associated with the output cube
+        :type description: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
-        :returns: response or None
-        :rtype: dict or None
+        :returns: obj or None
+        :rtype: Cube or None
         :raises: RuntimeError
         """
 
         if Cube.client is None or measure is None or src_path is None:
-            raise RuntimeError('Cube.client is None or measure is None or src_path is None')
+            raise RuntimeError('Cube.client, measure or src_path is None')
         newcube = None
 
         query = 'oph_importnc '
@@ -1264,6 +1458,8 @@ class Cube():
             query += 'subset_type=' + str(subset_type) + ';'
         if subset_filter is not None:
             query += 'subset_filter=' + str(subset_filter) + ';'
+        if time_filter is not None:
+            query += 'time_filter=' + str(time_filter) + ';'
         if offset is not None:
             query += 'offset=' + str(offset) + ';'
         if exp_concept_level is not None:
@@ -1292,8 +1488,6 @@ class Cube():
             query += 'leap_month=' + str(leap_month) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
-        if objkey_filter is not None:
-            query += 'objkey_filter=' + str(objkey_filter) + ';'
 
         try:
             if Cube.client.submit(query, display) is None:
@@ -1329,10 +1523,8 @@ class Cube():
 
         response = None
         try:
-            if function is None:
-                raise RuntimeError('function is None')
-            if Cube.client is None:
-                raise RuntimeError('Cube.client is None')
+            if Cube.client is None or function is None:
+                raise RuntimeError('Cube.client or function is None')
 
             query = 'oph_man '
 
@@ -1358,7 +1550,7 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def movecontainer(cls, container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=False):
+    def movecontainer(cls, container=None, cwd=None, exec_mode='sync', display=False):
         """movecontainer(container=None, cwd=None, exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_MOVECONTAINER
 
         :param container: container name
@@ -1376,10 +1568,8 @@ class Cube():
 
         response = None
         try:
-            if container is None:
-                raise RuntimeError('container is None')
-            if Cube.client is None:
-                raise RuntimeError('Cube.client is None')
+            if Cube.client is None or container is None or (cwd is None and self.cwd is None):
+                raise RuntimeError('Cube.client, container or cwd is None')
 
             query = 'oph_movecontainer '
 
@@ -1389,8 +1579,6 @@ class Cube():
                 query += 'cwd=' + str(cwd) + ';'
             if exec_mode is not None:
                 query += 'exec_mode=' + str(exec_mode) + ';'
-            if objkey_filter is not None:
-                query += 'objkey_filter=' + str(objkey_filter) + ';'
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -1505,8 +1693,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def restorecontainer(cls, exec_mode='sync', container=None, cwd=None, objkey_filter='all', display=False):
-        """restorecontainer(container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_RESTORECONTAINER
+    def restorecontainer(cls, exec_mode='sync', container=None, cwd=None, display=False):
+        """restorecontainer(exec_mode='sync', container=None, cwd=None, display=False) -> dict or None : wrapper of the operator OPH_RESTORECONTAINER
 
         :param container: container name
         :type container: str
@@ -1523,10 +1711,8 @@ class Cube():
 
         response = None
         try:
-            if container is None:
-                raise RuntimeError('container is None')
-            if Cube.client is None:
-                raise RuntimeError('Cube.client is None')
+            if Cube.client is None or container is None or (cwd is None and self.cwd is None):
+                raise RuntimeError('Cube.client, container or cwd is None')
 
             query = 'oph_restorecontainer '
 
@@ -1536,8 +1722,6 @@ class Cube():
                 query += 'container=' + str(container) + ';'
             if cwd is not None:
                 query += 'cwd=' + str(cwd) + ';'
-            if objkey_filter is not None:
-                query += 'objkey_filter=' + str(objkey_filter) + ';'
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -1549,9 +1733,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def script(cls, script=':', args=' ', stdout='stdout', stderr='stderr', list='no', exec_mode='sync', ncores=1, objkey_filter='all', display=False):
-        """script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', objkey_filter='all', display=False) ->
-           dict or None : wrapper of the operator OPH_SCRIPT
+    def script(cls, script=':', args=' ', stdout='stdout', stderr='stderr', list='no', exec_mode='sync', ncores=1, display=False):
+        """script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', display=False) -> dict or None : wrapper of the operator OPH_SCRIPT
 
         :param script: script/executable filename
         :type script: str
@@ -1561,6 +1744,8 @@ class Cube():
         :type stdout: str
         :param stderr: file/stream where stderr is redirected
         :type stderr: str
+        :param list: yes|no
+        :type list: str
         :param ncores: number of cores to use
         :type ncores: int
         :param exec_mode: async or sync
@@ -1574,8 +1759,6 @@ class Cube():
 
         response = None
         try:
-            if script is None:
-                raise RuntimeError('script is None')
             if Cube.client is None:
                 raise RuntimeError('Cube.client is None')
 
@@ -1595,8 +1778,6 @@ class Cube():
                 query += 'exec_mode=' + str(exec_mode) + ';'
             if ncores is not None:
                 query += 'ncores=' + str(ncores) + ';'
-            if objkey_filter is not None:
-                query += 'objkey_filter=' + str(objkey_filter) + ';'
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -1609,17 +1790,29 @@ class Cube():
 
     @classmethod
     def resume(cls, session='this', id=0, id_type='workflow', document_type='response', level=1, user='', status_filter='11111111', save='no', objkey_filter='all', display=True):
-        """ Get the list of the commands submitted within the working session:( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this',
-            objkey_filter='all', user='', display=True) -> None : wrapper of the operator OPH_RESUME
+        """ resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
+              -> dict or None : wrapper of the operator OPH_RESUME
 
-        :param container: name of the container to be used to store the output cube, by default it is the input container
-        :type container: str
-        :param exec_mode: async or sync
-        :type exec_mode: str
+        :param session: identifier of the intended session, by default it is the working session
+        :type session: str
+        :param id: identifier of the intended workflow or marker, by default no filter is applied
+        :type id: int
+        :param id_type: workflow|marker
+        :type id_type: str
+        :param document_type: request|response
+        :type document_type: str
+        :param level: 1|2|3|4|5
+        :type level: int
+        :param user: filter by name of the submitter, by default no filter is applied
+        :type user: str
+        :param status_filter: filter by job status (bitmap)
+        :type status_filter: str
+        :param save: yes|no
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
-        :returns: None
-        :rtype: None
+        :returns: response or None
+        :rtype: dict or None
         :raises: RuntimeError
         """
 
@@ -1660,17 +1853,21 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def mergecubes(cls, ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', description='-', objkey_filter='all', display=False):
-        """mergecubes(cubes=None, container='-', dim='-', description='-', objkey_filter='all', schedule=0, exec_mode='sync', ncores=1, display=False) -> Cube : wrapper of the operator OPH_MERGECUBES
+    def mergecubes(cls, ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', description='-', display=False):
+        """mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', description='-', display=False) -> Cube : wrapper of the operator OPH_MERGECUBES
 
-        :param cubes: pipe (|) separated list of cubes
-        :type cubes: str
-        :param container: optional container name
-        :type container: str
         :param ncores: number of cores to use
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param schedule: 0
+        :type schedule: int
+        :param cubes: pipe (|) separated list of cubes
+        :type cubes: str
+        :param container: optional container name
+        :type container: str
+        :param description: additional description to be associated with the output cube
+        :type description: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -1679,7 +1876,7 @@ class Cube():
         """
 
         if Cube.client is None or cubes is None:
-            raise RuntimeError('Cube.client is None or cubes is None')
+            raise RuntimeError('Cube.client or cubes is None')
         newcube = None
 
         query = 'oph_mergecubes '
@@ -1696,8 +1893,6 @@ class Cube():
             query += 'container=' + str(container) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
-        if objkey_filter is not None:
-            query += 'objkey_filter=' + str(objkey_filter) + ';'
 
         try:
             if Cube.client.submit(query, display) is None:
@@ -1713,17 +1908,23 @@ class Cube():
             return newcube
 
     @classmethod
-    def mergecubes2(cls, ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', description='-', dim='-', objkey_filter='all', display=False):
-        """mergecubes2(cubes=None, container='-', dim='-', description='-', objkey_filter='all', schedule=0, exec_mode='sync', ncores=1, display=False) -> Cube : wrapper of the operator OPH_MERGECUBES2
+    def mergecubes2(cls, ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', description='-', dim='-', display=False):
+        """mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', description='-', dim='-', display=False) -> Cube or None: wrapper of the operator OPH_MERGECUBES2
 
-        :param cubes: pipe (|) separated list of cubes
-        :type cubes: str
-        :param container: optional container name
-        :type container: str
         :param ncores: number of cores to use
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param schedule: 0
+        :type schedule: int
+        :param cubes: pipe (|) separated list of cubes
+        :type cubes: str
+        :param container: optional container name
+        :type container: str
+        :param description: additional description to be associated with the output cube
+        :type description: str
+        :param dim: name of the new dimension to be created
+        :type dim: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -1732,7 +1933,7 @@ class Cube():
         """
 
         if Cube.client is None or cubes is None:
-            raise RuntimeError('Cube.client is None or cubes is None')
+            raise RuntimeError('Cube.client or cubes is None')
         newcube = None
 
         query = 'oph_mergecubes2 '
@@ -1751,8 +1952,6 @@ class Cube():
             query += 'description=' + str(description) + ';'
         if dim is not None:
             query += 'dim=' + str(dim) + ';'
-        if objkey_filter is not None:
-            query += 'objkey_filter=' + str(objkey_filter) + ';'
 
         try:
             if Cube.client.submit(query, display) is None:
@@ -1778,7 +1977,7 @@ class Cube():
                 ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,
-                pid=None, display=False) -> obj 
+                pid=None, display=False) -> obj
              or Cube(pid=None) -> obj
 
         :param ncores: number of cores to use
@@ -1887,7 +2086,7 @@ class Cube():
                 raise RuntimeError('Cube.client is None')
             self.pid = pid
         else:
-            if cwd is None or measure is None or src_path is None:
+            if (cwd is None and self.cwd is None) or measure is None or src_path is None:
                 raise RuntimeError('one or more required parameters are None')
             if Cube.client is None:
                 raise RuntimeError('Cube.client is None')
@@ -2086,7 +2285,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client or pid is None')
 
         query = 'oph_exportnc '
 
@@ -2144,7 +2343,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client or pid is None')
 
         query = 'oph_exportnc2 '
 
@@ -2204,7 +2403,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None or operation is None:
-            raise RuntimeError('Cube.client is None or pid is None or operation is None')
+            raise RuntimeError('Cube.client, pid or operation is None')
         newcube = None
 
         query = 'oph_aggregate '
@@ -2278,7 +2477,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None or dim is None or operation is None:
-            raise RuntimeError('Cube.client is None or pid is None or dim is None or operation is None')
+            raise RuntimeError('Cube.client, pid, dim or operation is None')
         newcube = None
 
         query = 'oph_aggregate2 '
@@ -2358,7 +2557,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None or query is None:
-            raise RuntimeError('Cube.client is None or pid is None or query is None')
+            raise RuntimeError('Cube.client, pid or query is None')
         newcube = None
 
         internal_query = 'oph_apply '
@@ -2418,7 +2617,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client or pid is None')
         response = None
 
         query = 'oph_cubeio '
@@ -2460,7 +2659,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client or pid is None')
 
         query = 'oph_delete '
 
@@ -2503,7 +2702,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client or pid is None')
         newcube = None
 
         query = 'oph_drilldown '
@@ -2557,7 +2756,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client or pid is None')
         newcube = None
 
         query = 'oph_duplicate '
@@ -2629,7 +2828,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client or pid is None')
         response = None
 
         query = 'oph_explorecube '
@@ -2703,7 +2902,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client or pid is None')
         response = None
 
         query = 'oph_publish '
@@ -2749,7 +2948,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client or pid is None')
         response = None
 
         query = 'oph_unpublish ncores=1;'
@@ -2792,7 +2991,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client or pid is None')
         response = None
 
         query = 'oph_cubeschema ncores=1;'
@@ -2844,7 +3043,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client or pid is None')
         response = None
 
         query = 'oph_cubesize '
@@ -2892,7 +3091,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client or pid is None')
         response = None
 
         query = 'oph_cubeelements '
@@ -2950,7 +3149,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None or cube2 is None or operation is None:
-            raise RuntimeError('Cube.client is None or pid is None or cube2 is None or operation is None)
+            raise RuntimeError('Cube.client, pid, cube2 or operation is None)
         newcube = None
 
         query = 'oph_intercube '
@@ -3012,7 +3211,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None or cube is None')
+            raise RuntimeError('Cube.client or pid is None')
         newcube = None
 
         query = 'oph_merge '
@@ -3078,7 +3277,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client or pid is None')
         response = None
 
         query = 'oph_metadata '
@@ -3141,7 +3340,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None or dim_pos is None:
-            raise RuntimeError('Cube.client is None or pid is None or dim_pos is None')
+            raise RuntimeError('Cube.client, pid or dim_pos is None')
         newcube = None
 
         query = 'oph_permute '
@@ -3206,7 +3405,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None or operation is None:
-            raise RuntimeError('Cube.client is None or pid is None or operation is None')
+            raise RuntimeError('Cube.client, pid or operation is None')
         newcube = None
 
         query = 'oph_reduce '
@@ -3284,7 +3483,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None or dim is None or operation is None:
-            raise RuntimeError('Cube.client is None or pid is None or dim is None or operation is None')
+            raise RuntimeError('Cube.client, pid, dim or operation is None')
         newcube = None
 
         query = 'oph_reduce2 '
@@ -3352,7 +3551,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client or pid is None')
         newcube = None
 
         query = 'oph_rollup '
@@ -3408,7 +3607,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None or nsplit is None:
-            raise RuntimeError('Cube.client is None or pid is None or nsplit is None')
+            raise RuntimeError('Cube.client, pid or nsplit is None')
         newcube = None
 
         query = 'oph_split '
@@ -3469,7 +3668,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client pid is None')
         newcube = None
 
         query = 'oph_subset '
@@ -3536,7 +3735,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client or pid is None')
         newcube = None
 
         query = 'oph_subset2 '
@@ -3596,7 +3795,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client is None or pid is None')
+            raise RuntimeError('Cube.client or pid is None')
         response = None
 
         try:
