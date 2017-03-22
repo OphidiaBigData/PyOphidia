@@ -65,100 +65,121 @@ class Cube():
         client: instance of class Client through which it is possible to submit all requests
 
     Methods:
-        info(display=True) -> None : call OPH_CUBESIZE, OPH_CUBEELEMENTS and OPH_CUBESCHEMA to fill all Cube attributes
-        export_array(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no') -> dict or None : wrapper of the operator OPH_EXPLORECUBE
-        exportnc2(misc='no', output_path='default', output_name='default', force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1, display=False)
-          -> None : wrapper of the operator OPH_EXPORTNC2
-        exportnc(misc='no', output_path='default', output_name='default', force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1, display=False)
-          -> None : wrapper of the operator OPH_EXPORTNC
-        aggregate2(ncores=1, exec_mode='sync', schedule=0, dim=None, concept_level='A', midnight='24', operation=None, grid='-', missingvalue='NAN', container='-', description='-', display=False)
-          -> Cube or None : wrapper of the operator OPH_AGGREGATE2
-        aggregate(ncores=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='NAN', grid='-', container='-', description='-', display=False)
-          -> Cube or None : wrapper of the operator OPH_AGGREGATE
-        apply(ncores=1, exec_mode='sync', query=None, dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes', compressed='auto', schedule=0,
-              container='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_APPLY
-        provenance(branch='all', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CUBEIO
-        delete(ncores=1, exec_mode='sync', schedule=0, display=False) -> dict or None : wrapper of the operator OPH_DELETE
+        aggregate(ncores=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='NAN', grid='-', container='-',
+                  description='-', display=False) -> Cube or None : wrapper of the operator OPH_AGGREGATE
+        aggregate2(ncores=1, exec_mode='sync', schedule=0, dim=None, concept_level='A', midnight='24', operation=None, grid='-', missingvalue='NAN',
+                   container='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_AGGREGATE2
+        apply(ncores=1, exec_mode='sync', query=None, dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes',
+              compressed='auto', schedule=0,container='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_APPLY
+        cubeelements( schedule=0, algorithm='dim_product', cores=1, exec_mode='sync', objkey_filter='all', display=True)
+          -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
         cubeschema( cores=1, exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', display=True)
           -> dict or None : wrapper of the operator OPH_CUBESCHEMA
-        cubeelements( schedule=0, algorithm='dim_product', cores=1, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
-        cubesize( schedule=0, cores=1, byte_unit='MB', objkey_filter='all', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_CUBESIZE
-        drilldown(ndim=1, container='-', ncores=1, exec_mode='sync', schedule=0, description='-' display=False) -> Cube or None : wrapper of the operator OPH_DRILLDOWN
+        cubesize( schedule=0, cores=1, byte_unit='MB', objkey_filter='all', exec_mode='sync', display=True)
+          -> dict or None : wrapper of the operator OPH_CUBESIZE
+        delete(ncores=1, exec_mode='sync', schedule=0, display=False) -> dict or None : wrapper of the operator OPH_DELETE
+        drilldown(ndim=1, container='-', ncores=1, exec_mode='sync', schedule=0, description='-' display=False)
+          -> Cube or None : wrapper of the operator OPH_DRILLDOWN
         duplicate(container='-', ncores=1, exec_mode='sync', description='-', display=False) -> Cube or None : wrapper of the operator OPH_DUPLICATE
-        explore(schedule=0, limit_filter=100, subset_dims=None, subset_filter='all', time_filter='yes', show_index='no', show_id='no', show_time='no', level=1, output_path='default',
-                output_name='default', base64='no', ncores=1, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_EXPLORECUBE
-        intercube(cube2=None, operation=None, container='-', exec_mode='sync', ncores=1, description='-', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE
-        merge(nmerge=0, schedule=0, description='-', container='-', exec_mode='sync', ncores=1, display=False) -> Cube or None : wrapper of the operator OPH_MERGE
-        publish( ncores=1, content='all', exec_mode='sync', show_id= 'no', show_index='no', schedule=0, show_time='no', display=True) -> dict or None : wrapper of the operator OPH_PUBLISH
-        unpublish( exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_UNPUBLISH
-        metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, metadata_type_filter=None, metadata_value_filter=None, force='no',
-                 exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_METADATA
-        permute(dim_pos=None, container='-', exec_mode='sync', ncores=1, schedule=0, description='-', display=False) -> Cube or None : wrapper of the operator OPH_PERMUTE
-        reduce2(dim=None, operation=None, concept_level='A', container='-', exec_mode='sync', grid='-', midnight='24', order=2, description='-', schedule=0, ncores=1, display=False)
-          -> Cube or None : wrapper of the operator OPH_REDUCE2
-        reduce(operation=None, container=None, exec_mode='sync', grid='-', group_size='all', ncores=1, schedule=0, order=2, description='-', objkey_filter='all', display=False)
-          -> Cube or None : wrapper of the operator OPH_REDUCE
-        rollup(ndim=1, container='-', exec_mode='sync', ncores=1, schedule=0, description='-', display=False) -> Cube or None : wrapper of the operator OPH_ROLLUP
-        split(nsplit=2, container='-', exec_mode='sync', ncores=1, schedule=0, description='-', display=False) -> Cube or None : wrapper of the operator OPH_SPLIT
+        explore(schedule=0, limit_filter=100, subset_dims=None, subset_filter='all', time_filter='yes', show_index='no', show_id='no', show_time='no',
+                level=1, output_path='default', output_name='default', base64='no', ncores=1, exec_mode='sync', objkey_filter='all', display=True)
+          -> dict or None : wrapper of the operator OPH_EXPLORECUBE
+        exportnc(misc='no', output_path='default', output_name='default', force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1,
+                 display=False) -> None : wrapper of the operator OPH_EXPORTNC
+        exportnc2(misc='no', output_path='default', output_name='default', force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1,
+                  display=False) -> None : wrapper of the operator OPH_EXPORTNC2
+        export_array(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no')
+          -> dict or None : wrapper of the operator OPH_EXPLORECUBE
+        info(display=True) -> None : call OPH_CUBESIZE, OPH_CUBEELEMENTS and OPH_CUBESCHEMA to fill all Cube attributes
+        intercube(cube2=None, operation='sub', container='-', exec_mode='sync', ncores=1, description='-', display=False)
+          -> Cube or None : wrapper of the operator OPH_INTERCUBE
+        merge(nmerge=0, schedule=0, description='-', container='-', exec_mode='sync', ncores=1, display=False)
+          -> Cube or None : wrapper of the operator OPH_MERGE
+        metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None,
+                 metadata_type_filter=None, metadata_value_filter=None, force='no', exec_mode='sync', objkey_filter='all', display=True)
+          -> dict or None : wrapper of the operator OPH_METADATA
+        permute(dim_pos=None, container='-', exec_mode='sync', ncores=1, schedule=0, description='-', display=False)
+          -> Cube or None : wrapper of the operator OPH_PERMUTE
+        provenance(branch='all', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CUBEIO
+        publish( ncores=1, content='all', exec_mode='sync', show_id= 'no', show_index='no', schedule=0, show_time='no', display=True)
+          -> dict or None : wrapper of the operator OPH_PUBLISH
+        reduce(operation=None, container=None, exec_mode='sync', grid='-', group_size='all', ncores=1, schedule=0, order=2, description='-',
+               objkey_filter='all', display=False) -> Cube or None : wrapper of the operator OPH_REDUCE
+        reduce2(dim=None, operation=None, concept_level='A', container='-', exec_mode='sync', grid='-', midnight='24', order=2, description='-',
+                schedule=0, ncores=1, display=False) -> Cube or None : wrapper of the operator OPH_REDUCE2
+        rollup(ndim=1, container='-', exec_mode='sync', ncores=1, schedule=0, description='-', display=False)
+          -> Cube or None : wrapper of the operator OPH_ROLLUP
+        split(nsplit=2, container='-', exec_mode='sync', ncores=1, schedule=0, description='-', display=False)
+          -> Cube or None : wrapper of the operator OPH_SPLIT
         subset(subset_dims='none', subset_filter='all', container='-', exec_mode='sync', grid='-', ncores=1, schedule=0, description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_SUBSET
-        subset2(subset_dims='none', subset_filter='all', grid='-', container='-', ncores=1, exec_mode='sync', schedule=0, time_filter='yes', offset=0, description='-', display=False)
-          -> Cube or None : wrapper of the operator OPH_SUBSET2
+        subset2(subset_dims='none', subset_filter='all', grid='-', container='-', ncores=1, exec_mode='sync', schedule=0, time_filter='yes', offset=0,
+                description='-', display=False) -> Cube or None : wrapper of the operator OPH_SUBSET2
+        unpublish( exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_UNPUBLISH
 
     Class Methods:
         setclient(username, password, server, port='11732') -> None : Instantiate the Client, common for all Cube objects, for submitting requests
+        cancel(id=None, type='kill', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_CANCEL
         createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base',
                         base_time='1900-01-01 00:00:00', units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
-                        leap_year=0, leap_month=2, vocabulary='CF', compressed='no', display=False) -> dict or None : wrapper of the operator OPH_CREATECONTAINER
+                        leap_year=0, leap_month=2, vocabulary='CF', compressed='no', display=False)
+          -> dict or None : wrapper of the operator OPH_CREATECONTAINER
         deletecontainer(container=None, delete_type='physical', hidden='no', cwd=None, exec_mode='sync', objkey_filter='all', display=False)
-             -> dict or None : wrapper of the operator OPH_DELETECONTAINER
-        cancel(id=None, type='kill', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_CANCEL
-        service(status='', level=1, objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_SERVICE
+          -> dict or None : wrapper of the operator OPH_DELETECONTAINER
+        explorenc(exec_mode='sync', schedule=0, measure=None, src_path=None, exp_dim=None, imp_dim=None, subset_dims='none', subset_type='index',
+                  subset_filter='all', limit_filter=100, show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no',
+                  level=1, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0, wavelet_coeff='no', objkey_filter='all',
+                  display=False) -> None : wrapper of the operator OPH_EXPLORENC
+        folder(command=None, cwd=None, path=None, exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_FOLDER
         get_config(key='all', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_GET_CONFIG
-        manage_session(action=None, session='this', key='user', value='null', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
+        hierarchy(hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', display=True)
+          -> dict or None : wrapper of the operator OPH_HIERARCHY
+        importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, compressed='no',
+                 exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
+                 ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
+                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
+                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,)
+          -> Cube or None : wrapper of the operator OPH_IMPORTNC
         instances(level=1, host_filter='all', host_partition='all', filesystem_filter='all', ioserver_filter='all', host_status='all',
                   dbms_status='all', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_INSTANCES
-        log_info(log_type='server', container_id=0, ioserver='mysql', nlines=10, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_LOG_INFO
+        list(level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all', dbms_filter='all',
+             measure_filter='all', ntransform='all', src_filter='all', db_filter='all', recursive='no', hidden='no', objkey_filter='all', display=True)
+          -> dict or None : wrapper of the operator OPH_LIST
         loggingbk(session_level=0, job_level=0, mask=000, session_filter='all', session_label_filter='all',
                   session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', workflowid_filter='all', markerid_filter='all',
                   parent_job_filter='all', job_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', job_status_filter='all',
                   submission_string_filter='all', job_start_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
                   job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', nlines=100, objkey_filter='all', exec_mode='sync', display=True)
           -> dict or None : wrapper of the operator OPH_LOGGINGBK
-        folder(command=None, cwd=None, path=None, exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_FOLDER
-        tasks(cls, cube_filter='all', path='-', operator_filter='all', cwd=None, container='all', objkey_filter='all', exec_mode='sync', display=True)
-             -> dict or None : wrapper of the operator OPH_tasks
-        showgrid(container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_SHOWGRID
-        search(path='-',  metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all', cwd=None, display=True)
-          -> dict or None : wrapper of the operator OPH_SEARCH
-        hierarchy(hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_HIERARCHY
-        list(level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all', dbms_filter='all',
-             measure_filter='all', ntransform='all', src_filter='all', db_filter='all', recursive='no', hidden='no', objkey_filter='all', display=True)
-          -> dict or None : wrapper of the operator OPH_LIST
-        randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', schedule=0,
-                 nhost=0, ndbms=1, ndb=1, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
-                 dim_size=None, compressed='no', grid='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_RANDCUBE
-        explorenc(exec_mode='sync', schedule=0, measure=None, src_path=None, exp_dim=None, imp_dim=None, subset_dims='none', subset_type='index',
-                  subset_filter='all', limit_filter=100, show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no',
-                  level=1, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0, wavelet_coeff='no', objkey_filter='all',
-                  display=False) -> None : wrapper of the operator OPH_EXPLORENC
-        importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, compressed='no',
-                 exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
-                 ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
-                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,)
-           -> Cube or None : wrapper of the operator OPH_IMPORTNC
-        man(function=None, function_type='operator', function_version='latest', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_MAN
+        log_info(log_type='server', container_id=0, ioserver='mysql', nlines=10, exec_mode='sync', objkey_filter='all', display=True)
+          -> dict or None : wrapper of the operator OPH_LOG_INFO
+        man(function=None, function_type='operator', function_version='latest', exec_mode='sync', display=True)
+          -> dict or None : wrapper of the operator OPH_MAN
+        manage_session(action=None, session='this', key='user', value='null', objkey_filter='all', display=False)
+          -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
+        mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', description='-', display=False)
+          -> Cube : wrapper of the operator OPH_MERGECUBES
+        mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', description='-', dim='-', display=False)
+          -> Cube or None: wrapper of the operator OPH_MERGECUBES2
         movecontainer(container=None, cwd=None, exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_MOVECONTAINER
         operators(operator_filter=None, limit_filter=0, exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_OPERATORS_LIST
         primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync',
                    objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
-        restorecontainer(exec_mode='sync', container=None, cwd=None, display=False) -> dict or None : wrapper of the operator OPH_RESTORECONTAINER
-        script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', display=False) -> dict or None : wrapper of the operator OPH_SCRIPT
+        randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', schedule=0,
+                 nhost=0, ndbms=1, ndb=1, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+                 dim_size=None, compressed='no', grid='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_RANDCUBE
         resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
           -> dict or None : wrapper of the operator OPH_RESUME
-        mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', description='-', display=False) -> Cube : wrapper of the operator OPH_MERGECUBES
-        mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', description='-', dim='-', display=False) -> Cube or None: wrapper of the operator OPH_MERGECUBES2
+        restorecontainer(exec_mode='sync', container=None, cwd=None, display=False) -> dict or None : wrapper of the operator OPH_RESTORECONTAINER
+        script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', display=False)
+          -> dict or None : wrapper of the operator OPH_SCRIPT
+        search(path='-',  metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all',
+               cwd=None, display=True) -> dict or None : wrapper of the operator OPH_SEARCH
+        service(status='', level=1, objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_SERVICE
+        showgrid(container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync', objkey_filter='all', display=True)
+          -> dict or None : wrapper of the operator OPH_SHOWGRID
+        tasks(cls, cube_filter='all', path='-', operator_filter='all', cwd=None, container='all', objkey_filter='all', exec_mode='sync', display=True)
+          -> dict or None : wrapper of the operator OPH_tasks
     """
 
     client = None
@@ -3120,8 +3141,8 @@ class Cube():
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def intercube(self, ncores=1, exec_mode='sync', cube2=None, operation=None, missingvalue='NAN', measure='null', schedule=0, container='-', description='-', display=False):
-        """intercube(cube2=None, operation=None, container='-', exec_mode='sync', ncores=1, description='-', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE
+    def intercube(self, ncores=1, exec_mode='sync', cube2=None, operation='sub', missingvalue='NAN', measure='null', schedule=0, container='-', description='-', display=False):
+        """intercube(cube2=None, operation='sub', container='-', exec_mode='sync', ncores=1, description='-', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE
 
         :param ncores: number of cores to use
         :type ncores: int
