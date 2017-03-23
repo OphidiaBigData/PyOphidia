@@ -166,8 +166,9 @@ class Client():
                 if len(newsession) == 0:
                     self.session = None
                 else:
+                    if self.session != newsession:
+	                    self.cwd = '/'
                     self.session = newsession
-                    self.cwd = '/'
             response = self.deserialize_response()
             if response is not None:
                 for response_i in response['response']:
