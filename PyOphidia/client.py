@@ -167,7 +167,7 @@ class Client():
                     self.session = None
                 else:
                     if self.session != newsession:
-	                    self.cwd = '/'
+                        self.cwd = '/'
                     self.session = newsession
             response = self.deserialize_response()
             if response is not None:

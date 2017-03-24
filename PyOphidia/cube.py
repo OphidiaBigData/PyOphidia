@@ -71,14 +71,14 @@ class Cube():
                    container='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_AGGREGATE2
         apply(ncores=1, exec_mode='sync', query=None, dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes',
               compressed='auto', schedule=0,container='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_APPLY
-        cubeelements( schedule=0, algorithm='dim_product', cores=1, exec_mode='sync', objkey_filter='all', display=True)
+        cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
-        cubeschema( cores=1, exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', display=True)
+        cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', display=True)
           -> dict or None : wrapper of the operator OPH_CUBESCHEMA
-        cubesize( schedule=0, cores=1, byte_unit='MB', objkey_filter='all', exec_mode='sync', display=True)
+        cubesize( schedule=0, ncores=1, byte_unit='MB', objkey_filter='all', exec_mode='sync', display=True)
           -> dict or None : wrapper of the operator OPH_CUBESIZE
         delete(ncores=1, exec_mode='sync', schedule=0, display=False) -> dict or None : wrapper of the operator OPH_DELETE
-        drilldown(ndim=1, container='-', ncores=1, exec_mode='sync', schedule=0, description='-' display=False)
+        drilldown(ndim=1, container='-', ncores=1, exec_mode='sync', schedule=0, description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_DRILLDOWN
         duplicate(container='-', ncores=1, exec_mode='sync', description='-', display=False) -> Cube or None : wrapper of the operator OPH_DUPLICATE
         explore(schedule=0, limit_filter=100, subset_dims=None, subset_filter='all', time_filter='yes', show_index='no', show_id='no', show_time='no',
@@ -163,7 +163,7 @@ class Cube():
           -> Cube or None: wrapper of the operator OPH_MERGECUBES2
         movecontainer(container=None, cwd=None, exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_MOVECONTAINER
         operators(operator_filter=None, limit_filter=0, exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_OPERATORS_LIST
-        primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync',
+        primitives(dbms_filter='-', level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync',
                    objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
         randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', schedule=0,
                  nhost=0, ndbms=1, ndb=1, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
@@ -252,7 +252,7 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None or container is None or dim is None or dim_type is None or (cwd is None and self.cwd is None):
+            if Cube.client is None or container is None or dim is None or dim_type is None or (cwd is None and Cube.client.cwd is None):
                 raise RuntimeError('Cube.client, container, dim, dim_type or cwd is None')
 
             query = 'oph_createcontainer '
@@ -320,7 +320,7 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None or container is None or (cwd is None and self.cwd is None):
+            if Cube.client is None or container is None or (cwd is None and Cube.client.cwd is None):
                 raise RuntimeError('Cube.client, container or cwd is None')
 
             query = 'oph_deletecontainer '
@@ -758,7 +758,7 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None or command is None or (cwd is None and self.cwd is None):
+            if Cube.client is None or command is None or (cwd is None and Cube.client.cwd is None):
                 raise RuntimeError('Cube.client, command or cwd is None')
 
             query = 'oph_folder '
@@ -864,7 +864,7 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None or container is None or (cwd is None and self.cwd is None):
+            if Cube.client is None or container is None or (cwd is None and Cube.client.cwd is None):
                 raise RuntimeError('Cube.client, container or cwd is None')
 
             query = 'oph_showgrid '
@@ -920,7 +920,7 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None or (cwd is None and self.cwd is None):
+            if Cube.client is None or (cwd is None and Cube.client.cwd is None):
                 raise RuntimeError('Cube.client or cwd is None')
 
             query = 'oph_search '
@@ -1036,7 +1036,7 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None or (cwd is None and self.cwd is None):
+            if Cube.client is None or (cwd is None and Cube.client.cwd is None):
                 raise RuntimeError('Cube.client or cwd is None')
 
             query = 'oph_list '
@@ -1143,7 +1143,7 @@ class Cube():
         :raises: RuntimeError
         """
 
-        if Cube.client is None or (cwd is None and self.cwd is None) or container is None or nfrag is None or ntuple is None or measure in None or measure_type is None or exp_ndim is None or\
+        if Cube.client is None or (cwd is None and Cube.client.cwd is None) or container is None or nfrag is None or ntuple is None or measure is None or measure_type is None or exp_ndim is None or\
                 dim is None or dim_size is None:
             raise RuntimeError('Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None')
         newcube = None
@@ -1589,7 +1589,7 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None or container is None or (cwd is None and self.cwd is None):
+            if Cube.client is None or container is None or (cwd is None and Cube.client.cwd is None):
                 raise RuntimeError('Cube.client, container or cwd is None')
 
             query = 'oph_movecontainer '
@@ -1656,7 +1656,7 @@ class Cube():
 
     @classmethod
     def primitives(cls, level=1, dbms_filter='-', return_type='all', primitive_type='all', primitive_filter='', limit_filter=0, exec_mode='sync', objkey_filter='all', display=True):
-        """primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync', objkey_filter='all', display=True) ->
+        """primitives(dbms_filter='-', level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync', objkey_filter='all', display=True) ->
            dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
 
         :param dbms_filter: filter on DBMS
@@ -1732,7 +1732,7 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None or container is None or (cwd is None and self.cwd is None):
+            if Cube.client is None or container is None or (cwd is None and Cube.client.cwd is None):
                 raise RuntimeError('Cube.client, container or cwd is None')
 
             query = 'oph_restorecontainer '
@@ -2107,7 +2107,7 @@ class Cube():
                 raise RuntimeError('Cube.client is None')
             self.pid = pid
         else:
-            if (cwd is None and self.cwd is None) or measure is None or src_path is None:
+            if (cwd is None and Cube.client.cwd is None) or measure is None or src_path is None:
                 raise RuntimeError('one or more required parameters are None')
             if Cube.client is None:
                 raise RuntimeError('Cube.client is None')
@@ -2701,7 +2701,7 @@ class Cube():
             raise RuntimeError()
 
     def drilldown(self, ncores=1, exec_mode='sync', schedule=0, ndim=1, container='-', description='-', display=False):
-        """drilldown(ndim=1, container='-', ncores=1, exec_mode='sync', schedule=0, description='-' display=False) -> Cube or None : wrapper of the operator OPH_DRILLDOWN
+        """drilldown(ndim=1, container='-', ncores=1, exec_mode='sync', schedule=0, description='-', display=False) -> Cube or None : wrapper of the operator OPH_DRILLDOWN
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -2990,7 +2990,7 @@ class Cube():
             raise RuntimeError()
 
     def cubeschema(self, level=0, dim='all', show_index='no', show_time='no', base64='no', exec_mode='sync', objkey_filter='all', display=True):
-        """ cubeschema( cores=1, exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', display=True) -> dict or None : wrapper of the operator OPH_CUBESCHEMA
+        """ cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', display=True) -> dict or None : wrapper of the operator OPH_CUBESCHEMA
 
         :param level: 0|1|2
         :type level: int
@@ -3046,7 +3046,7 @@ class Cube():
             raise RuntimeError()
 
     def cubesize(self, schedule=0, exec_mode='sync', byte_unit='MB', ncores=1, objkey_filter='all', display=True):
-        """ cubesize( schedule=0, cores=1, byte_unit='MB', objkey_filter='all', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_CUBESIZE
+        """ cubesize( schedule=0, ncores=1, byte_unit='MB', objkey_filter='all', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_CUBESIZE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -3094,7 +3094,7 @@ class Cube():
             raise RuntimeError()
 
     def cubeelements(self, schedule=0, exec_mode='sync', algorithm='dim_product', ncores=1, objkey_filter='all', display=True):
-        """ cubeelements( schedule=0, algorithm='dim_product', cores=1, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
+        """ cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -3170,7 +3170,7 @@ class Cube():
         """
 
         if Cube.client is None or self.pid is None or cube2 is None or operation is None:
-            raise RuntimeError('Cube.client, pid, cube2 or operation is None)
+            raise RuntimeError('Cube.client, pid, cube2 or operation is None')
         newcube = None
 
         query = 'oph_intercube '
