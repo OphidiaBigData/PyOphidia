@@ -124,7 +124,7 @@ class Cube():
                         base_time='1900-01-01 00:00:00', units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
                         leap_year=0, leap_month=2, vocabulary='CF', compressed='no', display=False)
           -> dict or None : wrapper of the operator OPH_CREATECONTAINER
-        deletecontainer(container=None, delete_type='physical', hidden='no', cwd=None, exec_mode='sync', objkey_filter='all', display=False)
+        deletecontainer(container=None, delete_type='logical', hidden='yes', cwd=None, exec_mode='sync', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_DELETECONTAINER
         explorenc(exec_mode='sync', schedule=0, measure=None, src_path=None, exp_dim=None, imp_dim=None, subset_dims='none', subset_type='index',
                   subset_filter='all', limit_filter=100, show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no',
@@ -155,7 +155,7 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_LOG_INFO
         man(function=None, function_type='operator', function_version='latest', exec_mode='sync', display=True)
           -> dict or None : wrapper of the operator OPH_MAN
-        manage_session(action=None, session='this', key='user', value='null', objkey_filter='all', display=False)
+        manage_session(action=None, session='this', key='user', value='null', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
         mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', description='-', display=False)
           -> Cube : wrapper of the operator OPH_MERGECUBES
@@ -297,8 +297,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def deletecontainer(cls, container=None, delete_type='physical', hidden='no', cwd=None, exec_mode='sync', objkey_filter='all', display=False):
-        """deletecontainer(container=None, delete_type='physical', hidden='no', cwd=None, exec_mode='sync', objkey_filter='all', display=False)
+    def deletecontainer(cls, container=None, delete_type='logical', hidden='yes', cwd=None, exec_mode='sync', objkey_filter='all', display=False):
+        """deletecontainer(container=None, delete_type='logical', hidden='yes', cwd=None, exec_mode='sync', objkey_filter='all', display=False)
              -> dict or None : wrapper of the operator OPH_DELETECONTAINER
 
         :param container: container name
@@ -467,8 +467,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def manage_session(cls, action=None, session='this', key='user', value='null', objkey_filter='all', display=False):
-        """manage_session(action=None, session='this', key='user', value='null', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
+    def manage_session(cls, action=None, session='this', key='user', value='null', objkey_filter='all', display=True):
+        """manage_session(action=None, session='this', key='user', value='null', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
 
         :param action: disable|enable|env|grant|list|listusers|new|remove|revoke|setenv
         :type action: str
