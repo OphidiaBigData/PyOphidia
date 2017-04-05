@@ -2235,10 +2235,10 @@ class Cube():
         if Cube.client is None or self.pid is None:
             raise RuntimeError('Cube.client is None or pid is None')
         query = 'oph_cubesize exec_mode=sync;cube=' + str(self.pid) + ';'
-        if Cube.client.submit(query, display) is None:
+        if Cube.client.submit(query, display=False) is None:
             raise RuntimeError()
         query = 'oph_cubeelements exec_mode=sync;cube=' + str(self.pid) + ';'
-        if Cube.client.submit(query, display) is None:
+        if Cube.client.submit(query, display=False) is None:
             raise RuntimeError()
         query = 'oph_cubeschema exec_mode=sync;cube=' + str(self.pid) + ';'
         if Cube.client.submit(query, display) is None:
