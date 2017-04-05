@@ -129,7 +129,7 @@ class Cube():
         explorenc(exec_mode='sync', schedule=0, measure=None, src_path=None, exp_dim=None, imp_dim=None, subset_dims='none', subset_type='index',
                   subset_filter='all', limit_filter=100, show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no',
                   level=1, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0, wavelet_coeff='no', objkey_filter='all',
-                  display=False) -> None : wrapper of the operator OPH_EXPLORENC
+                  display=True) -> None : wrapper of the operator OPH_EXPLORENC
         folder(command=None, cwd=None, path=None, exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_FOLDER
         get_config(key='all', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_GET_CONFIG
         hierarchy(hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', display=True)
@@ -1213,10 +1213,10 @@ class Cube():
     @classmethod
     def explorenc(cls, exec_mode='sync', schedule=0, measure=None, src_path=None, exp_dim=None, imp_dim=None, subset_dims='none', subset_type='index', subset_filter='all', limit_filter=100,
                   show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no', level=1, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0,
-                  wavelet_coeff='no', objkey_filter='all', display=False):
+                  wavelet_coeff='no', objkey_filter='all', display=True):
         """explorenc(exec_mode='sync', schedule=0, measure=None, src_path=None, exp_dim=None, imp_dim=None, subset_dims='none', subset_type='index', subset_filter='all', limit_filter=100,
                      show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no', level=1, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0,
-                     wavelet_coeff='no', objkey_filter='all', display=False)
+                     wavelet_coeff='no', objkey_filter='all', display=True)
              -> None : wrapper of the operator OPH_EXPLORENC
 
         :param exec_mode: async or sync

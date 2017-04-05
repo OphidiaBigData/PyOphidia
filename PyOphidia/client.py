@@ -245,8 +245,11 @@ class Client():
                         max_column_width.append(j)
                         max_column_width[j] = len(response_i['objcontent'][0]['rowkeys'][j])
                         for i in rows:
+                            #Replace tabs with 4 spaces
+                            response_i['objcontent'][0]['rowvalues'][i][j] = response_i['objcontent'][0]['rowvalues'][i][j].replace("\t", "    ")
                             if len(response_i['objcontent'][0]['rowvalues'][i][j]) > max_column_width[j]:
-                                max_column_width[j] = len(response_i['objcontent'][0]['rowvalues'][i][j])
+                                #Compute max width based on line breaks
+                                max_column_width[j] = max([len(s) for s in response_i['objcontent'][0]['rowvalues'][i][j].split("\n")])
                     available_width = sz.columns
                     needed_width = sum(i for i in max_column_width) + (num_columns + 1) + (2 * num_columns)
                     while(needed_width > available_width):
@@ -308,8 +311,8 @@ class Client():
                             num_rows_per_column[i].append(j)
                             text_length[i][j] = len(response_i['objcontent'][0]['rowvalues'][i][j])
                             start[i][j] = 0
-                            num_rows_per_column[i][j] = (int)(text_length[i][j] / max_column_width[j]) + 1
-
+                            #Compute num of rows per column based on line breaks
+                            num_rows_per_column[i][j] = sum([(int)(len(s) / (max_column_width[j] + 1)) + 1 for s in response_i['objcontent'][0]['rowvalues'][i][j].split("\n")])
                         maximum_rows[i] = num_rows_per_column[i][0]
                         for j in columns:
                             if maximum_rows[i] < num_rows_per_column[i][j]:
@@ -319,9 +322,17 @@ class Client():
                             for j in columns:
 
                                 if start[i][j] < text_length[i][j]:
-                                    print(VERTICAL_CHAR + " " + response_i['objcontent'][0]['rowvalues'][i][j][start[i][j]:start[i][j] + max_column_width[j]] + " " * ((max_column_width[j] + 2) -
-                                          (len(response_i['objcontent'][0]['rowvalues'][i][j][start[i][j]:start[i][j] + max_column_width[j]]) + 1)), end="")
-                                    start[i][j] = start[i][j] + max_column_width[j]
+                                    index = response_i['objcontent'][0]['rowvalues'][i][j][start[i][j]:start[i][j] + max_column_width[j]].find("\n")
+                                    if index != -1:  
+                                        #Delete newline char
+                                        response_i['objcontent'][0]['rowvalues'][i][j] = response_i['objcontent'][0]['rowvalues'][i][j][:start[i][j]+index] + response_i['objcontent'][0]['rowvalues'][i][j][start[i][j]+index+1:]
+                                        actual_len = start[i][j] + index
+                                    else:
+                                        actual_len = start[i][j] + max_column_width[j]
+
+                                    print(VERTICAL_CHAR + " " + response_i['objcontent'][0]['rowvalues'][i][j][start[i][j]:actual_len] + " " * ((max_column_width[j] + 2) -
+                                          (len(response_i['objcontent'][0]['rowvalues'][i][j][start[i][j]:actual_len]) + 1)), end="")
+                                    start[i][j] = actual_len
                                 else:
                                     print(VERTICAL_CHAR + " " * (max_column_width[j] + 2), end="")
                             print(VERTICAL_CHAR)
