@@ -5,9 +5,7 @@ PyOphidia: Python bindings for Ophidia
 
 It is an alternative to Oph_Term, the no-GUI interpreter component bundled with Ophidia, and a convenient way to submit SOAP HTTPS requests to an Ophidia server or to develop your own application using Python. 
 
-It runs on Python 2.7, 3.3, 3.4 and 3.5 has no dependencies and is pure-Python code.
-
-The *PyOphidia* is compatible with *Anaconda* and *jupyter Notebook*
+It runs on Python 2.7, 3.3, 3.4 and 3.5 has no dependencies and is pure-Python code. 
 
 It provides 2 main modules:
 
@@ -97,6 +95,32 @@ Instantiate a new Client common to all Cube instances:
    from PyOphidia import cube
    cube.Cube.setclient('oph-user','oph-password','127.0.0.1','11732')
 
+Cube attributes
+^^^^^^^^^^^^^^^
+Instance attributes:
+
+- *pid*: Cube PID
+- *creation_date*: Creation date of the cube
+- *measure*: Name of the variable imported into the cube
+- *measure_type*: Measure data type
+- *level*: Number of operations between the original imported cube and the actual cube
+- *nfragments*: Total number of fragments
+- *source_file*: Parent of the actual cube
+- *hostxcube*: Number of hosts associated with the cube
+- *dbmsxhost*: Number of DBMS instances on each host
+- *dbxdbms*: Number of databases for each DBMS
+- *fragxdb*: Number of fragments for each database
+- *rowsxfrag*: Number of rows for each fragment
+- *elementsxrow*: Number of elements for each row
+- *compressed*: If the cube is compressed or not
+- *size*: Size of the cube
+- *nelements*: Total number of elements
+- *dim_info*: List of dict with information on each cube dimension
+
+Class attributes:
+
+- *client*: instance of class Client through which it is possible to submit all requests
+ 
 Create a new container
 ^^^^^^^^^^^^^^^^^^^^^^
 Create a new container to contain our cubes called *test*, with 3 *double* dimensions (*lat*,*lon* and *time*):
