@@ -10,7 +10,7 @@ It runs on Python 2.7, 3.3, 3.4 and 3.5 has no dependencies and is pure-Python c
 It provides 2 main modules:
 
 - client.py: generic *low level* class to submit any type of requests (simple tasks and workflows), using SSL and SOAP with the client ophsubmit.py;
-- cube.py: *high level* cube-oriented class to interact directly with cubes, with several methods wrapping all of the operators.
+- cube.py: *high level* cube-oriented class to interact directly with cubes, with several methods wrapping the operators.
 
 Installation
 ------------
@@ -76,7 +76,7 @@ Client methods
 - *wsubmit(workflow,\*params) -> self*: Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
 - *wisvalid(workflow) -> bool*: Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
 
-*In both the "submit" method and "cube class" to display the output set the "display=True"* 
+*To display the command output set "display=True"* 
 
 Submit a request
 ^^^^^^^^^^^^^^^^
@@ -153,7 +153,7 @@ To shows metadata information about a data cube, its size and the dimensions rel
 
    mycube2.info()
 
-*For the operators such as "cubeschema", "cubesize", "cubeelements", "explore", "hierarchy", "info", "list", "loggingbk", "operators", "search", "showgrid", "man", "metadata", "primitives", "provenance", "search", "showgrid", "tasks" and other operators that provide verbose output the display by default is "True". For the rest of operators, to display the result of operation, "dispay=True" should be set.*
+*For the operators such as "cubeschema", "cubesize", "cubeelements", "explore", "hierarchy", "info", "list", "loggingbk", "operators", "search", "showgrid", "man", "metadata", "primitives", "provenance", "search", "showgrid", "tasks" and other operators that provide verbose output the display parameter by default is "True". For the rest of operators, to display the result, "dispay=True" should be set.*
 
 Subset a Cube
 ^^^^^^^^^^^^^
@@ -161,11 +161,11 @@ To perform a subsetting operation along dimensions of a data cube (dimension val
 
 .. code-block:: python
 
-   mycube2.subset2(subset_dims='lat|lon',subset_filter='1:10|20:30')
+   mycube3 = mycube2.subset2(subset_dims='lat|lon',subset_filter='1:10|20:30')
 
 Explore Cube
 ^^^^^^^^^^^^
-To explore  a data cube filtering the data along its dimensions:
+To explore a data cube filtering the data along its dimensions:
 
 .. code-block:: python
 
@@ -173,11 +173,11 @@ To explore  a data cube filtering the data along its dimensions:
 
 Export to NetCDF file
 ^^^^^^^^^^^^^^^^^^^^^
-To export data of a data cube into a single NetCDF file:
+To export data into a single NetCDF file:
 
 .. code-block:: python
 
-   mycube2.exportnc2(output_name='subset.pyophidia',output_path='/home/ophuser')
+   mycube3.exportnc2(output_path='/home/user')
 
 Export to Python array
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -185,7 +185,7 @@ To exports data in a python-friendly format:
 
 .. code-block:: python
 
-   data = mycube2.export_array(show_time='yes')
+   data = mycube3.export_array(show_time='yes')
 
 
 .. _GPLv3: http://www.gnu.org/licenses/gpl-3.0.txt
