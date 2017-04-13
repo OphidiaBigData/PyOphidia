@@ -1,6 +1,6 @@
 #
 #     PyOphidia - Python bindings for Ophidia
-#     Copyright (C) 2012-2016 CMCC Foundation
+#     Copyright (C) 2015-2017 CMCC Foundation
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -224,153 +224,157 @@ class Client():
 
         if response is not None:
             for response_i in response['response']:
-                if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] != 'SUCCESS':
-                    print(response_i['objcontent'][0]['title'])
-                    title_length = len(response_i['objcontent'][0]['title'])
-                    print("-" * title_length)
-                    print(response_i['objcontent'][0]['message'])
-                    print("\n")
-                if response_i['objclass'] == 'grid':
+                try:
+                    if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] != 'SUCCESS':
+                        print(response_i['objcontent'][0]['title'])
+                        title_length = len(response_i['objcontent'][0]['title'])
+                        print("-" * title_length)
+                        print(response_i['objcontent'][0]['message'])
+                        print("\n")
 
-                    print(response_i['objcontent'][0]['title'])
-                    title_length = len(response_i['objcontent'][0]['title'])
-                    print(HORIZONTAL_CHAR * title_length)
-                    num_columns = len(response_i['objcontent'][0]['rowkeys'])
-                    columns = range(num_columns)
-                    num_rows = len(response_i['objcontent'][0]['rowvalues'])
-                    rows = range(num_rows)
-                    max_column_width = []
-                    for j in columns:
-                        max_column_width.append(j)
-                        max_column_width[j] = len(response_i['objcontent'][0]['rowkeys'][j])
-                        for i in rows:
-                            # Replace tabs with 4 spaces
-                            response_i['objcontent'][0]['rowvalues'][i][j] = response_i['objcontent'][0]['rowvalues'][i][j].replace("\t", "    ")
-                            if len(response_i['objcontent'][0]['rowvalues'][i][j]) > max_column_width[j]:
-                                # Compute max width based on line breaks
-                                max_column_width[j] = max([len(s) for s in response_i['objcontent'][0]['rowvalues'][i][j].split("\n")])
-                    available_width = sz.columns
-                    needed_width = sum(i for i in max_column_width) + (num_columns + 1) + (2 * num_columns)
-                    while(needed_width > available_width):
-                        if response_i['objkey'] == 'explorecube_data':
-                            max_column_width[len(max_column_width) - 1] -= 1
-                        else:
-                            for i in range(len(max_column_width)):
-                                if max_column_width[i] > 1:
-                                    max_column_width[i] -= 1
+                    if response_i['objclass'] == 'grid':
+                        print(response_i['objcontent'][0]['title'])
+                        title_length = len(response_i['objcontent'][0]['title'])
+                        print(HORIZONTAL_CHAR * title_length)
+                        num_columns = len(response_i['objcontent'][0]['rowkeys'])
+                        columns = range(num_columns)
+                        num_rows = len(response_i['objcontent'][0]['rowvalues'])
+                        rows = range(num_rows)
+                        max_column_width = []
+                        for j in columns:
+                            max_column_width.append(j)
+                            max_column_width[j] = len(response_i['objcontent'][0]['rowkeys'][j])
+                            for i in rows:
+                                # Replace tabs with 4 spaces
+                                response_i['objcontent'][0]['rowvalues'][i][j] = response_i['objcontent'][0]['rowvalues'][i][j].replace("\t", "    ")
+                                if len(response_i['objcontent'][0]['rowvalues'][i][j]) > max_column_width[j]:
+                                    # Compute max width based on line breaks
+                                    max_column_width[j] = max([len(s) for s in response_i['objcontent'][0]['rowvalues'][i][j].split("\n")])
+                        available_width = sz.columns
                         needed_width = sum(i for i in max_column_width) + (num_columns + 1) + (2 * num_columns)
-                    for j in columns:
-                        print(JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j] + 2), end="")
-                    print(JUNCTION_CHAR)
-                    header_length = []
-                    start = []
-                    num_rows_per_column = []
-                    for j in columns:
-                        header_length.append(j)
-                        start.append(j)
-                        num_rows_per_column.append(j)
-                        header_length[j] = len(response_i['objcontent'][0]['rowkeys'][j])
-                        start[j] = 0
-                        num_rows_per_column[j] = (int)(header_length[j] / max_column_width[j]) + 1
-
-                    maximum_rows = num_rows_per_column[0]
-                    for j in columns:
-                        if num_rows_per_column[j] > maximum_rows:
-                            maximum_rows = num_rows_per_column[j]
-
-                    for x in range(maximum_rows):
-                        for j in columns:
-
-                            if start[j] < header_length[j]:
-                                print(VERTICAL_CHAR + " " + response_i['objcontent'][0]['rowkeys'][j][start[j]:start[j] + max_column_width[j]] + " " * ((max_column_width[j] + 2) -
-                                      (len(response_i['objcontent'][0]['rowkeys'][j][start[j]:start[j] + max_column_width[j]]) + 1)), end="")
-                                start[j] = start[j] + max_column_width[j]
+                        while(needed_width > available_width):
+                            if response_i['objkey'] == 'explorecube_data':
+                                max_column_width[len(max_column_width) - 1] -= 1
                             else:
-                                print(VERTICAL_CHAR + " " * (max_column_width[j] + 2), end="")
-                        print(VERTICAL_CHAR)
-                    for j in columns:
-                        print(JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j] + 2), end="")
-                    print(JUNCTION_CHAR)
-                    text_length = []
-                    start = []
-                    num_rows_per_column = []
-                    maximum_rows = []
-                    for i in rows:
-                        maximum_rows.append(i)
-                        text_length.append(i)
-                        start.append(i)
-                        num_rows_per_column.append(i)
+                                for i in range(len(max_column_width)):
+                                    if max_column_width[i] > 1:
+                                        max_column_width[i] -= 1
+                            needed_width = sum(i for i in max_column_width) + (num_columns + 1) + (2 * num_columns)
+                        for j in columns:
+                            print(JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j] + 2), end="")
+                        print(JUNCTION_CHAR)
+                        header_length = []
+                        start = []
+                        num_rows_per_column = []
+                        for j in columns:
+                            header_length.append(j)
+                            start.append(j)
+                            num_rows_per_column.append(j)
+                            header_length[j] = len(response_i['objcontent'][0]['rowkeys'][j])
+                            start[j] = 0
+                            num_rows_per_column[j] = (int)(header_length[j] / max_column_width[j]) + 1
 
-                        text_length[i] = []
-                        start[i] = []
-                        num_rows_per_column[i] = []
+                        maximum_rows = num_rows_per_column[0]
                         for j in columns:
-                            text_length[i].append(j)
-                            start[i].append(j)
-                            num_rows_per_column[i].append(j)
-                            text_length[i][j] = len(response_i['objcontent'][0]['rowvalues'][i][j])
-                            start[i][j] = 0
-                            # Compute num of rows per column based on line breaks
-                            num_rows_per_column[i][j] = sum([(int)(len(s) / (max_column_width[j] + 1)) + 1 for s in response_i['objcontent'][0]['rowvalues'][i][j].split("\n")])
-                        maximum_rows[i] = num_rows_per_column[i][0]
-                        for j in columns:
-                            if maximum_rows[i] < num_rows_per_column[i][j]:
-                                maximum_rows[i] = num_rows_per_column[i][j]
-                    for i in rows:
-                        rowvalues = response_i['objcontent'][0]['rowvalues'][i]
-                        for x in range(maximum_rows[i]):
+                            if num_rows_per_column[j] > maximum_rows:
+                                maximum_rows = num_rows_per_column[j]
+
+                        for x in range(maximum_rows):
                             for j in columns:
-                                if start[i][j] < text_length[i][j]:
-                                    index = rowvalues[j][start[i][j]:start[i][j] + max_column_width[j]].find("\n")
-                                    if index != -1:
-                                        # Delete newline char
-                                        rowvalues[j] = rowvalues[j][:start[i][j] + index] + rowvalues[j][start[i][j] + index + 1:]
-                                        actual_len = start[i][j] + index
-                                    else:
-                                        actual_len = start[i][j] + max_column_width[j]
 
-                                    print(VERTICAL_CHAR + " " + rowvalues[j][start[i][j]:actual_len] + " " * ((max_column_width[j] + 2) - (len(rowvalues[j][start[i][j]:actual_len]) + 1)), end="")
-                                    start[i][j] = actual_len
+                                if start[j] < header_length[j]:
+                                    print(VERTICAL_CHAR + " " + response_i['objcontent'][0]['rowkeys'][j][start[j]:start[j] + max_column_width[j]] + " " * ((max_column_width[j] + 2) -
+                                          (len(response_i['objcontent'][0]['rowkeys'][j][start[j]:start[j] + max_column_width[j]]) + 1)), end="")
+                                    start[j] = start[j] + max_column_width[j]
                                 else:
                                     print(VERTICAL_CHAR + " " * (max_column_width[j] + 2), end="")
                             print(VERTICAL_CHAR)
-                        if i != rows[len(rows) - 1]:
-                            for j in columns:
-                                print(VERTICAL_CHAR + HORIZONTAL_CHAR * (max_column_width[j] + 2), end="")
-                            print(VERTICAL_CHAR)
-                        else:
-                            for j in columns:
-                                print(JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j] + 2), end="")
-                            print(JUNCTION_CHAR)
+                        for j in columns:
+                            print(JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j] + 2), end="")
+                        print(JUNCTION_CHAR)
+                        text_length = []
+                        start = []
+                        num_rows_per_column = []
+                        maximum_rows = []
+                        for i in rows:
+                            maximum_rows.append(i)
+                            text_length.append(i)
+                            start.append(i)
+                            num_rows_per_column.append(i)
 
-                if response_i['objclass'] == 'digraph':
-                    print(response_i['objcontent'][0]['title'])
-                    title_length = len(response_i['objcontent'][0]['title'])
-                    print("-" * title_length)
-                    print("Directed Graph DOT string :\n")
-                    print("digraph DG {\n")
-                    print("\tnode   [shape=box]\n")
-                    num_nodevalues = len(response_i['objcontent'][0]['nodevalues'])
-                    nodevalues = range(num_nodevalues)
-                    for i in nodevalues:
-                        print("\t" + str(i) + "\t[label=", end="")
-                        num_labels = len(response_i['objcontent'][0]['nodekeys'])
-                        labels = range(num_labels)
-                        print("\"", end="")
-                        for j in labels:
-                            print(response_i['objcontent'][0]['nodekeys'][j] + " : ", end="")
-                            print(response_i['objcontent'][0]['nodevalues'][i][j] + "  ", end="")
-                        print("\"]\n")
-                    print("\tedge\n")
-                    num_nodelinks = len(response_i['objcontent'][0]['nodelinks'])
-                    nodelinks = range(num_nodelinks)
-                    for i in nodelinks:
-                        if response_i['objcontent'][0]['nodelinks'][i]:
-                            for j in range(len(response_i['objcontent'][0]['nodelinks'][i])):
-                                print("\t" + str(i) + "=>" + response_i['objcontent'][0]['nodelinks'][i][j]['node'] +
-                                      "\t[label=\"" + response_i['objcontent'][0]['nodelinks'][i][j]['description'], end="")
+                            text_length[i] = []
+                            start[i] = []
+                            num_rows_per_column[i] = []
+                            for j in columns:
+                                text_length[i].append(j)
+                                start[i].append(j)
+                                num_rows_per_column[i].append(j)
+                                text_length[i][j] = len(response_i['objcontent'][0]['rowvalues'][i][j])
+                                start[i][j] = 0
+                                # Compute num of rows per column based on line breaks
+                                num_rows_per_column[i][j] = sum([(int)(len(s) / (max_column_width[j] + 1)) + 1 for s in response_i['objcontent'][0]['rowvalues'][i][j].split("\n")])
+                            maximum_rows[i] = num_rows_per_column[i][0]
+                            for j in columns:
+                                if maximum_rows[i] < num_rows_per_column[i][j]:
+                                    maximum_rows[i] = num_rows_per_column[i][j]
+                        for i in rows:
+                            rowvalues = response_i['objcontent'][0]['rowvalues'][i]
+                            for x in range(maximum_rows[i]):
+                                for j in columns:
+                                    if start[i][j] < text_length[i][j]:
+                                        index = rowvalues[j][start[i][j]:start[i][j] + max_column_width[j]].find("\n")
+                                        if index != -1:
+                                            # Delete newline char
+                                            rowvalues[j] = rowvalues[j][:start[i][j] + index] + rowvalues[j][start[i][j] + index + 1:]
+                                            actual_len = start[i][j] + index
+                                        else:
+                                            actual_len = start[i][j] + max_column_width[j]
+
+                                        print(VERTICAL_CHAR + " " + rowvalues[j][start[i][j]:actual_len] + " " * ((max_column_width[j] + 2) - (len(rowvalues[j][start[i][j]:actual_len]) + 1)), end="")
+                                        start[i][j] = actual_len
+                                    else:
+                                        print(VERTICAL_CHAR + " " * (max_column_width[j] + 2), end="")
+                                print(VERTICAL_CHAR)
+                            if i != rows[len(rows) - 1]:
+                                for j in columns:
+                                    print(VERTICAL_CHAR + HORIZONTAL_CHAR * (max_column_width[j] + 2), end="")
+                                print(VERTICAL_CHAR)
+                            else:
+                                for j in columns:
+                                    print(JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j] + 2), end="")
+                                print(JUNCTION_CHAR)
+
+                    if response_i['objclass'] == 'digraph':
+                        print(response_i['objcontent'][0]['title'])
+                        title_length = len(response_i['objcontent'][0]['title'])
+                        print("-" * title_length)
+                        print("Directed Graph DOT string :\n")
+                        print("digraph DG {\n")
+                        print("\tnode   [shape=box]\n")
+                        num_nodevalues = len(response_i['objcontent'][0]['nodevalues'])
+                        nodevalues = range(num_nodevalues)
+                        for i in nodevalues:
+                            print("\t" + str(i) + "\t[label=", end="")
+                            num_labels = len(response_i['objcontent'][0]['nodekeys'])
+                            labels = range(num_labels)
+                            print("\"", end="")
+                            for j in labels:
+                                print(response_i['objcontent'][0]['nodekeys'][j] + " : ", end="")
+                                print(response_i['objcontent'][0]['nodevalues'][i][j] + "  ", end="")
                             print("\"]\n")
-                    print("\n}\n")
+                        print("\tedge\n")
+                        num_nodelinks = len(response_i['objcontent'][0]['nodelinks'])
+                        nodelinks = range(num_nodelinks)
+                        for i in nodelinks:
+                            if response_i['objcontent'][0]['nodelinks'][i]:
+                                for j in range(len(response_i['objcontent'][0]['nodelinks'][i])):
+                                    print("\t" + str(i) + "=>" + response_i['objcontent'][0]['nodelinks'][i][j]['node'] +
+                                          "\t[label=\"" + response_i['objcontent'][0]['nodelinks'][i][j]['description'], end="")
+                                print("\"]\n")
+                        print("\n}\n")
+
+                except Exception as e:
+                    print(get_linenumber(), "Error in parsing json response:", e)
 
         return self
 
