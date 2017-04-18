@@ -36,7 +36,7 @@ Examples
 
 Import PyOphidia
 ^^^^^^^^^^^^^^^^
-From the *PyOphidia* package import the *client* module:
+Import *client* module from *PyOphidia* package:
 
 .. code-block:: python
 

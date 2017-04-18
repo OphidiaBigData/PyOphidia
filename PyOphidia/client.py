@@ -23,7 +23,7 @@ import sys
 import os
 import json
 from inspect import currentframe
-import ophsubmit as _ophsubmit
+import PyOphidia.ophsubmit as _ophsubmit
 import traceback
 import shutil
 sys.path.append(os.path.dirname(__file__))

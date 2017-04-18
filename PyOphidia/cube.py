@@ -23,7 +23,7 @@ import sys
 import os
 import base64
 import struct
-import client as _client
+import PyOphidia.client as _client
 from inspect import currentframe
 sys.path.append(os.path.dirname(__file__))
 
