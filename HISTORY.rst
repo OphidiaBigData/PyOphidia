@@ -19,21 +19,23 @@
 - Bug in cwd attribute resetting it only when session changes
 - Bug in query parameter in apply method of cube module
 - Submit function to correctly parse massive operations
-- Bug [#1](https://github.com/OphidiaBigData/PyOphidia/issues/1)
+- Bug `#1 <https://github.com/OphidiaBigData/PyOphidia/issues/1>`_
+
+_
 
 ## 1.2.1 - 2015-08-25
 
- - Bug fixing
+- Bug fixing
 
 ## 1.2.0 - 2015-08-12
 
- - Added Cube class
+- Added Cube class
 
 ## 1.1.0 - 2015-07-20
 
- - Bug fixing
+- Bug fixing
 
 ## 1.0.0 - 2015-06-05
 
- - Initial public release
+- Initial public release
 
