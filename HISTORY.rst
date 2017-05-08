@@ -21,8 +21,6 @@
 - Submit function to correctly parse massive operations
 - Bug `#1 <https://github.com/OphidiaBigData/PyOphidia/issues/1>`_
 
-_
-
 ## 1.2.1 - 2015-08-25
 
 - Bug fixing
