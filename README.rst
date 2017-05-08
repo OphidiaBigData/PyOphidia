@@ -1,11 +1,11 @@
 PyOphidia: Python bindings for Ophidia
 ======================================
 
-*PyOphidia* is a GPLv3_-licensed Python package for interacting to the Ophidia_ platform.
+*PyOphidia* is a GPLv3_-licensed Python package for interacting with the Ophidia_ framework.
 
-It is an alternative to Oph_Term, the no-GUI interpreter component bundled with Ophidia, and a convenient way to submit SOAP HTTPS requests to an Ophidia server or to develop your own application using Python. 
+It is an alternative to Oph_Term, the Ophidia no-GUI interpreter component, and a convenient way to submit SOAP HTTPS requests to an Ophidia server or to develop your own application using Python. 
 
-It runs on Python 2.7, 3.3, 3.4 and 3.5 has no dependencies and is pure-Python code. 
+It runs on Python 2.7, 3.3, 3.4 and 3.5, has no dependencies and is pure-Python. 
 
 It provides 2 main modules:
 
@@ -106,7 +106,7 @@ Instance attributes:
 - *level*: Number of operations between the original imported cube and the actual cube
 - *nfragments*: Total number of fragments
 - *source_file*: Parent of the actual cube
-- *hostxcube*: Number of hosts associated with the cube
+- *hostxcube*: Number of hosts on which the cube is stored
 - *dbmsxhost*: Number of DBMS instances on each host
 - *dbxdbms*: Number of databases for each DBMS
 - *fragxdb*: Number of fragments for each database
@@ -153,7 +153,7 @@ To shows metadata information about a data cube, its size and the dimensions rel
 
    mycube2.info()
 
-*For the operators such as "cubeschema", "cubesize", "cubeelements", "explore", "hierarchy", "info", "list", "loggingbk", "operators", "search", "showgrid", "man", "metadata", "primitives", "provenance", "search", "showgrid", "tasks" and other operators that provide verbose output the display parameter by default is "True". For the rest of operators, to display the result, "dispay=True" should be set.*
+*For the operators such as "cubeschema", "cubesize", "cubeelements", "explore", "hierarchy", "info", "list", "loggingbk", "operators", "search", "showgrid", "man", "metadata", "primitives", "provenance", "search", "showgrid", "tasks" and other operators that provide verbose output, the display parameter by default is "True". For the rest of operators, to display the result, "dispay=True" should be set.*
 
 Subset a Cube
 ^^^^^^^^^^^^^

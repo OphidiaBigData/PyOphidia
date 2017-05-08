@@ -28,12 +28,12 @@ def read(*paths):
 
 setup(
 	name='PyOphidia',
-	version='1.2.2',
+	version='1.3.0',
 	description='Python bindings for the Ophidia Data Analytics Platform',
 	long_description=(read('README.rst') + '\n\n'),
 	url='ophidia.cmcc.it',
 	license='GPLv3+',
-	author='Andrea Mariello, Sandro Fiore, Alessandro D''Anca, Cosimo Palazzo, Donatello Elia',
+	author='Ophidia Developers',
 	author_email='ophidia-info@lists.cmcc.it',
 	packages=['PyOphidia'],
 	include_package_data=True,

@@ -6,4 +6,5 @@ Cosimo Palazzo</br>
 Donatello Elia</br>
 
 <h4>Other Contributors</h4>
-
+Pourya Samsolmoali - pshams55 AT gmail DOT com
+Elisa Distante - elisa DOT distante AT gmail DOT com
