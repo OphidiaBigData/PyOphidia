@@ -44,7 +44,7 @@ Import *client* module from *PyOphidia* package:
 
 Instantiate a client
 ^^^^^^^^^^^^^^^^^^^^
-Create a new *Client()* using the login parameters *username*,*password*,*host* and *port*.
+Create a new *Client()* using the login parameters *username*, *password*, *host* and *port*.
 It will also try to resume the last session the user was connected to, as well as the last working directory and the last produced cube.
 
 .. code-block:: python
@@ -60,7 +60,7 @@ Client attributes
 - *session*: ID of the current session
 - *cwd*: Current Working Directory
 - *cube*: Last produced cube PID
-- *exec_mode*: Execution mode, 'sync' for synchronous mode (default),'async' for asynchronous mode
+- *exec_mode*: Execution mode, 'sync' for synchronous mode (default), 'async' for asynchronous mode
 - *ncores*: Number of cores for each operation (default is 1)
 - *last_request*: Last submitted query
 - *last_response*: Last response received from the server (JSON string)
@@ -73,7 +73,7 @@ Client methods
 - *resume_session(display) -> self*: Resume the last session the user was connected to.
 - *resume_cwd(display) -> self*: Resume the last cwd (current working directory) the user was located into.
 - *resume_cube(display) -> self*: Resume the last cube produced by the user.
-- *wsubmit(workflow,\*params) -> self*: Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
+- *wsubmit(workflow, \*params) -> self*: Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
 - *wisvalid(workflow) -> bool*: Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
 
 *To display the command output set "display=True"* 
@@ -123,7 +123,7 @@ Class attributes:
  
 Create a new container
 ^^^^^^^^^^^^^^^^^^^^^^
-Create a new container to contain our cubes called *test*, with 3 *double* dimensions (*lat*,*lon* and *time*):
+Create a new container to contain our cubes called *test*, with 3 *double* dimensions (*lat*, *lon* and *time*):
 
 .. code-block:: python
 
