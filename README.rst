@@ -51,6 +51,13 @@ It will also try to resume the last session the user was connected to, as well a
 
    ophclient = client.Client("oph-user","oph-passwd","127.0.0.1","11732")
 
+If *OPH_USER*, *OPH_PASSWD*, *OPH_SERVER_HOST* and *OPH_SERVER_PORT* variables (see the documentation_ for more details) have been set in the environment, a client can be also created reading directly the values from the environment without the need to specify any parameter. 
+
+.. code-block:: python
+
+   ophclient = client.Client(read_env=True)
+
+
 Client attributes
 ^^^^^^^^^^^^^^^^^
 - *username*: Ophidia username
@@ -94,6 +101,14 @@ Instantiate a new Client common to all Cube instances:
 
    from PyOphidia import cube
    cube.Cube.setclient('oph-user','oph-password','127.0.0.1','11732')
+
+or
+
+.. code-block:: python
+
+   from PyOphidia import cube
+   cube.Cube.setclient(read_env=True)
+
 
 Cube attributes
 ^^^^^^^^^^^^^^^
@@ -190,3 +205,4 @@ To exports data in a python-friendly format:
 
 .. _GPLv3: http://www.gnu.org/licenses/gpl-3.0.txt
 .. _Ophidia: http://ophidia.cmcc.it
+:: _documentation: http://ophidia.cmcc.it/documentation/users/terminal/term_advanced.html#oph-terminal-environment

@@ -118,7 +118,7 @@ class Cube():
         unpublish( exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_UNPUBLISH
 
     Class Methods:
-        setclient(username, password, server, port='11732') -> None : Instantiate the Client, common for all Cube objects, for submitting requests
+        setclient(username=None, password=None, server=None, port=None, read_env=False) -> None : Instantiate the Client, common for all Cube objects, for submitting requests
         cancel(id=None, type='kill', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_CANCEL
         createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base',
                         base_time='1900-01-01 00:00:00', units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
@@ -185,8 +185,8 @@ class Cube():
     client = None
 
     @classmethod
-    def setclient(cls, username, password, server, port='11732'):
-        """setclient(username, password, server, port='11732') -> None : Instantiate the Client, common for all Cube objects, for submitting requests
+    def setclient(cls, username=None, password=None, server=None, port=None, read_env=False):
+        """setclient(username=None, password=None, server=None, port=None, read_env=False) -> None : Instantiate the Client, common for all Cube objects, for submitting requests
 
         :param username: Ophidia user
         :type username: str
@@ -196,12 +196,14 @@ class Cube():
         :type server: str
         :param port: Ophidia server port
         :type port: str
+        :param port: If true read the client variables from the environment
+        :type port: bool
         :returns: None
         :rtype: None
         """
 
         try:
-            cls.client = _client.Client(username, password, server, port)
+            cls.client = _client.Client(username, password, server, port, read_env)
         except Exception as e:
             print(get_linenumber(), "Something went wrong in setting the client:", e)
         finally:

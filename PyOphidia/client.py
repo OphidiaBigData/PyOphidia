@@ -35,7 +35,7 @@ def get_linenumber():
 
 
 class Client():
-    """Client(username,password,server,port='11732') -> obj
+    """Client(username=None, password=None, server=None, port=None, read_env=False) -> obj
 
     Attributes:
         username: Ophidia username
@@ -65,8 +65,8 @@ class Client():
         pretty_print(response, response_i) -> self : Turn the last_response JSON string attribute into a formatted response
     """
 
-    def __init__(self, username, password, server, port='11732'):
-        """Client(username,password,server,port='11732') -> obj
+    def __init__(self, username=None, password=None, server=None, port=None, read_env=False):
+        """Client(username=None, password=None, server=None, port=None, read_env=False) -> obj
         :param username: Ophidia username
         :type username: str
         :param password: Ophidia password
@@ -75,15 +75,36 @@ class Client():
         :type server: str
         :param port: Ophidia server port (default is 11732)
         :type port: str
+        :param port: If true read the client variables from the environment
+        :type port: bool
         :returns: None
         :rtype: None
         :raises: RuntimeError
         """
 
-        self.username = username
-        self.password = password
-        self.server = server
-        self.port = port
+        if read_env is False:
+            self.username = username
+            self.password = password
+            self.server = server
+            self.port = port
+        else:
+            if username is not None:
+                self.username = username
+            else:
+                self.username = os.environ.get('OPH_USER')
+            if password is not None:
+                self.password = password
+            else:
+                self.password = os.environ.get('OPH_PASSWD')
+            if server is not None:
+                self.server = server
+            else:
+                self.server = os.environ.get('OPH_SERVER_HOST')
+            if port is not None:
+                self.port = port
+            else:
+                self.port = os.environ.get('OPH_SERVER_PORT')
+
         self.session = ''
         self.cwd = '/'
         self.cube = ''
