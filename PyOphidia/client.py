@@ -95,7 +95,10 @@ class Client():
         if self.username is None or self.password is None or self.server is None or self.port is None:
             raise RuntimeError('one or more login parameters are None')
         try:
-            self.resume_session().resume_cwd().resume_cube()
+            self.resume_session()
+            if self.session is not None and self.session:
+                self.resume_cwd()
+                self.resume_cube()
         except Exception as e:
             print(get_linenumber(), "Something went wrong in resuming last session/cwd/cube:", e)
         else:
