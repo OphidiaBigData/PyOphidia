@@ -2107,101 +2107,101 @@ class Cube():
                 raise RuntimeError('Cube.client is None')
             self.pid = pid
         else:
-            if (cwd is None and Cube.client.cwd is None) or measure is None or src_path is None:
-                raise RuntimeError('one or more required parameters are None')
-            if Cube.client is None:
-                raise RuntimeError('Cube.client is None')
+            if (Cube.client is not None) and (cwd is not None or measure is not None or src_path is not None):
+                if (cwd is None and Cube.client.cwd is None) or measure is None or src_path is None:
+                    raise RuntimeError('one or more required parameters are None')
 
-            query = 'oph_importnc '
+                else:
+                    query = 'oph_importnc '
 
-            if container is not None:
-                query += 'container=' + str(container) + ';'
-            if cwd is not None:
-                query += 'cwd=' + str(cwd) + ';'
-            if exp_dim is not None:
-                query += 'exp_dim=' + str(exp_dim) + ';'
-            if host_partition is not None:
-                query += 'host_partition=' + str(host_partition) + ';'
-            if imp_dim is not None:
-                query += 'imp_dim=' + str(imp_dim) + ';'
-            if measure is not None:
-                query += 'measure=' + str(measure) + ';'
-            if src_path is not None:
-                query += 'src_path=' + str(src_path) + ';'
-            if compressed is not None:
-                query += 'compressed=' + str(compressed) + ';'
-            if exp_concept_level is not None:
-                query += 'exp_concept_level=' + str(exp_concept_level) + ';'
-            if filesystem is not None:
-                query += 'filesystem=' + str(filesystem) + ';'
-            if grid is not None:
-                query += 'grid=' + str(grid) + ';'
-            if imp_concept_level is not None:
-                query += 'imp_concept_level=' + str(imp_concept_level) + ';'
-            if import_metadata is not None:
-                query += 'import_metadata=' + str(import_metadata) + ';'
-            if check_compliance is not None:
-                query += 'check_compliance=' + str(check_compliance) + ';'
-            if ioserver is not None:
-                query += 'ioserver=' + str(ioserver) + ';'
-            if ncores is not None:
-                query += 'ncores=' + str(ncores) + ';'
-            if ndb is not None:
-                query += 'ndb=' + str(ndb) + ';'
-            if ndbms is not None:
-                query += 'ndbms=' + str(ndbms) + ';'
-            if nfrag is not None:
-                query += 'nfrag=' + str(nfrag) + ';'
-            if nhost is not None:
-                query += 'nhost=' + str(nhost) + ';'
-            if subset_dims is not None:
-                query += 'subset_dims=' + str(subset_dims) + ';'
-            if subset_filter is not None:
-                query += 'subset_filter=' + str(subset_filter) + ';'
-            if time_filter is not None:
-                query += 'time_filter=' + str(time_filter) + ';'
-            if offset is not None:
-                query += 'offset=' + str(offset) + ';'
-            if subset_type is not None:
-                query += 'subset_type=' + str(subset_type) + ';'
-            if exec_mode is not None:
-                query += 'exec_mode=' + str(exec_mode) + ';'
-            if base_time is not None:
-                query += 'base_time=' + str(base_time) + ';'
-            if calendar is not None:
-                query += 'calendar=' + str(calendar) + ';'
-            if hierarchy is not None:
-                query += 'hierarchy=' + str(hierarchy) + ';'
-            if leap_month is not None:
-                query += 'leap_month=' + str(leap_month) + ';'
-            if leap_year is not None:
-                query += 'leap_year=' + str(leap_year) + ';'
-            if month_lengths is not None:
-                query += 'month_lengths=' + str(month_lengths) + ';'
-            if run is not None:
-                query += 'run=' + str(run) + ';'
-            if units is not None:
-                query += 'units=' + str(units) + ';'
-            if vocabulary is not None:
-                query += 'vocabulary=' + str(vocabulary) + ';'
-            if schedule is not None:
-                query += 'schedule=' + str(schedule) + ';'
-            if description is not None:
-                query += 'description=' + str(description) + ';'
+                    if container is not None:
+                        query += 'container=' + str(container) + ';'
+                    if cwd is not None:
+                        query += 'cwd=' + str(cwd) + ';'
+                    if exp_dim is not None:
+                        query += 'exp_dim=' + str(exp_dim) + ';'
+                    if host_partition is not None:
+                        query += 'host_partition=' + str(host_partition) + ';'
+                    if imp_dim is not None:
+                        query += 'imp_dim=' + str(imp_dim) + ';'
+                    if measure is not None:
+                        query += 'measure=' + str(measure) + ';'
+                    if src_path is not None:
+                        query += 'src_path=' + str(src_path) + ';'
+                    if compressed is not None:
+                        query += 'compressed=' + str(compressed) + ';'
+                    if exp_concept_level is not None:
+                        query += 'exp_concept_level=' + str(exp_concept_level) + ';'
+                    if filesystem is not None:
+                        query += 'filesystem=' + str(filesystem) + ';'
+                    if grid is not None:
+                        query += 'grid=' + str(grid) + ';'
+                    if imp_concept_level is not None:
+                        query += 'imp_concept_level=' + str(imp_concept_level) + ';'
+                    if import_metadata is not None:
+                        query += 'import_metadata=' + str(import_metadata) + ';'
+                    if check_compliance is not None:
+                        query += 'check_compliance=' + str(check_compliance) + ';'
+                    if ioserver is not None:
+                        query += 'ioserver=' + str(ioserver) + ';'
+                    if ncores is not None:
+                        query += 'ncores=' + str(ncores) + ';'
+                    if ndb is not None:
+                        query += 'ndb=' + str(ndb) + ';'
+                    if ndbms is not None:
+                        query += 'ndbms=' + str(ndbms) + ';'
+                    if nfrag is not None:
+                        query += 'nfrag=' + str(nfrag) + ';'
+                    if nhost is not None:
+                        query += 'nhost=' + str(nhost) + ';'
+                    if subset_dims is not None:
+                        query += 'subset_dims=' + str(subset_dims) + ';'
+                    if subset_filter is not None:
+                        query += 'subset_filter=' + str(subset_filter) + ';'
+                    if time_filter is not None:
+                        query += 'time_filter=' + str(time_filter) + ';'
+                    if offset is not None:
+                        query += 'offset=' + str(offset) + ';'
+                    if subset_type is not None:
+                        query += 'subset_type=' + str(subset_type) + ';'
+                    if exec_mode is not None:
+                        query += 'exec_mode=' + str(exec_mode) + ';'
+                    if base_time is not None:
+                        query += 'base_time=' + str(base_time) + ';'
+                    if calendar is not None:
+                        query += 'calendar=' + str(calendar) + ';'
+                    if hierarchy is not None:
+                        query += 'hierarchy=' + str(hierarchy) + ';'
+                    if leap_month is not None:
+                        query += 'leap_month=' + str(leap_month) + ';'
+                    if leap_year is not None:
+                        query += 'leap_year=' + str(leap_year) + ';'
+                    if month_lengths is not None:
+                        query += 'month_lengths=' + str(month_lengths) + ';'
+                    if run is not None:
+                        query += 'run=' + str(run) + ';'
+                    if units is not None:
+                        query += 'units=' + str(units) + ';'
+                    if vocabulary is not None:
+                        query += 'vocabulary=' + str(vocabulary) + ';'
+                    if schedule is not None:
+                        query += 'schedule=' + str(schedule) + ';'
+                    if description is not None:
+                        query += 'description=' + str(description) + ';'
 
-            try:
-                if Cube.client.submit(query, display) is None:
-                    raise RuntimeError()
+                    try:
+                        if Cube.client.submit(query, display) is None:
+                            raise RuntimeError()
 
-                if Cube.client.last_response is not None:
-                    if Cube.client.cube:
-                        self.pid = Cube.client.cube
-            except Exception as e:
-                print(get_linenumber(), "Something went wrong in instantiating the cube", e)
-                raise RuntimeError()
-            else:
-                if self.pid:
-                    print("New cube is " + self.pid)
+                        if Cube.client.last_response is not None:
+                            if Cube.client.cube:
+                                self.pid = Cube.client.cube
+                    except Exception as e:
+                        print(get_linenumber(), "Something went wrong in instantiating the cube", e)
+                        raise RuntimeError()
+                    else:
+                        if self.pid:
+                            print("New cube is " + self.pid)
 
     def __del__(self):
         del self.pid
