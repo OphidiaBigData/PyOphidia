@@ -34,7 +34,7 @@ setup(
 	url='ophidia.cmcc.it',
 	license='GPLv3+',
 	author='Ophidia Developers',
-	author_email='ophidia-info@lists.cmcc.it',
+	author_email='ophidia-info@cmcc.it',
 	packages=['PyOphidia'],
 	include_package_data=True,
 	classifiers=[
