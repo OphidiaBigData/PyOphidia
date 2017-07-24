@@ -35,7 +35,7 @@ def get_linenumber():
 
 
 class Client():
-    """Client(username,password,server,port='11732') -> obj
+    """Client(username,password,server,port='11732',api_mode=True) -> obj
 
     Attributes:
         username: Ophidia username
@@ -50,6 +50,8 @@ class Client():
         last_request: Last submitted query
         last_response: Last response received from the server (JSON string)
         last_jobid: Job ID associated to the last request
+        last_return_value: Last return value associated to response
+        last_error: Last error value associated to response
 
     Methods:
         submit(query, display=False) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the
@@ -65,7 +67,7 @@ class Client():
         pretty_print(response, response_i) -> self : Turn the last_response JSON string attribute into a formatted response
     """
 
-    def __init__(self, username, password, server, port='11732'):
+    def __init__(self, username, password, server, port='11732', api_mode=True):
         """Client(username,password,server,port='11732') -> obj
         :param username: Ophidia username
         :type username: str
@@ -75,11 +77,14 @@ class Client():
         :type server: str
         :param port: Ophidia server port (default is 11732)
         :type port: str
+        :param api_mode: If True, use the class as an API and catch also framework-level errors
+        :type api_mode: bool
         :returns: None
         :rtype: None
         :raises: RuntimeError
         """
 
+        self.api_mode = api_mode
         self.username = username
         self.password = password
         self.server = server
@@ -92,26 +97,31 @@ class Client():
         self.last_request = ''
         self.last_response = ''
         self.last_jobid = ''
+        self.last_return_value = 0
+        self.last_erorr = ''
         if self.username is None or self.password is None or self.server is None or self.port is None:
             raise RuntimeError('one or more login parameters are None')
         try:
-            self.resume_session()
-            if self.session is not None and self.session:
-                self.resume_cwd()
-                self.resume_cube()
+            if self.api_mode:
+                self.resume_session()
+                if self.session is not None and self.session:
+                    self.resume_cwd()
+                    self.resume_cube()
         except Exception as e:
             print(get_linenumber(), "Something went wrong in resuming last session/cwd/cube:", e)
         else:
-            if self.session:
-                print("Current session is " + self.session)
-            if self.cwd:
-                print("Current cwd is " + self.cwd)
-            if self.cube:
-                print("The last produced cube is " + self.cube)
+            if self.api_mode:
+                if self.session:
+                    print("Current session is " + self.session)
+                if self.cwd:
+                    print("Current cwd is " + self.cwd)
+                if self.cube:
+                    print("The last produced cube is " + self.cube)
         finally:
             pass
 
     def __del__(self):
+        del self.api_mode
         del self.username
         del self.password
         del self.server
@@ -124,6 +134,8 @@ class Client():
         del self.last_request
         del self.last_response
         del self.last_jobid
+        del self.last_return_value
+        del self.last_error
 
     def submit(self, query, display=False):
         """submit(query,display=False) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the Ophidia server
@@ -161,9 +173,11 @@ class Client():
             query += 'ncores=' + str(self.ncores) + ';'
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, return_value, error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
-            if return_value:
-                raise RuntimeError(error)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            if self.last_return_value:
+                raise RuntimeError(self.last_error)
+            if self.api_mode and not self.last_return_value and self.last_error is not None:
+                raise RuntimeError(self.last_error)
             if newsession is not None:
                 if len(newsession) == 0:
                     self.session = None
@@ -183,7 +197,7 @@ class Client():
                     if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Working Directory':
                         self.cwd = response_i['objcontent'][0]['message']
 
-                    if display is True:
+                    if self.api_mode and display is True:
                         self.pretty_print(response_i, response)
 
                     break
@@ -395,16 +409,18 @@ class Client():
         query = 'operator=oph_get_config;key=OPH_SESSION_ID;'
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, return_value, error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
-            if return_value:
-                raise RuntimeError(error)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            if self.last_return_value:
+                raise RuntimeError(self.last_error)
+            if self.api_mode and not self.last_return_value and self.last_error is not None:
+                raise RuntimeError(self.last_error)
             response = self.deserialize_response()
             if response is not None:
                 for response_i in response['response']:
                     if response_i['objkey'] == 'get_config':
                         self.session = response_i['objcontent'][0]['rowvalues'][0][1]
 
-                    if display is True:
+                    if self.api_mode and display is True:
                         self.pretty_print(response_i, response)
 
                     break
@@ -427,16 +443,18 @@ class Client():
         query = 'operator=oph_get_config;key=OPH_CWD;'
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, return_value, error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
-            if return_value:
-                raise RuntimeError(error)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            if self.last_return_value:
+                raise RuntimeError(self.last_error)
+            if self.api_mode and not self.last_return_value and self.last_error is not None:
+                raise RuntimeError(self.last_error)
             response = self.deserialize_response()
             if response is not None:
                 for response_i in response['response']:
                     if response_i['objkey'] == 'get_config':
                         self.cwd = response_i['objcontent'][0]['rowvalues'][0][1]
 
-                    if display is True:
+                    if self.api_mode and display is True:
                         self.pretty_print(response_i, response)
 
                     break
@@ -459,16 +477,18 @@ class Client():
         query = 'operator=oph_get_config;key=OPH_DATACUBE;'
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, return_value, error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
-            if return_value:
-                raise RuntimeError(error)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            if self.last_return_value:
+                raise RuntimeError(self.last_error)
+            if self.api_mode and not self.last_return_value and self.last_error is not None:
+                raise RuntimeError(self.last_error)
             response = self.deserialize_response()
             if response is not None:
                 for response_i in response['response']:
                     if response_i['objkey'] == 'get_config':
                         self.cube = response_i['objcontent'][0]['rowvalues'][0][1]
 
-                    if display is True:
+                    if self.api_mode and display is True:
                         self.pretty_print(response_i, response)
 
                     break
@@ -538,9 +558,12 @@ class Client():
             if not self.wisvalid(self.last_request):
                 print("The workflow is not valid")
                 return None
-            self.last_response, self.last_jobid, newsession, return_value, error = _ophsubmit.submit(self.username, self.password, self.server, self.port, self.last_request)
-            if return_value:
-                raise RuntimeError(error)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, self.last_request)
+            if self.last_return_value:
+                raise RuntimeError(self.last_error)
+            if self.api_mode and not self.last_return_value and self.last_error is not None:
+                raise RuntimeError(self.last_error)
+
             if newsession is not None:
                 if len(newsession) == 0:
                     self.session = None
