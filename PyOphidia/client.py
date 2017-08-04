@@ -44,6 +44,7 @@ class Client():
         port: Ophidia server port (default is 11732)
         session: ID of the current session
         cwd: Current Working Directory
+        cdd: Current Data Directory
         cube: Last produced cube PID
         exec_mode: Execution mode, 'sync' for synchronous mode (default),'async' for asynchronous mode
         ncores: Number of cores for each operation (default is 1)
@@ -91,6 +92,7 @@ class Client():
         self.port = port
         self.session = ''
         self.cwd = '/'
+        self.cdd = '/'
         self.cube = ''
         self.exec_mode = 'sync'
         self.ncores = 1
@@ -108,7 +110,7 @@ class Client():
                     self.resume_cwd()
                     self.resume_cube()
         except Exception as e:
-            print(get_linenumber(), "Something went wrong in resuming last session/cwd/cube:", e)
+            print(get_linenumber(), "Something went wrong in resuming last session, cwd or cube:", e)
         else:
             if self.api_mode:
                 if self.session:
@@ -128,6 +130,7 @@ class Client():
         del self.port
         del self.session
         del self.cwd
+        del self.cdd
         del self.cube
         del self.exec_mode
         del self.ncores
@@ -165,6 +168,8 @@ class Client():
             query += 'sessionid=' + self.session + ';'
         if self.cwd and 'cwd' not in query:
             query += 'cwd=' + self.cwd + ';'
+        if self.cdd and 'cdd' not in query:
+            query += 'cdd=' + self.cdd + ';'
         if self.cube and 'cube' not in query:
             query += 'cube=' + self.cube + ';'
         if self.exec_mode and 'exec_mode' not in query:
@@ -190,17 +195,21 @@ class Client():
                 for response_i in response['response']:
                     if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Output Cube':
                         self.cube = response_i['objcontent'][0]['message']
-
                         break
 
                 for response_i in response['response']:
                     if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Working Directory':
                         self.cwd = response_i['objcontent'][0]['message']
+                        break
 
-                    if self.api_mode and display is True:
-                        self.pretty_print(response_i, response)
+                for response_i in response['response']:
+                    if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Data Directory':
+                        self.cdd = response_i['objcontent'][0]['message']
+                        break
 
-                    break
+                if self.api_mode and display is True:
+                    self.pretty_print(response_i, response)
+
         except Exception as e:
             print(get_linenumber(), "Something went wrong in submitting the request:", e)
             return None
@@ -547,6 +556,8 @@ class Client():
             request['sessionid'] = self.session
         if self.cwd and 'cwd' not in request:
             request['cwd'] = self.cwd
+        if self.cdd and 'cdd' not in request:
+            request['cdd'] = self.cdd
         if self.cube and 'cube' not in request:
             request['cube'] = self.cube
         if self.exec_mode and 'exec_mode' not in request:
@@ -575,16 +586,20 @@ class Client():
                 for response_i in response['response']:
                     if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Output Cube':
                         self.cube = response_i['objcontent'][0]['message']
+                        break
 
-                    self.pretty_print(response_i, response)
-                    break
                 for response_i in response['response']:
-                    if response_i['objclass'] == 'text'and response_i['objcontent'][0]['title'] == 'Current Working Directory':
+                    if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Working Directory':
                         self.cwd = response_i['objcontent'][0]['message']
+                        break
 
-                    self.pretty_print(response_i, response)
+                for response_i in response['response']:
+                    if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Data Directory':
+                        self.cdd = response_i['objcontent'][0]['message']
+                        break
 
-                    break
+                self.pretty_print(response_i, response)
+
         except Exception as e:
             print(get_linenumber(), "Something went wrong in submitting the request:", e)
             return None

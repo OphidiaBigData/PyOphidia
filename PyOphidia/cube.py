@@ -34,7 +34,7 @@ def get_linenumber():
 
 
 class Cube():
-    """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd='/', compressed='no',
+    """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
             exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
             ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
             subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
@@ -87,13 +87,13 @@ class Cube():
         duplicate(container='-', ncores=1, exec_mode='sync', description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_DUPLICATE
         explore(schedule=0, limit_filter=100, subset_dims=None, subset_filter='all', time_filter='yes', subset_type='index', show_index='no', show_id='no',
-                show_time='no', level=1, output_path='default', output_name='default', cdd='/', base64='no', ncores=1, exec_mode='sync', objkey_filter='all',
+                show_time='no', level=1, output_path='default', output_name='default', cdd=None, base64='no', ncores=1, exec_mode='sync', objkey_filter='all',
                 display=True)
           -> dict or None : wrapper of the operator OPH_EXPLORECUBE
-        exportnc(misc='no', output_path='default', output_name='default', cdd='/', force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1,
+        exportnc(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1,
                  display=False)
           -> None : wrapper of the operator OPH_EXPORTNC
-        exportnc2(misc='no', output_path='default', output_name='default', cdd='/', force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1,
+        exportnc2(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1,
                   display=False)
           -> None : wrapper of the operator OPH_EXPORTNC2
         export_array(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no')
@@ -143,19 +143,19 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_CREATECONTAINER
         deletecontainer(container=None, delete_type='logical', hidden='yes', cwd=None, exec_mode='sync', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_DELETECONTAINER
-        explorenc(exec_mode='sync', schedule=0, measure='-', src_path=None, cdd='/', exp_dim='-', imp_dim='-', subset_dims='none', subset_type='index',
+        explorenc(exec_mode='sync', schedule=0, measure='-', src_path=None, cdd=None, exp_dim='-', imp_dim='-', subset_dims='none', subset_type='index',
                   subset_filter='all', limit_filter=100, show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no',
                   level=0, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0, wavelet_coeff='no', objkey_filter='all', display=True)
           -> None : wrapper of the operator OPH_EXPLORENC
         folder(command=None, cwd=None, path=None, exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_FOLDER
-        fs(command='ls', dpath='-', file='-', cdd='/', recursive='no', depth=0, realpath='no', exec_mode='sync', display=False)
+        fs(command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_FS
         get_config(key='all', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_GET_CONFIG
         hierarchy(hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_HIERARCHY
-        importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd='/', compressed='no',
+        importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
                  exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
                  ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
@@ -814,8 +814,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def fs(cls, command='ls', dpath='-', file='-', cdd='/', recursive='no', depth=0, realpath='no', exec_mode='sync', objkey_filter='all', display=False):
-        """fs(command='ls', dpath='-', file='-', cdd='/', recursive='no', depth=0, realpath='no', exec_mode='sync', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_FS
+    def fs(cls, command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync', objkey_filter='all', display=False):
+        """fs(command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_FS
 
         :param command: ls|cd
         :type command: str
@@ -1303,10 +1303,10 @@ class Cube():
             return newcube
 
     @classmethod
-    def explorenc(cls, exec_mode='sync', schedule=0, measure='-', src_path=None, cdd='/', exp_dim='-', imp_dim='-', subset_dims='none', subset_type='index', subset_filter='all', limit_filter=100,
+    def explorenc(cls, exec_mode='sync', schedule=0, measure='-', src_path=None, cdd=None, exp_dim='-', imp_dim='-', subset_dims='none', subset_type='index', subset_filter='all', limit_filter=100,
                   show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no', level=0, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0,
                   wavelet_coeff='no', objkey_filter='all', display=True):
-        """explorenc(exec_mode='sync', schedule=0, measure='-', src_path=None, cdd='/', exp_dim='-', imp_dim='-', subset_dims='none', subset_type='index', subset_filter='all', limit_filter=100,
+        """explorenc(exec_mode='sync', schedule=0, measure='-', src_path=None, cdd=None, exp_dim='-', imp_dim='-', subset_dims='none', subset_type='index', subset_filter='all', limit_filter=100,
                      show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no', level=0, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0,
                      wavelet_coeff='no', objkey_filter='all', display=True)
              -> None : wrapper of the operator OPH_EXPLORENC
@@ -1431,13 +1431,13 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def importnc(cls, container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd='/', compressed='no',
+    def importnc(cls, container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
                  exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
                  ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
                  leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,
                  display=False):
-        """importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,  cdd='/', compressed='no',
+        """importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,  cdd=None, compressed='no',
                     exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
                     ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                     subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
@@ -2103,13 +2103,13 @@ class Cube():
         else:
             return newcube
 
-    def __init__(self, container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd='/', compressed='no',
+    def __init__(self, container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
                  exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
                  ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
                  leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,
                  pid=None, display=False):
-        """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd='/', compressed='no',
+        """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
                 exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
                 ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
@@ -2398,8 +2398,8 @@ class Cube():
                         element['lattice_name'] = row_i[7]
                         self.dim_info.append(element)
 
-    def exportnc(self, misc='no', output_path='default', output_name='default', cdd='/', force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1, display=False):
-        """exportnc(misc='no', output_path='default', output_name='default', cdd='/', force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1, display=False)
+    def exportnc(self, misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1, display=False):
+        """exportnc(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1, display=False)
              -> None : wrapper of the operator OPH_EXPORTNC
 
         :param ncores: number of cores to use
@@ -2460,8 +2460,8 @@ class Cube():
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def exportnc2(self, misc='no', output_path='default', output_name='default', cdd='/', force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1, display=False):
-        """exportnc2(misc='no', output_path='default', output_name='default', cdd='/', force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1, display=False)
+    def exportnc2(self, misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1, display=False):
+        """exportnc2(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1, display=False)
              -> None : wrapper of the operator OPH_EXPORTNC2
 
         :param ncores: number of cores to use
@@ -2937,9 +2937,9 @@ class Cube():
             return newcube
 
     def explore(self, schedule=0, limit_filter=100, subset_dims=None, subset_filter='all', time_filter='yes', subset_type='index', show_index='no', show_id='no', show_time='no', level=1,
-                output_path='default', output_name='default', cdd='/', base64='no', ncores=1, exec_mode='sync', objkey_filter='all', display=True):
+                output_path='default', output_name='default', cdd=None, base64='no', ncores=1, exec_mode='sync', objkey_filter='all', display=True):
         """explore(schedule=0, limit_filter=100, subset_dims=None, subset_filter='all', time_filter='yes', subset_type='index', show_index='no', show_id='no', show_time='no', level=1, output_path='default',
-                   output_name='default', cdd='/', base64='no', ncores=1, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_EXPLORECUBE
+                   output_name='default', cdd=None, base64='no', ncores=1, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_EXPLORECUBE
 
         :param ncores: number of cores to use
         :type ncores: int
