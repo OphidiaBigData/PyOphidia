@@ -18,8 +18,7 @@ Changed:
 Fixed:
 ~~~~~~
 
-- Bug [#3](https://github.com/OphidiaBigData/PyOphidia/issues/3)
-
+- Bug `#3 <https://github.com/OphidiaBigData/PyOphidia/issues/3>`_
 
 v1.3.0 - 2017-05-08
 -------------------
