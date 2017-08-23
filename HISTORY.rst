@@ -1,3 +1,26 @@
+v1.4.0 - 2017-08-23
+-------------------
+
+Added:
+~~~~~~
+
+- Support for Current Data Directory in client
+- Support for Ophidia file system operator
+- last_error and last_return_value attributes in client
+
+Changed:
+~~~~~~~~
+
+- Cube methods interfaces to comply with Ophidia operators in v1.1.0
+- Client class to optionally catch framework-level errors
+- Cube class constructor to allow instantiation of empty cube objects
+
+Fixed:
+~~~~~~
+
+- Bug [#3](https://github.com/OphidiaBigData/PyOphidia/issues/3)
+
+
 v1.3.0 - 2017-05-08
 -------------------
 

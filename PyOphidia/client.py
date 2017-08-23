@@ -65,7 +65,7 @@ class Client():
             of parameters that will replace $1, $2 etc. in the workflow.
             The workflow will be validated against the Ophidia Workflow JSON Schema.
         wisvalid(workflow) -> bool : Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
-        pretty_print(response, response_i) -> self : Turn the last_response JSON string attribute into a formatted response
+        pretty_print(response, response_i) -> self : Prints the last_response JSON string attribute as a formatted response
     """
 
     def __init__(self, username, password, server, port='11732', api_mode=True):
@@ -226,7 +226,7 @@ class Client():
         return json.loads(self.last_response)
 
     def pretty_print(self, response, response_i):
-        """pretty_print(response, response_i) -> self : Turn the last_response JSON string attribute into a formatted response
+        """pretty_print(response, response_i) -> self : Prints the last_response JSON string attribute as a formatted response
         :param response: Python dictionary derived from the last_response JSON string
         :type response: dict
         :param response_i: each of the responses included in the list given by the dictionary key response['response']
