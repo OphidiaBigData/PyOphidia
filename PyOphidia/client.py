@@ -518,8 +518,6 @@ class Client():
             except Exception as e:
                 print(get_linenumber(), "Something went wrong in parsing the string:", e)
                 return None
-        del os.path
-        del re
         if self.session and 'sessionid' not in request:
             request['sessionid'] = self.session
         if self.cwd and 'cwd' not in request:
