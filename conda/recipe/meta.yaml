@@ -1,7 +1,7 @@
 {% set repo = environ.get('GIT_REPO',"OphidiaBigData") %}
 
 package:
-    name: mpas_analysis
+    name: pyophidia
     version: {{ GIT_DESCRIBE_TAG }}
 
 source:
