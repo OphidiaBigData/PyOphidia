@@ -133,7 +133,7 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_UNPUBLISH
 
     Class Methods:
-        setclient(username, password, server, port='11732')
+        setclient(username='', password='', token='', server, port='11732')
           -> None : Instantiate the Client, common for all Cube objects, for submitting requests
         cancel(id=None, type='kill', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_CANCEL
@@ -214,13 +214,15 @@ class Cube():
     client = None
 
     @classmethod
-    def setclient(cls, username, password, server, port='11732'):
-        """setclient(username, password, server, port='11732') -> None : Instantiate the Client, common for all Cube objects, for submitting requests
+    def setclient(cls, username='', password='', token='', server='', port='11732'):
+        """setclient(username='', password='', token='', server='', port='11732') -> None : Instantiate the Client, common for all Cube objects, for submitting requests
 
         :param username: Ophidia user
         :type username: str
         :param password: Ophidia password
         :type password: str
+        :param token: Ophidia token
+        :type token: str
         :param server: Ophidia server address
         :type server: str
         :param port: Ophidia server port
@@ -230,7 +232,7 @@ class Cube():
         """
 
         try:
-            cls.client = _client.Client(username, password, server, port)
+            cls.client = _client.Client(username, password, token, server, port)
         except Exception as e:
             print(get_linenumber(), "Something went wrong in setting the client:", e)
         finally:
