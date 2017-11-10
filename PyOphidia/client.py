@@ -22,6 +22,7 @@ from __future__ import absolute_import
 import sys
 import os
 import json
+import re
 from inspect import currentframe
 import PyOphidia.ophsubmit as _ophsubmit
 import traceback
@@ -45,6 +46,7 @@ class Client():
         session: ID of the current session
         cwd: Current Working Directory
         cdd: Current Data Directory
+        base_src_path: Base path for data files
         cube: Last produced cube PID
         exec_mode: Execution mode, 'sync' for synchronous mode (default),'async' for asynchronous mode
         ncores: Number of cores for each operation (default is 1)
@@ -58,6 +60,7 @@ class Client():
         submit(query, display=False) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the
             Ophidia server according to all login parameters of the Client and its state.
         deserialize_response() -> dict : Return the last_response JSON string attribute as a Python dictionary.
+        get_base_path(display=False) -> self : Get base path for data from the Ophidia instance.
         resume_session(display=False) -> self : Resume the last session the user was connected to.
         resume_cwd(display=False) -> self : Resume the last cwd (current working directory) the user was located into.
         resume_cube(display=False) -> self : Resume the last cube produced by the user.
@@ -93,6 +96,7 @@ class Client():
         self.session = ''
         self.cwd = '/'
         self.cdd = '/'
+        self.base_src_path = '/'
         self.cube = ''
         self.exec_mode = 'sync'
         self.ncores = 1
@@ -107,6 +111,7 @@ class Client():
             if self.api_mode:
                 self.resume_session()
                 if self.session is not None and self.session:
+                    self.get_base_path()
                     self.resume_cwd()
                     self.resume_cube()
         except Exception as e:
@@ -131,6 +136,7 @@ class Client():
         del self.session
         del self.cwd
         del self.cdd
+        del self.base_src_path
         del self.cube
         del self.exec_mode
         del self.ncores
@@ -404,6 +410,40 @@ class Client():
 
         return self
 
+    def get_base_path(self, display=False):
+        """get_base_path(display=False) -> self : Get base path for data from the Ophidia instance.
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
+        :returns: self or None
+        :rtype: Client or None
+        :raises: RuntimeError
+        """
+
+        if self.username is None or self.password is None or self.server is None or self.port is None:
+            raise RuntimeError('one or more login parameters are None')
+        query = 'operator=oph_get_config;key=OPH_BASE_SRC_PATH;'
+        self.last_request = query
+        try:
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            if self.last_return_value:
+                raise RuntimeError(self.last_error)
+            if self.api_mode and not self.last_return_value and self.last_error is not None:
+                raise RuntimeError(self.last_error)
+            response = self.deserialize_response()
+            if response is not None:
+                for response_i in response['response']:
+                    if response_i['objkey'] == 'get_config':
+                        self.base_src_path = response_i['objcontent'][0]['rowvalues'][0][1]
+
+                    if self.api_mode and display is True:
+                        self.pretty_print(response_i, response)
+
+                    break
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong in retrieving base data path:", e)
+            return None
+        return self
+
     def resume_session(self, display=False):
         """resume_session(display=False) -> self : Resume the last session the user was connected to.
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
@@ -523,8 +563,6 @@ class Client():
         if self.username is None or self.password is None or self.server is None or self.port is None:
             raise RuntimeError('one or more login parameters are None')
         request = None
-        import os.path
-        import re
 
         if os.path.isfile(workflow):
             try:
@@ -550,8 +588,7 @@ class Client():
             except Exception as e:
                 print(get_linenumber(), "Something went wrong in parsing the string:", e)
                 return None
-        del os.path
-        del re
+
         if self.session and 'sessionid' not in request:
             request['sessionid'] = self.session
         if self.cwd and 'cwd' not in request:
@@ -644,7 +681,6 @@ class Client():
             return False
         if 'tasks' not in w or not w['tasks']:
             return False
-        import re
         pattern = re.compile('^[A-Za-z0-9_]+=')
         for task in w['tasks']:
             if 'name' not in task or not task['name']:
@@ -669,7 +705,6 @@ class Client():
                         return False
                 except:
                     return False
-        del re
 
         for index, task in enumerate(w['tasks']):
             if 'dependencies' in task and task['dependencies']:
