@@ -572,6 +572,7 @@ class Client():
                 for index, param in enumerate(params, start=1):
                     buffer = buffer.replace('${' + str(index) + '}', str(param))
                     buffer = re.sub('(\$' + str(index) + ')([^0-9]|$)', str(param) + '\g<2>', buffer)
+                buffer = re.sub('(\$\{?(\d*)\}?)', '', buffer)
                 request = json.loads(buffer)
 
             except Exception as e:
@@ -583,6 +584,7 @@ class Client():
                 for index, param in enumerate(params, start=1):
                     buffer = buffer.replace('${' + str(index) + '}', str(param))
                     buffer = re.sub('(\$' + str(index) + ')([^0-9]|$)', str(param) + '\g<2>', buffer)
+                buffer = re.sub('(\$\{?(\d*)\}?)', '', buffer)
                 request = json.loads(buffer)
 
             except Exception as e:
