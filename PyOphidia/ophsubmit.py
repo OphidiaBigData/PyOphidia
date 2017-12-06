@@ -200,7 +200,7 @@ def submit(username, password, server, port, query):
         if res_response is not None:
             if '"title": "ERROR"' in res_response or ('"title": "Workflow Status"' in res_response and '"message": "OPH_STATUS_ERROR"' in res_response):
                 error = "There was an error in one or more tasks"
-            response = str(res_response)
+            response = str(res_response.encode('utf-8'))
         if res_jobid is not None:
             if len(res_jobid) != 0:
                 jobid = str(res_jobid)
