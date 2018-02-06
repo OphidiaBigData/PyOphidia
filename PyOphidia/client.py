@@ -59,6 +59,7 @@ class Client():
     Methods:
         submit(query, display=False) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the
             Ophidia server according to all login parameters of the Client and its state.
+        get_progress(id=None) -> dict : Get progress of a workflow, either specifying the id or from the last submitted one.
         deserialize_response() -> dict : Return the last_response JSON string attribute as a Python dictionary.
         get_base_path(display=False) -> self : Get base path for data from the Ophidia instance.
         resume_session(display=False) -> self : Resume the last session the user was connected to.
@@ -220,6 +221,49 @@ class Client():
             print(get_linenumber(), "Something went wrong in submitting the request:", e)
             return None
         return self
+
+    def get_progress(self, id=None):
+        """get_progress(id=None) -> dict : Get progress of a workflow, either specifying the id or from the last submitted one
+        :param id: id of the workflow to monitor
+        :type id: int
+        :returns: workflow progess rate or None
+        :rtype: dict or None
+        :raises: RuntimeError
+        """
+
+        if id is None and self.last_jobid is None:
+            raise RuntimeError('no jobid specified')
+        if self.username is None or self.password is None or self.server is None or self.port is None:
+            raise RuntimeError('one or more login parameters are None')
+
+        query = 'oph_resume level=0;'
+        if id:
+            query += 'id=' + str(id) + ';'
+        elif self.last_jobid:
+            jobid = self.last_jobid.split('?')[1].split('#')[0]
+            query += 'id=' + jobid + ';'
+
+        progress_rate = 0
+        submission_date = "0000-00-00 00:00:00"
+        try:
+            if self.submit(query, display=False) is None:
+                raise RuntimeError()
+
+            if self.last_response is not None:
+                response = self.deserialize_response()
+
+            if response is not None:
+                for response_i in response['response']:
+                    if response_i['objclass'] == 'grid' and response_i['objcontent'][0]['title'] == 'Workflow Progress Ratio':
+                        submission_date = response_i['objcontent'][0]['rowvalues'][0][0]
+                        progress_rate = float(response_i['objcontent'][0]['rowvalues'][0][1])
+                        break
+
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong:", e)
+            return None
+
+        return {'submission date': submission_date, 'progress rate': progress_rate}
 
     def deserialize_response(self):
         """deserialize_response() -> dict : Return the last_response JSON string attribute as a Python dictionary
