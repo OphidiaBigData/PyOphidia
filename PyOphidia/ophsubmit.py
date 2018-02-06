@@ -144,6 +144,11 @@ def submit(username, password, server, port, query):
                         request += WRAPPING_WORKFLOW7.replace('%s', element)
         request += WRAPPING_WORKFLOW8
     try:
+        #Escape &, <, > and \n chars for http
+        request = request.replace("&", "&amp;")
+        request = request.replace("<", "&lt;")
+        request = request.replace(">", "&gt;")
+        request = request.replace("\n", "&#xA;")
         soapMessage = SOAP_MESSAGE_TEMPLATE % request
         client.putheader("Content-length", "%d" % len(soapMessage))
         client.putheader("SOAPAction", "\"\"")
@@ -195,7 +200,7 @@ def submit(username, password, server, port, query):
         if res_response is not None:
             if '"title": "ERROR"' in res_response or ('"title": "Workflow Status"' in res_response and '"message": "OPH_STATUS_ERROR"' in res_response):
                 error = "There was an error in one or more tasks"
-            response = str(res_response)
+            response = str(res_response.encode('utf-8'))
         if res_jobid is not None:
             if len(res_jobid) != 0:
                 jobid = str(res_jobid)

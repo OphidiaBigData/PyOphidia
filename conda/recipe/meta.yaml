@@ -1,0 +1,36 @@
+{% set repo = environ.get('GIT_REPO',"OphidiaBigData") %}
+
+package:
+    name: pyophidia
+    version: {{ GIT_DESCRIBE_TAG }}
+
+source:
+    git_rev: {{ environ.get('GIT_REVISION', 'master') }}
+    git_url: git://github.com/{{ GIT_REPO }}/PyOphidia
+
+build:
+    number: 0
+
+test:
+    imports:
+        - PyOphidia
+
+requirements:
+    build:
+        - python
+        - setuptools
+    run:
+        - python
+
+about:
+    home:  http://github.com/OphidiaBigData/PyOphidia
+
+extra:
+    recipe-maintainers:
+        - doutriaux1
+        - eldoo
+        - minomicetto
+        - aledanca
+        - sandrofiore
+
+
