@@ -126,9 +126,6 @@ class Cube():
         subset(subset_dims='none', subset_filter='all', container='-', exec_mode='sync', subset_type='index',
                time_filter='yes', offset=0, grid='-', ncores=1, schedule=0, description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_SUBSET
-        subset2(subset_dims='none', subset_filter='all', grid='-', container='-', ncores=1, exec_mode='sync', schedule=0, time_filter='yes', offset=0,
-                description='-', display=False)
-          -> Cube or None : wrapper of the operator OPH_SUBSET2. (Deprecated since Ophidia v1.1)
         unpublish( exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_UNPUBLISH
 
@@ -3849,79 +3846,6 @@ class Cube():
             query += 'subset_filter=' + str(subset_filter) + ';'
         if subset_type is not None:
             query += 'subset_type=' + str(subset_type) + ';'
-        if time_filter is not None:
-            query += 'time_filter=' + str(time_filter) + ';'
-        if offset is not None:
-            query += 'offset=' + str(offset) + ';'
-        if grid is not None:
-            query += 'grid=' + str(grid) + ';'
-        if container is not None:
-            query += 'container=' + str(container) + ';'
-        if description is not None:
-            query += 'description=' + str(description) + ';'
-
-        query += 'cube=' + str(self.pid) + ';'
-
-        try:
-            if Cube.client.submit(query, display) is None:
-                raise RuntimeError()
-
-            if Cube.client.last_response is not None:
-                if Cube.client.cube:
-                    newcube = Cube(pid=Cube.client.cube)
-        except Exception as e:
-            print(get_linenumber(), "Something went wrong:", e)
-            raise RuntimeError()
-        else:
-            return newcube
-
-    def subset2(self, ncores=1, exec_mode='sync', schedule=0, subset_dims='none', subset_filter='all', time_filter='yes', offset=0, grid='-', container='-', description='-', display=False):
-        """subset2(subset_dims='none', subset_filter='all', grid='-', container='-', ncores=1, exec_mode='sync', schedule=0, time_filter='yes', offset=0, description='-', display=False)
-             -> Cube or None : wrapper of the operator OPH_SUBSET2 (Deprecated since Ophidia v1.1)
-
-        :param ncores: number of cores to use
-        :type ncores: int
-        :param exec_mode: async or sync
-        :type exec_mode: str
-        :param schedule: 0
-        :type schedule: int
-        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
-        :type subset_dims: str
-        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters on dimension values (e.g. 30,5,10:50)
-        :type subset_filter: str
-        :param time_filter: yes|no
-        :type time_filter: str
-        :param offset: added to the bounds of subset intervals
-        :type offset: int
-        :param grid: optional argument used to identify the grid of dimensions to be used or the one to be created
-        :type grid: str
-        :param container: name of the container to be used to store the output cube, by default it is the input container
-        :type container: str
-        :param description: additional description to be associated with the output cube
-        :type description: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
-        :type display: bool
-        :returns: new cube or None
-        :rtype: Cube or None
-        :raises: RuntimeError
-        """
-
-        if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client or pid is None')
-        newcube = None
-
-        query = 'oph_subset2 '
-
-        if ncores is not None:
-            query += 'ncores=' + str(ncores) + ';'
-        if exec_mode is not None:
-            query += 'exec_mode=' + str(exec_mode) + ';'
-        if schedule is not None:
-            query += 'schedule=' + str(schedule) + ';'
-        if subset_dims is not None:
-            query += 'subset_dims=' + str(subset_dims) + ';'
-        if subset_filter is not None:
-            query += 'subset_filter=' + str(subset_filter) + ';'
         if time_filter is not None:
             query += 'time_filter=' + str(time_filter) + ';'
         if offset is not None:
