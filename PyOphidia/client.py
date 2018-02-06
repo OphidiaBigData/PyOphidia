@@ -22,6 +22,7 @@ from __future__ import absolute_import
 import sys
 import os
 import json
+import re
 from inspect import currentframe
 import PyOphidia.ophsubmit as _ophsubmit
 import traceback
@@ -35,7 +36,7 @@ def get_linenumber():
 
 
 class Client():
-    """Client(username,password,server,port='11732') -> obj
+    """Client(username,password,server,port='11732',api_mode=True) -> obj
 
     Attributes:
         username: Ophidia username
@@ -44,18 +45,23 @@ class Client():
         port: Ophidia server port (default is 11732)
         session: ID of the current session
         cwd: Current Working Directory
+        cdd: Current Data Directory
+        base_src_path: Base path for data files
         cube: Last produced cube PID
         exec_mode: Execution mode, 'sync' for synchronous mode (default),'async' for asynchronous mode
         ncores: Number of cores for each operation (default is 1)
         last_request: Last submitted query
         last_response: Last response received from the server (JSON string)
         last_jobid: Job ID associated to the last request
+        last_return_value: Last return value associated to response
+        last_error: Last error value associated to response
 
     Methods:
         submit(query, display=False) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the
             Ophidia server according to all login parameters of the Client and its state.
         get_progress(id=None) -> dict : Get progress of a workflow, either specifying the id or from the last submitted one.
         deserialize_response() -> dict : Return the last_response JSON string attribute as a Python dictionary.
+        get_base_path(display=False) -> self : Get base path for data from the Ophidia instance.
         resume_session(display=False) -> self : Resume the last session the user was connected to.
         resume_cwd(display=False) -> self : Resume the last cwd (current working directory) the user was located into.
         resume_cube(display=False) -> self : Resume the last cube produced by the user.
@@ -63,10 +69,10 @@ class Client():
             of parameters that will replace $1, $2 etc. in the workflow.
             The workflow will be validated against the Ophidia Workflow JSON Schema.
         wisvalid(workflow) -> bool : Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
-        pretty_print(response, response_i) -> self : Turn the last_response JSON string attribute into a formatted response
+        pretty_print(response, response_i) -> self : Prints the last_response JSON string attribute as a formatted response
     """
 
-    def __init__(self, username, password, server, port='11732'):
+    def __init__(self, username, password, server, port='11732', api_mode=True):
         """Client(username,password,server,port='11732') -> obj
         :param username: Ophidia username
         :type username: str
@@ -76,55 +82,70 @@ class Client():
         :type server: str
         :param port: Ophidia server port (default is 11732)
         :type port: str
+        :param api_mode: If True, use the class as an API and catch also framework-level errors
+        :type api_mode: bool
         :returns: None
         :rtype: None
         :raises: RuntimeError
         """
 
+        self.api_mode = api_mode
         self.username = username
         self.password = password
         self.server = server
         self.port = port
         self.session = ''
         self.cwd = '/'
+        self.cdd = '/'
+        self.base_src_path = '/'
         self.cube = ''
         self.exec_mode = 'sync'
         self.ncores = 1
         self.last_request = ''
         self.last_response = ''
         self.last_jobid = ''
+        self.last_return_value = 0
+        self.last_erorr = ''
         if self.username is None or self.password is None or self.server is None or self.port is None:
             raise RuntimeError('one or more login parameters are None')
         try:
-            self.resume_session()
-            if self.session is not None and self.session:
-                self.resume_cwd()
-                self.resume_cube()
+            if self.api_mode:
+                self.resume_session()
+                if self.session is not None and self.session:
+                    self.get_base_path()
+                    self.resume_cwd()
+                    self.resume_cube()
         except Exception as e:
-            print(get_linenumber(), "Something went wrong in resuming last session/cwd/cube:", e)
+            print(get_linenumber(), "Something went wrong in resuming last session, cwd or cube:", e)
         else:
-            if self.session:
-                print("Current session is " + self.session)
-            if self.cwd:
-                print("Current cwd is " + self.cwd)
-            if self.cube:
-                print("The last produced cube is " + self.cube)
+            if self.api_mode:
+                if self.session:
+                    print("Current session is " + self.session)
+                if self.cwd:
+                    print("Current cwd is " + self.cwd)
+                if self.cube:
+                    print("The last produced cube is " + self.cube)
         finally:
             pass
 
     def __del__(self):
+        del self.api_mode
         del self.username
         del self.password
         del self.server
         del self.port
         del self.session
         del self.cwd
+        del self.cdd
+        del self.base_src_path
         del self.cube
         del self.exec_mode
         del self.ncores
         del self.last_request
         del self.last_response
         del self.last_jobid
+        del self.last_return_value
+        del self.last_error
 
     def submit(self, query, display=False):
         """submit(query,display=False) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the Ophidia server
@@ -154,6 +175,8 @@ class Client():
             query += 'sessionid=' + self.session + ';'
         if self.cwd and 'cwd' not in query:
             query += 'cwd=' + self.cwd + ';'
+        if self.cdd and 'cdd' not in query:
+            query += 'cdd=' + self.cdd + ';'
         if self.cube and 'cube' not in query:
             query += 'cube=' + self.cube + ';'
         if self.exec_mode and 'exec_mode' not in query:
@@ -162,9 +185,11 @@ class Client():
             query += 'ncores=' + str(self.ncores) + ';'
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, return_value, error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
-            if return_value:
-                raise RuntimeError(error)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            if self.last_return_value:
+                raise RuntimeError(self.last_error)
+            if self.api_mode and not self.last_return_value and self.last_error is not None:
+                raise RuntimeError(self.last_error)
             if newsession is not None:
                 if len(newsession) == 0:
                     self.session = None
@@ -177,17 +202,21 @@ class Client():
                 for response_i in response['response']:
                     if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Output Cube':
                         self.cube = response_i['objcontent'][0]['message']
-
                         break
 
                 for response_i in response['response']:
                     if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Working Directory':
                         self.cwd = response_i['objcontent'][0]['message']
+                        break
 
-                    if display is True:
-                        self.pretty_print(response_i, response)
+                for response_i in response['response']:
+                    if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Data Directory':
+                        self.cdd = response_i['objcontent'][0]['message']
+                        break
 
-                    break
+                if self.api_mode and display is True:
+                    self.pretty_print(response_i, response)
+
         except Exception as e:
             print(get_linenumber(), "Something went wrong in submitting the request:", e)
             return None
@@ -247,7 +276,7 @@ class Client():
         return json.loads(self.last_response)
 
     def pretty_print(self, response, response_i):
-        """pretty_print(response, response_i) -> self : Turn the last_response JSON string attribute into a formatted response
+        """pretty_print(response, response_i) -> self : Prints the last_response JSON string attribute as a formatted response
         :param response: Python dictionary derived from the last_response JSON string
         :type response: dict
         :param response_i: each of the responses included in the list given by the dictionary key response['response']
@@ -425,6 +454,40 @@ class Client():
 
         return self
 
+    def get_base_path(self, display=False):
+        """get_base_path(display=False) -> self : Get base path for data from the Ophidia instance.
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
+        :returns: self or None
+        :rtype: Client or None
+        :raises: RuntimeError
+        """
+
+        if self.username is None or self.password is None or self.server is None or self.port is None:
+            raise RuntimeError('one or more login parameters are None')
+        query = 'operator=oph_get_config;key=OPH_BASE_SRC_PATH;'
+        self.last_request = query
+        try:
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            if self.last_return_value:
+                raise RuntimeError(self.last_error)
+            if self.api_mode and not self.last_return_value and self.last_error is not None:
+                raise RuntimeError(self.last_error)
+            response = self.deserialize_response()
+            if response is not None:
+                for response_i in response['response']:
+                    if response_i['objkey'] == 'get_config':
+                        self.base_src_path = response_i['objcontent'][0]['rowvalues'][0][1]
+
+                    if self.api_mode and display is True:
+                        self.pretty_print(response_i, response)
+
+                    break
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong in retrieving base data path:", e)
+            return None
+        return self
+
     def resume_session(self, display=False):
         """resume_session(display=False) -> self : Resume the last session the user was connected to.
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
@@ -439,16 +502,18 @@ class Client():
         query = 'operator=oph_get_config;key=OPH_SESSION_ID;'
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, return_value, error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
-            if return_value:
-                raise RuntimeError(error)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            if self.last_return_value:
+                raise RuntimeError(self.last_error)
+            if self.api_mode and not self.last_return_value and self.last_error is not None:
+                raise RuntimeError(self.last_error)
             response = self.deserialize_response()
             if response is not None:
                 for response_i in response['response']:
                     if response_i['objkey'] == 'get_config':
                         self.session = response_i['objcontent'][0]['rowvalues'][0][1]
 
-                    if display is True:
+                    if self.api_mode and display is True:
                         self.pretty_print(response_i, response)
 
                     break
@@ -471,16 +536,18 @@ class Client():
         query = 'operator=oph_get_config;key=OPH_CWD;'
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, return_value, error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
-            if return_value:
-                raise RuntimeError(error)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            if self.last_return_value:
+                raise RuntimeError(self.last_error)
+            if self.api_mode and not self.last_return_value and self.last_error is not None:
+                raise RuntimeError(self.last_error)
             response = self.deserialize_response()
             if response is not None:
                 for response_i in response['response']:
                     if response_i['objkey'] == 'get_config':
                         self.cwd = response_i['objcontent'][0]['rowvalues'][0][1]
 
-                    if display is True:
+                    if self.api_mode and display is True:
                         self.pretty_print(response_i, response)
 
                     break
@@ -503,16 +570,18 @@ class Client():
         query = 'operator=oph_get_config;key=OPH_DATACUBE;'
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, return_value, error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
-            if return_value:
-                raise RuntimeError(error)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            if self.last_return_value:
+                raise RuntimeError(self.last_error)
+            if self.api_mode and not self.last_return_value and self.last_error is not None:
+                raise RuntimeError(self.last_error)
             response = self.deserialize_response()
             if response is not None:
                 for response_i in response['response']:
                     if response_i['objkey'] == 'get_config':
                         self.cube = response_i['objcontent'][0]['rowvalues'][0][1]
 
-                    if display is True:
+                    if self.api_mode and display is True:
                         self.pretty_print(response_i, response)
 
                     break
@@ -538,8 +607,6 @@ class Client():
         if self.username is None or self.password is None or self.server is None or self.port is None:
             raise RuntimeError('one or more login parameters are None')
         request = None
-        import os.path
-        import re
 
         if os.path.isfile(workflow):
             try:
@@ -549,6 +616,7 @@ class Client():
                 for index, param in enumerate(params, start=1):
                     buffer = buffer.replace('${' + str(index) + '}', str(param))
                     buffer = re.sub('(\$' + str(index) + ')([^0-9]|$)', str(param) + '\g<2>', buffer)
+                buffer = re.sub('(\$\{?(\d*)\}?)', '', buffer)
                 request = json.loads(buffer)
 
             except Exception as e:
@@ -560,17 +628,19 @@ class Client():
                 for index, param in enumerate(params, start=1):
                     buffer = buffer.replace('${' + str(index) + '}', str(param))
                     buffer = re.sub('(\$' + str(index) + ')([^0-9]|$)', str(param) + '\g<2>', buffer)
+                buffer = re.sub('(\$\{?(\d*)\}?)', '', buffer)
                 request = json.loads(buffer)
 
             except Exception as e:
                 print(get_linenumber(), "Something went wrong in parsing the string:", e)
                 return None
-        del os.path
-        del re
+
         if self.session and 'sessionid' not in request:
             request['sessionid'] = self.session
         if self.cwd and 'cwd' not in request:
             request['cwd'] = self.cwd
+        if self.cdd and 'cdd' not in request:
+            request['cdd'] = self.cdd
         if self.cube and 'cube' not in request:
             request['cube'] = self.cube
         if self.exec_mode and 'exec_mode' not in request:
@@ -582,9 +652,12 @@ class Client():
             if not self.wisvalid(self.last_request):
                 print("The workflow is not valid")
                 return None
-            self.last_response, self.last_jobid, newsession, return_value, error = _ophsubmit.submit(self.username, self.password, self.server, self.port, self.last_request)
-            if return_value:
-                raise RuntimeError(error)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, self.last_request)
+            if self.last_return_value:
+                raise RuntimeError(self.last_error)
+            if self.api_mode and not self.last_return_value and self.last_error is not None:
+                raise RuntimeError(self.last_error)
+
             if newsession is not None:
                 if len(newsession) == 0:
                     self.session = None
@@ -596,16 +669,20 @@ class Client():
                 for response_i in response['response']:
                     if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Output Cube':
                         self.cube = response_i['objcontent'][0]['message']
+                        break
 
-                    self.pretty_print(response_i, response)
-                    break
                 for response_i in response['response']:
-                    if response_i['objclass'] == 'text'and response_i['objcontent'][0]['title'] == 'Current Working Directory':
+                    if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Working Directory':
                         self.cwd = response_i['objcontent'][0]['message']
+                        break
 
-                    self.pretty_print(response_i, response)
+                for response_i in response['response']:
+                    if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Data Directory':
+                        self.cdd = response_i['objcontent'][0]['message']
+                        break
 
-                    break
+                self.pretty_print(response_i, response)
+
         except Exception as e:
             print(get_linenumber(), "Something went wrong in submitting the request:", e)
             return None
@@ -650,7 +727,6 @@ class Client():
             return False
         if 'tasks' not in w or not w['tasks']:
             return False
-        import re
         pattern = re.compile('^[A-Za-z0-9_]+=')
         for task in w['tasks']:
             if 'name' not in task or not task['name']:
@@ -675,7 +751,6 @@ class Client():
                         return False
                 except:
                     return False
-        del re
 
         for index, task in enumerate(w['tasks']):
             if 'dependencies' in task and task['dependencies']:

@@ -28,13 +28,13 @@ def read(*paths):
 
 setup(
 	name='PyOphidia',
-	version='1.3.0',
+	version='1.4.0',
 	description='Python bindings for the Ophidia Data Analytics Platform',
 	long_description=(read('README.rst') + '\n\n'),
 	url='http://ophidia.cmcc.it',
 	license='GPLv3+',
 	author='Ophidia Developers',
-	author_email='ophidia-info@lists.cmcc.it',
+	author_email='ophidia-info@cmcc.it',
 	packages=['PyOphidia'],
 	include_package_data=True,
 	classifiers=[
@@ -51,6 +51,7 @@ setup(
 		'Programming Language :: Python :: 3.4',
 		'Programming Language :: Python :: 3.5',
 		'Topic :: Software Development :: Libraries :: Python Modules',
+		'Topic :: Scientific/Engineering',
 		#'Private :: Do Not Upload',
 	],
 )
