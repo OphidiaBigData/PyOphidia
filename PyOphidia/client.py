@@ -36,7 +36,7 @@ def get_linenumber():
 
 
 class Client():
-    """Client(username,password,server,port='11732',api_mode=True) -> obj
+    """Client(username='', password='', server='', port='11732', token='', api_mode=True) -> obj
 
     Attributes:
         username: Ophidia username
@@ -72,8 +72,8 @@ class Client():
         pretty_print(response, response_i) -> self : Prints the last_response JSON string attribute as a formatted response
     """
 
-    def __init__(self, username, password, server, port='11732', api_mode=True):
-        """Client(username,password,server,port='11732') -> obj
+    def __init__(self, username='', password='', server='', port='11732', token='', api_mode=True):
+        """Client(username='', password='', server='', port='11732', token='', api_mode=True) -> obj
         :param username: Ophidia username
         :type username: str
         :param password: Ophidia password
@@ -82,6 +82,8 @@ class Client():
         :type server: str
         :param port: Ophidia server port (default is 11732)
         :type port: str
+        :param token: Ophidia token
+        :type token: str
         :param api_mode: If True, use the class as an API and catch also framework-level errors
         :type api_mode: bool
         :returns: None
@@ -106,7 +108,12 @@ class Client():
         self.last_jobid = ''
         self.last_return_value = 0
         self.last_erorr = ''
-        if self.username is None or self.password is None or self.server is None or self.port is None:
+
+        if not self.username and not self.password and token:
+            self.password = token
+            self.username = "__token__"
+
+        if not self.username or not self.password or not self.server or self.port is None:
             raise RuntimeError('one or more login parameters are None')
         try:
             if self.api_mode:

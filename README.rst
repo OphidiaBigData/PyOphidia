@@ -48,7 +48,14 @@ It will also try to resume the last session the user was connected to, as well a
 
 .. code-block:: python
 
-   ophclient = client.Client("oph-user","oph-passwd","127.0.0.1","11732")
+   ophclient = client.Client(username="oph-user",password="oph-passwd",server="127.0.0.1",port="11732")
+
+In case of authentication token is used:
+
+.. code-block:: python
+
+   ophclient = client.Client(token="token",server="127.0.0.1",port="11732")
+
 
 Client attributes
 ^^^^^^^^^^^^^^^^^
@@ -96,7 +103,7 @@ Instantiate a new Client common to all Cube instances:
 .. code-block:: python
 
    from PyOphidia import cube
-   cube.Cube.setclient('oph-user','oph-password','127.0.0.1','11732')
+   cube.Cube.setclient(username="oph-user",password="oph-passwd",server="127.0.0.1",port="11732")
 
 Cube attributes
 ^^^^^^^^^^^^^^^
