@@ -144,7 +144,7 @@ def submit(username, password, server, port, query):
                         request += WRAPPING_WORKFLOW7.replace('%s', element)
         request += WRAPPING_WORKFLOW8
     try:
-        #Escape &, <, > and \n chars for http
+        # Escape &, <, > and \n chars for http
         request = request.replace("&", "&amp;")
         request = request.replace("<", "&lt;")
         request = request.replace(">", "&gt;")
