@@ -28,7 +28,7 @@ def read(*paths):
 
 setup(
 	name='PyOphidia',
-	version='1.4.0',
+	version='1.5.0',
 	description='Python bindings for the Ophidia Data Analytics Platform',
 	long_description=(read('README.rst') + '\n\n'),
 	url='http://ophidia.cmcc.it',
