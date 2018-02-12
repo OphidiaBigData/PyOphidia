@@ -1,3 +1,19 @@
+v1.5.0 - 2018-02-12
+-------------------
+
+Added:
+~~~~~~
+
+- Support for Authentication, Authorization and Accounting as a Service (token-based access) `#7 <https://github.com/OphidiaBigData/PyOphidia/pull/7>`_
+- Method to monitor a workflow progress rate `#6 <https://github.com/OphidiaBigData/PyOphidia/pull/6>`_
+- Support to retrieve base_src_path from Ophidia server
+ 
+Fixed:
+~~~~~~
+
+- Bugs related to non-ASCII and special (HTML) chars in json request submission
+
+
 v1.4.0 - 2017-08-23
 -------------------
 
