@@ -5,7 +5,7 @@ PyOphidia: Python bindings for Ophidia
 
 It is an alternative to Oph_Term, the Ophidia no-GUI interpreter component, and a convenient way to submit SOAP HTTPS requests to an Ophidia server or to develop your own application using Python. 
 
-It runs on Python 2.7, 3.3, 3.4 and 3.5, has no Python dependencies and is pure-Python code. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v1.4.0) is compatible with Ophidia v1.1.0.
+It runs on Python 2.7, 3.3, 3.4 and 3.5, has no Python dependencies and is pure-Python code. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v1.5.0) is compatible with Ophidia v1.2.0.
 
 It provides 2 main modules:
 
@@ -20,6 +20,15 @@ To install *PyOphidia* package run the following command:
 
    pip install pyophidia
 
+Install with conda
+------------------
+
+To install *PyOphidia* with conda run the following command:
+
+.. code-block:: bash 
+
+   conda install -c conda-forge pyophidia 
+
 Installation from sources
 -------------------------
 To install the latest developement version run the following commands:
@@ -29,6 +38,7 @@ To install the latest developement version run the following commands:
    git clone https://github.com/OphidiaBigData/PyOphidia
    cd PyOphidia
    python setup.py install
+
    
 Examples
 --------
@@ -78,7 +88,9 @@ Client attributes
 Client methods
 ^^^^^^^^^^^^^^
 - *submit(query, display) -> self*: Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the Ophidia server according to all login parameters of the Client and its state.
+- *get_progress(id) -> dict* : Get progress of a workflow, either by specifying the id or from the last submitted one.
 - *deserialize_response() -> dict*: Return the last_response JSON string attribute as a Python dictionary.
+- *get_base_path(display) -> self* : Get base path for data from the Ophidia server.
 - *resume_session(display) -> self*: Resume the last session the user was connected to.
 - *resume_cwd(display) -> self*: Resume the last cwd (current working directory) the user was located into.
 - *resume_cube(display) -> self*: Resume the last cube produced by the user.
