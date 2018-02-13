@@ -1615,7 +1615,7 @@ class Cube():
         if description is not None:
             query += 'description=' + str(description) + ';'
         if check_grid is not None:
-            query += 'check_grid=' + str(description) + ';'
+            query += 'check_grid=' + str(check_grid) + ';'
 
         try:
             if Cube.client.submit(query, display) is None:
@@ -2318,7 +2318,7 @@ class Cube():
                     if description is not None:
                         query += 'description=' + str(description) + ';'
                     if check_grid is not None:
-                        query += 'check_grid=' + str(description) + ';'
+                        query += 'check_grid=' + str(check_grid) + ';'
 
                     try:
                         if Cube.client.submit(query, display) is None:
@@ -2589,7 +2589,7 @@ class Cube():
         if description is not None:
             query += 'description=' + str(description) + ';'
         if check_grid is not None:
-            query += 'check_grid=' + str(description) + ';'
+            query += 'check_grid=' + str(check_grid) + ';'
 
         query += 'cube=' + str(self.pid) + ';'
 
@@ -2672,7 +2672,7 @@ class Cube():
         if description is not None:
             query += 'description=' + str(description) + ';'
         if check_grid is not None:
-            query += 'check_grid=' + str(description) + ';'
+            query += 'check_grid=' + str(check_grid) + ';'
 
         query += 'cube=' + str(self.pid) + ';'
 
@@ -3610,7 +3610,7 @@ class Cube():
         if description is not None:
             query += 'description=' + str(description) + ';'
         if check_grid is not None:
-            query += 'check_grid=' + str(description) + ';'
+            query += 'check_grid=' + str(check_grid) + ';'
 
         query += 'cube=' + str(self.pid) + ';'
 
@@ -3696,7 +3696,7 @@ class Cube():
         if description is not None:
             query += 'description=' + str(description) + ';'
         if check_grid is not None:
-            query += 'check_grid=' + str(description) + ';'
+            query += 'check_grid=' + str(check_grid) + ';'
 
         query += 'cube=' + str(self.pid) + ';'
 
@@ -3891,7 +3891,7 @@ class Cube():
         if description is not None:
             query += 'description=' + str(description) + ';'
         if check_grid is not None:
-            query += 'check_grid=' + str(description) + ';'
+            query += 'check_grid=' + str(check_grid) + ';'
 
         query += 'cube=' + str(self.pid) + ';'
 
@@ -3970,7 +3970,7 @@ class Cube():
         if description is not None:
             query += 'description=' + str(description) + ';'
         if check_grid is not None:
-            query += 'check_grid=' + str(description) + ';'
+            query += 'check_grid=' + str(check_grid) + ';'
 
         query += 'cube=' + str(self.pid) + ';'
 
