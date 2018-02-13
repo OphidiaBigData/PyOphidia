@@ -39,7 +39,7 @@ class Cube():
             ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
             subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
             leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,
-            pid=None, display=False) -> obj
+            pid=None, check_grid='no', display=False) -> obj
          or Cube(pid=None) -> obj
 
     Attributes:
@@ -66,10 +66,10 @@ class Cube():
 
     Methods:
         aggregate(ncores=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='NAN', grid='-', container='-',
-                  description='-', display=False)
+                  description='-', check_grid='no', display=False)
           -> Cube or None : wrapper of the operator OPH_AGGREGATE
-        aggregate2(ncores=1, exec_mode='sync', schedule=0, dim=None, concept_level='A', midnight='24', operation=None, grid='-', missingvalue='NAN',
-                   container='-', description='-', display=False)
+        aggregate2(ncores=1, exec_mode='sync', schedule=0, dim='-', concept_level='A', midnight='24', operation=None, grid='-', missingvalue='NAN',
+                   container='-', description='-', check_grid='no', display=False)
           -> Cube or None : wrapper of the operator OPH_AGGREGATE2
         apply(ncores=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes',
               compressed='auto', schedule=0,container='-', description='-', display=False)
@@ -114,20 +114,20 @@ class Cube():
         publish( ncores=1, content='all', exec_mode='sync', show_id= 'no', show_index='no', schedule=0, show_time='no', display=True)
           -> dict or None : wrapper of the operator OPH_PUBLISH
         reduce(operation=None, container=None, exec_mode='sync', grid='-', group_size='all', ncores=1, schedule=0, order=2, description='-',
-               objkey_filter='all', display=False)
+               objkey_filter='all', check_grid='no', display=False)
           -> Cube or None : wrapper of the operator OPH_REDUCE
         reduce2(dim=None, operation=None, concept_level='A', container='-', exec_mode='sync', grid='-', midnight='24', order=2, description='-',
-                schedule=0, ncores=1, display=False)
+                schedule=0, ncores=1, check_grid='no', display=False)
           -> Cube or None : wrapper of the operator OPH_REDUCE2
         rollup(ndim=1, container='-', exec_mode='sync', ncores=1, schedule=0, description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_ROLLUP
         split(nsplit=2, container='-', exec_mode='sync', ncores=1, schedule=0, description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_SPLIT
         subset(subset_dims='none', subset_filter='all', container='-', exec_mode='sync', subset_type='index',
-               time_filter='yes', offset=0, grid='-', ncores=1, schedule=0, description='-', display=False)
+               time_filter='yes', offset=0, grid='-', ncores=1, schedule=0, description='-', check_grid='no', display=False)
           -> Cube or None : wrapper of the operator OPH_SUBSET
         subset2(subset_dims='none', subset_filter='all', grid='-', container='-', ncores=1, exec_mode='sync', schedule=0, time_filter='yes', offset=0,
-                description='-', display=False)
+                description='-', check_grid='no', display=False)
           -> Cube or None : wrapper of the operator OPH_SUBSET2. (Deprecated since Ophidia v1.1)
         unpublish( exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_UNPUBLISH
@@ -159,7 +159,7 @@ class Cube():
                  exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
                  ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,)
+                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0, check_grid='no')
           -> Cube or None : wrapper of the operator OPH_IMPORTNC
         instances(level=1, host_filter='all', host_partition='all', filesystem_filter='all', ioserver_filter='all', host_status='all',
                   dbms_status='all', exec_mode='sync', objkey_filter='all', display=True)
@@ -464,7 +464,7 @@ class Cube():
     def get_config(cls, key='all', objkey_filter='all', display=True):
         """get_config(key='all', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_GET_CONFIG
 
-        :param key: all|OPH_XML_URL|OPH_SESSION_ID|OPH_EXEC_MODE|OPH_NCORES|OPH_DATACUBE|OPH_CWD|OPH_BASE_SRC_PATH
+        :param key: all|OPH_XML_URL|OPH_SESSION_ID|OPH_EXEC_MODE|OPH_NCORES|OPH_DATACUBE|OPH_CWD|OPH_CDD|OPH_BASE_SRC_PATH
         :type key: str
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
@@ -819,7 +819,7 @@ class Cube():
     def fs(cls, command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync', objkey_filter='all', display=False):
         """fs(command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_FS
 
-        :param command: ls|cd
+        :param command: ls|cd|mkdir|rm|mv
         :type command: str
         :param dpath: paths needed by commands
         :type dpath: str
@@ -1438,12 +1438,13 @@ class Cube():
                  ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
                  leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,
-                 display=False):
+                 check_grid='no', display=False):
         """importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,  cdd=None, compressed='no',
                     exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
                     ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                     subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                    leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,)
+                    leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,
+                    check_grid='no')
              -> Cube or None : wrapper of the operator OPH_IMPORTNC
 
         :param ncores: number of cores to use
@@ -1522,6 +1523,8 @@ class Cube():
         :type vocabulary: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param check_grid: yes|no
+        :type check_grid: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: obj or None
@@ -1611,6 +1614,8 @@ class Cube():
             query += 'leap_month=' + str(leap_month) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
+        if check_grid is not None:
+            query += 'check_grid=' + str(description) + ';'
 
         try:
             if Cube.client.submit(query, display) is None:
@@ -2110,13 +2115,13 @@ class Cube():
                  ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
                  leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,
-                 pid=None, display=False):
+                 pid=None, check_grid='no', display=False):
         """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
                 exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
                 ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,
-                pid=None, display=False) -> obj
+                pid=None, check_grid='no', display=False) -> obj
              or Cube(pid=None) -> obj
 
         :param ncores: number of cores to use
@@ -2197,6 +2202,8 @@ class Cube():
         :type description: str
         :param pid: PID of an existing cube (if used all other parameters are ignored)
         :type pid: str
+        :param check_grid: yes|no
+        :type check_grid: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: obj or None
@@ -2310,6 +2317,8 @@ class Cube():
                         query += 'schedule=' + str(schedule) + ';'
                     if description is not None:
                         query += 'description=' + str(description) + ';'
+                    if check_grid is not None:
+                        query += 'check_grid=' + str(description) + ';'
 
                     try:
                         if Cube.client.submit(query, display) is None:
@@ -2524,8 +2533,8 @@ class Cube():
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def aggregate(self, ncores=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='NAN', grid='-', container='-', description='-', display=False):
-        """aggregate( ncores=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='NAN', grid='-', container='-', description='-', display=False)
+    def aggregate(self, ncores=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='NAN', grid='-', container='-', description='-', check_grid='no', display=False):
+        """aggregate( ncores=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='NAN', grid='-', container='-', description='-', check_grid='no', display=False)
              -> Cube or None : wrapper of the operator OPH_AGGREGATE
 
         :param ncores: number of cores to use
@@ -2546,6 +2555,8 @@ class Cube():
         :type missingvalue: float
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param check_grid: yes|no
+        :type check_grid: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -2577,6 +2588,8 @@ class Cube():
             query += 'container=' + str(container) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
+        if check_grid is not None:
+            query += 'check_grid=' + str(description) + ';'
 
         query += 'cube=' + str(self.pid) + ';'
 
@@ -2593,9 +2606,10 @@ class Cube():
         else:
             return newcube
 
-    def aggregate2(self, ncores=1, exec_mode='sync', schedule=0, dim=None, concept_level='A', midnight='24', operation=None, grid='-', missingvalue='NAN', container='-', description='-',
-                   display=False):
-        """aggregate2(ncores=1, exec_mode='sync', schedule=0, dim=None, concept_level='A', midnight='24', operation=None, grid='-', missingvalue='NAN', container='-', description='-', display=False)
+    def aggregate2(self, ncores=1, exec_mode='sync', schedule=0, dim='-', concept_level='A', midnight='24', operation=None, grid='-', missingvalue='NAN', container='-', description='-',
+                   check_grid='no', display=False):
+        """aggregate2(ncores=1, exec_mode='sync', schedule=0, dim='-', concept_level='A', midnight='24', operation=None, grid='-', missingvalue='NAN', container='-', description='-',
+                      check_grid='no', display=False)
              -> Cube or None : wrapper of the operator OPH_AGGREGATE2
 
         :param ncores: number of cores to use
@@ -2620,6 +2634,8 @@ class Cube():
         :type missingvalue: float
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param check_grid: yes|no
+        :type check_grid: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -2627,7 +2643,7 @@ class Cube():
         :raises: RuntimeError
         """
 
-        if Cube.client is None or self.pid is None or dim is None or operation is None:
+        if Cube.client is None or self.pid is None or operation is None:
             raise RuntimeError('Cube.client, pid, dim or operation is None')
         newcube = None
 
@@ -2655,6 +2671,8 @@ class Cube():
             query += 'container=' + str(container) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
+        if check_grid is not None:
+            query += 'check_grid=' + str(description) + ';'
 
         query += 'cube=' + str(self.pid) + ';'
 
@@ -3532,8 +3550,8 @@ class Cube():
         else:
             return newcube
 
-    def reduce(self, ncores=1, exec_mode='sync', schedule=0, group_size='all', operation=None, order=2, missingvalue='NAN', grid='-', container='-', description='-', display=False):
-        """reduce(operation=None, container=None, exec_mode='sync', grid='-', group_size='all', ncores=1, schedule=0, order=2, description='-', objkey_filter='all', display=False)
+    def reduce(self, ncores=1, exec_mode='sync', schedule=0, group_size='all', operation=None, order=2, missingvalue='NAN', grid='-', container='-', description='-', check_grid='no', display=False):
+        """reduce(operation=None, container=None, exec_mode='sync', grid='-', group_size='all', ncores=1, schedule=0, order=2, description='-', objkey_filter='all', check_grid='no', display=False)
              -> Cube or None : wrapper of the operator OPH_REDUCE
 
         :param ncores: number of cores to use
@@ -3556,6 +3574,8 @@ class Cube():
         :type group_size: int or str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param check_grid: yes|no
+        :type check_grid: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -3589,6 +3609,8 @@ class Cube():
             query += 'container=' + str(container) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
+        if check_grid is not None:
+            query += 'check_grid=' + str(description) + ';'
 
         query += 'cube=' + str(self.pid) + ';'
 
@@ -3606,8 +3628,8 @@ class Cube():
             return newcube
 
     def reduce2(self, ncores=1, exec_mode='sync', schedule=0, dim=None, concept_level='A', midnight='24', operation=None, order=2, missingvalue='NAN', grid='-', container='-', description='-',
-                display=False):
-        """reduce2(dim=None, operation=None, concept_level='A', container='-', exec_mode='sync', grid='-', midnight='24', order=2, description='-', schedule=0, ncores=1, display=False)
+                check_grid='no', display=False):
+        """reduce2(dim=None, operation=None, concept_level='A', container='-', exec_mode='sync', grid='-', midnight='24', order=2, description='-', schedule=0, ncores=1, check_grid='no', display=False)
              -> Cube or None : wrapper of the operator OPH_REDUCE2
 
         :param ncores: number of cores to use
@@ -3634,6 +3656,8 @@ class Cube():
         :type missingvalue: float
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param check_grid: yes|no
+        :type check_grid: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -3671,6 +3695,8 @@ class Cube():
             query += 'container=' + str(container) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
+        if check_grid is not None:
+            query += 'check_grid=' + str(description) + ';'
 
         query += 'cube=' + str(self.pid) + ';'
 
@@ -3800,8 +3826,9 @@ class Cube():
             return newcube
 
     def subset(self, ncores=1, exec_mode='sync', schedule=0, subset_dims='none', subset_filter='all', subset_type='index', time_filter='yes', offset=0, grid='-', container='-', description='-',
-               display=False):
-        """subset(subset_dims='none', subset_filter='all', container='-', exec_mode='sync', subset_type='index', time_filter='yes', offset=0, grid='-', ncores=1, schedule=0, description='-',display=False)
+               check_grid='no', display=False):
+        """subset(subset_dims='none', subset_filter='all', container='-', exec_mode='sync', subset_type='index', time_filter='yes', offset=0, grid='-', ncores=1, schedule=0, description='-',
+                  check_grid='no', display=False)
              -> Cube or None : wrapper of the operator OPH_SUBSET
 
         :param ncores: number of cores to use
@@ -3826,6 +3853,8 @@ class Cube():
         :type grid: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param check_grid: yes|no
+        :type check_grid: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -3861,6 +3890,8 @@ class Cube():
             query += 'container=' + str(container) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
+        if check_grid is not None:
+            query += 'check_grid=' + str(description) + ';'
 
         query += 'cube=' + str(self.pid) + ';'
 
@@ -3877,8 +3908,10 @@ class Cube():
         else:
             return newcube
 
-    def subset2(self, ncores=1, exec_mode='sync', schedule=0, subset_dims='none', subset_filter='all', time_filter='yes', offset=0, grid='-', container='-', description='-', display=False):
-        """subset2(subset_dims='none', subset_filter='all', grid='-', container='-', ncores=1, exec_mode='sync', schedule=0, time_filter='yes', offset=0, description='-', display=False)
+    def subset2(self, ncores=1, exec_mode='sync', schedule=0, subset_dims='none', subset_filter='all', time_filter='yes', offset=0, grid='-', container='-', description='-',
+                check_grid='no', display=False):
+        """subset2(subset_dims='none', subset_filter='all', grid='-', container='-', ncores=1, exec_mode='sync', schedule=0, time_filter='yes', offset=0, description='-',
+                   check_grid='no', display=False)
              -> Cube or None : wrapper of the operator OPH_SUBSET2 (Deprecated since Ophidia v1.1)
 
         :param ncores: number of cores to use
@@ -3901,6 +3934,8 @@ class Cube():
         :type container: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param check_grid: yes|no
+        :type check_grid: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -3934,6 +3969,8 @@ class Cube():
             query += 'container=' + str(container) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
+        if check_grid is not None:
+            query += 'check_grid=' + str(description) + ';'
 
         query += 'cube=' + str(self.pid) + ';'
 

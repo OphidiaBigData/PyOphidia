@@ -8,6 +8,11 @@ Added:
 - Method to monitor a workflow progress rate `#6 <https://github.com/OphidiaBigData/PyOphidia/pull/6>`_
 - Support to retrieve base_src_path from Ophidia server
  
+Changed:
+~~~~~~~~
+
+- Cube methods interfaces to comply with Ophidia operators in v1.2.0
+
 Fixed:
 ~~~~~~
 
