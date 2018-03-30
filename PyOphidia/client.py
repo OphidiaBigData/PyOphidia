@@ -677,6 +677,13 @@ class Client():
                     if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Output Cube':
                         self.cube = response_i['objcontent'][0]['message']
                         break
+                else:
+                    index = 0
+                    for response_i in response['extra']['keys']:
+                        if response_i == 'cube':
+                            self.cube = response['extra']['values'][index]
+                            break
+                        index += 1
 
                 for response_i in response['response']:
                     if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Working Directory':
