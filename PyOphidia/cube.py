@@ -76,7 +76,8 @@ class Cube():
           -> Cube or None : wrapper of the operator OPH_APPLY
         cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
-        cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', display=True)
+        cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', 'action=read', concept_level='c',
+              dim_level=1, dim_array='yes', display=True)
           -> dict or None : wrapper of the operator OPH_CUBESCHEMA
         cubesize( schedule=0, ncores=1, byte_unit='MB', objkey_filter='all', exec_mode='sync', display=True)
           -> dict or None : wrapper of the operator OPH_CUBESIZE
@@ -3145,8 +3146,8 @@ class Cube():
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def cubeschema(self, level=0, dim='all', show_index='no', show_time='no', base64='no', exec_mode='sync', objkey_filter='all', display=True):
-        """ cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', display=True) -> dict or None : wrapper of the operator OPH_CUBESCHEMA
+    def cubeschema(self, level=0, dim='all', show_index='no', show_time='no', base64='no', action='read', concept_level='c', dim_level=1, dim_array='yes', exec_mode='sync', objkey_filter='all', display=True):
+        """ cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', action='read', concept_level='c', dim_level=1, dim_array='yes', display=True) -> dict or None : wrapper of the operator OPH_CUBESCHEMA
 
         :param level: 0|1|2
         :type level: int
@@ -3158,6 +3159,14 @@ class Cube():
         :type show_time: str
         :param base64: yes|no
         :type base64: str
+        :param action: read|add|clear
+        :type action: str
+        :param concept_level: hierarchy level of a new dimension to be added (default is 'c')
+        :type concept_level: str
+        :param dim_level: level of a new dimension to be added, greater than 0 (default is 1)
+        :type dim_level: int
+        :param dim_array: yes|no
+        :type dim_array: str
         :param exec_mode: async or sync
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
@@ -3183,6 +3192,14 @@ class Cube():
             query += 'show_time=' + str(show_time) + ';'
         if base64 is not None:
             query += 'base64=' + str(base64) + ';'
+        if action is not None:
+            query += 'action=' + str(action) + ';'
+        if concept_level is not None:
+            query += 'concept_level=' + str(concept_level) + ';'
+        if dim_level is not None:
+            query += 'dim_level=' + str(dim_level) + ';'
+        if dim_array is not None:
+            query += 'dim_array=' + str(dim_array) + ';'
         if exec_mode is not None:
             query += 'exec_mode=' + str(exec_mode) + ';'
         if objkey_filter is not None:
