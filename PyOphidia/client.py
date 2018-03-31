@@ -107,7 +107,8 @@ class Client():
         self.last_response = ''
         self.last_jobid = ''
         self.last_return_value = 0
-        self.last_erorr = ''
+        self.last_error = ''
+        self.last_exec_time = 0.0
 
         if not self.username and not self.password and token:
             self.password = token
@@ -210,6 +211,13 @@ class Client():
                     if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Output Cube':
                         self.cube = response_i['objcontent'][0]['message']
                         break
+                else:
+                    index = 0
+                    for response_i in response['extra']['keys']:
+                        if response_i == 'cube':
+                            self.cube = response['extra']['values'][index]
+                            break
+                        index += 1
 
                 for response_i in response['response']:
                     if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Working Directory':
@@ -220,6 +228,14 @@ class Client():
                     if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Data Directory':
                         self.cdd = response_i['objcontent'][0]['message']
                         break
+
+                index = 0
+                for response_i in response['extra']['keys']:
+                    if response_i == 'execution_time':
+                        self.last_exec_time = float(response['extra']['values'][index])
+                    elif response_i == 'access_token':
+                        self.password = response['extra']['values'][index]
+                    index += 1
 
                 if self.api_mode and display is True:
                     self.pretty_print(response_i, response)
@@ -459,6 +475,8 @@ class Client():
                 except Exception as e:
                     print(get_linenumber(), "Error in parsing json response:", e)
 
+            print("Execution time: " + str(self.last_exec_time) + " seconds")
+
         return self
 
     def get_base_path(self, display=False):
@@ -694,6 +712,14 @@ class Client():
                     if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Data Directory':
                         self.cdd = response_i['objcontent'][0]['message']
                         break
+
+                index = 0
+                for response_i in response['extra']['keys']:
+                    if response_i == 'execution_time':
+                        self.last_exec_time = float(response['extra']['values'][index])
+                    elif response_i == 'access_token':
+                        self.password = response['extra']['values'][index]
+                    index += 1
 
                 self.pretty_print(response_i, response)
 
