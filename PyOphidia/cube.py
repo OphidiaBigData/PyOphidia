@@ -4018,13 +4018,17 @@ class Cube():
 
         # Get number of max rows
         maxRows = 0
+        adimCube = False
         for d in self.dim_info:
+            if d['size'].upper() == "ALL":
+                adimCube = True
+                maxRows = 1
             if d['array'] == 'no':
                 if maxRows == 0:
                     maxRows = 1
                 if d['size'].upper() != "ALL":
                     maxRows = maxRows * int(d['size'])
-
+        
         if maxRows == 0:
             raise RuntimeError('Number of rows in cube is 0')
 
@@ -4078,71 +4082,75 @@ class Cube():
 
         data_values = {}
 
-        data_values["dimension"] = {}
-        data_values["measure"] = {}
+        if not adimCube:
+            data_values["dimension"] = {}
+            data_values["measure"] = {}
+            
+            # Get dimensions
+            try:
+                dimensions = []
+                for response_i in response['response']:
+                    if response_i['objkey'] == 'explorecube_dimvalues':
 
-        # Get dimensions
-        try:
-            dimensions = []
-            for response_i in response['response']:
-                if response_i['objkey'] == 'explorecube_dimvalues':
+                        for response_j in response_i['objcontent']:
+                            if response_j['title'] and response_j['rowfieldtypes'] and response_j['rowfieldtypes'][1] and response_j['rowvalues']:
+                                curr_dim = {}
+                                curr_dim['name'] = response_j['title']
 
-                    for response_j in response_i['objcontent']:
-                        if response_j['title'] and response_j['rowfieldtypes'] and response_j['rowfieldtypes'][1] and response_j['rowvalues']:
-                            curr_dim = {}
-                            curr_dim['name'] = response_j['title']
+                                # Append actual values
+                                dim_array = []
 
-                            # Append actual values
-                            dim_array = []
+                                # Special case for time
+                                if show_time == 'yes' and response_j['title'] == 'time':
+                                    for val in response_j['rowvalues']:
+                                        dims = [s.strip() for s in val[1].split(',')]
+                                        for v in dims:
+                                            dim_array.append(v)
+                                else:
+                                    for val in response_j['rowvalues']:
+                                        decoded_bin = base64.b64decode(val[1])
+                                        length = calculate_decoded_length(decoded_bin, response_j['rowfieldtypes'][1])
+                                        format = get_unpack_format(length, response_j['rowfieldtypes'][1])
+                                        dims = struct.unpack(format, decoded_bin)
+                                        for v in dims:
+                                            dim_array.append(v)
 
-                            # Special case for time
-                            if show_time == 'yes' and response_j['title'] == 'time':
-                                for val in response_j['rowvalues']:
-                                    dims = [s.strip() for s in val[1].split(',')]
-                                    for v in dims:
-                                        dim_array.append(v)
+                                curr_dim['values'] = dim_array
+                                dimensions.append(curr_dim)
+
                             else:
-                                for val in response_j['rowvalues']:
-                                    decoded_bin = base64.b64decode(val[1])
-                                    length = calculate_decoded_length(decoded_bin, response_j['rowfieldtypes'][1])
-                                    format = get_unpack_format(length, response_j['rowfieldtypes'][1])
-                                    dims = struct.unpack(format, decoded_bin)
-                                    for v in dims:
-                                        dim_array.append(v)
+                                raise RuntimeError("Unable to get dimension name or values in response")
 
-                            curr_dim['values'] = dim_array
-                            dimensions.append(curr_dim)
+                        break
 
-                        else:
-                            raise RuntimeError("Unable to get dimension name or values in response")
+                dim_num = len(dimensions)
+                if dim_num == 0:
+                    raise RuntimeError("No dimension found")
 
-                    break
+                data_values["dimension"] = dimensions
 
-            dim_num = len(dimensions)
-            if dim_num == 0:
-                raise RuntimeError("No dimension found")
-
-            data_values["dimension"] = dimensions
-
-        except Exception as e:
-            print(get_linenumber(), "Unable to get dimensions from response:", e)
-            return None
+            except Exception as e:
+                print(get_linenumber(), "Unable to get dimensions from response:", e)
+                return None
+        else:
+            data_values["measure"] = {}
 
         # Read values
         try:
             measures = []
             for response_i in response['response']:
                 if response_i['objkey'] == 'explorecube_data':
-
+                    
                     for response_j in response_i['objcontent']:
                         if response_j['title'] and response_j['rowkeys'] and response_j['rowfieldtypes'] and response_j['rowvalues']:
                             curr_mes = {}
                             measure_name = ""
                             measure_index = 0
 
-                            # Check that implicit dimension is just one
-                            if dim_num - (len(response_j['rowkeys']) - 1) / 2.0 > 1:
-                                raise RuntimeError("More than one implicit dimension")
+                            if not adimCube:
+                                # Check that implicit dimension is just one
+                                if dim_num - (len(response_j['rowkeys']) - 1) / 2.0 > 1:
+                                    raise RuntimeError("More than one implicit dimension")
 
                             for i, t in enumerate(response_j['rowkeys']):
                                 if response_j['title'] == t:
