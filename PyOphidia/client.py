@@ -719,6 +719,10 @@ class Client():
                         self.last_exec_time = float(response['extra']['values'][index])
                     elif response_i == 'access_token':
                         self.password = response['extra']['values'][index]
+                    elif response_i == 'cwd':
+                        self.cwd = response['extra']['values'][index]
+                    elif response_i == 'cdd':
+                        self.cdd = response['extra']['values'][index]
                     index += 1
 
                 self.pretty_print(response_i, response)
