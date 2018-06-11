@@ -72,7 +72,7 @@ class Cube():
                    container='-', description='-', check_grid='no', display=False)
           -> Cube or None : wrapper of the operator OPH_AGGREGATE2
         apply(ncores=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes',
-              compressed='auto', schedule=0,container='-', description='-', display=False)
+              on_reduce='skip', compressed='auto', schedule=0,container='-', description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_APPLY
         cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
@@ -139,7 +139,7 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_CANCEL
         createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base', base_time='1900-01-01 00:00:00',
                         units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', leap_year=0, leap_month=2, vocabulary='CF',
-                        compressed='no', display=False)
+                        compressed='no', description='-', display=False)
           -> dict or None : wrapper of the operator OPH_CREATECONTAINER
         deletecontainer(container=None, delete_type='logical', hidden='yes', cwd=None, exec_mode='sync', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_DELETECONTAINER
@@ -241,10 +241,10 @@ class Cube():
     @classmethod
     def createcontainer(cls, exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base',
                         base_time='1900-01-01 00:00:00', units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
-                        leap_year=0, leap_month=2, vocabulary='CF', compressed='no', display=False):
+                        leap_year=0, leap_month=2, vocabulary='CF', compressed='no', description='-', display=False):
         """createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base',
                         base_time='1900-01-01 00:00:00', units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
-                        leap_year=0, leap_month=2, vocabulary='CF', compressed='no', display=False) -> dict or None : wrapper of the operator OPH_CREATECONTAINER
+                        leap_year=0, leap_month=2, vocabulary='CF', compressed='no', description='-', display=False) -> dict or None : wrapper of the operator OPH_CREATECONTAINER
 
         :param exec_mode: async or sync
         :type exec_mode: str
@@ -274,6 +274,8 @@ class Cube():
         :type vocabulary: str
         :param compressed: yes or no
         :type compressed: str
+        :param description: additional description to be associated with the output container
+        :type description: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -316,6 +318,8 @@ class Cube():
                 query += 'vocabulary=' + str(vocabulary) + ';'
             if compressed is not None:
                 query += 'compressed=' + str(compressed) + ';'
+            if description is not None:
+                query += 'description=' + str(description) + ';'
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -2689,10 +2693,10 @@ class Cube():
         else:
             return newcube
 
-    def apply(self, ncores=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes', compressed='auto', schedule=0,
-              container='-', description='-', display=False):
-        """apply(ncores=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes', compressed='auto', schedule=0,
-                 container='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_APPLY
+    def apply(self, ncores=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes', on_reduce='skip', compressed='auto',
+              schedule=0, container='-', description='-', display=False):
+        """apply(ncores=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes', on_reduce='skip', compressed='auto',
+                 schedule=0, container='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_APPLY
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -2704,6 +2708,8 @@ class Cube():
         :type query: str
         :param check_type: yes|no
         :type check_type: str
+        :param on_reduce: skip|update
+        :type on_reduce: str
         :param compressed: yes|no|auto
         :type compressed: str
         :param container: name of the container to be used to store the output cube, by default it is the input container
@@ -2747,6 +2753,8 @@ class Cube():
             internal_query += 'dim_type=' + str(dim_type) + ';'
         if check_type is not None:
             internal_query += 'check_type=' + str(check_type) + ';'
+        if on_reduce is not None:
+            internal_query += 'on_reduce=' + str(on_reduce) + ';'
         if compressed is not None:
             internal_query += 'compressed=' + str(compressed) + ';'
         if schedule is not None:
