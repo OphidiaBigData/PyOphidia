@@ -624,6 +624,8 @@ class Client():
                     buffer = buffer.replace('${' + str(index) + '}', str(param))
                     buffer = re.sub('(\$' + str(index) + ')([^0-9]|$)', str(param) + '\g<2>', buffer)
                 buffer = re.sub('(\$\{?(\d*)\}?)', '', buffer)
+                # Remove comment blocks
+                buffer = re.sub(re.compile('/\*.*?\*/|//.*?\n', re.DOTALL), '\n', buffer)
                 request = json.loads(buffer)
 
             except Exception as e:
@@ -636,6 +638,8 @@ class Client():
                     buffer = buffer.replace('${' + str(index) + '}', str(param))
                     buffer = re.sub('(\$' + str(index) + ')([^0-9]|$)', str(param) + '\g<2>', buffer)
                 buffer = re.sub('(\$\{?(\d*)\}?)', '', buffer)
+                # Remove comment blocks
+                buffer = re.sub(re.compile('/\*.*?\*/|//.*?\n', re.DOTALL), '\n', buffer)
                 request = json.loads(buffer)
 
             except Exception as e:
@@ -656,8 +660,9 @@ class Client():
             request['ncores'] = str(self.ncores)
         self.last_request = json.dumps(request)
         try:
-            if not self.wisvalid(self.last_request):
-                print("The workflow is not valid")
+            err, err_msg = self.wisvalid(self.last_request)
+            if not err:
+                print("The workflow is not valid: " + str(err_msg))
                 return None
             self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, self.last_request)
             if self.last_return_value:
@@ -706,64 +711,71 @@ class Client():
         if workflow is None:
             return False
         w = None
-        if isinstance(workflow, str):
+
+        # Remove comment blocks
+        checked_workflow = re.sub(re.compile('/\*.*?\*/|//.*?\n', re.DOTALL), '\n', workflow)
+        print(checked_workflow)
+        if isinstance(checked_workflow, str):
             try:
-                w = json.loads(workflow)
+                w = json.loads(checked_workflow)
             except:
-                return False
-        elif isinstance(workflow, dict):
-            w = workflow
+                return False, "Workflow is not a valid JSON"
+        elif isinstance(checked_workflow, dict):
+            w = checked_workflow
         else:
-            return False
+            return False, "Workflow is not a valid dictionary"
         if 'name' not in w or not w['name']:
-            return False
+            return False, "Mandatory global argument 'name' is missing"
         if 'author' not in w or not w['author']:
-            return False
+            return False, "Mandatory global argument 'author' is missing"
         if 'abstract' not in w or not w['abstract']:
-            return False
+            return False, "Mandatory global argument 'abstract' is missing"
         if 'on_error' in w:
             try:
                 if w['on_error'] != 'skip' and w['on_error'] != 'continue' and w['on_error'] != 'break' and \
                    (w['on_error'][:7] != 'repeat ' or not w['on_error'][7:].isdigit() or int(w['on_error'][7:]) < 0):
-                    return False
+                    return False, "Mandatory global argument 'on_error' is not correct"
             except:
-                return False
+                return False, "Mandatory global argument 'on_error' is missing"
         if 'ncores' in w and not w['ncores'].isdigit():
-            return False
+            return False, "Mandatory global argument 'ncores' is missing or is not correct"
         if 'exec_mode' in w and w['exec_mode'] != 'sync' and w['exec_mode'] != 'async':
-            return False
+            return False, "Mandatory global argument 'exec_mode' is missing or is not correct"
         if 'tasks' not in w or not w['tasks']:
-            return False
+            return False, "Workflow task section is missing"
         pattern = re.compile('^[A-Za-z0-9_]+=')
         for task in w['tasks']:
+            task_name = ""
             if 'name' not in task or not task['name']:
-                return False
+                return False, "Task 'name' is missing"
+            else:
+                task_name = str(task['name'])
             if 'operator' not in task or not task['operator']:
-                return False
+                return False, "Task 'operator' is missing in task: " + task_name
             if 'arguments' in task and task['arguments']:
                 for argument in task['arguments']:
                     if not pattern.match(argument):
-                        return False
+                        return False, "Task argument '" + str(argument) + "' is not valid in task: " + task_name
             if 'dependencies' in task and task['dependencies']:
                 for dependency in task['dependencies']:
                     if 'task' not in dependency or not dependency['task']:
-                        return False
+                        return False, "Dependency 'task' is missing in task: " + task_name
                     if 'type' in dependency:
                         if dependency['type'] != 'all' and dependency['type'] != 'single' and dependency['type'] != 'embedded':
-                            return False
+                            return False, "Dependency 'type' is not correct in task: " + task_name
             if 'on_error' in task:
                 try:
                     if task['on_error'] != 'skip' and task['on_error'] != 'continue' and task['on_error'] != 'break' and \
                        (task['on_error'][:7] != 'repeat ' or not task['on_error'][7:].isdigit() or int(task['on_error'][7:]) < 0):
-                        return False
+                        return False, "Task 'on_error' is not correct in task: " + task_name
                 except:
-                    return False
+                    return False, "Task 'on_error' is not correct in task: " + task_name
 
         for index, task in enumerate(w['tasks']):
             if 'dependencies' in task and task['dependencies']:
                 for dependency in task['dependencies']:
                     if dependency['task'] == task['name']:
-                        return False
+                        return False, "Task dependency points to same task: " + str(dependency['task'])
                     for index2, task2 in enumerate(w['tasks']):
                         if dependency['task'] == task2['name']:
                             dependency['task_index'] = index2
@@ -772,7 +784,7 @@ class Client():
                             task2['dependents_indexes'].append(index)
                             break
                     else:
-                        return False
+                        return False, "Task dependency points to not existing task: " + str(dependency['task'])
 
         class WorkflowNode():
             def __init__(self):
@@ -842,6 +854,6 @@ class Client():
             #   if graph has edges then
             if node.in_edges_num != 0 or node.out_edges_num != 0:
                 #   return error (graph has at least one cycle)
-                return False
+                return False, "Workflow is not a DAG"
         #   else return success (graph has no cycles)
-        return True
+        return True, "Workflow is valid"
