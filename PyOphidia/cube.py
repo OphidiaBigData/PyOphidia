@@ -137,6 +137,7 @@ class Cube():
           -> None : Instantiate the Client, common for all Cube objects, for submitting requests
         cancel(id=None, type='kill', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_CANCEL
+        containerschema(container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CONTAINERSCHEMA
         createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base', base_time='1900-01-01 00:00:00',
                         units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', leap_year=0, leap_month=2, vocabulary='CF',
                         compressed='no', display=False)
@@ -237,6 +238,51 @@ class Cube():
             print(get_linenumber(), "Something went wrong in setting the client:", e)
         finally:
             pass
+
+    @classmethod
+    def containerschema(cls, container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=True):
+        """containerschema(container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CONTAINERSCHEMA
+
+        :param container: container name
+        :type container: str
+        :param cwd: current working directory
+        :type cwd: str
+        :param exec_mode: async or sync
+        :type exec_mode: str
+        :param objkey_filter: filter on the output of the operator
+        :type objkey_filter: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
+        :returns: response or None
+        :rtype: dict or None
+        :raises: RuntimeError
+        """
+
+        response = None
+        try:
+            if Cube.client is None or container is None or (cwd is None and Cube.client.cwd is None):
+                raise RuntimeError('Cube.client, container or cwd is None')
+
+            query = 'oph_containerschema '
+
+            if container is not None:
+                query += 'container=' + str(container) + ';'
+            if cwd is not None:
+                query += 'cwd=' + str(cwd) + ';'
+            if exec_mode is not None:
+                query += 'exec_mode=' + str(exec_mode) + ';'
+            if objkey_filter is not None:
+                query += 'objkey_filter=' + str(objkey_filter) + ';'
+
+            if Cube.client.submit(query, display) is None:
+                raise RuntimeError()
+
+            if Cube.client.last_response is not None:
+                response = Cube.client.deserialize_response()
+
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong:", e)
+            raise RuntimeError()
 
     @classmethod
     def createcontainer(cls, exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base',
