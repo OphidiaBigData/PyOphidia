@@ -105,8 +105,8 @@ class Cube():
           -> Cube or None : wrapper of the operator OPH_INTERCUBE
         merge(nmerge=0, schedule=0, description='-', container='-', exec_mode='sync', ncores=1, display=False)
           -> Cube or None : wrapper of the operator OPH_MERGE
-        metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, metadata_type_filter=None,
-                 metadata_value_filter=None, force='no', exec_mode='sync', objkey_filter='all', display=True)
+        metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, variable_filter=None,
+                 metadata_type_filter=None, metadata_value_filter=None, force='no', exec_mode='sync', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_METADATA
         permute(dim_pos=None, container='-', exec_mode='sync', ncores=1, schedule=0, description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_PERMUTE
@@ -202,7 +202,7 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_RESTORECONTAINER
         script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', display=False)
           -> dict or None : wrapper of the operator OPH_SCRIPT
-        search(path='-',  metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all',
+        search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all',
                cwd=None, display=True)
           -> dict or None : wrapper of the operator OPH_SEARCH
         service(status='', level=1, objkey_filter='all', display=False)
@@ -1041,7 +1041,7 @@ class Cube():
 
     @classmethod
     def search(cls, container_filter='all', metadata_key_filter='all', metadata_value_filter='all', path='-', cwd=None, exec_mode='sync', objkey_filter='all', display=True):
-        """search(path='-',  metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all', cwd=None, display=True)
+        """search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all', cwd=None, display=True)
              -> dict or None : wrapper of the operator OPH_SEARCH
 
         :param container_filter: filter on container name
@@ -3492,10 +3492,10 @@ class Cube():
         else:
             return newcube
 
-    def metadata(self, mode='read', metadata_key='all', variable='global', metadata_id=0, metadata_type='text', metadata_value='-', metadata_type_filter='all', metadata_value_filter='all',
-                 force='no', exec_mode='sync', objkey_filter='all', display=True):
-        """metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, metadata_type_filter=None, metadata_value_filter=None, force='no',
-                    exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_METADATA
+    def metadata(self, mode='read', metadata_key='all', variable='global', metadata_id=0, metadata_type='text', metadata_value='-', variable_filter='all', metadata_type_filter='all',
+                 metadata_value_filter='all', force='no', exec_mode='sync', objkey_filter='all', display=True):
+        """metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, variable_filter=None, metadata_type_filter=None,
+                    metadata_value_filter=None, force='no', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_METADATA
 
         :param mode: insert|read|update|delete
         :type mode: str
@@ -3509,6 +3509,8 @@ class Cube():
         :type metadata_type: str
         :param metadata_value: string value to be assigned to specified metadata
         :type metadata_value: str
+        :param variable_filter: filter on variable name
+        :type variable_filter: str
         :param metadata_type_filter: filter on metadata type
         :type metadata_type_filter: str
         :param metadata_value_filter: filter on metadata value
@@ -3542,6 +3544,8 @@ class Cube():
             query += 'metadata_type=' + str(metadata_type) + ';'
         if metadata_value is not None:
             query += 'metadata_value=' + str(metadata_value) + ';'
+        if variable_filter is not None:
+            query += 'variable_filter=' + str(variable_filter) + ';'
         if metadata_type_filter is not None:
             query += 'metadata_type_filter=' + str(metadata_type_filter) + ';'
         if metadata_value_filter is not None:
