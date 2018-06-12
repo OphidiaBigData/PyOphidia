@@ -72,11 +72,12 @@ class Cube():
                    container='-', description='-', check_grid='no', display=False)
           -> Cube or None : wrapper of the operator OPH_AGGREGATE2
         apply(ncores=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes',
-              compressed='auto', schedule=0,container='-', description='-', display=False)
+              on_reduce='skip', compressed='auto', schedule=0,container='-', description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_APPLY
         cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
-        cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', display=True)
+        cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', 'action=read', concept_level='c',
+              dim_level=1, dim_array='yes', display=True)
           -> dict or None : wrapper of the operator OPH_CUBESCHEMA
         cubesize( schedule=0, ncores=1, byte_unit='MB', objkey_filter='all', exec_mode='sync', display=True)
           -> dict or None : wrapper of the operator OPH_CUBESIZE
@@ -104,8 +105,8 @@ class Cube():
           -> Cube or None : wrapper of the operator OPH_INTERCUBE
         merge(nmerge=0, schedule=0, description='-', container='-', exec_mode='sync', ncores=1, display=False)
           -> Cube or None : wrapper of the operator OPH_MERGE
-        metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, metadata_type_filter=None,
-                 metadata_value_filter=None, force='no', exec_mode='sync', objkey_filter='all', display=True)
+        metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, variable_filter=None,
+                 metadata_type_filter=None, metadata_value_filter=None, force='no', exec_mode='sync', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_METADATA
         permute(dim_pos=None, container='-', exec_mode='sync', ncores=1, schedule=0, description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_PERMUTE
@@ -139,9 +140,10 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_CANCEL
         cluster(action='deploy', nhosts=1, host_partition=None, exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_CLUSTER
+        containerschema(container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CONTAINERSCHEMA
         createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base', base_time='1900-01-01 00:00:00',
                         units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', leap_year=0, leap_month=2, vocabulary='CF',
-                        compressed='no', display=False)
+                        compressed='no', description='-', display=False)
           -> dict or None : wrapper of the operator OPH_CREATECONTAINER
         deletecontainer(container=None, delete_type='logical', hidden='yes', cwd=None, exec_mode='sync', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_DELETECONTAINER
@@ -202,7 +204,7 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_RESTORECONTAINER
         script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', display=False)
           -> dict or None : wrapper of the operator OPH_SCRIPT
-        search(path='-',  metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all',
+        search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all',
                cwd=None, display=True)
           -> dict or None : wrapper of the operator OPH_SEARCH
         service(status='', level=1, objkey_filter='all', display=False)
@@ -286,12 +288,57 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
+    def containerschema(cls, container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=True):
+        """containerschema(container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CONTAINERSCHEMA
+
+        :param container: container name
+        :type container: str
+        :param cwd: current working directory
+        :type cwd: str
+        :param exec_mode: async or sync
+        :type exec_mode: str
+        :param objkey_filter: filter on the output of the operator
+        :type objkey_filter: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :type display: bool
+        :returns: response or None
+        :rtype: dict or None
+        :raises: RuntimeError
+        """
+
+        response = None
+        try:
+            if Cube.client is None or container is None or (cwd is None and Cube.client.cwd is None):
+                raise RuntimeError('Cube.client, container or cwd is None')
+
+            query = 'oph_containerschema '
+
+            if container is not None:
+                query += 'container=' + str(container) + ';'
+            if cwd is not None:
+                query += 'cwd=' + str(cwd) + ';'
+            if exec_mode is not None:
+                query += 'exec_mode=' + str(exec_mode) + ';'
+            if objkey_filter is not None:
+                query += 'objkey_filter=' + str(objkey_filter) + ';'
+
+            if Cube.client.submit(query, display) is None:
+                raise RuntimeError()
+
+            if Cube.client.last_response is not None:
+                response = Cube.client.deserialize_response()
+
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong:", e)
+            raise RuntimeError()
+
+    @classmethod
     def createcontainer(cls, exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base',
                         base_time='1900-01-01 00:00:00', units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
-                        leap_year=0, leap_month=2, vocabulary='CF', compressed='no', display=False):
+                        leap_year=0, leap_month=2, vocabulary='CF', compressed='no', description='-', display=False):
         """createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base',
                         base_time='1900-01-01 00:00:00', units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
-                        leap_year=0, leap_month=2, vocabulary='CF', compressed='no', display=False) -> dict or None : wrapper of the operator OPH_CREATECONTAINER
+                        leap_year=0, leap_month=2, vocabulary='CF', compressed='no', description='-', display=False) -> dict or None : wrapper of the operator OPH_CREATECONTAINER
 
         :param exec_mode: async or sync
         :type exec_mode: str
@@ -321,6 +368,8 @@ class Cube():
         :type vocabulary: str
         :param compressed: yes or no
         :type compressed: str
+        :param description: additional description to be associated with the output container
+        :type description: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -363,6 +412,8 @@ class Cube():
                 query += 'vocabulary=' + str(vocabulary) + ';'
             if compressed is not None:
                 query += 'compressed=' + str(compressed) + ';'
+            if description is not None:
+                query += 'description=' + str(description) + ';'
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -1045,7 +1096,7 @@ class Cube():
 
     @classmethod
     def search(cls, container_filter='all', metadata_key_filter='all', metadata_value_filter='all', path='-', cwd=None, exec_mode='sync', objkey_filter='all', display=True):
-        """search(path='-',  metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all', cwd=None, display=True)
+        """search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all', cwd=None, display=True)
              -> dict or None : wrapper of the operator OPH_SEARCH
 
         :param container_filter: filter on container name
@@ -2744,10 +2795,10 @@ class Cube():
         else:
             return newcube
 
-    def apply(self, ncores=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes', compressed='auto', schedule=0,
-              container='-', description='-', display=False):
-        """apply(ncores=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes', compressed='auto', schedule=0,
-                 container='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_APPLY
+    def apply(self, ncores=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes', on_reduce='skip', compressed='auto',
+              schedule=0, container='-', description='-', display=False):
+        """apply(ncores=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes', on_reduce='skip', compressed='auto',
+                 schedule=0, container='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_APPLY
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -2759,6 +2810,8 @@ class Cube():
         :type query: str
         :param check_type: yes|no
         :type check_type: str
+        :param on_reduce: skip|update
+        :type on_reduce: str
         :param compressed: yes|no|auto
         :type compressed: str
         :param container: name of the container to be used to store the output cube, by default it is the input container
@@ -2802,6 +2855,8 @@ class Cube():
             internal_query += 'dim_type=' + str(dim_type) + ';'
         if check_type is not None:
             internal_query += 'check_type=' + str(check_type) + ';'
+        if on_reduce is not None:
+            internal_query += 'on_reduce=' + str(on_reduce) + ';'
         if compressed is not None:
             internal_query += 'compressed=' + str(compressed) + ';'
         if schedule is not None:
@@ -3200,8 +3255,8 @@ class Cube():
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def cubeschema(self, level=0, dim='all', show_index='no', show_time='no', base64='no', exec_mode='sync', objkey_filter='all', display=True):
-        """ cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', display=True) -> dict or None : wrapper of the operator OPH_CUBESCHEMA
+    def cubeschema(self, level=0, dim='all', show_index='no', show_time='no', base64='no', action='read', concept_level='c', dim_level=1, dim_array='yes', exec_mode='sync', objkey_filter='all', display=True):
+        """ cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', action='read', concept_level='c', dim_level=1, dim_array='yes', display=True) -> dict or None : wrapper of the operator OPH_CUBESCHEMA
 
         :param level: 0|1|2
         :type level: int
@@ -3213,6 +3268,14 @@ class Cube():
         :type show_time: str
         :param base64: yes|no
         :type base64: str
+        :param action: read|add|clear
+        :type action: str
+        :param concept_level: hierarchy level of a new dimension to be added (default is 'c')
+        :type concept_level: str
+        :param dim_level: level of a new dimension to be added, greater than 0 (default is 1)
+        :type dim_level: int
+        :param dim_array: yes|no
+        :type dim_array: str
         :param exec_mode: async or sync
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
@@ -3238,6 +3301,14 @@ class Cube():
             query += 'show_time=' + str(show_time) + ';'
         if base64 is not None:
             query += 'base64=' + str(base64) + ';'
+        if action is not None:
+            query += 'action=' + str(action) + ';'
+        if concept_level is not None:
+            query += 'concept_level=' + str(concept_level) + ';'
+        if dim_level is not None:
+            query += 'dim_level=' + str(dim_level) + ';'
+        if dim_array is not None:
+            query += 'dim_array=' + str(dim_array) + ';'
         if exec_mode is not None:
             query += 'exec_mode=' + str(exec_mode) + ';'
         if objkey_filter is not None:
@@ -3476,10 +3547,10 @@ class Cube():
         else:
             return newcube
 
-    def metadata(self, mode='read', metadata_key='all', variable='global', metadata_id=0, metadata_type='text', metadata_value='-', metadata_type_filter='all', metadata_value_filter='all',
-                 force='no', exec_mode='sync', objkey_filter='all', display=True):
-        """metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, metadata_type_filter=None, metadata_value_filter=None, force='no',
-                    exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_METADATA
+    def metadata(self, mode='read', metadata_key='all', variable='global', metadata_id=0, metadata_type='text', metadata_value='-', variable_filter='all', metadata_type_filter='all',
+                 metadata_value_filter='all', force='no', exec_mode='sync', objkey_filter='all', display=True):
+        """metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, variable_filter=None, metadata_type_filter=None,
+                    metadata_value_filter=None, force='no', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_METADATA
 
         :param mode: insert|read|update|delete
         :type mode: str
@@ -3493,6 +3564,8 @@ class Cube():
         :type metadata_type: str
         :param metadata_value: string value to be assigned to specified metadata
         :type metadata_value: str
+        :param variable_filter: filter on variable name
+        :type variable_filter: str
         :param metadata_type_filter: filter on metadata type
         :type metadata_type_filter: str
         :param metadata_value_filter: filter on metadata value
@@ -3526,6 +3599,8 @@ class Cube():
             query += 'metadata_type=' + str(metadata_type) + ';'
         if metadata_value is not None:
             query += 'metadata_value=' + str(metadata_value) + ';'
+        if variable_filter is not None:
+            query += 'variable_filter=' + str(variable_filter) + ';'
         if metadata_type_filter is not None:
             query += 'metadata_type_filter=' + str(metadata_type_filter) + ';'
         if metadata_value_filter is not None:
