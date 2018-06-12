@@ -261,8 +261,8 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None:
-                raise RuntimeError('Cube.client is None')
+            if Cube.client is None or (host_partition is None and Cube.client.host_partition is None):
+                raise RuntimeError('Cube.client or host_partition is None')
 
             query = 'oph_cluster '
 
