@@ -48,6 +48,7 @@ class Client():
         cdd: Current Data Directory
         base_src_path: Base path for data files
         cube: Last produced cube PID
+        host_partition: Name of default host partition
         exec_mode: Execution mode, 'sync' for synchronous mode (default),'async' for asynchronous mode
         ncores: Number of cores for each operation (default is 1)
         last_request: Last submitted query
@@ -74,6 +75,8 @@ class Client():
 
     def __init__(self, username='', password='', server='', port='11732', token='', api_mode=True):
         """Client(username='', password='', server='', port='11732', token='', api_mode=True) -> obj
+        :param api_mode: If True, use the class as an API and catch also framework-level errors
+        :type api_mode: bool
         :param username: Ophidia username
         :type username: str
         :param password: Ophidia password
@@ -84,8 +87,8 @@ class Client():
         :type port: str
         :param token: Ophidia token
         :type token: str
-        :param api_mode: If True, use the class as an API and catch also framework-level errors
-        :type api_mode: bool
+        :param host_partition: Name of host partition
+        :type host_partition: str
         :returns: None
         :rtype: None
         :raises: RuntimeError
@@ -101,6 +104,7 @@ class Client():
         self.cdd = '/'
         self.base_src_path = '/'
         self.cube = ''
+        self.host_partition = 'test'
         self.exec_mode = 'sync'
         self.ncores = 1
         self.last_request = ''
@@ -147,6 +151,7 @@ class Client():
         del self.cdd
         del self.base_src_path
         del self.cube
+        del self.host_partition
         del self.exec_mode
         del self.ncores
         del self.last_request
@@ -187,6 +192,8 @@ class Client():
             query += 'cdd=' + self.cdd + ';'
         if self.cube and 'cube' not in query:
             query += 'cube=' + self.cube + ';'
+        if self.host_partition and 'host_partition' not in query:
+            query += 'host_partition=' + self.host_partition + ';'
         if self.exec_mode and 'exec_mode' not in query:
             query += 'exec_mode=' + self.exec_mode + ';'
         if self.ncores and 'ncores' not in query:
@@ -672,6 +679,8 @@ class Client():
             request['cdd'] = self.cdd
         if self.cube and 'cube' not in request:
             request['cube'] = self.cube
+        if self.host_partition and 'host_partition' not in request:
+            request['host_partition'] = self.host_partition
         if self.exec_mode and 'exec_mode' not in request:
             request['exec_mode'] = self.exec_mode
         if self.ncores and 'ncores' not in request:

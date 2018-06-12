@@ -138,6 +138,8 @@ class Cube():
           -> None : Instantiate the Client, common for all Cube objects, for submitting requests
         cancel(id=None, type='kill', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_CANCEL
+        cluster(action='deploy', nhosts=1, host_partition=None, exec_mode='sync', display=False)
+          -> dict or None : wrapper of the operator OPH_CLUSTER
         containerschema(container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CONTAINERSCHEMA
         createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base', base_time='1900-01-01 00:00:00',
                         units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', leap_year=0, leap_month=2, vocabulary='CF',
@@ -163,7 +165,7 @@ class Cube():
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
                  leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0, check_grid='no')
           -> Cube or None : wrapper of the operator OPH_IMPORTNC
-        instances(level=1, host_filter='all', host_partition='all', filesystem_filter='all', ioserver_filter='all', host_status='all',
+        instances(action='read', level=1, host_filter='all', nhost=0, host_partition='all', filesystem_filter='all', ioserver_filter='all', host_status='all',
                   dbms_status='all', exec_mode='sync', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_INSTANCES
         list(level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all', dbms_filter='all',
@@ -239,6 +241,51 @@ class Cube():
             print(get_linenumber(), "Something went wrong in setting the client:", e)
         finally:
             pass
+
+    @classmethod
+    def cluster(cls, action='deploy', nhosts=1, host_partition=None, exec_mode='sync', display=False):
+        """cluster(action='deploy', nhosts=1, host_partition=None, exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_CLUSTER
+
+        :param action: deploy|undeploy
+        :type action: str
+        :param nhosts: number of hosts to be reserved as well as number of I/O servers to be started
+        :type nhosts: int
+        :param host_partition: name of user-defined partition to be used
+        :type host_partition: str
+        :param exec_mode: async or sync
+        :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
+        :returns: response or None
+        :rtype: dict or None
+        :raises: RuntimeError
+        """
+
+        response = None
+        try:
+            if Cube.client is None or (host_partition is None and Cube.client.host_partition is None):
+                raise RuntimeError('Cube.client or host_partition is None')
+
+            query = 'oph_cluster '
+
+            if action is not None:
+                query += 'action=' + str(action) + ';'
+            if nhosts is not None:
+                query += 'nhosts=' + str(nhosts) + ';'
+            if host_partition is not None:
+                query += 'host_partition=' + str(host_partition) + ';'
+            if exec_mode is not None:
+                query += 'exec_mode=' + str(exec_mode) + ';'
+
+            if Cube.client.submit(query, display) is None:
+                raise RuntimeError()
+
+            if Cube.client.last_response is not None:
+                response = Cube.client.deserialize_response()
+
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong:", e)
+            raise RuntimeError()
 
     @classmethod
     def containerschema(cls, container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=True):
@@ -598,15 +645,19 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def instances(cls, level=1, host_filter='all', host_partition='all', filesystem_filter='all', ioserver_filter='all', host_status='all',
+    def instances(cls, action='read', level=1, host_filter='all', nhost=0, host_partition='all', filesystem_filter='all', ioserver_filter='all', host_status='all',
                   dbms_status='all', exec_mode='sync', objkey_filter='all', display=True):
-        """instances(level=1, host_filter='all', host_partition='all', filesystem_filter='all', ioserver_filter='all', host_status='all',
+        """instances(level=1, action='read', level=1, host_filter='all', nhost=0, host_partition='all', filesystem_filter='all', ioserver_filter='all', host_status='all',
                      dbms_status='all', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_INSTANCES
 
+        :param action: read|add|remove
+        :type action: str
         :param level: 1|2|3
         :type level: int
         :param host_filter: optional filter on host name
         :type host_filter: str
+        :param nhost: number of hosts to be grouped in the user-defined partition (add or remove mode)
+        :type nhost: int
         :param host_partition: optional filter on host partition name
         :type host_partition: str
         :param filesystem_filter: local|global|all
@@ -635,10 +686,14 @@ class Cube():
 
             query = 'oph_instances '
 
+            if action is not None:
+                query += 'action=' + str(action) + ';'
             if level is not None:
                 query += 'level=' + str(level) + ';'
             if host_filter is not None:
                 query += 'host_filter=' + str(host_filter) + ';'
+            if nhost is not None:
+                query += 'nhost=' + str(nhost) + ';'
             if host_partition is not None:
                 query += 'host_partition=' + str(host_partition) + ';'
             if filesystem_filter is not None:
