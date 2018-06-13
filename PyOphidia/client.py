@@ -220,11 +220,12 @@ class Client():
                         break
                 else:
                     index = 0
-                    for response_i in response['extra']['keys']:
-                        if response_i == 'cube':
-                            self.cube = response['extra']['values'][index]
-                            break
-                        index += 1
+                    if 'extra' in response:
+                        for response_i in response['extra']['keys']:
+                            if response_i == 'cube':
+                                self.cube = response['extra']['values'][index]
+                                break
+                            index += 1
 
                 for response_i in response['response']:
                     if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Working Directory':
@@ -237,12 +238,13 @@ class Client():
                         break
 
                 index = 0
-                for response_i in response['extra']['keys']:
-                    if response_i == 'execution_time':
-                        self.last_exec_time = float(response['extra']['values'][index])
-                    elif response_i == 'access_token':
-                        self.password = response['extra']['values'][index]
-                    index += 1
+                if 'extra' in response:
+                    for response_i in response['extra']['keys']:
+                        if response_i == 'execution_time':
+                            self.last_exec_time = float(response['extra']['values'][index])
+                        elif response_i == 'access_token':
+                            self.password = response['extra']['values'][index]
+                        index += 1
 
                 if self.api_mode and display is True:
                     self.pretty_print(response_i, response)
@@ -711,11 +713,12 @@ class Client():
                         break
                 else:
                     index = 0
-                    for response_i in response['extra']['keys']:
-                        if response_i == 'cube':
-                            self.cube = response['extra']['values'][index]
-                            break
-                        index += 1
+                    if 'extra' in response:
+                        for response_i in response['extra']['keys']:
+                            if response_i == 'cube':
+                                self.cube = response['extra']['values'][index]
+                                break
+                            index += 1
 
                 for response_i in response['response']:
                     if response_i['objclass'] == 'text' and response_i['objcontent'][0]['title'] == 'Current Working Directory':
@@ -728,16 +731,17 @@ class Client():
                         break
 
                 index = 0
-                for response_i in response['extra']['keys']:
-                    if response_i == 'execution_time':
-                        self.last_exec_time = float(response['extra']['values'][index])
-                    elif response_i == 'access_token':
-                        self.password = response['extra']['values'][index]
-                    elif response_i == 'cwd':
-                        self.cwd = response['extra']['values'][index]
-                    elif response_i == 'cdd':
-                        self.cdd = response['extra']['values'][index]
-                    index += 1
+                if 'extra' in response:
+                    for response_i in response['extra']['keys']:
+                        if response_i == 'execution_time':
+                            self.last_exec_time = float(response['extra']['values'][index])
+                        elif response_i == 'access_token':
+                            self.password = response['extra']['values'][index]
+                        elif response_i == 'cwd':
+                            self.cwd = response['extra']['values'][index]
+                        elif response_i == 'cdd':
+                            self.cdd = response['extra']['values'][index]
+                        index += 1
 
                 self.pretty_print(response_i, response)
 
