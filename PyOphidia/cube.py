@@ -4017,21 +4017,16 @@ class Cube():
             pass
 
         # Get number of max rows
-        maxRows = 0
-        adimCube = False
+        maxRows = 1
+        adimCube = True
         for d in self.dim_info:
-            if d['size'].upper() == "ALL":
-                adimCube = True
-                maxRows = 1
+            #Check if at least one dimensions does not have size "ALL"
+            if d['size'].upper() != "ALL":
+                adimCube = False
             if d['array'] == 'no':
-                if maxRows == 0:
-                    maxRows = 1
                 if d['size'].upper() != "ALL":
                     maxRows = maxRows * int(d['size'])
         
-        if maxRows == 0:
-            raise RuntimeError('Number of rows in cube is 0')
-
         query = 'oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=' + str(maxRows) + ';'
 
         if time_filter is not None:
