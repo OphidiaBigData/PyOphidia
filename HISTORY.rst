@@ -1,3 +1,28 @@
+
+NEXT RELEASE
+-------------------
+
+Added:
+~~~~~~
+
+- New method for importnc2 in cube module `#15 <https://github.com/OphidiaBigData/PyOphidia/pull/15/>`_
+- Support to manage reserved or user-defined host partition `#14 <https://github.com/OphidiaBigData/PyOphidia/pull/14>`_
+- Support to parse comments and print validation errors in 'wsubmit' method `#13 <https://github.com/OphidiaBigData/PyOphidia/pull/13>`_
+- New method for containerschema operator in cube module `#10 <https://github.com/OphidiaBigData/PyOphidia/pull/10>`_
+ 
+Changed:
+~~~~~~~~
+
+- Reduce2 method in cube module for multiple threads `#15 <https://github.com/OphidiaBigData/PyOphidia/pull/15>`_
+- Client module to read variables from extra fields in JSON response `#12 <https://github.com/OphidiaBigData/PyOphidia/pull/12>`_
+- Metadata method in cube module to filter on variables `#11 <https://github.com/OphidiaBigData/PyOphidia/pull/11>`_
+- Cubeschema method in cube module for dimension management `#9 <https://github.com/OphidiaBigData/PyOphidia/pull/9>`_
+
+Fixed:
+~~~~~~
+
+- Export array function in cube module to work also with adimensional cubes `#16 <https://github.com/OphidiaBigData/PyOphidia/pull/16>`_
+
 v1.5.0 - 2018-02-16
 -------------------
 

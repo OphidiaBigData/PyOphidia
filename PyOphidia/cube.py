@@ -1,6 +1,6 @@
 #
 #     PyOphidia - Python bindings for Ophidia
-#     Copyright (C) 2015-2017 CMCC Foundation
+#     Copyright (C) 2015-2018 CMCC Foundation
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -1741,8 +1741,6 @@ class Cube():
             raise RuntimeError()
         else:
             return newcube
-
-
 
     @classmethod
     def importnc2(cls, container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
@@ -4364,13 +4362,13 @@ class Cube():
         maxRows = 1
         adimCube = True
         for d in self.dim_info:
-            #Check if at least one dimensions does not have size "ALL"
+            # Check if at least one dimensions does not have size "ALL"
             if d['size'].upper() != "ALL":
                 adimCube = False
             if d['array'] == 'no':
                 if d['size'].upper() != "ALL":
                     maxRows = maxRows * int(d['size'])
-        
+
         query = 'oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=' + str(maxRows) + ';'
 
         if time_filter is not None:
@@ -4424,7 +4422,7 @@ class Cube():
         if not adimCube:
             data_values["dimension"] = {}
             data_values["measure"] = {}
-            
+
             # Get dimensions
             try:
                 dimensions = []
@@ -4479,7 +4477,7 @@ class Cube():
             measures = []
             for response_i in response['response']:
                 if response_i['objkey'] == 'explorecube_data':
-                    
+
                     for response_j in response_i['objcontent']:
                         if response_j['title'] and response_j['rowkeys'] and response_j['rowfieldtypes'] and response_j['rowvalues']:
                             curr_mes = {}
