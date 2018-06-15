@@ -754,7 +754,7 @@ class Client():
         """wisvalid(workflow) -> bool : Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
         :param workflow: a JSON string or a Python dict containing an Ophidia workflow
         :type workflow: str or dict
-        :returns: True or False
+        :returns: True or False and validation message
         :rtype: bool
         """
 

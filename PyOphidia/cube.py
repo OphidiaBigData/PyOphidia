@@ -91,10 +91,10 @@ class Cube():
                 show_time='no', level=1, output_path='default', output_name='default', cdd=None, base64='no', ncores=1, exec_mode='sync', objkey_filter='all',
                 display=True)
           -> dict or None : wrapper of the operator OPH_EXPLORECUBE
-        exportnc(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1,
+        exportnc(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1,
                  display=False)
           -> None : wrapper of the operator OPH_EXPORTNC
-        exportnc2(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1,
+        exportnc2(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1,
                   display=False)
           -> None : wrapper of the operator OPH_EXPORTNC2
         export_array(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no')
@@ -2723,8 +2723,8 @@ class Cube():
                         element['lattice_name'] = row_i[7]
                         self.dim_info.append(element)
 
-    def exportnc(self, misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1, display=False):
-        """exportnc(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1, display=False)
+    def exportnc(self, misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1, display=False):
+        """exportnc(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1, display=False)
              -> None : wrapper of the operator OPH_EXPORTNC
 
         :param ncores: number of cores to use
@@ -2785,8 +2785,8 @@ class Cube():
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def exportnc2(self, misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1, display=False):
-        """exportnc2(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='no', schedule=0, exec_mode='sync', ncores=1, display=False)
+    def exportnc2(self, misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1, display=False):
+        """exportnc2(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1, display=False)
              -> None : wrapper of the operator OPH_EXPORTNC2
 
         :param ncores: number of cores to use
