@@ -5,7 +5,7 @@ PyOphidia: Python bindings for Ophidia
 
 It is an alternative to Oph_Term, the Ophidia no-GUI interpreter component, and a convenient way to submit SOAP HTTPS requests to an Ophidia server or to develop your own application using Python. 
 
-It runs on Python 2.7, 3.3, 3.4 and 3.5, has no Python dependencies and is pure-Python code. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v1.5.0) is compatible with Ophidia v1.2.0.
+It runs on Python 2.7, 3.3, 3.4 and 3.5, has no Python dependencies and is pure-Python code. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v1.6.0) is compatible with Ophidia v1.3.0.
 
 It provides 2 main modules:
 
@@ -74,9 +74,11 @@ Client attributes
 - *server*: Ophidia server address
 - *port*: Ophidia server port (default is 11732)
 - *session*: ID of the current session
+- *base_src_path*: Server-side instance base source path
 - *cwd*: Current Working Directory
 - *cdd*: Current Data Directory
 - *cube*: Last produced cube PID
+- *host_partition*: Name of host partition being used
 - *exec_mode*: Execution mode, 'sync' for synchronous mode (default), 'async' for asynchronous mode
 - *ncores*: Number of cores for each operation (default is 1)
 - *last_request*: Last submitted query
@@ -84,6 +86,7 @@ Client attributes
 - *last_jobid*: Job ID associated to the last request
 - *last_return_value*: Last return value associated to response
 - *last_error*: Last error value associated to response
+- *last_exec_time*: Last execution time value associated to response
 
 Client methods
 ^^^^^^^^^^^^^^
@@ -95,7 +98,7 @@ Client methods
 - *resume_cwd(display) -> self*: Resume the last cwd (current working directory) the user was located into.
 - *resume_cube(display) -> self*: Resume the last cube produced by the user.
 - *wsubmit(workflow, \*params) -> self*: Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
-- *wisvalid(workflow) -> bool*: Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
+- *wisvalid(workflow) -> bool*: Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False and the related validation/error message.
 - *pretty_print(response, response_i) -> self*: Prints the last_response JSON string attribute as a formatted response.
 
 *To display the command output set "display=True"* 

@@ -1,5 +1,5 @@
 
-NEXT RELEASE
+v1.6.0 - 2018-06-18
 -------------------
 
 Added:
@@ -21,6 +21,7 @@ Changed:
 Fixed:
 ~~~~~~
 
+- 'export_metadata' default value for export methods in cube module
 - Export array function in cube module to work also with adimensional cubes `#16 <https://github.com/OphidiaBigData/PyOphidia/pull/16>`_
 
 v1.5.0 - 2018-02-16
