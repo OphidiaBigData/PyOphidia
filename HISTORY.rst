@@ -13,6 +13,7 @@ Added:
 Changed:
 ~~~~~~~~
 
+- Connection functions to also get parameters from environment variables `#17 <https://github.com/OphidiaBigData/PyOphidia/pull/17>`_ 
 - Reduce2 method in cube module for multiple threads `#15 <https://github.com/OphidiaBigData/PyOphidia/pull/15>`_
 - Client module to read variables from extra fields in JSON response `#12 <https://github.com/OphidiaBigData/PyOphidia/pull/12>`_
 - Metadata method in cube module to filter on variables `#11 <https://github.com/OphidiaBigData/PyOphidia/pull/11>`_

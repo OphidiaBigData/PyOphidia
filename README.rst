@@ -127,14 +127,6 @@ Instantiate a new Client common to all Cube instances:
    from PyOphidia import cube
    cube.Cube.setclient(username="oph-user",password="oph-passwd",server="127.0.0.1",port="11732")
 
-or
-
-.. code-block:: python
-
-   from PyOphidia import cube
-   cube.Cube.setclient(read_env=True)
-
-
 Cube attributes
 ^^^^^^^^^^^^^^^
 Instance attributes:
