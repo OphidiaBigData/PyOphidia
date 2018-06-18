@@ -67,6 +67,13 @@ In case of authentication token is used:
    ophclient = client.Client(token="token",server="127.0.0.1",port="11732")
 
 
+If *OPH_USER*, *OPH_PASSWD* (or *OPH_TOKEN*), *OPH_SERVER_HOST* and *OPH_SERVER_PORT* variables have been set in the environment (see the documentation_ for more details), a client can be also created reading directly the values from the environment without the need to specify any parameter. 
+
+.. code-block:: python
+
+   ophclient = client.Client(read_env=True)
+
+
 Client attributes
 ^^^^^^^^^^^^^^^^^
 - *username*: Ophidia username
@@ -119,6 +126,14 @@ Instantiate a new Client common to all Cube instances:
 
    from PyOphidia import cube
    cube.Cube.setclient(username="oph-user",password="oph-passwd",server="127.0.0.1",port="11732")
+
+or
+
+.. code-block:: python
+
+   from PyOphidia import cube
+   cube.Cube.setclient(read_env=True)
+
 
 Cube attributes
 ^^^^^^^^^^^^^^^
@@ -215,3 +230,4 @@ To exports data in a python-friendly format:
 
 .. _GPLv3: http://www.gnu.org/licenses/gpl-3.0.txt
 .. _Ophidia: http://ophidia.cmcc.it
+.. _documentation: http://ophidia.cmcc.it/documentation/users/terminal/term_advanced.html#oph-terminal-environment

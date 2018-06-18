@@ -36,7 +36,7 @@ def get_linenumber():
 
 
 class Client():
-    """Client(username='', password='', server='', port='11732', token='', api_mode=True) -> obj
+    """Client(username='', password='', server='', port='11732', token='', read_env=False, api_mode=True) -> obj
 
     Attributes:
         username: Ophidia username
@@ -73,8 +73,8 @@ class Client():
         pretty_print(response, response_i) -> self : Prints the last_response JSON string attribute as a formatted response
     """
 
-    def __init__(self, username='', password='', server='', port='11732', token='', api_mode=True):
-        """Client(username='', password='', server='', port='11732', token='', api_mode=True) -> obj
+    def __init__(self, username='', password='', server='', port='11732', token='', read_env=False, api_mode=True):
+        """Client(username='', password='', server='', port='11732', token='', read_env=False, api_mode=True) -> obj
         :param api_mode: If True, use the class as an API and catch also framework-level errors
         :type api_mode: bool
         :param username: Ophidia username
@@ -87,18 +87,42 @@ class Client():
         :type port: str
         :param token: Ophidia token
         :type token: str
-        :param host_partition: Name of host partition
-        :type host_partition: str
+        :param read_env: If True read the client variables from the environment
+        :type read_env: bool
         :returns: None
         :rtype: None
         :raises: RuntimeError
         """
 
         self.api_mode = api_mode
-        self.username = username
-        self.password = password
-        self.server = server
-        self.port = port
+        if read_env is False:
+            self.username = username
+            self.password = password
+            self.server = server
+            self.port = port
+            access_token = token
+        else:
+            if username:
+                self.username = username
+            else:
+                self.username = os.environ.get('OPH_USER')
+            if password:
+                self.password = password
+            else:
+                self.password = os.environ.get('OPH_PASSWD')
+            if server:
+                self.server = server
+            else:
+                self.server = os.environ.get('OPH_SERVER_HOST')
+            if port:
+                self.port = port
+            else:
+                self.port = os.environ.get('OPH_SERVER_PORT')
+            if token:
+                access_token = token
+            else:
+                access_token = os.environ.get('OPH_TOKEN')
+
         self.session = ''
         self.cwd = '/'
         self.cdd = '/'
@@ -114,11 +138,11 @@ class Client():
         self.last_error = ''
         self.last_exec_time = 0.0
 
-        if not self.username and not self.password and token:
+        if not self.username and not self.password and access_token:
             self.password = token
             self.username = "__token__"
 
-        if not self.username or not self.password or not self.server or self.port is None:
+        if not self.username or not self.password or not self.server or not self.port:
             raise RuntimeError('one or more login parameters are None')
         try:
             if self.api_mode:
