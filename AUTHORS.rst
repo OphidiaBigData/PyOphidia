@@ -1,4 +1,4 @@
-Ophidia Core Contributors - ophidia-info AT lists DOT cmcc DOT it
+Ophidia Core Contributors - ophidia-info AT cmcc DOT it
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Andrea Mariello,
 Sandro Fiore,

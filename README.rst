@@ -5,7 +5,7 @@ PyOphidia: Python bindings for Ophidia
 
 It is an alternative to Oph_Term, the Ophidia no-GUI interpreter component, and a convenient way to submit SOAP HTTPS requests to an Ophidia server or to develop your own application using Python. 
 
-It runs on Python 2.7, 3.3, 3.4 and 3.5, has no dependencies and is pure-Python. 
+It runs on Python 2.7, 3.3, 3.4 and 3.5, has no Python dependencies and is pure-Python code. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v1.5.0) is compatible with Ophidia v1.2.0.
 
 It provides 2 main modules:
 
@@ -20,6 +20,15 @@ To install *PyOphidia* package run the following command:
 
    pip install pyophidia
 
+Install with conda
+------------------
+
+To install *PyOphidia* with conda run the following command:
+
+.. code-block:: bash 
+
+   conda install -c conda-forge pyophidia 
+
 Installation from sources
 -------------------------
 To install the latest developement version run the following commands:
@@ -29,8 +38,8 @@ To install the latest developement version run the following commands:
    git clone https://github.com/OphidiaBigData/PyOphidia
    cd PyOphidia
    python setup.py install
-   
 
+   
 Examples
 --------
 
@@ -49,9 +58,16 @@ It will also try to resume the last session the user was connected to, as well a
 
 .. code-block:: python
 
-   ophclient = client.Client("oph-user","oph-passwd","127.0.0.1","11732")
+   ophclient = client.Client(username="oph-user",password="oph-passwd",server="127.0.0.1",port="11732")
 
-If *OPH_USER*, *OPH_PASSWD*, *OPH_SERVER_HOST* and *OPH_SERVER_PORT* variables (see the documentation_ for more details) have been set in the environment, a client can be also created reading directly the values from the environment without the need to specify any parameter. 
+In case of authentication token is used:
+
+.. code-block:: python
+
+   ophclient = client.Client(token="token",server="127.0.0.1",port="11732")
+
+
+If *OPH_USER*, *OPH_PASSWD* (or *OPH_TOKEN*), *OPH_SERVER_HOST* and *OPH_SERVER_PORT* variables have been set in the environment (see the documentation_ for more details), a client can be also created reading directly the values from the environment without the need to specify any parameter. 
 
 .. code-block:: python
 
@@ -66,22 +82,28 @@ Client attributes
 - *port*: Ophidia server port (default is 11732)
 - *session*: ID of the current session
 - *cwd*: Current Working Directory
+- *cdd*: Current Data Directory
 - *cube*: Last produced cube PID
 - *exec_mode*: Execution mode, 'sync' for synchronous mode (default), 'async' for asynchronous mode
 - *ncores*: Number of cores for each operation (default is 1)
 - *last_request*: Last submitted query
 - *last_response*: Last response received from the server (JSON string)
 - *last_jobid*: Job ID associated to the last request
+- *last_return_value*: Last return value associated to response
+- *last_error*: Last error value associated to response
 
 Client methods
 ^^^^^^^^^^^^^^
 - *submit(query, display) -> self*: Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the Ophidia server according to all login parameters of the Client and its state.
+- *get_progress(id) -> dict* : Get progress of a workflow, either by specifying the id or from the last submitted one.
 - *deserialize_response() -> dict*: Return the last_response JSON string attribute as a Python dictionary.
+- *get_base_path(display) -> self* : Get base path for data from the Ophidia server.
 - *resume_session(display) -> self*: Resume the last session the user was connected to.
 - *resume_cwd(display) -> self*: Resume the last cwd (current working directory) the user was located into.
 - *resume_cube(display) -> self*: Resume the last cube produced by the user.
 - *wsubmit(workflow, \*params) -> self*: Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
 - *wisvalid(workflow) -> bool*: Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
+- *pretty_print(response, response_i) -> self*: Prints the last_response JSON string attribute as a formatted response.
 
 *To display the command output set "display=True"* 
 
@@ -100,7 +122,7 @@ Instantiate a new Client common to all Cube instances:
 .. code-block:: python
 
    from PyOphidia import cube
-   cube.Cube.setclient('oph-user','oph-password','127.0.0.1','11732')
+   cube.Cube.setclient(username="oph-user",password="oph-passwd",server="127.0.0.1",port="11732")
 
 or
 
@@ -176,7 +198,7 @@ To perform a subsetting operation along dimensions of a data cube (dimension val
 
 .. code-block:: python
 
-   mycube3 = mycube2.subset2(subset_dims='lat|lon',subset_filter='1:10|20:30')
+   mycube3 = mycube2.subset(subset_dims='lat|lon',subset_filter='1:10|20:30',subset_type='coord')
 
 Explore Cube
 ^^^^^^^^^^^^
@@ -184,7 +206,7 @@ To explore a data cube filtering the data along its dimensions:
 
 .. code-block:: python
 
-   mycube2.explore(subset_dims='lat|lon',subset_filter='1:10|20:30')
+   mycube2.explore(subset_dims='lat|lon',subset_filter='1:10|20:30',subset_type='coord')
 
 Export to NetCDF file
 ^^^^^^^^^^^^^^^^^^^^^

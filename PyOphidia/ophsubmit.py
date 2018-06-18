@@ -144,6 +144,11 @@ def submit(username, password, server, port, query):
                         request += WRAPPING_WORKFLOW7.replace('%s', element)
         request += WRAPPING_WORKFLOW8
     try:
+        # Escape &, <, > and \n chars for http
+        request = request.replace("&", "&amp;")
+        request = request.replace("<", "&lt;")
+        request = request.replace(">", "&gt;")
+        request = request.replace("\n", "&#xA;")
         soapMessage = SOAP_MESSAGE_TEMPLATE % request
         client.putheader("Content-length", "%d" % len(soapMessage))
         client.putheader("SOAPAction", "\"\"")
@@ -179,11 +184,11 @@ def submit(username, password, server, port, query):
         xmldoc = minidom.parseString(reply)
         response = xmldoc.getElementsByTagName('oph:ophResponse')[0]
         res_error, res_response, res_jobid = None, None, None
-        if len(response.getElementsByTagName('jobid')) != 0:
+        if len(response.getElementsByTagName('jobid')) > 0 and response.getElementsByTagName('jobid')[0].firstChild is not None:
             res_jobid = response.getElementsByTagName('jobid')[0].firstChild.data
-        if len(response.getElementsByTagName('error')) != 0:
+        if len(response.getElementsByTagName('error')) > 0 and response.getElementsByTagName('error')[0].firstChild is not None:
             res_error = int(response.getElementsByTagName('error')[0].firstChild.data)
-        if len(response.getElementsByTagName('response')) != 0:
+        if len(response.getElementsByTagName('response')) > 0 and response.getElementsByTagName('response')[0].firstChild is not None:
             res_response = response.getElementsByTagName('response')[0].firstChild.data
     except Exception as e:
         print(get_linenumber(), "Something went wrong in submitting the request:", e)
@@ -194,8 +199,11 @@ def submit(username, password, server, port, query):
         response, jobid, newsession, return_value, error = None, None, None, 0, None
         if res_response is not None:
             if '"title": "ERROR"' in res_response or ('"title": "Workflow Status"' in res_response and '"message": "OPH_STATUS_ERROR"' in res_response):
-                return (None, None, None, 2, "There was an error in one or more tasks")
-            response = str(res_response)
+                error = "There was an error in one or more tasks"
+            if sys.version_info < (3, 0):
+                response = str(res_response.encode("ISO-8859-1"))
+            else:
+                response = str(res_response.encode("ISO-8859-1").decode("UTF-8"))
         if res_jobid is not None:
             if len(res_jobid) != 0:
                 jobid = str(res_jobid)
