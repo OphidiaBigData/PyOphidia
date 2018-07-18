@@ -130,12 +130,16 @@ class Cube():
         subset2(subset_dims='none', subset_filter='all', grid='-', container='-', ncores=1, exec_mode='sync', schedule=0, time_filter='yes', offset=0,
                 description='-', check_grid='no', display=False)
           -> Cube or None : wrapper of the operator OPH_SUBSET2. (Deprecated since Ophidia v1.1)
+        to_b2drop(src_path=None, auth_path='-', dst_path='-', ncores=1, export_metadata='yes')
+          -> dict or None : method that integrates the features of OPH_EXPORTNC2 and OPH_B2DROP operators to upload a cube to B2DROP as a NetCDF file
         unpublish( exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_UNPUBLISH
 
     Class Methods:
         setclient(username='', password='', server, port='11732', token='', read_env=False)
           -> None : Instantiate the Client, common for all Cube objects, for submitting requests
+        b2drop(auth_path='-', src_path=None, dst_path='-', cdd='/', exec_mode='sync', display=False)
+          -> dict or None : wrapper of the operator OPH_B2DROP
         cancel(id=None, type='kill', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_CANCEL
         cluster(action='deploy', nhosts=1, host_partition=None, exec_mode='sync', display=False)
@@ -249,6 +253,55 @@ class Cube():
             print(get_linenumber(), "Something went wrong in setting the client:", e)
         finally:
             pass
+
+    @classmethod
+    def b2drop(cls, auth_path='-', src_path=None, dst_path='-', cdd='/', exec_mode='sync', display=False):
+        """b2drop(auth_path='-', src_path=None, dst_path='-', cdd='/', exec_mode='sync', display=False)
+          -> dict or None : wrapper of the operator OPH_B2DROP
+
+        :param auth_path: absolute path to the netrc file containing the B2DROP credentials
+        :type auth_path: str
+        :param src_path: path to the file to be uploaded to B2DROP
+        :type src_path: str
+        :param dst_path: path where the file will be uploaded on B2DROP
+        :type dst_path: str
+        :param cdd: absolute path corresponding to the current directory on data repository
+        :type cdd: str
+        :param exec_mode: async or sync
+        :type exec_mode: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
+        :returns: response or None
+        :rtype: dict or None
+        :raises: RuntimeError
+        """
+
+        response = None
+        try:
+            if Cube.client is None or src_path is None:
+                raise RuntimeError('Cube.client or src_path is None')
+
+            query = 'oph_b2drop '
+
+            if auth_path is not None:
+                query += 'auth_path=' + str(auth_path) + ';'
+            if src_path is not None:
+                query += 'src_path=' + str(src_path) + ';'
+            if dst_path is not None:
+                query += 'dst_path=' + str(dst_path) + ';'
+            if cdd is not None:
+                query += 'cdd=' + str(cdd) + ';'
+            if exec_mode is not None:
+                query += 'exec_mode=' + str(exec_mode) + ';'
+
+            if Cube.client.submit(query, display) is None:
+                raise RuntimeError()
+
+            if Cube.client.last_response is not None:
+                response = Cube.client.deserialize_response()
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong:", e)
+            raise RuntimeError()
 
     @classmethod
     def cluster(cls, action='deploy', nhosts=1, host_partition=None, exec_mode='sync', display=False):
@@ -4330,6 +4383,52 @@ class Cube():
             raise RuntimeError()
         else:
             return newcube
+
+    def to_b2drop(self, src_path=None, auth_path='-', dst_path='-', ncores=1, export_metadata='yes'):
+        """to_b2drop(src_path=None, auth_path='-', dst_path='-', ncores=1, export_metadata='yes')
+          -> dict or None : method that integrates the features of OPH_EXPORTNC2 and OPH_B2DROP operators to upload a cube to B2DROP as a NetCDF file
+
+        :param src_path: local path where the NetCDF file of the data cube will be created
+        :type src_path: str
+        :param auth_path: absolute path to the netrc file containing the B2DROP credentials
+        :type auth_path: str
+        :param dst_path: path where the file will be uploaded on B2DROP
+        :type dst_path: str
+        :param ncores: number of cores to use
+        :type ncores: int
+        :param export_metadata: yes|no
+        :type export_metadata: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
+        :returns: response or None
+        :rtype: dict or None
+        :raises: RuntimeError
+        """
+
+        if Cube.client is None or self.pid is None or src_path is None:
+            raise RuntimeError('Cube.client or pid or src_path is None')
+        response = None
+
+        try:
+            self.exportnc2(cdd=Cube.client.cdd, force='yes', output_path=src_path, export_metadata=export_metadata, ncores=ncores, display=False)
+
+            file_path = ""
+            if Cube.client.last_response is not None:
+                response = Cube.client.deserialize_response()
+
+                for response_i in response['response']:
+                    if response_i['objclass'] == 'text' and 'title' in response_i['objcontent'][0] and response_i['objcontent'][0]['title'] == 'Output File':
+                        file_path = response_i["objcontent"][0]["message"]
+                        break
+
+            if not file_path:
+                raise RuntimeError('Unable to export NetCDF file')
+
+            Cube.b2drop(auth_path=auth_path, src_path=file_path, dst_path=dst_path, cdd=Cube.client.cdd, display=False)
+
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong:", e)
+            raise RuntimeError()
 
     def export_array(self, show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no'):
         """export_array(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no') -> dict or None : wrapper of the operator OPH_EXPLORECUBE
