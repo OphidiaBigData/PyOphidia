@@ -64,6 +64,7 @@ class Client():
         deserialize_response() -> dict : Return the last_response JSON string attribute as a Python dictionary.
         get_base_path(display=False) -> self : Get base path for data from the Ophidia instance.
         resume_session(display=False) -> self : Resume the last session the user was connected to.
+        resume_cdd(display=False) -> self : Resume the last cdd (current data directory) the user was located into.
         resume_cwd(display=False) -> self : Resume the last cwd (current working directory) the user was located into.
         resume_cube(display=False) -> self : Resume the last cube produced by the user.
         wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series
@@ -149,12 +150,15 @@ class Client():
                 self.resume_session()
                 if self.session is not None and self.session:
                     self.get_base_path()
+                    self.resume_cdd()
                     self.resume_cwd()
                     self.resume_cube()
         except Exception as e:
             print(get_linenumber(), "Something went wrong in resuming last session, cwd or cube:", e)
         else:
             if self.api_mode:
+                if self.cdd:
+                    print("Current cdd is " + self.cdd)
                 if self.session:
                     print("Current session is " + self.session)
                 if self.cwd:
@@ -577,6 +581,40 @@ class Client():
                     break
         except Exception as e:
             print(get_linenumber(), "Something went wrong in resuming last session:", e)
+            return None
+        return self
+
+    def resume_cdd(self, display=False):
+        """resume_cdd(display=False) -> self : Resume the last cdd (current data directory) the user was located into.
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
+        :returns: self or None
+        :rtype: Client or None
+        :raises: RuntimeError
+        """
+
+        if self.username is None or self.password is None or self.server is None or self.port is None:
+            raise RuntimeError('one or more login parameters are None')
+        query = 'operator=oph_get_config;key=OPH_CDD;'
+        self.last_request = query
+        try:
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            if self.last_return_value:
+                raise RuntimeError(self.last_error)
+            if self.api_mode and not self.last_return_value and self.last_error is not None:
+                raise RuntimeError(self.last_error)
+            response = self.deserialize_response()
+            if response is not None:
+                for response_i in response['response']:
+                    if response_i['objkey'] == 'get_config':
+                        self.cdd = response_i['objcontent'][0]['rowvalues'][0][1]
+
+                    if self.api_mode and display is True:
+                        self.pretty_print(response_i, response)
+
+                    break
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong in resuming last cdd:", e)
             return None
         return self
 
