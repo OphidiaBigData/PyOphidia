@@ -130,7 +130,7 @@ class Cube():
         subset2(subset_dims='none', subset_filter='all', grid='-', container='-', ncores=1, exec_mode='sync', schedule=0, time_filter='yes', offset=0,
                 description='-', check_grid='no', display=False)
           -> Cube or None : wrapper of the operator OPH_SUBSET2. (Deprecated since Ophidia v1.1)
-        to_b2drop(src_path=None, auth_path='-', dst_path='-', ncores=1, export_metadata='yes')
+        to_b2drop(cdd=None, auth_path='-', dst_path='-', ncores=1, export_metadata='yes')
           -> dict or None : method that integrates the features of OPH_EXPORTNC2 and OPH_B2DROP operators to upload a cube to B2DROP as a NetCDF file
         unpublish( exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_UNPUBLISH
@@ -138,7 +138,7 @@ class Cube():
     Class Methods:
         setclient(username='', password='', server, port='11732', token='', read_env=False)
           -> None : Instantiate the Client, common for all Cube objects, for submitting requests
-        b2drop(auth_path='-', src_path=None, dst_path='-', cdd='/', exec_mode='sync', display=False)
+        b2drop(auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_B2DROP
         cancel(id=None, type='kill', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_CANCEL
@@ -255,8 +255,8 @@ class Cube():
             pass
 
     @classmethod
-    def b2drop(cls, auth_path='-', src_path=None, dst_path='-', cdd='/', exec_mode='sync', display=False):
-        """b2drop(auth_path='-', src_path=None, dst_path='-', cdd='/', exec_mode='sync', display=False)
+    def b2drop(cls, auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False):
+        """b2drop(auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_B2DROP
 
         :param auth_path: absolute path to the netrc file containing the B2DROP credentials
@@ -4384,12 +4384,12 @@ class Cube():
         else:
             return newcube
 
-    def to_b2drop(self, src_path=None, auth_path='-', dst_path='-', ncores=1, export_metadata='yes'):
-        """to_b2drop(src_path=None, auth_path='-', dst_path='-', ncores=1, export_metadata='yes')
+    def to_b2drop(self, cdd=None, auth_path='-', dst_path='-', ncores=1, export_metadata='yes'):
+        """to_b2drop(cdd=None, auth_path='-', dst_path='-', ncores=1, export_metadata='yes')
           -> dict or None : method that integrates the features of OPH_EXPORTNC2 and OPH_B2DROP operators to upload a cube to B2DROP as a NetCDF file
 
-        :param src_path: local path where the NetCDF file of the data cube will be created
-        :type src_path: str
+        :param cdd: absolute path corresponding to the current directory on data repository
+        :type cdd: str
         :param auth_path: absolute path to the netrc file containing the B2DROP credentials
         :type auth_path: str
         :param dst_path: path where the file will be uploaded on B2DROP
@@ -4410,7 +4410,7 @@ class Cube():
         response = None
 
         try:
-            self.exportnc2(cdd=Cube.client.cdd, force='yes', output_path=src_path, export_metadata=export_metadata, ncores=ncores, display=False)
+            self.exportnc2(cdd=cdd, force='yes', output_path='local', export_metadata=export_metadata, ncores=ncores, display=False)
 
             file_path = ""
             if Cube.client.last_response is not None:
@@ -4424,7 +4424,9 @@ class Cube():
             if not file_path:
                 raise RuntimeError('Unable to export NetCDF file')
 
-            Cube.b2drop(auth_path=auth_path, src_path=file_path, dst_path=dst_path, cdd=Cube.client.cdd, display=False)
+            Cube.b2drop(auth_path=auth_path, src_path=file_path, dst_path=dst_path, cdd='/', display=False)
+
+            Cube.fs(command='rm', dpath=file_path, cdd='/', display=False)
 
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
