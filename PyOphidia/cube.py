@@ -4405,8 +4405,8 @@ class Cube():
         :raises: RuntimeError
         """
 
-        if Cube.client is None or self.pid is None or src_path is None:
-            raise RuntimeError('Cube.client or pid or src_path is None')
+        if Cube.client is None or self.pid is None:
+            raise RuntimeError('Cube.client or pid is None')
         response = None
 
         try:
