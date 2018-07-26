@@ -103,6 +103,7 @@ Client methods
 - *get_base_path(display) -> self* : Get base path for data from the Ophidia server.
 - *resume_session(display) -> self*: Resume the last session the user was connected to.
 - *resume_cwd(display) -> self*: Resume the last cwd (current working directory) the user was located into.
+- *resume_cdd(display) -> self*: Resume the last cdd (current working data directory) the user was located into.
 - *resume_cube(display) -> self*: Resume the last cube produced by the user.
 - *wsubmit(workflow, \*params) -> self*: Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
 - *wisvalid(workflow) -> bool*: Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False and the related validation/error message.

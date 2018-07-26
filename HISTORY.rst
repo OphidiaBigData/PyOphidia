@@ -1,4 +1,20 @@
 
+Next release
+-------------------
+
+Added:
+~~~~~~
+
+- Feature to retrive last CDD from server `#18 <https://github.com/OphidiaBigData/PyOphidia/pull/18>`_
+- Interfaces of 2 new methods: b2drop (class method) and to_b2drop 
+ 
+Changed:
+~~~~~~~~
+
+- 'info' method in Cube class to avoid calling cubeelements operator 
+- Cube methods interfaces to comply with Ophidia operators in v1.4.0
+- Interfaces of several operators to allow multi-thread execution `#19 <https://github.com/OphidiaBigData/PyOphidia/pull/19>`_
+
 v1.6.0 - 2018-06-18
 -------------------
 
