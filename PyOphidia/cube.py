@@ -142,14 +142,14 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_B2DROP
         cancel(id=None, type='kill', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_CANCEL
-        cluster(action='deploy', nhosts=1, host_partition=None, exec_mode='sync', display=False)
+        cluster(action='deploy', nhost=1, host_partition=None, exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_CLUSTER
         containerschema(container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CONTAINERSCHEMA
         createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base', base_time='1900-01-01 00:00:00',
                         units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', leap_year=0, leap_month=2, vocabulary='CF',
                         compressed='no', description='-', display=False)
           -> dict or None : wrapper of the operator OPH_CREATECONTAINER
-        deletecontainer(container=None, delete_type='logical', hidden='yes', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False)
+        deletecontainer(container=None, delete_type='logical', hidden='yes', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_DELETECONTAINER
         explorenc(exec_mode='sync', schedule=0, measure='-', src_path=None, cdd=None, exp_dim='-', imp_dim='-', subset_dims='none', subset_type='index',
                   subset_filter='all', limit_filter=100, show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no',
@@ -195,7 +195,7 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
         mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no', number=1, description='-', display=False)
           -> Cube : wrapper of the operator OPH_MERGECUBES
-        mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', number=1, description='-', dim='-', display=False)
+        mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, description='-', dim='-', display=False)
           -> Cube or None: wrapper of the operator OPH_MERGECUBES2
         movecontainer(container=None, cwd=None, exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_MOVECONTAINER
@@ -304,13 +304,13 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def cluster(cls, action='deploy', nhosts=1, host_partition=None, exec_mode='sync', display=False):
-        """cluster(action='deploy', nhosts=1, host_partition=None, exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_CLUSTER
+    def cluster(cls, action='deploy', nhost=1, host_partition=None, exec_mode='sync', display=False):
+        """cluster(action='deploy', nhost=1, host_partition=None, exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_CLUSTER
 
         :param action: deploy|undeploy
         :type action: str
-        :param nhosts: number of hosts to be reserved as well as number of I/O servers to be started
-        :type nhosts: int
+        :param nhost: number of hosts to be reserved as well as number of I/O servers to be started
+        :type nhost: int
         :param host_partition: name of user-defined partition to be used
         :type host_partition: str
         :param exec_mode: async or sync
@@ -331,8 +331,8 @@ class Cube():
 
             if action is not None:
                 query += 'action=' + str(action) + ';'
-            if nhosts is not None:
-                query += 'nhosts=' + str(nhosts) + ';'
+            if nhost is not None:
+                query += 'nhost=' + str(nhost) + ';'
             if host_partition is not None:
                 query += 'host_partition=' + str(host_partition) + ';'
             if exec_mode is not None:
@@ -487,8 +487,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def deletecontainer(cls, container=None, delete_type='logical', hidden='yes', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False):
-        """deletecontainer(container=None, delete_type='logical', hidden='yes', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False)
+    def deletecontainer(cls, container=None, delete_type='logical', hidden='yes', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False):
+        """deletecontainer(container=None, delete_type='logical', hidden='yes', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False)
              -> dict or None : wrapper of the operator OPH_DELETECONTAINER
 
         :param container: container name
@@ -498,6 +498,8 @@ class Cube():
         :param delete_type: logical or physical
         :type delete_type: str
         :param hidden: yes or no
+        :type hidden: str
+        :param force: yes or no
         :type hidden: str
         :param nthreads: number of threads to use
         :type nthreads: int
@@ -523,6 +525,8 @@ class Cube():
                 query += 'delete_type=' + str(delete_type) + ';'
             if hidden is not None:
                 query += 'hidden=' + str(hidden) + ';'
+            if force is not None:
+                query += 'force=' + str(force) + ';'
             if cwd is not None:
                 query += 'cwd=' + str(cwd) + ';'
             if nthreads is not None:
@@ -2421,8 +2425,8 @@ class Cube():
             return newcube
 
     @classmethod
-    def mergecubes2(cls, ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', number=1, description='-', dim='-', display=False):
-        """mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', number=1, description='-', dim='-', display=False) -> Cube or None: wrapper of the operator OPH_MERGECUBES2
+    def mergecubes2(cls, ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, description='-', dim='-', display=False):
+        """mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, description='-', dim='-', display=False) -> Cube or None: wrapper of the operator OPH_MERGECUBES2
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -2434,6 +2438,8 @@ class Cube():
         :type cubes: str
         :param container: optional container name
         :type container: str
+        :param dim_type: data type of the new dimension
+        :type dim_type: str
         :param number: number of replies of the first cube
         :type number: int
         :param description: additional description to be associated with the output cube
@@ -2467,6 +2473,8 @@ class Cube():
             query += 'number=' + str(number) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
+        if dim_type is not None:
+            query += 'dim_type=' + str(dim_type) + ';'
         if dim is not None:
             query += 'dim=' + str(dim) + ';'
 
@@ -2854,7 +2862,7 @@ class Cube():
         :type exec_mode: str
         :param schedule: 0
         :type schedule: int
-        :param export_metadata: yes|no
+        :param export_metadata: yes|no|postpone
         :type export_metadata: str
         :param misc: yes|no
         :type misc: str
