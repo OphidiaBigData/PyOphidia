@@ -56,6 +56,7 @@ class Client():
         last_jobid: Job ID associated to the last request
         last_return_value: Last return value associated to response
         last_error: Last error value associated to response
+        last_exec_time: Last execution time associated to response
 
     Methods:
         submit(query, display=False) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the

@@ -100,7 +100,7 @@ class Cube():
         export_array(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no')
           -> dict or None : wrapper of the operator OPH_EXPLORECUBE
         info(display=True)
-          -> None : call OPH_CUBESIZE, OPH_CUBEELEMENTS and OPH_CUBESCHEMA to fill all Cube attributes
+          -> None : call OPH_CUBESIZE and OPH_CUBESCHEMA to fill all Cube attributes
         intercube(cube2=None, operation='sub', container='-', exec_mode='sync', ncores=1, description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_INTERCUBE
         merge(nmerge=0, schedule=0, description='-', container='-', exec_mode='sync', ncores=1, display=False)
@@ -2735,7 +2735,7 @@ class Cube():
         del self.dim_info
 
     def info(self, display=True):
-        """info(display=True) -> None : call OPH_CUBESIZE, OPH_CUBEELEMENTS and OPH_CUBESCHEMA to fill all Cube attributes
+        """info(display=True) -> None : call OPH_CUBESIZE and OPH_CUBESCHEMA to fill all Cube attributes
 
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
@@ -2747,9 +2747,6 @@ class Cube():
         if Cube.client is None or self.pid is None:
             raise RuntimeError('Cube.client is None or pid is None')
         query = 'oph_cubesize exec_mode=sync;cube=' + str(self.pid) + ';'
-        if Cube.client.submit(query, display=False) is None:
-            raise RuntimeError()
-        query = 'oph_cubeelements exec_mode=sync;cube=' + str(self.pid) + ';'
         if Cube.client.submit(query, display=False) is None:
             raise RuntimeError()
         query = 'oph_cubeschema exec_mode=sync;cube=' + str(self.pid) + ';'
