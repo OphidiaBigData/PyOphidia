@@ -1,11 +1,11 @@
 
-Next release
+v1.7.0 - 2018-07-27
 -------------------
 
 Added:
 ~~~~~~
 
-- Feature to retrive last CDD from server `#18 <https://github.com/OphidiaBigData/PyOphidia/pull/18>`_
+- Features to retrive last CDD from server `#18 <https://github.com/OphidiaBigData/PyOphidia/pull/18>`_
 - Interfaces of 2 new methods: b2drop (class method) and to_b2drop 
  
 Changed:
