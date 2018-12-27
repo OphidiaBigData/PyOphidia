@@ -199,7 +199,15 @@ def submit(username, password, server, port, query):
         response, jobid, newsession, return_value, error = None, None, None, 0, None
         if res_response is not None:
             if '"title": "ERROR"' in res_response or ('"title": "Workflow Status"' in res_response and '"message": "OPH_STATUS_ERROR"' in res_response):
-                error = "There was an error in one or more tasks"
+                if '"message":' in res_response:
+                    try:
+                        a = res_response.index('"message": "') + len('"message": "')
+                        b = res_response.index('\\n"', a)
+                        error = res_response[a:b]
+                    except Exception as e:
+                        error = "There was an error in one or more tasks"
+                else:
+                    error = "There was an error in one or more tasks"
             if sys.version_info < (3, 0):
                 response = str(res_response.encode("ISO-8859-1"))
             else:
