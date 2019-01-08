@@ -75,11 +75,11 @@ class Cube():
               on_reduce='skip', compressed='auto', schedule=0,container='-', description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_APPLY
         concatnc(src_path=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
-			  subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0, display=False)
-		  -> Cube or None : wrapper of the operator OPH_CONCATNC
+                          subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0, display=False)
+                  -> Cube or None : wrapper of the operator OPH_CONCATNC
         concatnc2(src_path=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
-			  subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False)
-		  -> Cube or None : wrapper of the operator OPH_CONCATNC2
+                          subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False)
+                  -> Cube or None : wrapper of the operator OPH_CONCATNC2
         cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
         cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', 'action=read', concept_level='c',
@@ -210,10 +210,14 @@ class Cube():
         primitives(dbms_filter='-', level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync',
                    objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
-        randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', schedule=0,
-                 nhost=0, ndbms=1, ndb=1, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+        randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='mysql_table', schedule=0, algorithm='default',
+                 nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
                  dim_size=None, compressed='no', grid='-', description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_RANDCUBE
+        randcube2(ncores=1, nthreads=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='ophidiaio_memory', schedule=0, algorithm='default',
+                 nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+                 dim_size=None, compressed='no', grid='-', description='-', display=False)
+          -> Cube or None : wrapper of the operator OPH_RANDCUBE2
         resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
           -> dict or None : wrapper of the operator OPH_RESUME
         script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', display=False)
@@ -520,7 +524,7 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None or ((container is None or (cwd is None and Cube.client.cwd is None)) && container_pid is "-"):
+            if Cube.client is None or ((container is None or (cwd is None and Cube.client.cwd is None)) and container_pid is "-"):
                 raise RuntimeError('Cube.client, container and container_pid or cwd is None')
 
             query = 'oph_deletecontainer '
@@ -1344,12 +1348,12 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def randcube(cls, ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', schedule=0,
-                 nhost=0, ndbms=1, ndb=1, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+    def randcube(cls, ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='mysql_table', schedule=0, algorithm='default',
+                 nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
                  dim_size=None, compressed='no', grid='-', description='-', display=False):
-        """randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', filesystem='auto', ioserver='mysql_table', schedule=0,
-                    nhost=0, ndbms=1, ndb=1, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
-                    dim_size=None, compressed='no', grid='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_RANDCUBE
+        """randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='mysql_table', schedule=0, algorithm='default',
+                 nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+                 dim_size=None, compressed='no', grid='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_RANDCUBE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -1361,18 +1365,14 @@ class Cube():
         :type cwd: str
         :param host_partition: host partition name
         :type host_partition: str
-        :param filesystem: auto|local|global
-        :type filesystem: str
+        :param algorithm: default|temperatures
+        :type algorithm: str
         :param ioserver: mysql_table|ophdiaio_memory
         :type ioserver: str
         :param schedule: 0
         :type schedule: int
         :param nhost: number of hosts to use
         :type nhost: int
-        :param ndbms: number of dbms/host to use
-        :type ndbms: int
-        :param ndb: number of db/dbms to use
-        :type ndb: int
         :param run: yes|no
         :type run: str
         :param nfrag: number of fragments/db to use
@@ -1421,18 +1421,138 @@ class Cube():
             query += 'cwd=' + str(cwd) + ';'
         if host_partition is not None:
             query += 'host_partition=' + str(host_partition) + ';'
-        if filesystem is not None:
-            query += 'filesystem=' + str(filesystem) + ';'
+        if algorithm is not None:
+            query += 'algorithm=' + str(algorithm) + ';'
         if ioserver is not None:
             query += 'ioserver=' + str(ioserver) + ';'
         if schedule is not None:
             query += 'schedule=' + str(schedule) + ';'
         if nhost is not None:
             query += 'nhost=' + str(nhost) + ';'
-        if ndbms is not None:
-            query += 'ndbms=' + str(ndbms) + ';'
-        if ndb is not None:
-            query += 'ndb=' + str(ndb) + ';'
+        if run is not None:
+            query += 'run=' + str(run) + ';'
+        if nfrag is not None:
+            query += 'nfrag=' + str(nfrag) + ';'
+        if ntuple is not None:
+            query += 'ntuple=' + str(ntuple) + ';'
+        if measure is not None:
+            query += 'measure=' + str(measure) + ';'
+        if measure_type is not None:
+            query += 'measure_type=' + str(measure_type) + ';'
+        if exp_ndim is not None:
+            query += 'exp_ndim=' + str(exp_ndim) + ';'
+        if dim is not None:
+            query += 'dim=' + str(dim) + ';'
+        if concept_level is not None:
+            query += 'concept_level=' + str(concept_level) + ';'
+        if dim_size is not None:
+            query += 'dim_size=' + str(dim_size) + ';'
+        if compressed is not None:
+            query += 'compressed=' + str(compressed) + ';'
+        if grid is not None:
+            query += 'grid=' + str(grid) + ';'
+        if description is not None:
+            query += 'description=' + str(description) + ';'
+
+        try:
+            if Cube.client.submit(query, display) is None:
+                raise RuntimeError()
+
+            if Cube.client.last_response is not None:
+                if Cube.client.cube:
+                    newcube = Cube(pid=Cube.client.cube)
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong:", e)
+            raise RuntimeError()
+        else:
+            return newcube
+
+    @classmethod
+    def randcube2(cls, ncores=1, nthreads=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='ophidiaio_memory', schedule=0, algorithm='default',
+                 nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+                 dim_size=None, compressed='no', grid='-', description='-', display=False):
+        """randcube(ncores=1, nthreads=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='ophidiaio_memory', schedule=0, algorithm='default',
+                 nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+                 dim_size=None, compressed='no', grid='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_RANDCUBE2
+
+        :param ncores: number of cores to use
+        :type ncores: int
+        :param nthreads: number of threads to use
+        :type nthreads: int
+        :param exec_mode: async or sync
+        :type exec_mode: str
+        :param container: container name
+        :type container: str
+        :param cwd: current working directory
+        :type cwd: str
+        :param host_partition: host partition name
+        :type host_partition: str
+        :param algorithm: default|temperatures
+        :type algorithm: str
+        :param ioserver: ophdiaio_memory
+        :type ioserver: str
+        :param schedule: 0
+        :type schedule: int
+        :param nhost: number of hosts to use
+        :type nhost: int
+        :param run: yes|no
+        :type run: str
+        :param nfrag: number of fragments/db to use
+        :type nfrag: int
+        :param ntuple: number of tuples/fragment to use
+        :type ntuple: int
+        :param measure: measure to be imported
+        :type measure: str
+        :param measure_type: double|float|int|long|short|byte
+        :type measure_type: str
+        :param exp_ndim: number of explicit dimensions in dim
+        :type exp_ndim: int
+        :param dim: pipe (|) separated list of dimension names
+        :type dim: str
+        :param concept_level: pipe (|) separated list of dimensions hierarchy levels
+        :type concept_level: str
+        :param dim_size: pipe (|) separated list of dimension sizes
+        :type dim_size: str
+        :param compressed: yes|no
+        :type compressed: str
+        :param grid: optionally group dimensions in a grid
+        :type grid: str
+        :param description: additional description to be associated with the output cube
+        :type description: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
+        :returns: obj or None
+        :rtype: Cube or None
+        :raises: RuntimeError
+        """
+
+        if Cube.client is None or (cwd is None and Cube.client.cwd is None) or container is None or nfrag is None or ntuple is None or measure is None or measure_type is None or exp_ndim is None or\
+                dim is None or dim_size is None:
+            raise RuntimeError('Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None')
+        newcube = None
+
+        query = 'oph_randcube '
+
+        if ncores is not None:
+            query += 'ncores=' + str(ncores) + ';'
+        if nthreads is not None:
+            query += 'nthreads=' + str(nthreads) + ';'
+        if exec_mode is not None:
+            query += 'exec_mode=' + str(exec_mode) + ';'
+        if container is not None:
+            query += 'container=' + str(container) + ';'
+        if cwd is not None:
+            query += 'cwd=' + str(cwd) + ';'
+        if host_partition is not None:
+            query += 'host_partition=' + str(host_partition) + ';'
+        if algorithm is not None:
+            query += 'algorithm=' + str(algorithm) + ';'
+        if ioserver is not None:
+            query += 'ioserver=' + str(ioserver) + ';'
+        if schedule is not None:
+            query += 'schedule=' + str(schedule) + ';'
+        if nhost is not None:
+            query += 'nhost=' + str(nhost) + ';'
         if run is not None:
             query += 'run=' + str(run) + ';'
         if nfrag is not None:
