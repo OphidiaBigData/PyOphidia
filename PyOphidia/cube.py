@@ -79,7 +79,7 @@ class Cube():
         cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', 'action=read', concept_level='c',
               dim_level=1, dim_array='yes', display=True)
           -> dict or None : wrapper of the operator OPH_CUBESCHEMA
-        cubesize( schedule=0, ncores=1, byte_unit='MB', objkey_filter='all', exec_mode='sync', display=True)
+        cubesize( schedule=0, ncores=1, byte_unit='MB', algorithm='euristic', objkey_filter='all', exec_mode='sync', display=True)
           -> dict or None : wrapper of the operator OPH_CUBESIZE
         delete(ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False)
           -> dict or None : wrapper of the operator OPH_DELETE
@@ -142,14 +142,14 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_B2DROP
         cancel(id=None, type='kill', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_CANCEL
-        cluster(action='deploy', nhost=1, host_partition=None, exec_mode='sync', display=False)
+        cluster(action='info', nhost=1, host_partition='all', user_filter='all', exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_CLUSTER
         containerschema(container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CONTAINERSCHEMA
         createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base', base_time='1900-01-01 00:00:00',
                         units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', leap_year=0, leap_month=2, vocabulary='CF',
                         compressed='no', description='-', display=False)
           -> dict or None : wrapper of the operator OPH_CREATECONTAINER
-        deletecontainer(container=None, delete_type='logical', hidden='yes', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False)
+        deletecontainer(container=None, container_pid='-', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_DELETECONTAINER
         explorenc(exec_mode='sync', schedule=0, measure='-', src_path=None, cdd=None, exp_dim='-', imp_dim='-', subset_dims='none', subset_type='index',
                   subset_filter='all', limit_filter=100, show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no',
@@ -164,22 +164,22 @@ class Cube():
         hierarchy(hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_HIERARCHY
         importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
-                 exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
-                 ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
+                 exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
+                 ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
                  leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', schedule=0, check_grid='no')
           -> Cube or None : wrapper of the operator OPH_IMPORTNC
         importnc2(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
-                 exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
-                 ioserver='ophidiaio_memory', ncores=1, nthreads=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
+                 exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
+                 ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
                  leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', schedule=0, check_grid='no')
           -> Cube or None : wrapper of the operator OPH_IMPORTNC2
-        instances(action='read', level=1, host_filter='all', nhost=0, host_partition='all', filesystem_filter='all', ioserver_filter='all', host_status='all',
-                  dbms_status='all', exec_mode='sync', objkey_filter='all', display=True)
+        instances(action='read', level=1, host_filter='all', nhost=0, host_partition='all', ioserver_filter='all', host_status='all',
+                  exec_mode='sync', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_INSTANCES
         list(level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all', dbms_filter='all',
-             measure_filter='all', ntransform='all', src_filter='all', db_filter='all', recursive='no', hidden='no', objkey_filter='all', display=True)
+             measure_filter='all', ntransform='all', src_filter='all', db_filter='all', recursive='no', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_LIST
         loggingbk(session_level=0, job_level=0, mask=000, session_filter='all', session_label_filter='all',
                   session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', workflowid_filter='all', markerid_filter='all',
@@ -210,8 +210,6 @@ class Cube():
           -> Cube or None : wrapper of the operator OPH_RANDCUBE
         resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
           -> dict or None : wrapper of the operator OPH_RESUME
-        restorecontainer(exec_mode='sync', container=None, cwd=None, display=False)
-          -> dict or None : wrapper of the operator OPH_RESTORECONTAINER
         script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', display=False)
           -> dict or None : wrapper of the operator OPH_SCRIPT
         search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all',
@@ -304,15 +302,17 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def cluster(cls, action='deploy', nhost=1, host_partition=None, exec_mode='sync', display=False):
-        """cluster(action='deploy', nhost=1, host_partition=None, exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_CLUSTER
+    def cluster(cls, action='info', nhost=1, host_partition='all', user_filter='all', exec_mode='sync', display=False):
+        """cluster(action='info', nhost=1, host_partition='all', user_filter='all', exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_CLUSTER
 
-        :param action: deploy|undeploy
+        :param action: info|info_cluster|deploy|undeploy
         :type action: str
         :param nhost: number of hosts to be reserved as well as number of I/O servers to be started
         :type nhost: int
         :param host_partition: name of user-defined partition to be used
         :type host_partition: str
+        :param user_filter: name of user to be used as filter
+        :type user_filter: str
         :param exec_mode: async or sync
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
@@ -324,8 +324,8 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None or (host_partition is None and Cube.client.host_partition is None):
-                raise RuntimeError('Cube.client or host_partition is None')
+            if Cube.client is None or Cube.client.host_partition is None:
+                raise RuntimeError('Cube.client is None')
 
             query = 'oph_cluster '
 
@@ -335,6 +335,8 @@ class Cube():
                 query += 'nhost=' + str(nhost) + ';'
             if host_partition is not None:
                 query += 'host_partition=' + str(host_partition) + ';'
+            if user_filter is not None:
+                query += 'user_filter=' + str(user_filter) + ';'
             if exec_mode is not None:
                 query += 'exec_mode=' + str(exec_mode) + ';'
 
@@ -487,20 +489,18 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def deletecontainer(cls, container=None, delete_type='logical', hidden='yes', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False):
-        """deletecontainer(container=None, delete_type='logical', hidden='yes', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False)
+    def deletecontainer(cls, container=None, container_pid='-', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False):
+        """deletecontainer(container=None, container_pid='-', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False)
              -> dict or None : wrapper of the operator OPH_DELETECONTAINER
 
         :param container: container name
         :type container: str
         :param cwd: current working directory
         :type cwd: str
-        :param delete_type: logical or physical
-        :type delete_type: str
-        :param hidden: yes or no
-        :type hidden: str
+        :param container_pid: PID of the input container
+        :type container_pid: str
         :param force: yes or no
-        :type hidden: str
+        :type force: str
         :param nthreads: number of threads to use
         :type nthreads: int
         :param exec_mode: async or sync
@@ -514,17 +514,15 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None or container is None or (cwd is None and Cube.client.cwd is None):
-                raise RuntimeError('Cube.client, container or cwd is None')
+            if Cube.client is None or ((container is None or (cwd is None and Cube.client.cwd is None)) && container_pid is "-"):
+                raise RuntimeError('Cube.client, container and container_pid or cwd is None')
 
             query = 'oph_deletecontainer '
 
             if container is not None:
                 query += 'container=' + str(container) + ';'
-            if delete_type is not None:
-                query += 'delete_type=' + str(delete_type) + ';'
-            if hidden is not None:
-                query += 'hidden=' + str(hidden) + ';'
+            if container_pid is not None:
+                query += 'container_pid=' + str(container_pid) + ';'
             if force is not None:
                 query += 'force=' + str(force) + ';'
             if cwd is not None:
@@ -714,10 +712,10 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def instances(cls, action='read', level=1, host_filter='all', nhost=0, host_partition='all', filesystem_filter='all', ioserver_filter='all', host_status='all',
-                  dbms_status='all', exec_mode='sync', objkey_filter='all', display=True):
-        """instances(level=1, action='read', level=1, host_filter='all', nhost=0, host_partition='all', filesystem_filter='all', ioserver_filter='all', host_status='all',
-                     dbms_status='all', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_INSTANCES
+    def instances(cls, action='read', level=1, host_filter='all', nhost=0, host_partition='all', ioserver_filter='all', host_status='all',
+                  exec_mode='sync', objkey_filter='all', display=True):
+        """instances(level=1, action='read', level=1, host_filter='all', nhost=0, host_partition='all', ioserver_filter='all', host_status='all',
+                     exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_INSTANCES
 
         :param action: read|add|remove
         :type action: str
@@ -729,14 +727,10 @@ class Cube():
         :type nhost: int
         :param host_partition: optional filter on host partition name
         :type host_partition: str
-        :param filesystem_filter: local|global|all
-        :type filesystem_filter: str
         :param ioserver_filter: mysql_table|ophidiaio_memory|all
         :type ioserver_filter: str
         :param host_status: up|down|all
         :type host_status: str
-        :param dbms_status: up|down|all
-        :type dbms_status: str
         :param exec_mode: async or sync
         :type exec_mode: str
         :param objkey_filter: filter the objkey
@@ -765,14 +759,10 @@ class Cube():
                 query += 'nhost=' + str(nhost) + ';'
             if host_partition is not None:
                 query += 'host_partition=' + str(host_partition) + ';'
-            if filesystem_filter is not None:
-                query += 'filesystem_filter=' + str(filesystem_filter) + ';'
             if ioserver_filter is not None:
                 query += 'ioserver_filter=' + str(ioserver_filter) + ';'
             if host_status is not None:
                 query += 'host_status=' + str(host_status) + ';'
-            if dbms_status is not None:
-                query += 'dbms_status=' + str(dbms_status) + ';'
             if exec_mode is not None:
                 query += 'exec_mode=' + str(exec_mode) + ';'
             if objkey_filter is not None:
@@ -1264,9 +1254,9 @@ class Cube():
 
     @classmethod
     def list(cls, level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all', dbms_filter='all',
-             measure_filter='all', ntransform='all', src_filter='all', db_filter='all', recursive='no', hidden='no', objkey_filter='all', display=True):
+             measure_filter='all', ntransform='all', src_filter='all', db_filter='all', recursive='no', objkey_filter='all', display=True):
         """list(level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all', dbms_filter='all', measure_filter='all',
-                ntransform='all', src_filter='all', db_filter='all', recursive='no', hidden='no', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_LIST
+                ntransform='all', src_filter='all', db_filter='all', recursive='no', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_LIST
 
         :param level: 0|1|2|3|4|5|6|7|8
         :type level: int
@@ -1290,8 +1280,6 @@ class Cube():
         :type src_filter: str
         :param recursive: yes|no
         :type recursive: str
-        :param hidden: yes|no
-        :type hidden: str
         :param cwd: current working directory
         :type cwd: str
         :param exec_mode: async or sync
@@ -1336,8 +1324,6 @@ class Cube():
                 query += 'db_filter=' + str(db_filter) + ';'
             if recursive is not None:
                 query += 'recursive=' + str(recursive) + ';'
-            if hidden is not None:
-                query += 'hidden=' + str(hidden) + ';'
             if objkey_filter is not None:
                 query += 'objkey_filter=' + str(objkey_filter) + ';'
 
@@ -1609,14 +1595,14 @@ class Cube():
 
     @classmethod
     def importnc(cls, container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
-                 exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
-                 ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
+                 exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
+                 ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
                  leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', schedule=0,
                  check_grid='no', display=False):
         """importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,  cdd=None, compressed='no',
-                    exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
-                    ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
+                    exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
+                    ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                     subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
                     leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', schedule=0,
                     check_grid='no')
@@ -1648,8 +1634,6 @@ class Cube():
         :type compressed: str
         :param exp_concept_level: pipe (|) separated list of explicit dimensions hierarchy levels
         :type exp_concept_level: str
-        :param filesystem: auto|local|global
-        :type filesystem: str
         :param grid: optionally group dimensions in a grid
         :type grid: str
         :param imp_concept_level: pipe (|) separated list of implicit dimensions hierarchy levels
@@ -1662,10 +1646,6 @@ class Cube():
         :type offset: int
         :param ioserver: mysql_table|ophdiaio_memory
         :type ioserver: str
-        :param ndb: number of db/dbms to use
-        :type ndb: int
-        :param ndbms: number of dbms/host to use
-        :type ndbms: int
         :param nfrag: number of fragments/db to use
         :type nfrag: int
         :param nhost: number of hosts to use
@@ -1723,8 +1703,6 @@ class Cube():
             query += 'cwd=' + str(cwd) + ';'
         if host_partition is not None:
             query += 'host_partition=' + str(host_partition) + ';'
-        if filesystem is not None:
-            query += 'filesystem=' + str(filesystem) + ';'
         if ioserver is not None:
             query += 'ioserver=' + str(ioserver) + ';'
         if import_metadata is not None:
@@ -1735,10 +1713,6 @@ class Cube():
             query += 'schedule=' + str(schedule) + ';'
         if nhost is not None:
             query += 'nhost=' + str(nhost) + ';'
-        if ndbms is not None:
-            query += 'ndbms=' + str(ndbms) + ';'
-        if ndb is not None:
-            query += 'ndb=' + str(ndb) + ';'
         if nfrag is not None:
             query += 'nfrag=' + str(nfrag) + ';'
         if run is not None:
@@ -1807,14 +1781,14 @@ class Cube():
 
     @classmethod
     def importnc2(cls, container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
-                 exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
-                 ioserver='ophidiaio_memory', ncores=1, nthreads=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
+                 exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
+                 ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
                  leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', schedule=0,
                  check_grid='no', display=False):
         """importnc2(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
-                 exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
-                 ioserver='ophidiaio_memory', ncores=1, nthreads=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
+                 exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
+                 ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
                  leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', schedule=0, check_grid='no')
           -> Cube or None : wrapper of the operator OPH_IMPORTNC2
@@ -1848,8 +1822,6 @@ class Cube():
         :type compressed: str
         :param exp_concept_level: pipe (|) separated list of explicit dimensions hierarchy levels
         :type exp_concept_level: str
-        :param filesystem: auto|local|global
-        :type filesystem: str
         :param grid: optionally group dimensions in a grid
         :type grid: str
         :param imp_concept_level: pipe (|) separated list of implicit dimensions hierarchy levels
@@ -1862,10 +1834,6 @@ class Cube():
         :type offset: int
         :param ioserver: ophdiaio_memory
         :type ioserver: str
-        :param ndb: number of db/dbms to use
-        :type ndb: int
-        :param ndbms: number of dbms/host to use
-        :type ndbms: int
         :param nfrag: number of fragments/db to use
         :type nfrag: int
         :param nhost: number of hosts to use
@@ -1925,8 +1893,6 @@ class Cube():
             query += 'cwd=' + str(cwd) + ';'
         if host_partition is not None:
             query += 'host_partition=' + str(host_partition) + ';'
-        if filesystem is not None:
-            query += 'filesystem=' + str(filesystem) + ';'
         if ioserver is not None:
             query += 'ioserver=' + str(ioserver) + ';'
         if import_metadata is not None:
@@ -1937,10 +1903,6 @@ class Cube():
             query += 'schedule=' + str(schedule) + ';'
         if nhost is not None:
             query += 'nhost=' + str(nhost) + ';'
-        if ndbms is not None:
-            query += 'ndbms=' + str(ndbms) + ';'
-        if ndb is not None:
-            query += 'ndb=' + str(ndb) + ';'
         if nfrag is not None:
             query += 'nfrag=' + str(nfrag) + ';'
         if run is not None:
@@ -2187,46 +2149,6 @@ class Cube():
                 query += 'exec_mode=' + str(exec_mode) + ';'
             if objkey_filter is not None:
                 query += 'objkey_filter=' + str(objkey_filter) + ';'
-
-            if Cube.client.submit(query, display) is None:
-                raise RuntimeError()
-
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-        except Exception as e:
-            print(get_linenumber(), "Something went wrong:", e)
-            raise RuntimeError()
-
-    @classmethod
-    def restorecontainer(cls, exec_mode='sync', container=None, cwd=None, display=False):
-        """restorecontainer(exec_mode='sync', container=None, cwd=None, display=False) -> dict or None : wrapper of the operator OPH_RESTORECONTAINER
-
-        :param container: container name
-        :type container: str
-        :param cwd: current working directory
-        :type cwd: str
-        :param exec_mode: async or sync
-        :type exec_mode: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
-        :type display: bool
-        :returns: response or None
-        :rtype: dict or None
-        :raises: RuntimeError
-        """
-
-        response = None
-        try:
-            if Cube.client is None or container is None or (cwd is None and Cube.client.cwd is None):
-                raise RuntimeError('Cube.client, container or cwd is None')
-
-            query = 'oph_restorecontainer '
-
-            if exec_mode is not None:
-                query += 'exec_mode=' + str(exec_mode) + ';'
-            if container is not None:
-                query += 'container=' + str(container) + ';'
-            if cwd is not None:
-                query += 'cwd=' + str(cwd) + ';'
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -2492,14 +2414,14 @@ class Cube():
             return newcube
 
     def __init__(self, container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
-                 exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
-                 ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
+                 exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
+                 ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
                  leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,
                  pid=None, check_grid='no', display=False):
         """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
-                exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
-                ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
+                exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
+                ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,
                 pid=None, check_grid='no', display=False) -> obj
@@ -2531,8 +2453,6 @@ class Cube():
         :type compressed: str
         :param exp_concept_level: pipe (|) separated list of explicit dimensions hierarchy levels
         :type exp_concept_level: str
-        :param filesystem: auto|local|global
-        :type filesystem: str
         :param grid: optionally group dimensions in a grid
         :type grid: str
         :param imp_concept_level: pipe (|) separated list of implicit dimensions hierarchy levels
@@ -2545,10 +2465,6 @@ class Cube():
         :type offset: int
         :param ioserver: mysql_table|ophdiaio_memory
         :type ioserver: str
-        :param ndb: number of db/dbms to use
-        :type ndb: int
-        :param ndbms: number of dbms/host to use
-        :type ndbms: int
         :param nfrag: number of fragments/db to use
         :type nfrag: int
         :param nhost: number of hosts to use
@@ -2642,8 +2558,6 @@ class Cube():
                         query += 'compressed=' + str(compressed) + ';'
                     if exp_concept_level is not None:
                         query += 'exp_concept_level=' + str(exp_concept_level) + ';'
-                    if filesystem is not None:
-                        query += 'filesystem=' + str(filesystem) + ';'
                     if grid is not None:
                         query += 'grid=' + str(grid) + ';'
                     if imp_concept_level is not None:
@@ -2656,10 +2570,6 @@ class Cube():
                         query += 'ioserver=' + str(ioserver) + ';'
                     if ncores is not None:
                         query += 'ncores=' + str(ncores) + ';'
-                    if ndb is not None:
-                        query += 'ndb=' + str(ndb) + ';'
-                    if ndbms is not None:
-                        query += 'ndbms=' + str(ndbms) + ';'
                     if nfrag is not None:
                         query += 'nfrag=' + str(nfrag) + ';'
                     if nhost is not None:
@@ -3619,8 +3529,8 @@ class Cube():
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def cubesize(self, schedule=0, exec_mode='sync', byte_unit='MB', ncores=1, objkey_filter='all', display=True):
-        """ cubesize( schedule=0, ncores=1, byte_unit='MB', objkey_filter='all', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_CUBESIZE
+    def cubesize(self, schedule=0, exec_mode='sync', byte_unit='MB', algorithm='euristic', ncores=1, objkey_filter='all', display=True):
+        """ cubesize( schedule=0, ncores=1, byte_unit='MB', algorithm='euristic', objkey_filter='all', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_CUBESIZE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -3630,6 +3540,8 @@ class Cube():
         :type schedule: int
         :param byte_unit: KB|MB|GB|TB|PB
         :type byte_unit: str
+        :param algorithm: euristic|count
+        :type algorithm: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -3649,6 +3561,8 @@ class Cube():
             query += 'exec_mode=' + str(exec_mode) + ';'
         if byte_unit is not None:
             query += 'byte_unit=' + str(byte_unit) + ';'
+        if algorithm is not None:
+            algorithm += 'algorithm=' + str(algorithm) + ';'
         if ncores is not None:
             query += 'ncores=' + str(ncores) + ';'
         if objkey_filter is not None:
@@ -3726,7 +3640,7 @@ class Cube():
         :type schedule: int
         :param cube2: PID of the second cube
         :type cube2: str
-        :param operation: sum|sub|mul|div|abs|arg|corr|mask|max|min
+        :param operation: sum|sub|mul|div|abs|arg|corr|mask|max|min|arg_max|arg_min
         :type operation: str
         :param missingvalue: value to be considered as missing value; by default it is NAN (for float and double)
         :type missingvalue: float
