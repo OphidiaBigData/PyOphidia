@@ -74,6 +74,12 @@ class Cube():
         apply(ncores=1, nthreads=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes',
               on_reduce='skip', compressed='auto', schedule=0,container='-', description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_APPLY
+        concatnc(src_path=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
+			  subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0, display=False)
+		  -> Cube or None : wrapper of the operator OPH_CONCATNC
+        concatnc2(src_path=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
+			  subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False)
+		  -> Cube or None : wrapper of the operator OPH_CONCATNC2
         cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
         cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', 'action=read', concept_level='c',
@@ -3064,6 +3070,192 @@ class Cube():
 
         try:
             if Cube.client.submit(internal_query, display) is None:
+                raise RuntimeError()
+
+            if Cube.client.last_response is not None:
+                if Cube.client.cube:
+                    newcube = Cube(pid=Cube.client.cube)
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong:", e)
+            raise RuntimeError()
+        else:
+            return newcube
+
+    def concatnc(src_path=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
+ subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0, display=False):
+        """concatnc(src_path=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
+ subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0, display=False)
+ -> Cube or None : wrapper of the operator OPH_CONCATNC
+
+        :param src_path: path of file to be imported
+        :type src_path: str
+        :param grid: optionally group dimensions in a grid
+        :type grid: str
+        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :type subset_dims: str
+        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :type subset_filter: str
+        :param time_filter: yes|no
+        :type time_filter: str
+        :param subset_type: index|coord
+        :type subset_type: str
+        :param ncores: number of cores to use
+        :type ncores: int
+        :param exec_mode: async or sync
+        :type exec_mode: str
+        :param schedule: 0
+        :type schedule: int
+        :param offset: it is added to the bounds of subset intervals
+        :type offset: int
+        :param check_exp_dim: yes|no
+        :type check_exp_dim: str
+        :param dim_offset: offset to be added to dimension values of imported data
+        :type dim_offset: float
+        :param dim_continue: yes|no
+        :type dim_continue: str
+        :param description: additional description to be associated with the output cube
+        :type description: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
+        :returns: new cube or None
+        :rtype: Cube or None
+        :raises: RuntimeError
+        """
+
+        if Cube.client is None or self.pid is None or src_path is None:
+            raise RuntimeError('Cube.client, pid or src_path is None')
+        newcube = None
+
+        query = 'oph_concatnc '
+
+        if src_path is not None:
+            query += 'src_path=' + str(src_path) + ';'
+        if grid is not None:
+            query += 'grid=' + str(grid) + ';'
+        if subset_dims is not None:
+            query += 'subset_dims=' + str(subset_dims) + ';'
+        if subset_type is not None:
+            query += 'subset_type=' + str(subset_type) + ';'
+        if subset_filter is not None:
+            query += 'subset_filter=' + str(subset_filter) + ';'
+        if time_filter is not None:
+            query += 'time_filter=' + str(time_filter) + ';'
+        if offset is not None:
+            query += 'offset=' + str(offset) + ';'
+        if ncores is not None:
+            query += 'ncores=' + str(ncores) + ';'
+        if exec_mode is not None:
+            query += 'exec_mode=' + str(exec_mode) + ';'
+        if schedule is not None:
+            query += 'schedule=' + str(schedule) + ';'
+        if description is not None:
+            query += 'description=' + str(description) + ';'
+        if check_exp_dim is not None:
+            query += 'check_exp_dim=' + str(check_exp_dim) + ';'
+        if dim_offset is not None:
+            query += 'dim_offset=' + str(dim_offset) + ';'
+        if dim_continue is not None:
+            query += 'dim_continue=' + str(dim_continue) + ';'
+
+        query += 'cube=' + str(self.pid) + ';'
+
+        try:
+            if Cube.client.submit(query, display) is None:
+                raise RuntimeError()
+
+            if Cube.client.last_response is not None:
+                if Cube.client.cube:
+                    newcube = Cube(pid=Cube.client.cube)
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong:", e)
+            raise RuntimeError()
+        else:
+            return newcube
+
+    def concatnc2(src_path=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
+ subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False):
+        """concatnc(src_path=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
+ subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False)
+ -> Cube or None : wrapper of the operator OPH_CONCATNC2
+
+        :param src_path: path of file to be imported
+        :type src_path: str
+        :param grid: optionally group dimensions in a grid
+        :type grid: str
+        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :type subset_dims: str
+        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :type subset_filter: str
+        :param time_filter: yes|no
+        :type time_filter: str
+        :param subset_type: index|coord
+        :type subset_type: str
+        :param ncores: number of cores to use
+        :type ncores: int
+        :param nthreads: number of threads to use
+        :type nthreads: int
+        :param exec_mode: async or sync
+        :type exec_mode: str
+        :param schedule: 0
+        :type schedule: int
+        :param offset: it is added to the bounds of subset intervals
+        :type offset: int
+        :param check_exp_dim: yes|no
+        :type check_exp_dim: str
+        :param dim_offset: offset to be added to dimension values of imported data
+        :type dim_offset: float
+        :param dim_continue: yes|no
+        :type dim_continue: str
+        :param description: additional description to be associated with the output cube
+        :type description: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
+        :returns: new cube or None
+        :rtype: Cube or None
+        :raises: RuntimeError
+        """
+
+        if Cube.client is None or self.pid is None or src_path is None:
+            raise RuntimeError('Cube.client, pid or src_path is None')
+        newcube = None
+
+        query = 'oph_concatnc2 '
+
+        if src_path is not None:
+            query += 'src_path=' + str(src_path) + ';'
+        if grid is not None:
+            query += 'grid=' + str(grid) + ';'
+        if subset_dims is not None:
+            query += 'subset_dims=' + str(subset_dims) + ';'
+        if subset_type is not None:
+            query += 'subset_type=' + str(subset_type) + ';'
+        if subset_filter is not None:
+            query += 'subset_filter=' + str(subset_filter) + ';'
+        if time_filter is not None:
+            query += 'time_filter=' + str(time_filter) + ';'
+        if offset is not None:
+            query += 'offset=' + str(offset) + ';'
+        if ncores is not None:
+            query += 'ncores=' + str(ncores) + ';'
+        if nthreds is not None:
+            query += 'nthreads=' + str(nthreads) + ';'
+        if exec_mode is not None:
+            query += 'exec_mode=' + str(exec_mode) + ';'
+        if schedule is not None:
+            query += 'schedule=' + str(schedule) + ';'
+        if description is not None:
+            query += 'description=' + str(description) + ';'
+        if check_exp_dim is not None:
+            query += 'check_exp_dim=' + str(check_exp_dim) + ';'
+        if dim_offset is not None:
+            query += 'dim_offset=' + str(dim_offset) + ';'
+        if dim_continue is not None:
+            query += 'dim_continue=' + str(dim_continue) + ';'
+
+        query += 'cube=' + str(self.pid) + ';'
+
+        try:
+            if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
             if Cube.client.last_response is not None:
