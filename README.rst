@@ -140,8 +140,6 @@ Instance attributes:
 - *nfragments*: Total number of fragments
 - *source_file*: Parent of the actual cube
 - *hostxcube*: Number of hosts on which the cube is stored
-- *dbmsxhost*: Number of DBMS instances on each host
-- *dbxdbms*: Number of databases for each DBMS
 - *fragxdb*: Number of fragments for each database
 - *rowsxfrag*: Number of rows for each fragment
 - *elementsxrow*: Number of elements for each row

@@ -35,8 +35,8 @@ def get_linenumber():
 
 class Cube():
     """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
-            exp_concept_level='c', filesystem='auto', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
-            ioserver='mysql_table', ncores=1, ndb=1, ndbms=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
+            exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
+            ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
             subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
             leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,
             pid=None, check_grid='no', display=False) -> obj
@@ -51,8 +51,6 @@ class Cube():
         nfragments: total number of fragments
         source_file: parent of the actual cube
         hostxcube: number of hosts associated with the cube
-        dbmsxhost: number of DBMS instances on each host
-        dbxdbms: number of databases for each DBMS
         fragxdb: number of fragments for each database
         rowsxfrag: number of rows for each fragment
         elementsxrow: number of elements for each row
@@ -2642,8 +2640,6 @@ class Cube():
         self.nfragments = None
         self.source_file = None
         self.hostxcube = None
-        self.dbmsxhost = None
-        self.dbxdbms = None
         self.fragxdb = None
         self.rowsxfrag = None
         self.elementsxrow = None
@@ -2760,8 +2756,6 @@ class Cube():
         del self.nfragments
         del self.source_file
         del self.hostxcube
-        del self.dbmsxhost
-        del self.dbxdbms
         del self.fragxdb
         del self.rowsxfrag
         del self.elementsxrow
@@ -2801,14 +2795,12 @@ class Cube():
                     self.source_file = res_i['objcontent'][0]['rowvalues'][0][6]
                 elif res_i['objkey'] == 'cubeschema_morecubeinfo':
                     self.hostxcube = res_i['objcontent'][0]['rowvalues'][0][1]
-                    self.dbmsxhost = res_i['objcontent'][0]['rowvalues'][0][2]
-                    self.dbxdbms = res_i['objcontent'][0]['rowvalues'][0][3]
-                    self.fragxdb = res_i['objcontent'][0]['rowvalues'][0][4]
-                    self.rowsxfrag = res_i['objcontent'][0]['rowvalues'][0][5]
-                    self.elementsxrow = res_i['objcontent'][0]['rowvalues'][0][6]
-                    self.compressed = res_i['objcontent'][0]['rowvalues'][0][7]
-                    self.size = res_i['objcontent'][0]['rowvalues'][0][8] + ' ' + res_i['objcontent'][0]['rowvalues'][0][9]
-                    self.nelements = res_i['objcontent'][0]['rowvalues'][0][10]
+                    self.fragxdb = res_i['objcontent'][0]['rowvalues'][0][2]
+                    self.rowsxfrag = res_i['objcontent'][0]['rowvalues'][0][3]
+                    self.elementsxrow = res_i['objcontent'][0]['rowvalues'][0][4]
+                    self.compressed = res_i['objcontent'][0]['rowvalues'][0][5]
+                    self.size = res_i['objcontent'][0]['rowvalues'][0][6] + ' ' + res_i['objcontent'][0]['rowvalues'][0][7]
+                    self.nelements = res_i['objcontent'][0]['rowvalues'][0][8]
                 elif res_i['objkey'] == 'cubeschema_diminfo':
                     self.dim_info = list()
                     for row_i in res_i['objcontent'][0]['rowvalues']:
@@ -4929,12 +4921,9 @@ class Cube():
         buf += "%30s: %s" % ("Num. of fragments", self.nfragments) + "\n"
         buf += "-" * 30 + "\n"
         buf += "%30s: %s" % ("Num. of hosts", self.hostxcube) + "\n"
-        buf += "%30s: %s (%s)" % ("Num. of DBMSs/host (total)", self.dbmsxhost, int(self.dbmsxhost) * int(self.hostxcube)) + "\n"
-        buf += "%30s: %s (%s)" % ("Num. of DBs/DBMS (total)", self.dbxdbms, int(self.dbxdbms) * int(self.dbmsxhost) * int(self.hostxcube)) + "\n"
-        buf += "%30s: %s (%s)" % ("Num. of fragments/DB (total)", self.fragxdb, int(self.fragxdb) * int(self.dbxdbms) * int(self.dbmsxhost) * int(self.hostxcube)) + "\n"
-        buf += "%30s: %s (%s)" % ("Num. of rows/fragment (total)", self.rowsxfrag, int(self.rowsxfrag) * int(self.fragxdb) * int(self.dbxdbms) * int(self.dbmsxhost) * int(self.hostxcube)) + "\n"
-        buf += "%30s: %s (%s)" % ("Num. of elements/row (total)", self.elementsxrow, int(self.elementsxrow) * int(self.rowsxfrag) * int(self.fragxdb) * int(self.dbxdbms) * int(self.dbmsxhost) *
-                                  int(self.hostxcube)) + "\n"
+        buf += "%30s: %s (%s)" % ("Num. of fragments/DB (total)", self.fragxdb, int(self.fragxdb) * int(self.hostxcube)) + "\n"
+        buf += "%30s: %s (%s)" % ("Num. of rows/fragment (total)", self.rowsxfrag, int(self.rowsxfrag) * int(self.fragxdb) * int(self.hostxcube)) + "\n"
+        buf += "%30s: %s (%s)" % ("Num. of elements/row (total)", self.elementsxrow, int(self.elementsxrow) * int(self.rowsxfrag) * int(self.fragxdb) * int(self.hostxcube)) + "\n"
         buf += "-" * 127 + "\n"
         buf += "%15s %15s %15s %15s %15s %15s %15s %15s" % ("Dimension", "Data type", "Size", "Hierarchy", "Concept level", "Array", "Level", "Lattice name") + "\n"
         buf += "-" * 127 + "\n"
