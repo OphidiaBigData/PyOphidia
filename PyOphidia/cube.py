@@ -205,7 +205,7 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_MOVECONTAINER
         operators(operator_filter=None, limit_filter=0, exec_mode='sync', display=True)
           -> dict or None : wrapper of the operator OPH_OPERATORS_LIST
-        primitives(dbms_filter='-', level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync',
+        primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync',
                    objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
         randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='mysql_table', schedule=0, algorithm='default',
@@ -2225,8 +2225,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def primitives(cls, level=1, dbms_filter='-', return_type='all', primitive_type='all', primitive_filter='', limit_filter=0, exec_mode='sync', objkey_filter='all', display=True):
-        """primitives(dbms_filter='-', level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync', objkey_filter='all', display=True) ->
+    def primitives(cls, level=1, dbms_filter=None, return_type='all', primitive_type='all', primitive_filter='', limit_filter=0, exec_mode='sync', objkey_filter='all', display=True):
+        """primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync', objkey_filter='all', display=True) ->
            dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
 
         :param dbms_filter: filter on DBMS
