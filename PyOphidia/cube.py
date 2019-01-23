@@ -72,10 +72,10 @@ class Cube():
         apply(ncores=1, nthreads=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes',
               on_reduce='skip', compressed='auto', schedule=0,container='-', description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_APPLY
-        concatnc(src_path=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
+        concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
                           subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0, display=False)
                   -> Cube or None : wrapper of the operator OPH_CONCATNC
-        concatnc2(src_path=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
+        concatnc2(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
                           subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False)
                   -> Cube or None : wrapper of the operator OPH_CONCATNC2
         cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', display=True)
@@ -3193,14 +3193,16 @@ class Cube():
         else:
             return newcube
 
-    def concatnc(src_path=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
+    def concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
  subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0, display=False):
-        """concatnc(src_path=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
+        """concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
  subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0, display=False)
  -> Cube or None : wrapper of the operator OPH_CONCATNC
 
         :param src_path: path of file to be imported
         :type src_path: str
+        :param cdd: absolute path corresponding to the current directory on data repository
+        :type cdd: str
         :param grid: optionally group dimensions in a grid
         :type grid: str
         :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
@@ -3242,6 +3244,8 @@ class Cube():
 
         if src_path is not None:
             query += 'src_path=' + str(src_path) + ';'
+        if cdd is not None:
+            query += 'cdd=' + str(cdd) + ';'
         if grid is not None:
             query += 'grid=' + str(grid) + ';'
         if subset_dims is not None:
@@ -3284,14 +3288,16 @@ class Cube():
         else:
             return newcube
 
-    def concatnc2(src_path=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
+    def concatnc2(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
  subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False):
-        """concatnc(src_path=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
+        """concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
  subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False)
  -> Cube or None : wrapper of the operator OPH_CONCATNC2
 
         :param src_path: path of file to be imported
         :type src_path: str
+        :param cdd: absolute path corresponding to the current directory on data repository
+        :type cdd: str
         :param grid: optionally group dimensions in a grid
         :type grid: str
         :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
@@ -3335,6 +3341,8 @@ class Cube():
 
         if src_path is not None:
             query += 'src_path=' + str(src_path) + ';'
+        if cdd is not None:
+            query += 'cdd=' + str(cdd) + ';'
         if grid is not None:
             query += 'grid=' + str(grid) + ';'
         if subset_dims is not None:
