@@ -10,9 +10,14 @@ Added:
 Changed:
 ~~~~~~~~
 
-- Removed 'dbxdbms' and 'dbmsxhost' attributes from Cube module
 - Cube methods interfaces to comply with Ophidia operators in v1.5.0
 - ophsubmit main function to provide a more descriptive message in case of error in operator execution `#20 <https://github.com/OphidiaBigData/PyOphidia/pull/20>`_
+
+
+Removed:
+~~~~~~~~
+
+- 'dbxdbms' and 'dbmsxhost' attributes from Cube module
 
 
 v1.7.0 - 2018-07-27
