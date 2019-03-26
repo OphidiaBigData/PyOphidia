@@ -141,7 +141,7 @@ class Client():
         self.last_exec_time = 0.0
 
         if not self.username and not self.password and access_token:
-            self.password = token
+            self.password = access_token
             self.username = "__token__"
 
         if not self.username or not self.password or not self.server or not self.port:
