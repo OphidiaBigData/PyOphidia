@@ -198,16 +198,21 @@ def submit(username, password, server, port, query):
     if res_error == OPH_SERVER_OK:
         response, jobid, newsession, return_value, error = None, None, None, 0, None
         if res_response is not None:
-            if '"title": "ERROR"' in res_response or ('"title": "Workflow Status"' in res_response and '"message": "OPH_STATUS_ERROR"' in res_response):
-                if '"message":' in res_response:
-                    try:
-                        a = res_response.index('"message": "') + len('"message": "')
-                        b = res_response.index('\\n"', a)
-                        error = res_response[a:b]
-                    except Exception as e:
-                        error = "There was an error in one or more tasks"
+            if '"title": "ERROR"' in res_response or ('"title": "Workflow Status"' in res_response and '"message": "OPH_STATUS_ERROR"' in res_response) or ('"title": "Massive Operation Status"' in res_response and '"message": "OPH_STATUS_ERROR"' in res_response):
+                if '"title": "Workflow Status"' in res_response:
+                    error = "There was an error in one or more workflow tasks"
+                elif '"title": "Massive Operation Status"' in res_response:
+                    error = "There was an error in one or more tasks of the massive operation"
                 else:
-                    error = "There was an error in one or more tasks"
+                    if '"message":' in res_response:
+                        try:
+                            a = res_response.index('"message": "') + len('"message": "')
+                            b = res_response.index('\\n"', a)
+                            error = res_response[a:b]
+                        except Exception as e:
+                            error = "There was an error in the task"
+                    else:
+                        error = "There was an error in the task"
             if sys.version_info < (3, 0):
                 response = str(res_response.encode("ISO-8859-1"))
             else:

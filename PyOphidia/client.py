@@ -130,7 +130,7 @@ class Client():
         self.cdd = '/'
         self.base_src_path = '/'
         self.cube = ''
-        self.host_partition = 'test'
+        self.host_partition = 'auto'
         self.exec_mode = 'sync'
         self.ncores = 1
         self.last_request = ''
