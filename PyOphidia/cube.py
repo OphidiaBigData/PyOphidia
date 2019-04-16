@@ -195,7 +195,7 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_LOG_INFO
         man(function=None, function_type='operator', function_version='latest', exec_mode='sync', display=True)
           -> dict or None : wrapper of the operator OPH_MAN
-        manage_session(action=None, session='this', key='user', value='null', objkey_filter='all', display=True)
+        manage_session(action='list', session='this', key='user', value='null', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
         mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no', number=1, description='-', display=False)
           -> Cube : wrapper of the operator OPH_MERGECUBES
@@ -221,13 +221,13 @@ class Cube():
         script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', display=False)
           -> dict or None : wrapper of the operator OPH_SCRIPT
         search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all',
-               cwd=None, display=True)
+               cwd=None, recursive='no', display=True)
           -> dict or None : wrapper of the operator OPH_SEARCH
         service(status='', level=1, objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_SERVICE
         showgrid(container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_SHOWGRID
-        tasks(cls, cube_filter='all', path='-', operator_filter='all', cwd=None, container='all', objkey_filter='all', exec_mode='sync', display=True)
+        tasks(cls, cube_filter='all', path='-', operator_filter='all', cwd=None, recursive='no', container='all', objkey_filter='all', exec_mode='sync', display=True)
           -> dict or None : wrapper of the operator OPH_tasks
     """
 
@@ -671,8 +671,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def manage_session(cls, action=None, session='this', key='user', value='null', objkey_filter='all', display=True):
-        """manage_session(action=None, session='this', key='user', value='null', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
+    def manage_session(cls, action='list', session='this', key='user', value='null', objkey_filter='all', display=True):
+        """manage_session(action='list', session='this', key='user', value='null', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
 
         :param action: disable|enable|env|grant|list|listusers|new|remove|revoke|setenv
         :type action: str
@@ -693,7 +693,7 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None or action is None:
+            if Cube.client is None:
                 raise RuntimeError('Cube.client or action is None')
 
             query = 'oph_manage_session '
@@ -1052,8 +1052,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def tasks(cls, cube_filter='all', operator_filter='all', path='-', cwd=None, container='all', exec_mode='sync', objkey_filter='all', display=True):
-        """tasks(cls, cube_filter='all', path='-', operator_filter='all', cwd=None, container='all', objkey_filter='all', exec_mode='sync', display=True)
+    def tasks(cls, cube_filter='all', operator_filter='all', path='-', cwd=None, recursive='no', container='all', exec_mode='sync', objkey_filter='all', display=True):
+        """tasks(cls, cube_filter='all', path='-', operator_filter='all', cwd=None, recursive='no',  container='all', objkey_filter='all', exec_mode='sync', display=True)
              -> dict or None : wrapper of the operator OPH_tasks
 
         :param cube_filter: optional filter on cube
@@ -1064,6 +1064,8 @@ class Cube():
         :type path: str
         :param cwd: current working directory
         :type cwd: str
+        :param recursive: if the search is done recursively or not
+        :type recursive: yes|no
         :param container: optional filter on container name
         :type container: str
         :param exec_mode: async or sync
@@ -1089,6 +1091,8 @@ class Cube():
                 query += 'path=' + str(path) + ';'
             if cwd is not None:
                 query += 'cwd=' + str(cwd) + ';'
+            if recursive is not None:
+                query += 'recursive=' + str(recursive) + ';'
             if container is not None:
                 query += 'container=' + str(container) + ';'
             if exec_mode is not None:
@@ -1162,8 +1166,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def search(cls, container_filter='all', metadata_key_filter='all', metadata_value_filter='all', path='-', cwd=None, exec_mode='sync', objkey_filter='all', display=True):
-        """search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all', cwd=None, display=True)
+    def search(cls, container_filter='all', metadata_key_filter='all', metadata_value_filter='all', path='-', cwd=None, recursive='no', exec_mode='sync', objkey_filter='all', display=True):
+        """search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all', cwd=None,  recursive='no', display=True)
              -> dict or None : wrapper of the operator OPH_SEARCH
 
         :param container_filter: filter on container name
@@ -1176,6 +1180,8 @@ class Cube():
         :type path: str
         :param cwd: current working directory
         :type cwd: str
+        :param recursive: if the search is done recursively or not
+        :type recursive: yes|no
         :param exec_mode: async or sync
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
@@ -1202,6 +1208,8 @@ class Cube():
                 query += 'path=' + str(path) + ';'
             if cwd is not None:
                 query += 'cwd=' + str(cwd) + ';'
+            if recursive is not None:
+                query += 'recursive=' + str(recursive) + ';'
             if exec_mode is not None:
                 query += 'exec_mode=' + str(exec_mode) + ';'
             if objkey_filter is not None:
