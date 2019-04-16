@@ -1,4 +1,14 @@
 
+v1.8.1 - 2019-04-16
+-------------------
+
+Fixed:
+~~~~~~
+
+- Bug `#22 <https://github.com/OphidiaBigData/PyOphidia/issues/22>`_ related to authZ/authN token read from env.
+- Bug `#21 <https://github.com/OphidiaBigData/PyOphidia/issues/21>`_ related to error detection in massive operators
+
+
 v1.8.0 - 2019-01-24
 -------------------
 
