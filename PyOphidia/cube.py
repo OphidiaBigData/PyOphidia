@@ -234,8 +234,8 @@ class Cube():
     client = None
 
     @classmethod
-    def setclient(cls, username='', password='', server='', port='11732', token='', read_env=False):
-        """setclient(username='', password='', server='', port='11732', token='', read_env=False) -> None : Instantiate the Client, common for all Cube objects, for submitting requests
+    def setclient(cls, username='', password='', server='', port='11732', token='', read_env=False, api_mode=True):
+        """setclient(username='', password='', server='', port='11732', token='', read_env=False, api_mode=True) -> None : Instantiate the Client, common for all Cube objects, for submitting requests
 
         :param username: Ophidia user
         :type username: str
@@ -249,12 +249,14 @@ class Cube():
         :type token: str
         :param read_env: If true read the client variables from the environment
         :type read_env: bool
+        :param api_mode: If True, use the class as an API and catch also framework-level errors
+        :type api_mode: bool
         :returns: None
         :rtype: None
         """
 
         try:
-            cls.client = _client.Client(username, password, server, port, token, read_env)
+            cls.client = _client.Client(username, password, server, port, token, read_env, api_mode)
         except Exception as e:
             print(get_linenumber(), "Something went wrong in setting the client:", e)
         finally:
