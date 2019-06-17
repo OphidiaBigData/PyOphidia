@@ -2292,8 +2292,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def script(cls, script=':', args=' ', stdout='stdout', stderr='stderr', list='no', exec_mode='sync', ncores=1, display=False):
-        """script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', display=False) -> dict or None : wrapper of the operator OPH_SCRIPT
+    def script(cls, script=':', args=' ', stdout='stdout', stderr='stderr', list='no', space='no', exec_mode='sync', ncores=1, display=False):
+        """script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', display=False) -> dict or None : wrapper of the operator OPH_SCRIPT
 
         :param script: script/executable filename
         :type script: str
@@ -2305,6 +2305,8 @@ class Cube():
         :type stderr: str
         :param list: yes|no
         :type list: str
+        :param space: yes|no
+        :type spcae: str
         :param ncores: number of cores to use
         :type ncores: int
         :param exec_mode: async or sync
@@ -2333,6 +2335,8 @@ class Cube():
                 query += 'stderr=' + str(stderr) + ';'
             if list is not None:
                 query += 'list=' + str(list) + ';'
+            if space is not None:
+                query += 'space=' + str(space) + ';'
             if exec_mode is not None:
                 query += 'exec_mode=' + str(exec_mode) + ';'
             if ncores is not None:
