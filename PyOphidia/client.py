@@ -970,3 +970,23 @@ class Client():
                 return False, "Workflow is not a DAG"
         #   else return success (graph has no cycles)
         return True, "Workflow is valid"
+
+    def last_workflowid(self):
+        """last_workflowid(workflow) -> bool : Return the workflow identifier associated with the last command submitted.
+        :returns: an integer representing the workflow identifier associated with the last command submitted
+        :rtype: int
+        """
+
+        if self.last_jobid is None:
+            raise RuntimeError('no jobid specified')
+        return int(self.last_jobid.split('?')[1].split('#')[0], base=32)
+
+    def last_markerid(self):
+        """last_markerid(workflow) -> bool : Return the markerid associated with the last command submitted.
+        :returns: an integer representing the markerid associated with the last command submitted
+        :rtype: int
+        """
+
+        if self.last_jobid is None:
+            raise RuntimeError('no jobid specified')
+        return int(self.last_jobid.split('?')[1].split('#')[1], base=32)
