@@ -105,7 +105,7 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_EXPLORECUBE
         info(display=True)
           -> None : call OPH_CUBESIZE and OPH_CUBESCHEMA to fill all Cube attributes
-        intercube(cube2=None, operation='sub', container='-', exec_mode='sync', ncores=1, description='-', display=False)
+        intercube(cube2=None, cubes=None, operation='sub', container='-', exec_mode='sync', ncores=1, description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_INTERCUBE
         merge(nmerge=0, schedule=0, description='-', container='-', exec_mode='sync', ncores=1, display=False)
           -> Cube or None : wrapper of the operator OPH_MERGE
@@ -3949,8 +3949,8 @@ class Cube():
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def intercube(self, ncores=1, exec_mode='sync', cube2=None, operation='sub', missingvalue='NAN', measure='null', schedule=0, container='-', description='-', display=False):
-        """intercube(cube2=None, operation='sub', container='-', exec_mode='sync', ncores=1, description='-', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE
+    def intercube(self, ncores=1, exec_mode='sync', cube2=None, cubes=None, operation='sub', missingvalue='NAN', measure='null', schedule=0, container='-', description='-', display=False):
+        """intercube(cube2=None, cubes=None, operation='sub', container='-', exec_mode='sync', ncores=1, description='-', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -3960,6 +3960,8 @@ class Cube():
         :type schedule: int
         :param cube2: PID of the second cube
         :type cube2: str
+        :param cubes: pipe (|) separated list of cubes
+        :type cubes: str
         :param operation: sum|sub|mul|div|abs|arg|corr|mask|max|min|arg_max|arg_min
         :type operation: str
         :param missingvalue: value to be considered as missing value; by default it is NAN (for float and double)
@@ -3977,8 +3979,8 @@ class Cube():
         :raises: RuntimeError
         """
 
-        if Cube.client is None or self.pid is None or cube2 is None:
-            raise RuntimeError('Cube.client, pid, cube2 or operation is None')
+        if Cube.client is None or ((self.pid is None or cube2 is None) and cubes is None):
+            raise RuntimeError('Cube.client, pid, cube2 or cubes is None')
         newcube = None
 
         query = 'oph_intercube '
@@ -3987,8 +3989,12 @@ class Cube():
             query += 'ncores=' + str(ncores) + ';'
         if exec_mode is not None:
             query += 'exec_mode=' + str(exec_mode) + ';'
+        if cube is not None:
+            query += 'cube=' + str(self.pid) + ';'
         if cube2 is not None:
             query += 'cube2=' + str(cube2) + ';'
+        if cubes is not None:
+            query += 'cubes=' + str(cubes) + ';'
         if operation is not None:
             query += 'operation=' + str(operation) + ';'
         if missingvalue is not None:
@@ -4001,8 +4007,6 @@ class Cube():
             query += 'container=' + str(container) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
-
-        query += 'cube=' + str(self.pid) + ';'
 
         try:
             if Cube.client.submit(query, display) is None:
