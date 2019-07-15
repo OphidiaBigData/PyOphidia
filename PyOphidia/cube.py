@@ -3989,12 +3989,13 @@ class Cube():
             query += 'ncores=' + str(ncores) + ';'
         if exec_mode is not None:
             query += 'exec_mode=' + str(exec_mode) + ';'
-        if cube is not None:
-            query += 'cube=' + str(self.pid) + ';'
-        if cube2 is not None:
-            query += 'cube2=' + str(cube2) + ';'
         if cubes is not None:
             query += 'cubes=' + str(cubes) + ';'
+        else:
+            if self.pid is not None:
+                query += 'cube=' + str(self.pid) + ';'
+            if cube2 is not None:
+                query += 'cube2=' + str(cube2) + ';'
         if operation is not None:
             query += 'operation=' + str(operation) + ';'
         if missingvalue is not None:

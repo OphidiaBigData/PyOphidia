@@ -76,14 +76,7 @@ WRAPPING_WORKFLOW8 = "]\n    }\n  ]\n}"
 def submit(username, password, server, port, query):
     try:
         if sys.version_info < (2, 7, 9):
-            import ssl
-            try:
-                _create_unverified_https_context = ssl._create_unverified_context
-            except AttributeError:
-                pass
-            else:
-                ssl._create_default_https_context = _create_unverified_https_context
-                client = httplib.HTTPS(str(server) + ":" + str(port))
+            client = httplib.HTTPS(str(server) + ":" + str(port))
         else:
             import ssl
             context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
