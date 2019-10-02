@@ -142,7 +142,7 @@ class Cube():
     Class Methods:
         setclient(username='', password='', server, port='11732', token='', read_env=False)
           -> None : Instantiate the Client, common for all Cube objects, for submitting requests
-        b2drop(auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False)
+        b2drop(action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_B2DROP
         cancel(id=None, type='kill', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_CANCEL
@@ -261,15 +261,17 @@ class Cube():
             pass
 
     @classmethod
-    def b2drop(cls, auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False):
-        """b2drop(auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False)
+    def b2drop(cls, action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False):
+        """b2drop(action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_B2DROP
 
+        :param action: put|get
+        :type action: str
         :param auth_path: absolute path to the netrc file containing the B2DROP credentials
         :type auth_path: str
-        :param src_path: path to the file to be uploaded to B2DROP
+        :param src_path: path to the file to be uploaded/downloaded to/from B2DROP
         :type src_path: str
-        :param dst_path: path where the file will be uploaded on B2DROP
+        :param dst_path: path where the file will be uploaded on B2DROP or downloaded on disk
         :type dst_path: str
         :param cdd: absolute path corresponding to the current directory on data repository
         :type cdd: str
@@ -289,6 +291,8 @@ class Cube():
 
             query = 'oph_b2drop '
 
+            if action is not None:
+                query += 'action=' + str(action) + ';'
             if auth_path is not None:
                 query += 'auth_path=' + str(auth_path) + ';'
             if src_path is not None:
@@ -4712,7 +4716,7 @@ class Cube():
             if not file_path:
                 raise RuntimeError('Unable to export NetCDF file')
 
-            Cube.b2drop(auth_path=auth_path, src_path=file_path, dst_path=dst_path, cdd='/', display=False)
+            Cube.b2drop(action='put', auth_path=auth_path, src_path=file_path, dst_path=dst_path, cdd='/', display=False)
 
             Cube.fs(command='rm', dpath=file_path, cdd='/', display=False)
 
