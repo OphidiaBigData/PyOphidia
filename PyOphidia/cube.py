@@ -4742,13 +4742,6 @@ class Cube():
             raise RuntimeError('Cube.client or pid is None')
         response = None
 
-        try:
-            self.info(display=False)
-        except Exception as e:
-            print(get_linenumber(), "Something went wrong in instantiating the cube", e)
-        finally:
-            pass
-
         query = 'oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=0;'
 
         if time_filter is not None:
