@@ -4777,6 +4777,10 @@ class Cube():
                 format = str(element_num) + 'i'
             elif output_type == 'long':
                 format = str(element_num) + 'l'
+            elif output_type == 'short':
+                format = str(element_num) + 'h'
+            elif output_type == 'char':
+                format = str(element_num) + 'c'
             else:
                 raise RuntimeError('The value type is not valid')
             return format
