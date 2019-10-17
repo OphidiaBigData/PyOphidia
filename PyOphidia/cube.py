@@ -4786,6 +4786,10 @@ class Cube():
                 num = int(float(len(decoded_string)) / float(4))
             elif output_type == 'double' or output_type == 'long':
                 num = int(float(len(decoded_string)) / float(8))
+            elif output_type == 'short':
+                num = int(float(len(decoded_string)) / float(2))
+            elif output_type == 'char':
+                num = int(float(len(decoded_string)) / float(1))
             else:
                 raise RuntimeError('The value type is not valid')
             return num
