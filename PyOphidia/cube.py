@@ -218,7 +218,7 @@ class Cube():
           -> Cube or None : wrapper of the operator OPH_RANDCUBE2
         resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
           -> dict or None : wrapper of the operator OPH_RESUME
-        script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', python_code=False, display=False) 
+        script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', python_code=False, display=False) 
           -> dict or None : wrapper of the operator OPH_SCRIPT
         search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all',
                cwd=None, recursive='no', display=True)
@@ -2296,8 +2296,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def script(cls, script=':', args=' ', stdout='stdout', stderr='stderr', list='no', python_code=False, exec_mode='sync', ncores=1, display=False):
-        """script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', python_code=False, display=False) -> dict or None : wrapper of the operator OPH_SCRIPT
+    def script(cls, script=':', args=' ', stdout='stdout', stderr='stderr', list='no', space='no', python_code=False, exec_mode='sync', ncores=1, display=False):
+        """script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', python_code=False, display=False) -> dict or None : wrapper of the operator OPH_SCRIPT
 
         :param script: script/executable filename
         :type script: str
@@ -2309,6 +2309,8 @@ class Cube():
         :type stderr: str
         :param list: yes|no
         :type list: str
+        :param space: yes|no
+        :type spcae: str
         :param python_code: yes|no
         :type python_code: bool
         :param ncores: number of cores to use
@@ -2398,6 +2400,8 @@ if __name__ == '__main__':
                 query += 'stderr=' + str(stderr) + ';'
             if list is not None:
                 query += 'list=' + str(list) + ';'
+            if space is not None:
+                query += 'space=' + str(space) + ';'
             if exec_mode is not None:
                 query += 'exec_mode=' + str(exec_mode) + ';'
             if ncores is not None:
