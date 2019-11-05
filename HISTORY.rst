@@ -5,7 +5,22 @@ Next release
 Added:
 ~~~~~~
 
+- New methods 'last_workflowid' and 'last_markerid' in client class  `#26 <https://github.com/OphidiaBigData/PyOphidia/pull/26>`_
 - New parameter 'cubes' to OPH_INTERCUBE
+
+Changed:
+~~~~~~~~
+
+- Improve export_array method in cube class `#28 <https://github.com/OphidiaBigData/PyOphidia/pull/28>`_
+- sectlient method in cube class with new argument 'api_mode' `#27 <https://github.com/OphidiaBigData/PyOphidia/pull/27>`_
+- script method with new parameter 'space' `#25 <https://github.com/OphidiaBigData/PyOphidia/pull/25>`_
+- b2drop method in cube class to support also 'get' action `#24 <https://github.com/OphidiaBigData/PyOphidia/pull/24>`_
+- script method in cube class to support the execution of python code through the operator `#23 <https://github.com/OphidiaBigData/PyOphidia/pull/23>`_  
+
+Fixed:
+~~~~~~
+
+- randcube2 method in cube class to use the proper operator
 
 
 v1.8.1 - 2019-04-16
