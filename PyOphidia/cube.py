@@ -105,7 +105,7 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_EXPLORECUBE
         info(display=True)
           -> None : call OPH_CUBESIZE and OPH_CUBESCHEMA to fill all Cube attributes
-        intercube(cube2=None, operation='sub', container='-', exec_mode='sync', ncores=1, description='-', display=False)
+        intercube(cube2=None, cubes=None, operation='sub', container='-', exec_mode='sync', ncores=1, description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_INTERCUBE
         merge(nmerge=0, schedule=0, description='-', container='-', exec_mode='sync', ncores=1, display=False)
           -> Cube or None : wrapper of the operator OPH_MERGE
@@ -142,7 +142,7 @@ class Cube():
     Class Methods:
         setclient(username='', password='', server, port='11732', token='', read_env=False)
           -> None : Instantiate the Client, common for all Cube objects, for submitting requests
-        b2drop(auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False)
+        b2drop(action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_B2DROP
         cancel(id=None, type='kill', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_CANCEL
@@ -218,7 +218,7 @@ class Cube():
           -> Cube or None : wrapper of the operator OPH_RANDCUBE2
         resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
           -> dict or None : wrapper of the operator OPH_RESUME
-        script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', display=False)
+        script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', python_code=False, display=False) 
           -> dict or None : wrapper of the operator OPH_SCRIPT
         search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all',
                cwd=None, recursive='no', display=True)
@@ -261,15 +261,17 @@ class Cube():
             pass
 
     @classmethod
-    def b2drop(cls, auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False):
-        """b2drop(auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False)
+    def b2drop(cls, action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False):
+        """b2drop(action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_B2DROP
 
+        :param action: put|get
+        :type action: str
         :param auth_path: absolute path to the netrc file containing the B2DROP credentials
         :type auth_path: str
-        :param src_path: path to the file to be uploaded to B2DROP
+        :param src_path: path to the file to be uploaded/downloaded to/from B2DROP
         :type src_path: str
-        :param dst_path: path where the file will be uploaded on B2DROP
+        :param dst_path: path where the file will be uploaded on B2DROP or downloaded on disk
         :type dst_path: str
         :param cdd: absolute path corresponding to the current directory on data repository
         :type cdd: str
@@ -289,6 +291,8 @@ class Cube():
 
             query = 'oph_b2drop '
 
+            if action is not None:
+                query += 'action=' + str(action) + ';'
             if auth_path is not None:
                 query += 'auth_path=' + str(auth_path) + ';'
             if src_path is not None:
@@ -2292,8 +2296,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def script(cls, script=':', args=' ', stdout='stdout', stderr='stderr', list='no', space='no', exec_mode='sync', ncores=1, display=False):
-        """script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', display=False) -> dict or None : wrapper of the operator OPH_SCRIPT
+    def script(cls, script=':', args=' ', stdout='stdout', stderr='stderr', list='no', space='no', python_code=False, exec_mode='sync', ncores=1, display=False):
+        """script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', python_code=False, display=False) -> dict or None : wrapper of the operator OPH_SCRIPT
 
         :param script: script/executable filename
         :type script: str
@@ -2307,6 +2311,8 @@ class Cube():
         :type list: str
         :param space: yes|no
         :type spcae: str
+        :param python_code: yes|no
+        :type python_code: bool
         :param ncores: number of cores to use
         :type ncores: int
         :param exec_mode: async or sync
@@ -2318,6 +2324,60 @@ class Cube():
         :raises: RuntimeError
         """
 
+        def createScript(function):
+
+            from inspect import getsource, signature
+            import stat
+            from os.path import expanduser, isdir
+            from os import mkdir, chmod
+            from time import time
+
+            base_path = expanduser("~") + "/.ophidia/"
+            script_path = base_path + function.__name__ + str(int(time() * 10**6)) + ".py"
+
+            try:
+                # Check if hidden folder exists or create it otherwise
+                if not isdir(base_path):
+                    mkdir(base_path, stat.S_IRWXU)
+
+                fnct_text = getsource(function)
+                fnct_signature = signature(function)
+                fnct_args = fnct_signature.parameters
+                fnct_args_num = len(fnct_args)
+
+                script_args = "("
+                if fnct_args_num > 0:
+                    for i in range(1, fnct_args_num + 1):
+                        script_args = script_args + "sys.argv[" + str(i) + "], "
+
+                    script_args = script_args[:-2] + ")"
+                else:
+                    script_args = script_args + ")"
+
+                script_text = """#!/bin/python
+
+""" + fnct_text + """
+
+if __name__ == '__main__':
+    import sys
+    if len(sys.argv) <= """ + str(fnct_args_num) + """:
+        print('Some input arguments are missing')
+        sys.exit(1)
+
+    if """ + function.__name__ + script_args + """:
+        sys.exit(1)
+"""
+
+                with open(script_path, "w") as file:
+                    file.write(script_text)
+                    chmod(script_path, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP)
+
+            except (IOError, ValueError, TypeError, OSError) as e:
+                print(get_linenumber(), "Python function error: ", e)
+                raise RuntimeError()
+
+            return script_path
+
         response = None
         try:
             if Cube.client is None:
@@ -2326,7 +2386,12 @@ class Cube():
             query = 'oph_script '
 
             if script is not None:
-                query += 'script=' + str(script) + ';'
+                if python_code:
+                    script_path = createScript(script)
+                    query += 'script=' + str(script_path) + ';'
+                else:
+                    query += 'script=' + str(script) + ';'
+
             if args is not None:
                 query += 'args=' + str(args) + ';'
             if stdout is not None:
@@ -2343,6 +2408,9 @@ class Cube():
                 query += 'ncores=' + str(ncores) + ';'
 
             if Cube.client.submit(query, display) is None:
+                if script is not None and python_code:
+                    os.remove(script_path)
+
                 raise RuntimeError()
 
             if Cube.client.last_response is not None:
@@ -3953,8 +4021,8 @@ class Cube():
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def intercube(self, ncores=1, exec_mode='sync', cube2=None, operation='sub', missingvalue='NAN', measure='null', schedule=0, container='-', description='-', display=False):
-        """intercube(cube2=None, operation='sub', container='-', exec_mode='sync', ncores=1, description='-', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE
+    def intercube(self, ncores=1, exec_mode='sync', cube2=None, cubes=None, operation='sub', missingvalue='NAN', measure='null', schedule=0, container='-', description='-', display=False):
+        """intercube(cube2=None, cubes=None, operation='sub', container='-', exec_mode='sync', ncores=1, description='-', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -3964,6 +4032,8 @@ class Cube():
         :type schedule: int
         :param cube2: PID of the second cube
         :type cube2: str
+        :param cubes: pipe (|) separated list of cubes
+        :type cubes: str
         :param operation: sum|sub|mul|div|abs|arg|corr|mask|max|min|arg_max|arg_min
         :type operation: str
         :param missingvalue: value to be considered as missing value; by default it is NAN (for float and double)
@@ -3981,8 +4051,8 @@ class Cube():
         :raises: RuntimeError
         """
 
-        if Cube.client is None or self.pid is None or cube2 is None:
-            raise RuntimeError('Cube.client, pid, cube2 or operation is None')
+        if Cube.client is None or ((self.pid is None or cube2 is None) and cubes is None):
+            raise RuntimeError('Cube.client, pid, cube2 or cubes is None')
         newcube = None
 
         query = 'oph_intercube '
@@ -3991,8 +4061,13 @@ class Cube():
             query += 'ncores=' + str(ncores) + ';'
         if exec_mode is not None:
             query += 'exec_mode=' + str(exec_mode) + ';'
-        if cube2 is not None:
-            query += 'cube2=' + str(cube2) + ';'
+        if cubes is not None:
+            query += 'cubes=' + str(cubes) + ';'
+        else:
+            if self.pid is not None:
+                query += 'cube=' + str(self.pid) + ';'
+            if cube2 is not None:
+                query += 'cube2=' + str(cube2) + ';'
         if operation is not None:
             query += 'operation=' + str(operation) + ';'
         if missingvalue is not None:
@@ -4005,8 +4080,6 @@ class Cube():
             query += 'container=' + str(container) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
-
-        query += 'cube=' + str(self.pid) + ';'
 
         try:
             if Cube.client.submit(query, display) is None:
@@ -4711,7 +4784,7 @@ class Cube():
             if not file_path:
                 raise RuntimeError('Unable to export NetCDF file')
 
-            Cube.b2drop(auth_path=auth_path, src_path=file_path, dst_path=dst_path, cdd='/', display=False)
+            Cube.b2drop(action='put', auth_path=auth_path, src_path=file_path, dst_path=dst_path, cdd='/', display=False)
 
             Cube.fs(command='rm', dpath=file_path, cdd='/', display=False)
 

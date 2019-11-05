@@ -218,6 +218,18 @@ To exports data in a python-friendly format:
 
    data = mycube3.export_array(show_time='yes')
 
+Run a Python script with Ophidia
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+To run a Python script through Ophidia load or define the Python function in the script where PyOphidia is used, e.g.:
+
+.. code-block:: python
+
+	def myScript(arg1):
+		import subprocess
+		return subprocess.call('ls -la ' + arg1, shell=True)
+
+	cube.Cube.script(python_code=True,script=myScript,args="/home/ophidia",display=True)
+
 
 .. _GPLv3: http://www.gnu.org/licenses/gpl-3.0.txt
 .. _Ophidia: http://ophidia.cmcc.it
