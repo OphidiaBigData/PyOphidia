@@ -218,7 +218,7 @@ class Cube():
           -> Cube or None : wrapper of the operator OPH_RANDCUBE2
         resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
           -> dict or None : wrapper of the operator OPH_RESUME
-        script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', display=False)
+        script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', python_code=False, display=False) 
           -> dict or None : wrapper of the operator OPH_SCRIPT
         search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all',
                cwd=None, recursive='no', display=True)
@@ -2292,8 +2292,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def script(cls, script=':', args=' ', stdout='stdout', stderr='stderr', list='no', exec_mode='sync', ncores=1, display=False):
-        """script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', display=False) -> dict or None : wrapper of the operator OPH_SCRIPT
+    def script(cls, script=':', args=' ', stdout='stdout', stderr='stderr', list='no', python_code=False, exec_mode='sync', ncores=1, display=False):
+        """script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', python_code=False, display=False) -> dict or None : wrapper of the operator OPH_SCRIPT
 
         :param script: script/executable filename
         :type script: str
@@ -2305,6 +2305,8 @@ class Cube():
         :type stderr: str
         :param list: yes|no
         :type list: str
+        :param python_code: yes|no
+        :type python_code: bool
         :param ncores: number of cores to use
         :type ncores: int
         :param exec_mode: async or sync
@@ -2316,6 +2318,60 @@ class Cube():
         :raises: RuntimeError
         """
 
+        def createScript(function):
+
+            from inspect import getsource, signature
+            import stat
+            from os.path import expanduser, isdir
+            from os import mkdir, chmod
+            from time import time
+
+            base_path = expanduser("~") + "/.ophidia/"
+            script_path = base_path + function.__name__ + str(int(time() * 10**6)) + ".py"
+
+            try:
+                # Check if hidden folder exists or create it otherwise
+                if not isdir(base_path):
+                    mkdir(base_path, stat.S_IRWXU)
+
+                fnct_text = getsource(function)
+                fnct_signature = signature(function)
+                fnct_args = fnct_signature.parameters
+                fnct_args_num = len(fnct_args)
+
+                script_args = "("
+                if fnct_args_num > 0:
+                    for i in range(1, fnct_args_num + 1):
+                        script_args = script_args + "sys.argv[" + str(i) + "], "
+
+                    script_args = script_args[:-2] + ")"
+                else:
+                    script_args = script_args + ")"
+
+                script_text = """#!/bin/python
+
+""" + fnct_text + """
+
+if __name__ == '__main__':
+    import sys
+    if len(sys.argv) <= """ + str(fnct_args_num) + """:
+        print('Some input arguments are missing')
+        sys.exit(1)
+
+    if """ + function.__name__ + script_args + """:
+        sys.exit(1)
+"""
+
+                with open(script_path, "w") as file:
+                    file.write(script_text)
+                    chmod(script_path, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP)
+
+            except (IOError, ValueError, TypeError, OSError) as e:
+                print(get_linenumber(), "Python function error: ", e)
+                raise RuntimeError()
+
+            return script_path
+
         response = None
         try:
             if Cube.client is None:
@@ -2324,7 +2380,12 @@ class Cube():
             query = 'oph_script '
 
             if script is not None:
-                query += 'script=' + str(script) + ';'
+                if python_code:
+                    script_path = createScript(script)
+                    query += 'script=' + str(script_path) + ';'
+                else:
+                    query += 'script=' + str(script) + ';'
+
             if args is not None:
                 query += 'args=' + str(args) + ';'
             if stdout is not None:
@@ -2339,6 +2400,9 @@ class Cube():
                 query += 'ncores=' + str(ncores) + ';'
 
             if Cube.client.submit(query, display) is None:
+                if script is not None and python_code:
+                    os.remove(script_path)
+
                 raise RuntimeError()
 
             if Cube.client.last_response is not None:
