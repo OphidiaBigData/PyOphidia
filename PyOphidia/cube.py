@@ -4816,25 +4816,7 @@ if __name__ == '__main__':
             raise RuntimeError('Cube.client or pid is None')
         response = None
 
-        try:
-            self.info(display=False)
-        except Exception as e:
-            print(get_linenumber(), "Something went wrong in instantiating the cube", e)
-        finally:
-            pass
-
-        # Get number of max rows
-        maxRows = 1
-        adimCube = True
-        for d in self.dim_info:
-            # Check if at least one dimensions does not have size "ALL"
-            if d['size'].upper() != "ALL":
-                adimCube = False
-            if d['array'] == 'no':
-                if d['size'].upper() != "ALL":
-                    maxRows = maxRows * int(d['size'])
-
-        query = 'oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=' + str(maxRows) + ';'
+        query = 'oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=0;'
 
         if time_filter is not None:
             query += 'time_filter=' + str(time_filter) + ';'
@@ -4869,6 +4851,10 @@ if __name__ == '__main__':
                 format = str(element_num) + 'i'
             elif output_type == 'long':
                 format = str(element_num) + 'l'
+            elif output_type == 'short':
+                format = str(element_num) + 'h'
+            elif output_type == 'char':
+                format = str(element_num) + 'c'
             else:
                 raise RuntimeError('The value type is not valid')
             return format
@@ -4878,64 +4864,65 @@ if __name__ == '__main__':
                 num = int(float(len(decoded_string)) / float(4))
             elif output_type == 'double' or output_type == 'long':
                 num = int(float(len(decoded_string)) / float(8))
+            elif output_type == 'short':
+                num = int(float(len(decoded_string)) / float(2))
+            elif output_type == 'char':
+                num = int(float(len(decoded_string)) / float(1))
             else:
                 raise RuntimeError('The value type is not valid')
             return num
 
         data_values = {}
+        data_values["measure"] = {}
 
-        if not adimCube:
-            data_values["dimension"] = {}
-            data_values["measure"] = {}
+        # Get dimensions
+        adimCube = True
+        try:
+            dimensions = []
+            for response_i in response['response']:
+                if response_i['objkey'] == 'explorecube_dimvalues':
+                    data_values["dimension"] = {}
+                    adimCube = False
 
-            # Get dimensions
-            try:
-                dimensions = []
-                for response_i in response['response']:
-                    if response_i['objkey'] == 'explorecube_dimvalues':
+                    for response_j in response_i['objcontent']:
+                        if response_j['title'] and response_j['rowfieldtypes'] and response_j['rowfieldtypes'][1] and response_j['rowvalues']:
+                            curr_dim = {}
+                            curr_dim['name'] = response_j['title']
 
-                        for response_j in response_i['objcontent']:
-                            if response_j['title'] and response_j['rowfieldtypes'] and response_j['rowfieldtypes'][1] and response_j['rowvalues']:
-                                curr_dim = {}
-                                curr_dim['name'] = response_j['title']
+                            # Append actual values
+                            dim_array = []
 
-                                # Append actual values
-                                dim_array = []
-
-                                # Special case for time
-                                if show_time == 'yes' and response_j['title'] == 'time':
-                                    for val in response_j['rowvalues']:
-                                        dims = [s.strip() for s in val[1].split(',')]
-                                        for v in dims:
-                                            dim_array.append(v)
-                                else:
-                                    for val in response_j['rowvalues']:
-                                        decoded_bin = base64.b64decode(val[1])
-                                        length = calculate_decoded_length(decoded_bin, response_j['rowfieldtypes'][1])
-                                        format = get_unpack_format(length, response_j['rowfieldtypes'][1])
-                                        dims = struct.unpack(format, decoded_bin)
-                                        for v in dims:
-                                            dim_array.append(v)
-
-                                curr_dim['values'] = dim_array
-                                dimensions.append(curr_dim)
-
+                            # Special case for time
+                            if show_time == 'yes' and response_j['title'] == 'time':
+                                for val in response_j['rowvalues']:
+                                    dims = [s.strip() for s in val[1].split(',')]
+                                    for v in dims:
+                                        dim_array.append(v)
                             else:
-                                raise RuntimeError("Unable to get dimension name or values in response")
+                                for val in response_j['rowvalues']:
+                                    decoded_bin = base64.b64decode(val[1])
+                                    length = calculate_decoded_length(decoded_bin, response_j['rowfieldtypes'][1])
+                                    format = get_unpack_format(length, response_j['rowfieldtypes'][1])
+                                    dims = struct.unpack(format, decoded_bin)
+                                    for v in dims:
+                                        dim_array.append(v)
 
-                        break
+                            curr_dim['values'] = dim_array
+                            dimensions.append(curr_dim)
 
-                dim_num = len(dimensions)
-                if dim_num == 0:
-                    raise RuntimeError("No dimension found")
+                        else:
+                            raise RuntimeError("Unable to get dimension name or values in response")
 
-                data_values["dimension"] = dimensions
+                    dim_num = len(dimensions)
+                    if dim_num == 0:
+                        raise RuntimeError("No dimension found")
 
-            except Exception as e:
-                print(get_linenumber(), "Unable to get dimensions from response:", e)
-                return None
-        else:
-            data_values["measure"] = {}
+                    data_values["dimension"] = dimensions
+                    break
+
+        except Exception as e:
+            print(get_linenumber(), "Unable to get dimensions from response:", e)
+            return None
 
         # Read values
         try:
