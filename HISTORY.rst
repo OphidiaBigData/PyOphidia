@@ -11,6 +11,7 @@ Added:
 Changed:
 ~~~~~~~~
 
+- Cube methods interfaces to comply with Ophidia operators in v1.6.0
 - Improve export_array method in cube class `#28 <https://github.com/OphidiaBigData/PyOphidia/pull/28>`_
 - sectlient method in cube class with new argument 'api_mode' `#27 <https://github.com/OphidiaBigData/PyOphidia/pull/27>`_
 - script method with new parameter 'space' `#25 <https://github.com/OphidiaBigData/PyOphidia/pull/25>`_
