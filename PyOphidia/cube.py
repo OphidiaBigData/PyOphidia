@@ -38,7 +38,7 @@ class Cube():
             exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
             ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
             subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-            leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,
+            leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', policy='rr', description='-', schedule=0,
             pid=None, check_grid='no', display=False) -> obj
          or Cube(pid=None) -> obj
 
@@ -146,7 +146,7 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_B2DROP
         cancel(id=None, type='kill', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_CANCEL
-        cluster(action='info', nhost=1, host_partition='all', user_filter='all', exec_mode='sync', display=False)
+        cluster(action='info', nhost=1, host_partition='all', host_type='io', user_filter='all', exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_CLUSTER
         containerschema(container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CONTAINERSCHEMA
         createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base', base_time='1900-01-01 00:00:00',
@@ -171,13 +171,13 @@ class Cube():
                  exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
                  ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', schedule=0, check_grid='no')
+                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', policy='rr', schedule=0, check_grid='no')
           -> Cube or None : wrapper of the operator OPH_IMPORTNC
         importnc2(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
                  exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
                  ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', schedule=0, check_grid='no')
+                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', policy='rr', schedule=0, check_grid='no')
           -> Cube or None : wrapper of the operator OPH_IMPORTNC2
         instances(action='read', level=1, host_filter='all', nhost=0, host_partition='all', ioserver_filter='all', host_status='all',
                   exec_mode='sync', objkey_filter='all', display=True)
@@ -197,9 +197,9 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_MAN
         manage_session(action='list', session='this', key='user', value='null', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
-        mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no', number=1, description='-', display=False)
+        mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no', number=1, order='none', description='-', display=False)
           -> Cube : wrapper of the operator OPH_MERGECUBES
-        mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, description='-', dim='-', display=False)
+        mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, order='none', description='-', dim='-', display=False)
           -> Cube or None: wrapper of the operator OPH_MERGECUBES2
         movecontainer(container=None, cwd=None, exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_MOVECONTAINER
@@ -209,11 +209,11 @@ class Cube():
                    objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
         randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='mysql_table', schedule=0, algorithm='default',
-                 nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+                 policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
                  dim_size=None, compressed='no', grid='-', description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_RANDCUBE
         randcube2(ncores=1, nthreads=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='ophidiaio_memory', schedule=0, algorithm='default',
-                 nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+                 policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
                  dim_size=None, compressed='no', grid='-', description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_RANDCUBE2
         resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
@@ -223,7 +223,7 @@ class Cube():
         search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all',
                cwd=None, recursive='no', display=True)
           -> dict or None : wrapper of the operator OPH_SEARCH
-        service(status='', level=1, objkey_filter='all', display=False)
+        service(status='', level=1, enable='all', disable='all', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_SERVICE
         showgrid(container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_SHOWGRID
@@ -316,8 +316,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def cluster(cls, action='info', nhost=1, host_partition='all', user_filter='all', exec_mode='sync', display=False):
-        """cluster(action='info', nhost=1, host_partition='all', user_filter='all', exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_CLUSTER
+    def cluster(cls, action='info', nhost=1, host_partition='all', host_type='io', user_filter='all', exec_mode='sync', display=False):
+        """cluster(action='info', nhost=1, host_partition='all', host_type='io', user_filter='all', exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_CLUSTER
 
         :param action: info|info_cluster|deploy|undeploy
         :type action: str
@@ -325,6 +325,8 @@ class Cube():
         :type nhost: int
         :param host_partition: name of user-defined partition to be used
         :type host_partition: str
+        :param host_type: type of partition to be deployed
+        :type host_type: str
         :param user_filter: name of user to be used as filter
         :type user_filter: str
         :param exec_mode: async or sync
@@ -349,6 +351,8 @@ class Cube():
                 query += 'nhost=' + str(nhost) + ';'
             if host_partition is not None:
                 query += 'host_partition=' + str(host_partition) + ';'
+            if host_type is not None:
+                query += 'host_type=' + str(host_type) + ';'
             if user_filter is not None:
                 query += 'user_filter=' + str(user_filter) + ';'
             if exec_mode is not None:
@@ -599,13 +603,17 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def service(cls, status='', level=1, objkey_filter='all', display=False):
-        """service(status='', level=1, objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_SERVICE
+    def service(cls, status='', level=1, enable='all', disable='all', objkey_filter='all', display=False):
+        """service(status='', level=1, enable='all', disable='all', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_SERVICE
 
         :param status: up|down
         :type status: str
         :param level: 1|2
         :type level: int
+        :param enable: list of the users to be enabled
+        :type enable: str
+        :param disable: list of the users to be disabled
+        :type disable: str
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
@@ -626,6 +634,10 @@ class Cube():
                 query += 'status=' + str(status) + ';'
             if level is not None:
                 query += 'level=' + str(level) + ';'
+            if enable is not None:
+                query += 'enable=' + str(enable) + ';'
+            if disable is not None:
+                query += 'disable=' + str(disable) + ';'
             if objkey_filter is not None:
                 query += 'objkey_filter=' + str(objkey_filter) + ';'
 
@@ -1361,10 +1373,10 @@ class Cube():
 
     @classmethod
     def randcube(cls, ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='mysql_table', schedule=0, algorithm='default',
-                 nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+                 policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
                  dim_size=None, compressed='no', grid='-', description='-', display=False):
         """randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='mysql_table', schedule=0, algorithm='default',
-                 nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+                 policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
                  dim_size=None, compressed='no', grid='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_RANDCUBE
 
         :param ncores: number of cores to use
@@ -1379,6 +1391,8 @@ class Cube():
         :type host_partition: str
         :param algorithm: default|temperatures
         :type algorithm: str
+        :param policy: rule to select how data are distribuited over hosts (rr|port)
+        :type policy: str
         :param ioserver: mysql_table|ophdiaio_memory
         :type ioserver: str
         :param schedule: 0
@@ -1435,6 +1449,8 @@ class Cube():
             query += 'host_partition=' + str(host_partition) + ';'
         if algorithm is not None:
             query += 'algorithm=' + str(algorithm) + ';'
+        if policy is not None:
+            query += 'policy=' + str(policy) + ';'
         if ioserver is not None:
             query += 'ioserver=' + str(ioserver) + ';'
         if schedule is not None:
@@ -1481,10 +1497,10 @@ class Cube():
 
     @classmethod
     def randcube2(cls, ncores=1, nthreads=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='ophidiaio_memory', schedule=0, algorithm='default',
-                 nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+                 policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
                  dim_size=None, compressed='no', grid='-', description='-', display=False):
         """randcube2(ncores=1, nthreads=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='ophidiaio_memory', schedule=0, algorithm='default',
-                 nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+                 policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
                  dim_size=None, compressed='no', grid='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_RANDCUBE2
 
         :param ncores: number of cores to use
@@ -1501,6 +1517,8 @@ class Cube():
         :type host_partition: str
         :param algorithm: default|temperatures
         :type algorithm: str
+        :param policy: rule to select how data are distribuited over hosts (rr|port)
+        :type policy: str
         :param ioserver: ophdiaio_memory
         :type ioserver: str
         :param schedule: 0
@@ -1559,6 +1577,8 @@ class Cube():
             query += 'host_partition=' + str(host_partition) + ';'
         if algorithm is not None:
             query += 'algorithm=' + str(algorithm) + ';'
+        if policy is not None:
+            query += 'policy=' + str(policy) + ';'
         if ioserver is not None:
             query += 'ioserver=' + str(ioserver) + ';'
         if schedule is not None:
@@ -1736,13 +1756,13 @@ class Cube():
                  exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
                  ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', schedule=0,
+                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', policy='rr', schedule=0,
                  check_grid='no', display=False):
         """importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,  cdd=None, compressed='no',
                     exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
                     ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                     subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                    leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', schedule=0,
+                    leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', policy='rr', schedule=0,
                     check_grid='no')
              -> Cube or None : wrapper of the operator OPH_IMPORTNC
 
@@ -1816,6 +1836,8 @@ class Cube():
         :type vocabulary: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param policy: rule to select how data are distribuited over hosts (rr|port)
+        :type policy: str
         :param check_grid: yes|no
         :type check_grid: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
@@ -1899,6 +1921,8 @@ class Cube():
             query += 'leap_year=' + str(leap_year) + ';'
         if leap_month is not None:
             query += 'leap_month=' + str(leap_month) + ';'
+        if policy is not None:
+            query += 'policy=' + str(policy) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
         if check_grid is not None:
@@ -1922,13 +1946,13 @@ class Cube():
                  exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
                  ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', schedule=0,
+                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', policy='rr', schedule=0,
                  check_grid='no', display=False):
         """importnc2(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
                  exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
                  ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', schedule=0, check_grid='no')
+                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', policy='rr', schedule=0, check_grid='no')
           -> Cube or None : wrapper of the operator OPH_IMPORTNC2
 
 
@@ -2002,6 +2026,8 @@ class Cube():
         :type units: str
         :param vocabulary: metadata vocabulary
         :type vocabulary: str
+        :param policy: rule to select how data are distribuited over hosts (rr|port)
+        :type policy: str
         :param description: additional description to be associated with the output cube
         :type description: str
         :param check_grid: yes|no
@@ -2089,6 +2115,8 @@ class Cube():
             query += 'leap_year=' + str(leap_year) + ';'
         if leap_month is not None:
             query += 'leap_month=' + str(leap_month) + ';'
+        if policy is not None:
+            query += 'policy=' + str(policy) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
         if check_grid is not None:
@@ -2312,7 +2340,7 @@ class Cube():
         :param list: yes|no
         :type list: str
         :param space: yes|no
-        :type spcae: str
+        :type space: str
         :param python_code: yes|no
         :type python_code: bool
         :param ncores: number of cores to use
@@ -2486,8 +2514,8 @@ if __name__ == '__main__':
             raise RuntimeError()
 
     @classmethod
-    def mergecubes(cls, ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no', number=1, description='-', display=False):
-        """mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no', number=1, description='-', display=False) -> Cube : wrapper of the operator OPH_MERGECUBES
+    def mergecubes(cls, ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no', number=1, order='none', description='-', display=False):
+        """mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no', number=1, order='none', description='-', display=False) -> Cube : wrapper of the operator OPH_MERGECUBES
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -2505,6 +2533,8 @@ if __name__ == '__main__':
         :type hold_values: str
         :param number: number of replies of the first cube
         :type number: int
+        :param order: criteria on which input cubes are ordered before merging
+        :type order: str
         :param description: additional description to be associated with the output cube
         :type description: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
@@ -2536,6 +2566,8 @@ if __name__ == '__main__':
             query += 'hold_values=' + str(hold_values) + ';'
         if number is not None:
             query += 'number=' + str(number) + ';'
+        if order is not None:
+            query += 'order=' + str(order) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
 
@@ -2553,8 +2585,8 @@ if __name__ == '__main__':
             return newcube
 
     @classmethod
-    def mergecubes2(cls, ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, description='-', dim='-', display=False):
-        """mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, description='-', dim='-', display=False) -> Cube or None: wrapper of the operator OPH_MERGECUBES2
+    def mergecubes2(cls, ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, order='none', description='-', dim='-', display=False):
+        """mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, order='none', description='-', dim='-', display=False) -> Cube or None: wrapper of the operator OPH_MERGECUBES2
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -2570,6 +2602,8 @@ if __name__ == '__main__':
         :type dim_type: str
         :param number: number of replies of the first cube
         :type number: int
+        :param order: criteria on which input cubes are ordered before merging
+        :type order: str
         :param description: additional description to be associated with the output cube
         :type description: str
         :param dim: name of the new dimension to be created
@@ -2599,6 +2633,8 @@ if __name__ == '__main__':
             query += 'container=' + str(container) + ';'
         if number is not None:
             query += 'number=' + str(number) + ';'
+        if order is not None:
+            query += 'order=' + str(order) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
         if dim_type is not None:
@@ -2623,13 +2659,13 @@ if __name__ == '__main__':
                  exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
                  ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,
+                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', policy='rr', schedule=0,
                  pid=None, check_grid='no', display=False):
         """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
                 exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
                 ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', schedule=0,
+                leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', policy='rr', schedule=0,
                 pid=None, check_grid='no', display=False) -> obj
              or Cube(pid=None) -> obj
 
@@ -2703,6 +2739,8 @@ if __name__ == '__main__':
         :type vocabulary: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param policy: rule to select how data are distribuited over hosts (rr|port)
+        :type policy: str
         :param pid: PID of an existing cube (if used all other parameters are ignored)
         :type pid: str
         :param check_grid: yes|no
@@ -2810,6 +2848,8 @@ if __name__ == '__main__':
                         query += 'vocabulary=' + str(vocabulary) + ';'
                     if schedule is not None:
                         query += 'schedule=' + str(schedule) + ';'
+                    if policy is not None:
+                        query += 'policy=' + str(policy) + ';'
                     if description is not None:
                         query += 'description=' + str(description) + ';'
                     if check_grid is not None:
