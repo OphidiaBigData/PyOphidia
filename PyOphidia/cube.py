@@ -82,7 +82,7 @@ def format_to_xarray(response, show_time):
     pass
 
 
-def format_to_json(response, show_time):
+def format_to_json(response, show_time, flag):
     adimCube = True
     data_values = {"dimension": {}, "measure": {}}
     try:
@@ -150,7 +150,7 @@ def format_to_json(response, show_time):
                                     values.append(v)
                             last_length = len(measure)
                         print(last_length)
-                        if last_length == 1:
+                        if last_length == 1 and flag:
                             for i in range(0, len(values), last_dim_length):
                                 data_values["measure"][measure_name].append(values[i:i + last_dim_length])
                         else:
@@ -5055,7 +5055,7 @@ if __name__ == '__main__':
             raise RuntimeError()
 
     def export_array(self, output_format="json", show_id='no', show_time='no', subset_dims=None, subset_filter=None,
-                     time_filter='no'):
+                     time_filter='no', flag=True):
         print("will export")
         """export_array(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no') -> dict or None : wrapper of the operator OPH_EXPLORECUBE
 
@@ -5097,7 +5097,7 @@ if __name__ == '__main__':
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
         if output_format == "json":
-            return format_to_json(response, show_time)
+            return format_to_json(response, show_time, flag)
         elif output_format == "json_old":
             return format_to_json_old(response, show_time)
         elif output_format == "dataframe":
