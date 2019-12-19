@@ -82,6 +82,99 @@ def format_to_xarray(response, show_time):
     pass
 
 
+def format_to_multidimensional_json(response, show_time, flag):
+    adimCube = True
+    data_values = {"dimension": {}, "measure": {}}
+    lengths = []
+    try:
+        for response_i in response['response']:
+            if response_i['objkey'] == 'explorecube_dimvalues':
+                adimCube = False
+                for response_j in response_i['objcontent']:
+                    if response_j['title'] and response_j['rowfieldtypes'] and response_j['rowfieldtypes'][1] and \
+                            response_j['rowvalues']:
+                        data_values["dimension"][response_j['title']] = []
+                        if show_time == 'yes' and response_j['title'] == 'time':
+                            for val in response_j['rowvalues']:
+                                dims = [s.strip() for s in val[1].split(',')]
+                                for v in dims:
+                                    data_values["dimension"][response_j['title']].append(v)
+                        else:
+                            lengths.append(len(response_j['rowvalues']))
+                            for val in response_j['rowvalues']:
+                                decoded_bin = base64.b64decode(val[1])
+                                length = calculate_decoded_length(decoded_bin, response_j['rowfieldtypes'][1])
+                                format = get_unpack_format(length, response_j['rowfieldtypes'][1])
+                                dims = struct.unpack(format, decoded_bin)
+                                for v in dims:
+                                    data_values["dimension"][response_j['title']].append(v)
+                        last_dim_length = len(response_j['rowvalues'])
+                    else:
+                        raise RuntimeError("Unable to get dimension name or values in response")
+                if len(data_values["dimension"].keys()) == 0:
+                    raise RuntimeError("No dimension found")
+                break
+    except Exception as e:
+        print("Unable to get dimensions from response:", e)
+        return None
+    try:
+        for response_i in response['response']:
+            if response_i['objkey'] == 'explorecube_data':
+                for response_j in response_i['objcontent']:
+                    if response_j['title'] and response_j['rowkeys'] and response_j['rowfieldtypes'] \
+                            and response_j['rowvalues']:
+                        measure_name = ""
+                        measure_index = 0
+                        if not adimCube:
+                            # Check that implicit dimension is just one
+                            if len(data_values["dimension"].keys()) - (len(response_j['rowkeys']) - 1) / 2.0 > 1:
+                                raise RuntimeError("More than one implicit dimension")
+                        for i, t in enumerate(response_j['rowkeys']):
+                            if response_j['title'] == t:
+                                measure_name = t
+                                measure_index = i
+                                break
+                        if measure_index == 0:
+                            raise RuntimeError("Unable to get measure name in response")
+                        data_values["measure"][measure_name] = []
+                        values = []
+                        last_length = 1
+                        for val in response_j['rowvalues']:
+                            decoded_bin = base64.b64decode(val[measure_index])
+                            length = calculate_decoded_length(decoded_bin,
+                                                              response_j['rowfieldtypes'][measure_index])
+                            format = get_unpack_format(length, response_j['rowfieldtypes'][measure_index])
+                            measure = struct.unpack(format, decoded_bin)
+                            if (type(measure)) is (tuple or list) and len(measure) == 1:
+                                values.append(measure[0])
+                            else:
+                                for v in measure:
+                                    values.append(v)
+                            last_length = len(measure)
+                        for i in range(len(lengths)-1, -1, -1):
+                            current_array = []
+                            if i == len(lengths)-1:
+                                for j in range(0, len(values), lengths[i]):
+                                    current_array.append(values[j:j + lengths[i]])
+                            else:
+                                for j in range(0, len(previous_array), lengths[i]):
+                                    current_array.append(previous_array[j:j + lengths[i]])
+                            previous_array = current_array
+                        data_values["measure"][measure_name] = previous_array[0]
+                    else:
+                        raise RuntimeError("Unable to get measure values in response")
+                    break
+                break
+        if len(data_values["measure"].keys()) == 0:
+            raise RuntimeError("No measure found")
+    except Exception as e:
+        print("Unable to get measure from response:", e)
+        return None
+    else:
+        return data_values
+
+
+
 def format_to_json(response, show_time, flag):
     adimCube = True
     data_values = {"dimension": {}, "measure": {}}
@@ -354,7 +447,7 @@ class Cube:
           -> Cube or None : wrapper of the operator OPH_RANDCUBE2
         resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
           -> dict or None : wrapper of the operator OPH_RESUME
-        script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', python_code=False, display=False) 
+        script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', python_code=False, display=False)
           -> dict or None : wrapper of the operator OPH_SCRIPT
         search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all',
                cwd=None, recursive='no', display=True)
@@ -5106,6 +5199,8 @@ if __name__ == '__main__':
             return format_to_numpy(response, show_time)
         elif output_format == "xarray":
             return format_to_xarray(response, show_time)
+        elif output_format == "multidimensional":
+            return format_to_multidimensional_json(response, show_time, flag)
         else:
             raise ValueError("Wrong output_format")
 
