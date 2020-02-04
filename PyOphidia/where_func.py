@@ -1,6 +1,6 @@
 #
 #     PyOphidia - Python bindings for Ophidia
-#     Copyright (C) 2015-2019 CMCC Foundation
+#     Copyright (C) 2015-2020 CMCC Foundation
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -23,13 +23,9 @@ import sys
 import os
 import base64
 import struct
-import PyOphidia.client as _client
+import PyOphidia.cube as cube
 from inspect import currentframe
 sys.path.append(os.path.dirname(__file__))
-
-
-from PyOphidia import cube
-from inspect import currentframe
 
 
 def get_linenumber():
