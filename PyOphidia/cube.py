@@ -25,6 +25,7 @@ import base64
 import struct
 import PyOphidia.client as _client
 from inspect import currentframe
+
 sys.path.append(os.path.dirname(__file__))
 
 
@@ -33,7 +34,12 @@ def get_linenumber():
     return __file__, cf.f_back.f_lineno
 
 
-class Cube():
+
+
+
+
+
+class Cube:
     """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
             exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
             ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
@@ -218,7 +224,7 @@ class Cube():
           -> Cube or None : wrapper of the operator OPH_RANDCUBE2
         resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
           -> dict or None : wrapper of the operator OPH_RESUME
-        script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', python_code=False, display=False) 
+        script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', python_code=False, display=False)
           -> dict or None : wrapper of the operator OPH_SCRIPT
         search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all',
                cwd=None, recursive='no', display=True)
@@ -254,7 +260,7 @@ class Cube():
         :returns: None
         :rtype: None
         """
-
+        print(username)
         try:
             cls.client = _client.Client(username, password, server, port, token, read_env, api_mode)
         except Exception as e:
@@ -263,7 +269,8 @@ class Cube():
             pass
 
     @classmethod
-    def b2drop(cls, action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False):
+    def b2drop(cls, action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync',
+               display=False):
         """b2drop(action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_B2DROP
 
@@ -316,7 +323,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def cluster(cls, action='info', nhost=1, host_partition='all', host_type='io', user_filter='all', exec_mode='sync', display=False):
+    def cluster(cls, action='info', nhost=1, host_partition='all', host_type='io', user_filter='all', exec_mode='sync',
+                display=False):
         """cluster(action='info', nhost=1, host_partition='all', host_type='io', user_filter='all', exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_CLUSTER
 
         :param action: info|info_cluster|deploy|undeploy
@@ -414,8 +422,10 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def createcontainer(cls, exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base',
-                        base_time='1900-01-01 00:00:00', units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
+    def createcontainer(cls, exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double",
+                        hierarchy='oph_base',
+                        base_time='1900-01-01 00:00:00', units='d', calendar='standard',
+                        month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
                         leap_year=0, leap_month=2, vocabulary='CF', compressed='no', description='-', display=False):
         """createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base',
                         base_time='1900-01-01 00:00:00', units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
@@ -460,7 +470,8 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None or container is None or dim is None or dim_type is None or (cwd is None and Cube.client.cwd is None):
+            if Cube.client is None or container is None or dim is None or dim_type is None or (
+                    cwd is None and Cube.client.cwd is None):
                 raise RuntimeError('Cube.client, container, dim, dim_type or cwd is None')
 
             query = 'oph_createcontainer '
@@ -507,7 +518,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def deletecontainer(cls, container=None, container_pid='-', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False):
+    def deletecontainer(cls, container=None, container_pid='-', force='no', cwd=None, nthreads=1, exec_mode='sync',
+                        objkey_filter='all', display=False):
         """deletecontainer(container=None, container_pid='-', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False)
              -> dict or None : wrapper of the operator OPH_DELETECONTAINER
 
@@ -532,7 +544,8 @@ class Cube():
 
         response = None
         try:
-            if Cube.client is None or ((container is None or (cwd is None and Cube.client.cwd is None)) and container_pid is "-"):
+            if Cube.client is None or (
+                    (container is None or (cwd is None and Cube.client.cwd is None)) and container_pid is "-"):
                 raise RuntimeError('Cube.client, container and container_pid or cwd is None')
 
             query = 'oph_deletecontainer '
@@ -738,7 +751,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def instances(cls, action='read', level=1, host_filter='all', nhost=0, host_partition='all', ioserver_filter='all', host_status='all',
+    def instances(cls, action='read', level=1, host_filter='all', nhost=0, host_partition='all', ioserver_filter='all',
+                  host_status='all',
                   exec_mode='sync', objkey_filter='all', display=True):
         """instances(level=1, action='read', level=1, host_filter='all', nhost=0, host_partition='all', ioserver_filter='all', host_status='all',
                      exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_INSTANCES
@@ -805,7 +819,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def log_info(cls, log_type='server', container_id=0, ioserver='mysql', nlines=10, exec_mode='sync', objkey_filter='all', display=True):
+    def log_info(cls, log_type='server', container_id=0, ioserver='mysql', nlines=10, exec_mode='sync',
+                 objkey_filter='all', display=True):
         """log_info(log_type='server', container_id=0, ioserver='mysql', nlines=10, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_LOG_INFO
 
         :param log_type: server|container|ioserver
@@ -858,10 +873,13 @@ class Cube():
 
     @classmethod
     def loggingbk(cls, session_level=0, job_level=0, mask=000, session_filter='all', session_label_filter='all',
-                  session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', workflowid_filter='all', markerid_filter='all',
-                  parent_job_filter='all', job_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', job_status_filter='all',
+                  session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', workflowid_filter='all',
+                  markerid_filter='all',
+                  parent_job_filter='all', job_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
+                  job_status_filter='all',
                   submission_string_filter='all', job_start_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
-                  job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', nlines=100, objkey_filter='all', exec_mode='sync', display=True):
+                  job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', nlines=100, objkey_filter='all',
+                  exec_mode='sync', display=True):
         """loggingbk(session_level=0, job_level=0, mask=000, session_filter='all', session_label_filter='all',
                      session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', workflowid_filter='all', markerid_filter='all',
                      parent_job_filter='all', job_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', job_status_filter='all',
@@ -1007,7 +1025,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def fs(cls, command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync', objkey_filter='all', display=False):
+    def fs(cls, command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync',
+           objkey_filter='all', display=False):
         """fs(command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_FS
 
         :param command: ls|cd|mkdir|rm|mv
@@ -1070,7 +1089,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def tasks(cls, cube_filter='all', operator_filter='all', path='-', cwd=None, recursive='no', container='all', exec_mode='sync', objkey_filter='all', display=True):
+    def tasks(cls, cube_filter='all', operator_filter='all', path='-', cwd=None, recursive='no', container='all',
+              exec_mode='sync', objkey_filter='all', display=True):
         """tasks(cls, cube_filter='all', path='-', operator_filter='all', cwd=None, recursive='no',  container='all', objkey_filter='all', exec_mode='sync', display=True)
              -> dict or None : wrapper of the operator OPH_tasks
 
@@ -1129,7 +1149,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def showgrid(cls, container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync', objkey_filter='all', display=True):
+    def showgrid(cls, container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync',
+                 objkey_filter='all', display=True):
         """showgrid(container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_SHOWGRID
 
         :param container: name of the input container
@@ -1184,7 +1205,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def search(cls, container_filter='all', metadata_key_filter='all', metadata_value_filter='all', path='-', cwd=None, recursive='no', exec_mode='sync', objkey_filter='all', display=True):
+    def search(cls, container_filter='all', metadata_key_filter='all', metadata_value_filter='all', path='-', cwd=None,
+               recursive='no', exec_mode='sync', objkey_filter='all', display=True):
         """search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all', cwd=None,  recursive='no', display=True)
              -> dict or None : wrapper of the operator OPH_SEARCH
 
@@ -1244,7 +1266,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def hierarchy(cls, hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', display=True):
+    def hierarchy(cls, hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all',
+                  display=True):
         """hierarchy(hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_HIERARCHY
 
         :param hierarchy: name of the requested hierarchy
@@ -1287,8 +1310,10 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def list(cls, level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all', dbms_filter='all',
-             measure_filter='all', ntransform='all', src_filter='all', db_filter='all', recursive='no', objkey_filter='all', display=True):
+    def list(cls, level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all',
+             dbms_filter='all',
+             measure_filter='all', ntransform='all', src_filter='all', db_filter='all', recursive='no',
+             objkey_filter='all', display=True):
         """list(level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all', dbms_filter='all', measure_filter='all',
                 ntransform='all', src_filter='all', db_filter='all', recursive='no', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_LIST
 
@@ -1372,8 +1397,10 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def randcube(cls, ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='mysql_table', schedule=0, algorithm='default',
-                 policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
+    def randcube(cls, ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto',
+                 ioserver='mysql_table', schedule=0, algorithm='default',
+                 policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None,
+                 dim=None, concept_level='c',
                  dim_size=None, compressed='no', grid='-', description='-', display=False):
         """randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='mysql_table', schedule=0, algorithm='default',
                  policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
@@ -1430,9 +1457,11 @@ class Cube():
         :raises: RuntimeError
         """
 
-        if Cube.client is None or (cwd is None and Cube.client.cwd is None) or container is None or nfrag is None or ntuple is None or measure is None or measure_type is None or exp_ndim is None or\
+        if Cube.client is None or (
+                cwd is None and Cube.client.cwd is None) or container is None or nfrag is None or ntuple is None or measure is None or measure_type is None or exp_ndim is None or \
                 dim is None or dim_size is None:
-            raise RuntimeError('Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None')
+            raise RuntimeError(
+                'Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None')
         newcube = None
 
         query = 'oph_randcube '
@@ -1481,24 +1510,30 @@ class Cube():
             query += 'grid=' + str(grid) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
+        print("here1")
 
         try:
+            print("here2")
             if Cube.client.submit(query, display) is None:
+                print("here3")
                 raise RuntimeError()
 
             if Cube.client.last_response is not None:
                 if Cube.client.cube:
                     newcube = Cube(pid=Cube.client.cube)
         except Exception as e:
+            print("here4")
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
         else:
             return newcube
 
     @classmethod
-    def randcube2(cls, ncores=1, nthreads=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='ophidiaio_memory', schedule=0, algorithm='default',
-                 policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
-                 dim_size=None, compressed='no', grid='-', description='-', display=False):
+    def randcube2(cls, ncores=1, nthreads=1, exec_mode='sync', container=None, cwd=None, host_partition='auto',
+                  ioserver='ophidiaio_memory', schedule=0, algorithm='default',
+                  policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None,
+                  dim=None, concept_level='c',
+                  dim_size=None, compressed='no', grid='-', description='-', display=False):
         """randcube2(ncores=1, nthreads=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='ophidiaio_memory', schedule=0, algorithm='default',
                  policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
                  dim_size=None, compressed='no', grid='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_RANDCUBE2
@@ -1556,9 +1591,11 @@ class Cube():
         :raises: RuntimeError
         """
 
-        if Cube.client is None or (cwd is None and Cube.client.cwd is None) or container is None or nfrag is None or ntuple is None or measure is None or measure_type is None or exp_ndim is None or\
+        if Cube.client is None or (
+                cwd is None and Cube.client.cwd is None) or container is None or nfrag is None or ntuple is None or measure is None or measure_type is None or exp_ndim is None or \
                 dim is None or dim_size is None:
-            raise RuntimeError('Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None')
+            raise RuntimeError(
+                'Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None')
         newcube = None
 
         query = 'oph_randcube2 '
@@ -1624,8 +1661,10 @@ class Cube():
             return newcube
 
     @classmethod
-    def explorenc(cls, exec_mode='sync', schedule=0, measure='-', src_path=None, cdd=None, exp_dim='-', imp_dim='-', subset_dims='none', subset_type='index', subset_filter='all', limit_filter=100,
-                  show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no', level=0, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0,
+    def explorenc(cls, exec_mode='sync', schedule=0, measure='-', src_path=None, cdd=None, exp_dim='-', imp_dim='-',
+                  subset_dims='none', subset_type='index', subset_filter='all', limit_filter=100,
+                  show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no', level=0,
+                  imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0,
                   wavelet_coeff='no', objkey_filter='all', display=True):
         """explorenc(exec_mode='sync', schedule=0, measure='-', src_path=None, cdd=None, exp_dim='-', imp_dim='-', subset_dims='none', subset_type='index', subset_filter='all', limit_filter=100,
                      show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no', level=0, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0,
@@ -1752,11 +1791,16 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def importnc(cls, container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
-                 exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
-                 ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
-                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', policy='rr', schedule=0,
+    def importnc(cls, container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None,
+                 src_path=None, cdd=None, compressed='no',
+                 exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no',
+                 offset=0,
+                 ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all',
+                 time_filter='yes',
+                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard',
+                 hierarchy='oph_base', leap_month=2,
+                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d',
+                 vocabulary='CF', description='-', policy='rr', schedule=0,
                  check_grid='no', display=False):
         """importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,  cdd=None, compressed='no',
                     exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
@@ -1942,12 +1986,17 @@ class Cube():
             return newcube
 
     @classmethod
-    def importnc2(cls, container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
-                 exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
-                 ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
-                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', policy='rr', schedule=0,
-                 check_grid='no', display=False):
+    def importnc2(cls, container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None,
+                  src_path=None, cdd=None, compressed='no',
+                  exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no',
+                  offset=0,
+                  ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0, subset_dims='none',
+                  subset_filter='all', time_filter='yes',
+                  subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard',
+                  hierarchy='oph_base', leap_month=2,
+                  leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d',
+                  vocabulary='CF', description='-', policy='rr', schedule=0,
+                  check_grid='no', display=False):
         """importnc2(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
                  exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
                  ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
@@ -2136,7 +2185,8 @@ class Cube():
             return newcube
 
     @classmethod
-    def man(cls, function=None, function_version='latest', function_type='operator', exec_mode='sync', objkey_filter='all', display=True):
+    def man(cls, function=None, function_version='latest', function_type='operator', exec_mode='sync',
+            objkey_filter='all', display=True):
         """man(function=None, function_type='operator', function_version='latest', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_MAN
 
         :param function: operator or primitive name
@@ -2267,7 +2317,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def primitives(cls, level=1, dbms_filter=None, return_type='all', primitive_type='all', primitive_filter='', limit_filter=0, exec_mode='sync', objkey_filter='all', display=True):
+    def primitives(cls, level=1, dbms_filter=None, return_type='all', primitive_type='all', primitive_filter='',
+                   limit_filter=0, exec_mode='sync', objkey_filter='all', display=True):
         """primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync', objkey_filter='all', display=True) ->
            dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
 
@@ -2326,7 +2377,8 @@ class Cube():
             raise RuntimeError()
 
     @classmethod
-    def script(cls, script=':', args=' ', stdout='stdout', stderr='stderr', list='no', space='no', python_code=False, exec_mode='sync', ncores=1, display=False):
+    def script(cls, script=':', args=' ', stdout='stdout', stderr='stderr', list='no', space='no', python_code=False,
+               exec_mode='sync', ncores=1, display=False):
         """script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', python_code=False, display=False) -> dict or None : wrapper of the operator OPH_SCRIPT
 
         :param script: script/executable filename
@@ -2363,7 +2415,7 @@ class Cube():
             from time import time
 
             base_path = expanduser("~") + "/.ophidia/"
-            script_path = base_path + function.__name__ + str(int(time() * 10**6)) + ".py"
+            script_path = base_path + function.__name__ + str(int(time() * 10 ** 6)) + ".py"
 
             try:
                 # Check if hidden folder exists or create it otherwise
@@ -2450,7 +2502,8 @@ if __name__ == '__main__':
             raise RuntimeError()
 
     @classmethod
-    def resume(cls, session='this', id=0, id_type='workflow', document_type='response', level=1, user='', status_filter='11111111', save='no', objkey_filter='all', display=True):
+    def resume(cls, session='this', id=0, id_type='workflow', document_type='response', level=1, user='',
+               status_filter='11111111', save='no', objkey_filter='all', display=True):
         """ resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
               -> dict or None : wrapper of the operator OPH_RESUME
 
@@ -2514,7 +2567,8 @@ if __name__ == '__main__':
             raise RuntimeError()
 
     @classmethod
-    def mergecubes(cls, ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no', number=1, order='none', description='-', display=False):
+    def mergecubes(cls, ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no',
+                   number=1, order='none', description='-', display=False):
         """mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no', number=1, order='none', description='-', display=False) -> Cube : wrapper of the operator OPH_MERGECUBES
 
         :param ncores: number of cores to use
@@ -2585,7 +2639,8 @@ if __name__ == '__main__':
             return newcube
 
     @classmethod
-    def mergecubes2(cls, ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, order='none', description='-', dim='-', display=False):
+    def mergecubes2(cls, ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1,
+                    order='none', description='-', dim='-', display=False):
         """mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, order='none', description='-', dim='-', display=False) -> Cube or None: wrapper of the operator OPH_MERGECUBES2
 
         :param ncores: number of cores to use
@@ -2655,11 +2710,16 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def __init__(self, container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
-                 exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
-                 ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
-                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', policy='rr', schedule=0,
+    def __init__(self, container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None,
+                 src_path=None, cdd=None, compressed='no',
+                 exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no',
+                 offset=0,
+                 ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all',
+                 time_filter='yes',
+                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard',
+                 hierarchy='oph_base', leap_month=2,
+                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-',
+                 description='-', policy='rr', schedule=0,
                  pid=None, check_grid='no', display=False):
         """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
                 exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
@@ -2921,7 +2981,8 @@ if __name__ == '__main__':
                     self.rowsxfrag = res_i['objcontent'][0]['rowvalues'][0][3]
                     self.elementsxrow = res_i['objcontent'][0]['rowvalues'][0][4]
                     self.compressed = res_i['objcontent'][0]['rowvalues'][0][5]
-                    self.size = res_i['objcontent'][0]['rowvalues'][0][6] + ' ' + res_i['objcontent'][0]['rowvalues'][0][7]
+                    self.size = res_i['objcontent'][0]['rowvalues'][0][6] + ' ' + \
+                                res_i['objcontent'][0]['rowvalues'][0][7]
                     self.nelements = res_i['objcontent'][0]['rowvalues'][0][8]
                 elif res_i['objkey'] == 'cubeschema_diminfo':
                     self.dim_info = list()
@@ -2937,7 +2998,8 @@ if __name__ == '__main__':
                         element['lattice_name'] = row_i[7]
                         self.dim_info.append(element)
 
-    def exportnc(self, misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1, display=False):
+    def exportnc(self, misc='no', output_path='default', output_name='default', cdd=None, force='no',
+                 export_metadata='yes', schedule=0, exec_mode='sync', ncores=1, display=False):
         """exportnc(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1, display=False)
              -> None : wrapper of the operator OPH_EXPORTNC
 
@@ -2999,7 +3061,8 @@ if __name__ == '__main__':
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def exportnc2(self, misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1, display=False):
+    def exportnc2(self, misc='no', output_path='default', output_name='default', cdd=None, force='no',
+                  export_metadata='yes', schedule=0, exec_mode='sync', ncores=1, display=False):
         """exportnc2(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1, display=False)
              -> None : wrapper of the operator OPH_EXPORTNC2
 
@@ -3061,7 +3124,8 @@ if __name__ == '__main__':
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def aggregate(self, ncores=1, nthreads=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='NAN', grid='-', container='-', description='-', check_grid='no', display=False):
+    def aggregate(self, ncores=1, nthreads=1, exec_mode='sync', schedule=0, group_size='all', operation=None,
+                  missingvalue='NAN', grid='-', container='-', description='-', check_grid='no', display=False):
         """aggregate( ncores=1, nthreads=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='NAN', grid='-', container='-', description='-', check_grid='no', display=False)
              -> Cube or None : wrapper of the operator OPH_AGGREGATE
 
@@ -3138,7 +3202,8 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def aggregate2(self, ncores=1, nthreads=1, exec_mode='sync', schedule=0, dim='-', concept_level='A', midnight='24', operation=None, grid='-', missingvalue='NAN', container='-', description='-',
+    def aggregate2(self, ncores=1, nthreads=1, exec_mode='sync', schedule=0, dim='-', concept_level='A', midnight='24',
+                   operation=None, grid='-', missingvalue='NAN', container='-', description='-',
                    check_grid='no', display=False):
         """aggregate2(ncores=1, nthreads=1, exec_mode='sync', schedule=0, dim='-', concept_level='A', midnight='24', operation=None, grid='-', missingvalue='NAN', container='-', description='-',
                       check_grid='no', display=False)
@@ -3225,7 +3290,8 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def apply(self, ncores=1, nthreads=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes', on_reduce='skip', compressed='auto',
+    def apply(self, ncores=1, nthreads=1, exec_mode='sync', query='measure', dim_query='null', measure='null',
+              measure_type='manual', dim_type='manual', check_type='yes', on_reduce='skip', compressed='auto',
               schedule=0, container='-', description='-', display=False):
         """apply(ncores=1, nthreads=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes', on_reduce='skip', compressed='auto',
                  schedule=0, container='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_APPLY
@@ -3315,8 +3381,10 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
- subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0, display=False):
+    def concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0,
+                 description='-', subset_dims='none',
+                 subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0,
+                 display=False):
         """concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
  subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0, display=False)
  -> Cube or None : wrapper of the operator OPH_CONCATNC
@@ -3410,8 +3478,10 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def concatnc2(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
- subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False):
+    def concatnc2(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0,
+                  description='-', subset_dims='none',
+                  subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync',
+                  schedule=0, display=False):
         """concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
  subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False)
  -> Cube or None : wrapper of the operator OPH_CONCATNC2
@@ -3646,7 +3716,8 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def duplicate(self, ncores=1, nthreads=1, exec_mode='sync', schedule=0, container='-', description='-', display=False):
+    def duplicate(self, ncores=1, nthreads=1, exec_mode='sync', schedule=0, container='-', description='-',
+                  display=False):
         """duplicate(container='-', ncores=1, nthreads=1, exec_mode='sync', description='-', display=False) -> Cube or None : wrapper of the operator OPH_DUPLICATE
 
         :param ncores: number of cores to use
@@ -3702,8 +3773,10 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def explore(self, schedule=0, limit_filter=100, subset_dims=None, subset_filter='all', time_filter='yes', subset_type='index', show_index='no', show_id='no', show_time='no', level=1,
-                output_path='default', output_name='default', cdd=None, base64='no', ncores=1, exec_mode='sync', objkey_filter='all', display=True):
+    def explore(self, schedule=0, limit_filter=100, subset_dims=None, subset_filter='all', time_filter='yes',
+                subset_type='index', show_index='no', show_id='no', show_time='no', level=1,
+                output_path='default', output_name='default', cdd=None, base64='no', ncores=1, exec_mode='sync',
+                objkey_filter='all', display=True):
         """explore(schedule=0, limit_filter=100, subset_dims=None, subset_filter='all', time_filter='yes', subset_type='index', show_index='no', show_id='no', show_time='no', level=1, output_path='default',
                    output_name='default', cdd=None, base64='no', ncores=1, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_EXPLORECUBE
 
@@ -3800,7 +3873,8 @@ if __name__ == '__main__':
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def publish(self, content='all', schedule=0, show_index='no', show_id='no', show_time='no', ncores=1, exec_mode='sync', display=True):
+    def publish(self, content='all', schedule=0, show_index='no', show_id='no', show_time='no', ncores=1,
+                exec_mode='sync', display=True):
         """ publish( ncores=1, content='all', exec_mode='sync', show_id= 'no', show_index='no', schedule=0, show_time='no', display=True) -> dict or None : wrapper of the operator OPH_PUBLISH
 
         :param ncores: number of cores to use
@@ -3891,7 +3965,9 @@ if __name__ == '__main__':
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def cubeschema(self, level=0, dim='all', show_index='no', show_time='no', base64='no', action='read', concept_level='c', dim_level=1, dim_array='yes', exec_mode='sync', objkey_filter='all', display=True):
+    def cubeschema(self, level=0, dim='all', show_index='no', show_time='no', base64='no', action='read',
+                   concept_level='c', dim_level=1, dim_array='yes', exec_mode='sync', objkey_filter='all',
+                   display=True):
         """ cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', action='read', concept_level='c', dim_level=1, dim_array='yes', display=True) -> dict or None : wrapper of the operator OPH_CUBESCHEMA
 
         :param level: 0|1|2
@@ -3963,7 +4039,8 @@ if __name__ == '__main__':
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def cubesize(self, schedule=0, exec_mode='sync', byte_unit='MB', algorithm='euristic', ncores=1, objkey_filter='all', display=True):
+    def cubesize(self, schedule=0, exec_mode='sync', byte_unit='MB', algorithm='euristic', ncores=1,
+                 objkey_filter='all', display=True):
         """ cubesize( schedule=0, ncores=1, byte_unit='MB', algorithm='euristic', objkey_filter='all', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_CUBESIZE
 
         :param ncores: number of cores to use
@@ -4015,7 +4092,8 @@ if __name__ == '__main__':
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def cubeelements(self, schedule=0, exec_mode='sync', algorithm='dim_product', ncores=1, objkey_filter='all', display=True):
+    def cubeelements(self, schedule=0, exec_mode='sync', algorithm='dim_product', ncores=1, objkey_filter='all',
+                     display=True):
         """ cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
 
         :param ncores: number of cores to use
@@ -4063,7 +4141,8 @@ if __name__ == '__main__':
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def intercube(self, ncores=1, exec_mode='sync', cube2=None, cubes=None, operation='sub', missingvalue='NAN', measure='null', schedule=0, container='-', description='-', display=False):
+    def intercube(self, ncores=1, exec_mode='sync', cube2=None, cubes=None, operation='sub', missingvalue='NAN',
+                  measure='null', schedule=0, container='-', description='-', display=False):
         """intercube(cube2=None, cubes=None, operation='sub', container='-', exec_mode='sync', ncores=1, description='-', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE
 
         :param ncores: number of cores to use
@@ -4192,7 +4271,8 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def metadata(self, mode='read', metadata_key='all', variable='global', metadata_id=0, metadata_type='text', metadata_value='-', variable_filter='all', metadata_type_filter='all',
+    def metadata(self, mode='read', metadata_key='all', variable='global', metadata_id=0, metadata_type='text',
+                 metadata_value='-', variable_filter='all', metadata_type_filter='all',
                  metadata_value_filter='all', force='no', exec_mode='sync', objkey_filter='all', display=True):
         """metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, variable_filter=None, metadata_type_filter=None,
                     metadata_value_filter=None, force='no', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_METADATA
@@ -4269,7 +4349,8 @@ if __name__ == '__main__':
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def permute(self, ncores=1, nthreads=1, exec_mode='sync', schedule=0, dim_pos=None, container='-', description='-', display=False):
+    def permute(self, ncores=1, nthreads=1, exec_mode='sync', schedule=0, dim_pos=None, container='-', description='-',
+                display=False):
         """permute(dim_pos=None, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', display=False) -> Cube or None : wrapper of the operator OPH_PERMUTE
 
         :param ncores: number of cores to use
@@ -4329,7 +4410,8 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def reduce(self, ncores=1, nthreads=1, exec_mode='sync', schedule=0, group_size='all', operation=None, order=2, missingvalue='NAN', grid='-', container='-', description='-', check_grid='no', display=False):
+    def reduce(self, ncores=1, nthreads=1, exec_mode='sync', schedule=0, group_size='all', operation=None, order=2,
+               missingvalue='NAN', grid='-', container='-', description='-', check_grid='no', display=False):
         """reduce(operation=None, container=None, exec_mode='sync', grid='-', group_size='all', ncores=1, nthreads=1, schedule=0, order=2, description='-', objkey_filter='all', check_grid='no', display=False)
              -> Cube or None : wrapper of the operator OPH_REDUCE
 
@@ -4410,7 +4492,8 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def reduce2(self, ncores=1, exec_mode='sync', schedule=0, dim=None, concept_level='A', midnight='24', operation=None, order=2, missingvalue='NAN', grid='-', container='-', description='-',
+    def reduce2(self, ncores=1, exec_mode='sync', schedule=0, dim=None, concept_level='A', midnight='24',
+                operation=None, order=2, missingvalue='NAN', grid='-', container='-', description='-',
                 nthreads=1, check_grid='no', display=False):
         """reduce2(dim=None, operation=None, concept_level='A', container='-', exec_mode='sync', grid='-', midnight='24', order=2, description='-', schedule=0, ncores=1, nthreads=1, check_grid='no', display=False)
              -> Cube or None : wrapper of the operator OPH_REDUCE2
@@ -4500,7 +4583,8 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def rollup(self, ncores=1, nthreads=1, exec_mode='sync', schedule=0, ndim=1, container='-', description='-', display=False):
+    def rollup(self, ncores=1, nthreads=1, exec_mode='sync', schedule=0, ndim=1, container='-', description='-',
+               display=False):
         """rollup(ndim=1, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', display=False) -> Cube or None : wrapper of the operator OPH_ROLLUP
 
         :param ncores: number of cores to use
@@ -4560,7 +4644,8 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def split(self, ncores=1, nthreads=1, exec_mode='sync', schedule=0, nsplit=2, container='-', description='-', display=False):
+    def split(self, ncores=1, nthreads=1, exec_mode='sync', schedule=0, nsplit=2, container='-', description='-',
+              display=False):
         """split(nsplit=2, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', display=False) -> Cube or None : wrapper of the operator OPH_SPLIT
 
         :param ncores: number of cores to use
@@ -4620,7 +4705,8 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def subset(self, ncores=1, nthreads=1, exec_mode='sync', schedule=0, subset_dims='none', subset_filter='all', subset_type='index', time_filter='yes', offset=0, grid='-', container='-', description='-',
+    def subset(self, ncores=1, nthreads=1, exec_mode='sync', schedule=0, subset_dims='none', subset_filter='all',
+               subset_type='index', time_filter='yes', offset=0, grid='-', container='-', description='-',
                check_grid='no', display=False):
         """subset(subset_dims='none', subset_filter='all', container='-', exec_mode='sync', subset_type='index', time_filter='yes', offset=0, grid='-', ncores=1, nthreads=1, schedule=0, description='-',
                   check_grid='no', display=False)
@@ -4707,7 +4793,8 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def subset2(self, ncores=1, exec_mode='sync', schedule=0, subset_dims='none', subset_filter='all', time_filter='yes', offset=0, grid='-', container='-', description='-',
+    def subset2(self, ncores=1, exec_mode='sync', schedule=0, subset_dims='none', subset_filter='all',
+                time_filter='yes', offset=0, grid='-', container='-', description='-',
                 check_grid='no', display=False):
         """subset2(subset_dims='none', subset_filter='all', grid='-', container='-', ncores=1, exec_mode='sync', schedule=0, time_filter='yes', offset=0, description='-',
                    check_grid='no', display=False)
@@ -4812,21 +4899,24 @@ if __name__ == '__main__':
         response = None
 
         try:
-            self.exportnc2(cdd=cdd, force='yes', output_path='local', export_metadata=export_metadata, ncores=ncores, display=False)
+            self.exportnc2(cdd=cdd, force='yes', output_path='local', export_metadata=export_metadata, ncores=ncores,
+                           display=False)
 
             file_path = ""
             if Cube.client.last_response is not None:
                 response = Cube.client.deserialize_response()
 
                 for response_i in response['response']:
-                    if response_i['objclass'] == 'text' and 'title' in response_i['objcontent'][0] and response_i['objcontent'][0]['title'] == 'Output File':
+                    if response_i['objclass'] == 'text' and 'title' in response_i['objcontent'][0] and \
+                            response_i['objcontent'][0]['title'] == 'Output File':
                         file_path = response_i["objcontent"][0]["message"]
                         break
 
             if not file_path:
                 raise RuntimeError('Unable to export NetCDF file')
 
-            Cube.b2drop(action='put', auth_path=auth_path, src_path=file_path, dst_path=dst_path, cdd='/', display=False)
+            Cube.b2drop(action='put', auth_path=auth_path, src_path=file_path, dst_path=dst_path, cdd='/',
+                        display=False)
 
             Cube.fs(command='rm', dpath=file_path, cdd='/', display=False)
 
@@ -4834,7 +4924,8 @@ if __name__ == '__main__':
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def export_array(self, show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no'):
+    def export_array(self, output_format="json", show_id='no', show_time='no', subset_dims=None, subset_filter=None,
+                     time_filter='no', flag=True):
         """export_array(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no') -> dict or None : wrapper of the operator OPH_EXPLORECUBE
 
         :param show_id: yes|no
@@ -4851,36 +4942,6 @@ if __name__ == '__main__':
         :rtype: dict or None
         :raises: RuntimeError
         """
-
-        if Cube.client is None or self.pid is None:
-            raise RuntimeError('Cube.client or pid is None')
-        response = None
-
-        query = 'oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=0;'
-
-        if time_filter is not None:
-            query += 'time_filter=' + str(time_filter) + ';'
-        if show_id is not None:
-            query += 'show_id=' + str(show_id) + ';'
-        if show_time is not None:
-            query += 'show_time=' + str(show_time) + ';'
-        if subset_dims is not None:
-            query += 'subset_dims=' + str(subset_dims) + ';'
-        if subset_filter is not None:
-            query += 'subset_filter=' + str(subset_filter) + ';'
-
-        query += 'cube=' + str(self.pid) + ';'
-
-        try:
-            if Cube.client.submit(query, display=False) is None:
-                raise RuntimeError()
-
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
-        except Exception as e:
-            print(get_linenumber(), "Something went wrong:", e)
-            raise RuntimeError()
 
         def get_unpack_format(element_num, output_type):
             if output_type == 'float':
@@ -4912,120 +4973,317 @@ if __name__ == '__main__':
                 raise RuntimeError('The value type is not valid')
             return num
 
-        data_values = {}
-        data_values["measure"] = {}
-
-        # Get dimensions
-        adimCube = True
-        try:
-            dimensions = []
-            for response_i in response['response']:
-                if response_i['objkey'] == 'explorecube_dimvalues':
-                    data_values["dimension"] = {}
-                    adimCube = False
-
-                    for response_j in response_i['objcontent']:
-                        if response_j['title'] and response_j['rowfieldtypes'] and response_j['rowfieldtypes'][1] and response_j['rowvalues']:
-                            curr_dim = {}
-                            curr_dim['name'] = response_j['title']
-
-                            # Append actual values
-                            dim_array = []
-
-                            # Special case for time
-                            if show_time == 'yes' and response_j['title'] == 'time':
-                                for val in response_j['rowvalues']:
-                                    dims = [s.strip() for s in val[1].split(',')]
-                                    for v in dims:
-                                        dim_array.append(v)
+        def format_to_multidimensional_json(response, show_time, flag):
+            adimCube = True
+            data_values = {"dimension": {}, "measure": {}}
+            lengths = []
+            try:
+                for response_i in response['response']:
+                    if response_i['objkey'] == 'explorecube_dimvalues':
+                        adimCube = False
+                        for response_j in response_i['objcontent']:
+                            if response_j['title'] and response_j['rowfieldtypes'] and response_j['rowfieldtypes'][
+                                1] and \
+                                    response_j['rowvalues']:
+                                data_values["dimension"][response_j['title']] = []
+                                if show_time == 'yes' and response_j['title'] == 'time':
+                                    for val in response_j['rowvalues']:
+                                        dims = [s.strip() for s in val[1].split(',')]
+                                        for v in dims:
+                                            data_values["dimension"][response_j['title']].append(v)
+                                else:
+                                    lengths.append(len(response_j['rowvalues']))
+                                    for val in response_j['rowvalues']:
+                                        decoded_bin = base64.b64decode(val[1])
+                                        length = calculate_decoded_length(decoded_bin, response_j['rowfieldtypes'][1])
+                                        format = get_unpack_format(length, response_j['rowfieldtypes'][1])
+                                        dims = struct.unpack(format, decoded_bin)
+                                        for v in dims:
+                                            data_values["dimension"][response_j['title']].append(v)
+                                last_dim_length = len(response_j['rowvalues'])
                             else:
-                                for val in response_j['rowvalues']:
-                                    decoded_bin = base64.b64decode(val[1])
-                                    length = calculate_decoded_length(decoded_bin, response_j['rowfieldtypes'][1])
-                                    format = get_unpack_format(length, response_j['rowfieldtypes'][1])
-                                    dims = struct.unpack(format, decoded_bin)
-                                    for v in dims:
-                                        dim_array.append(v)
-
-                            curr_dim['values'] = dim_array
-                            dimensions.append(curr_dim)
-
-                        else:
-                            raise RuntimeError("Unable to get dimension name or values in response")
-
-                    dim_num = len(dimensions)
-                    if dim_num == 0:
-                        raise RuntimeError("No dimension found")
-
-                    data_values["dimension"] = dimensions
-                    break
-
-        except Exception as e:
-            print(get_linenumber(), "Unable to get dimensions from response:", e)
-            return None
-
-        # Read values
-        try:
-            measures = []
-            for response_i in response['response']:
-                if response_i['objkey'] == 'explorecube_data':
-
-                    for response_j in response_i['objcontent']:
-                        if response_j['title'] and response_j['rowkeys'] and response_j['rowfieldtypes'] and response_j['rowvalues']:
-                            curr_mes = {}
-                            measure_name = ""
-                            measure_index = 0
-
-                            if not adimCube:
-                                # Check that implicit dimension is just one
-                                if dim_num - (len(response_j['rowkeys']) - 1) / 2.0 > 1:
-                                    raise RuntimeError("More than one implicit dimension")
-
-                            for i, t in enumerate(response_j['rowkeys']):
-                                if response_j['title'] == t:
-                                    measure_name = t
-                                    measure_index = i
-                                    break
-
-                            if measure_index == 0:
-                                raise RuntimeError("Unable to get measure name in response")
-
-                            curr_mes['name'] = measure_name
-
-                            # Append actual values
-                            measure_value = []
-                            for val in response_j['rowvalues']:
-                                decoded_bin = base64.b64decode(val[measure_index])
-                                length = calculate_decoded_length(decoded_bin, response_j['rowfieldtypes'][measure_index])
-                                format = get_unpack_format(length, response_j['rowfieldtypes'][measure_index])
-                                measure = struct.unpack(format, decoded_bin)
-                                curr_line = []
-                                for v in measure:
-                                    curr_line.append(v)
-
-                                measure_value.append(curr_line)
-
-                            curr_mes['values'] = measure_value
-                            measures.append(curr_mes)
-
-                        else:
-                            raise RuntimeError("Unable to get measure values in response")
-
+                                raise RuntimeError("Unable to get dimension name or values in response")
+                        if len(data_values["dimension"].keys()) == 0:
+                            raise RuntimeError("No dimension found")
                         break
+            except Exception as e:
+                print("Unable to get dimensions from response:", e)
+                return None
+            try:
+                for response_i in response['response']:
+                    if response_i['objkey'] == 'explorecube_data':
+                        for response_j in response_i['objcontent']:
+                            if response_j['title'] and response_j['rowkeys'] and response_j['rowfieldtypes'] \
+                                    and response_j['rowvalues']:
+                                measure_name = ""
+                                measure_index = 0
+                                if not adimCube:
+                                    # Check that implicit dimension is just one
+                                    if len(data_values["dimension"].keys()) - (
+                                            len(response_j['rowkeys']) - 1) / 2.0 > 1:
+                                        raise RuntimeError("More than one implicit dimension")
+                                for i, t in enumerate(response_j['rowkeys']):
+                                    if response_j['title'] == t:
+                                        measure_name = t
+                                        measure_index = i
+                                        break
+                                if measure_index == 0:
+                                    raise RuntimeError("Unable to get measure name in response")
+                                data_values["measure"][measure_name] = []
+                                values = []
+                                last_length = 1
+                                for val in response_j['rowvalues']:
+                                    decoded_bin = base64.b64decode(val[measure_index])
+                                    length = calculate_decoded_length(decoded_bin,
+                                                                      response_j['rowfieldtypes'][measure_index])
+                                    format = get_unpack_format(length, response_j['rowfieldtypes'][measure_index])
+                                    measure = struct.unpack(format, decoded_bin)
+                                    if (type(measure)) is (tuple or list) and len(measure) == 1:
+                                        values.append(measure[0])
+                                    else:
+                                        for v in measure:
+                                            values.append(v)
+                                    last_length = len(measure)
+                                for i in range(len(lengths) - 1, -1, -1):
+                                    current_array = []
+                                    if i == len(lengths) - 1:
+                                        for j in range(0, len(values), lengths[i]):
+                                            current_array.append(values[j:j + lengths[i]])
+                                    else:
+                                        for j in range(0, len(previous_array), lengths[i]):
+                                            current_array.append(previous_array[j:j + lengths[i]])
+                                    previous_array = current_array
+                                data_values["measure"][measure_name] = previous_array[0]
+                            else:
+                                raise RuntimeError("Unable to get measure values in response")
+                            break
+                        break
+                if len(data_values["measure"].keys()) == 0:
+                    raise RuntimeError("No measure found")
+            except Exception as e:
+                print("Unable to get measure from response:", e)
+                return None
+            else:
+                return data_values
 
-                    break
+        def format_to_json(response, show_time, flag):
+            adimCube = True
+            data_values = {"dimension": {}, "measure": {}}
+            try:
+                for response_i in response['response']:
+                    if response_i['objkey'] == 'explorecube_dimvalues':
+                        adimCube = False
+                        for response_j in response_i['objcontent']:
+                            if response_j['title'] and response_j['rowfieldtypes'] and response_j['rowfieldtypes'][
+                                1] and \
+                                    response_j['rowvalues']:
+                                data_values["dimension"][response_j['title']] = []
+                                if show_time == 'yes' and response_j['title'] == 'time':
+                                    for val in response_j['rowvalues']:
+                                        dims = [s.strip() for s in val[1].split(',')]
+                                        for v in dims:
+                                            data_values["dimension"][response_j['title']].append(v)
+                                else:
+                                    for val in response_j['rowvalues']:
+                                        decoded_bin = base64.b64decode(val[1])
+                                        length = calculate_decoded_length(decoded_bin, response_j['rowfieldtypes'][1])
+                                        format = get_unpack_format(length, response_j['rowfieldtypes'][1])
+                                        dims = struct.unpack(format, decoded_bin)
+                                        for v in dims:
+                                            data_values["dimension"][response_j['title']].append(v)
+                                last_dim_length = len(response_j['rowvalues'])
+                            else:
+                                raise RuntimeError("Unable to get dimension name or values in response")
+                        if len(data_values["dimension"].keys()) == 0:
+                            raise RuntimeError("No dimension found")
+                        break
+            except Exception as e:
+                print("Unable to get dimensions from response:", e)
+                return None
+            try:
+                for response_i in response['response']:
+                    if response_i['objkey'] == 'explorecube_data':
+                        for response_j in response_i['objcontent']:
+                            if response_j['title'] and response_j['rowkeys'] and response_j['rowfieldtypes'] \
+                                    and response_j['rowvalues']:
+                                measure_name = ""
+                                measure_index = 0
+                                if not adimCube:
+                                    # Check that implicit dimension is just one
+                                    if len(data_values["dimension"].keys()) - (
+                                            len(response_j['rowkeys']) - 1) / 2.0 > 1:
+                                        raise RuntimeError("More than one implicit dimension")
+                                for i, t in enumerate(response_j['rowkeys']):
+                                    if response_j['title'] == t:
+                                        measure_name = t
+                                        measure_index = i
+                                        break
+                                if measure_index == 0:
+                                    raise RuntimeError("Unable to get measure name in response")
+                                data_values["measure"][measure_name] = []
+                                values = []
+                                last_length = 1
+                                for val in response_j['rowvalues']:
+                                    decoded_bin = base64.b64decode(val[measure_index])
+                                    length = calculate_decoded_length(decoded_bin,
+                                                                      response_j['rowfieldtypes'][measure_index])
+                                    format = get_unpack_format(length, response_j['rowfieldtypes'][measure_index])
+                                    measure = struct.unpack(format, decoded_bin)
+                                    if (type(measure)) is (tuple or list) and len(measure) == 1:
+                                        values.append(measure[0])
+                                    else:
+                                        for v in measure:
+                                            values.append(v)
+                                    last_length = len(measure)
+                                if last_length == 1 and flag:
+                                    for i in range(0, len(values), last_dim_length):
+                                        data_values["measure"][measure_name].append(values[i:i + last_dim_length])
+                                else:
+                                    for i in range(0, len(values), last_length):
+                                        data_values["measure"][measure_name].append(values[i:i + last_length])
+                            else:
+                                raise RuntimeError("Unable to get measure values in response")
+                            break
+                        break
+                if len(data_values["measure"].keys()) == 0:
+                    raise RuntimeError("No measure found")
+            except Exception as e:
+                print("Unable to get measure from response:", e)
+                return None
+            else:
+                return data_values
 
-            measure_num = len(measures)
-            if measure_num == 0:
-                raise RuntimeError("No measure found")
+        def format_to_json_old(response, show_time, flag):
+            adimCube = True
+            data_values = {}
+            data_values["measure"] = {}
+            try:
+                dimensions = []
+                for response_i in response['response']:
+                    if response_i['objkey'] == 'explorecube_dimvalues':
+                        data_values["dimension"] = {}
+                        adimCube = False
+                        for response_j in response_i['objcontent']:
+                            if response_j['title'] and response_j['rowfieldtypes'] and response_j['rowfieldtypes'][
+                                1] and \
+                                    response_j['rowvalues']:
+                                curr_dim = {}
+                                curr_dim['name'] = response_j['title']
+                                dim_array = []
+                                if show_time == 'yes' and response_j['title'] == 'time':
+                                    for val in response_j['rowvalues']:
+                                        dims = [s.strip() for s in val[1].split(',')]
+                                        for v in dims:
+                                            dim_array.append(v)
+                                else:
+                                    for val in response_j['rowvalues']:
+                                        decoded_bin = base64.b64decode(val[1])
+                                        length = calculate_decoded_length(decoded_bin, response_j['rowfieldtypes'][1])
+                                        format = get_unpack_format(length, response_j['rowfieldtypes'][1])
+                                        dims = struct.unpack(format, decoded_bin)
+                                        for v in dims:
+                                            dim_array.append(v)
+                                curr_dim['values'] = dim_array
+                                last_dim_length = len(response_j['rowvalues'])
+                            else:
+                                raise RuntimeError("Unable to get dimension name or values in response")
+                        dim_num = len(dimensions)
+                        if dim_num == 0:
+                            raise RuntimeError("No dimension found")
+                        data_values["dimension"] = dimensions
+                        break
+            except Exception as e:
+                print("Unable to get dimensions from response:", e)
+                return None
+            try:
+                for response_i in response['response']:
+                    if response_i['objkey'] == 'explorecube_data':
+                        for response_j in response_i['objcontent']:
+                            if response_j['title'] and response_j['rowkeys'] and response_j['rowfieldtypes'] \
+                                    and response_j['rowvalues']:
+                                curr_mes = {}
+                                measure_name = ""
+                                measure_index = 0
+                                if not adimCube:
+                                    # Check that implicit dimension is just one
+                                    if dim_num - (len(response_j['rowkeys']) - 1) / 2.0 > 1:
+                                        raise RuntimeError("More than one implicit dimension")
+                                for i, t in enumerate(response_j['rowkeys']):
+                                    if response_j['title'] == t:
+                                        measure_name = t
+                                        measure_index = i
+                                        break
+                                if measure_index == 0:
+                                    raise RuntimeError("Unable to get measure name in response")
+                                curr_mes['name'] = measure_name
+                                measure_value = []
+                                last_length = 1
+                                for val in response_j['rowvalues']:
+                                    decoded_bin = base64.b64decode(val[measure_index])
+                                    length = calculate_decoded_length(decoded_bin,
+                                                                      response_j['rowfieldtypes'][measure_index])
+                                    format = get_unpack_format(length, response_j['rowfieldtypes'][measure_index])
+                                    measure = struct.unpack(format, decoded_bin)
+                                    curr_line = []
+                                    if (type(measure)) is (tuple or list) and len(measure) == 1:
+                                        curr_line.append(measure[0])
+                                    else:
+                                        for v in measure:
+                                            curr_line.append(v)
+                                    measure_value.append(curr_line)
+                                    last_length = len(measure)
+                                curr_mes['values'] = measure_value
+                                measures.append(curr_mes)
+                                # if last_length == 1 and flag:
+                                #     for i in range(0, len(values), last_dim_length):
+                                #         data_values["measure"][measure_name].append(values[i:i + last_dim_length])
+                                # else:
+                                #     for i in range(0, len(values), last_length):
+                                #         data_values["measure"][measure_name].append(values[i:i + last_length])
+                            else:
+                                raise RuntimeError("Unable to get measure values in response")
+                            break
+                        break
+                data_values["measure"] = measures
+                if len(data_values["measure"].keys()) == 0:
+                    raise RuntimeError("No measure found")
+            except Exception as e:
+                print("Unable to get measure from response:", e)
+                return None
+            else:
+                return data_values
 
-            data_values["measure"] = measures
-
+        if Cube.client is None or self.pid is None:
+            raise RuntimeError('Cube.client or pid is None')
+        response = None
+        query = 'oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=0;'
+        if time_filter is not None:
+            query += 'time_filter=' + str(time_filter) + ';'
+        if show_id is not None:
+            query += 'show_id=' + str(show_id) + ';'
+        if show_time is not None:
+            query += 'show_time=' + str(show_time) + ';'
+        if subset_dims is not None:
+            query += 'subset_dims=' + str(subset_dims) + ';'
+        if subset_filter is not None:
+            query += 'subset_filter=' + str(subset_filter) + ';'
+        query += 'cube=' + str(self.pid) + ';'
+        try:
+            if Cube.client.submit(query, display=False) is None:
+                raise RuntimeError()
+            if Cube.client.last_response is not None:
+                response = Cube.client.deserialize_response()
         except Exception as e:
-            print(get_linenumber(), "Unable to get measure from response:", e)
-            return None
+            print(get_linenumber(), "Something went wrong:", e)
+            raise RuntimeError()
+        if output_format == "json":
+            return format_to_json(response, show_time, flag)
+        elif output_format == "json_old":
+            return format_to_json_old(response, show_time, flag)
+        elif output_format == "multidimensional":
+            return format_to_multidimensional_json(response, show_time, flag)
         else:
-            return data_values
+            raise ValueError("Wrong output_format")
 
     def __str__(self):
         buf = "-" * 30 + "\n"
@@ -5043,13 +5301,20 @@ if __name__ == '__main__':
         buf += "%30s: %s" % ("Num. of fragments", self.nfragments) + "\n"
         buf += "-" * 30 + "\n"
         buf += "%30s: %s" % ("Num. of hosts", self.hostxcube) + "\n"
-        buf += "%30s: %s (%s)" % ("Num. of fragments/DB (total)", self.fragxdb, int(self.fragxdb) * int(self.hostxcube)) + "\n"
-        buf += "%30s: %s (%s)" % ("Num. of rows/fragment (total)", self.rowsxfrag, int(self.rowsxfrag) * int(self.fragxdb) * int(self.hostxcube)) + "\n"
-        buf += "%30s: %s (%s)" % ("Num. of elements/row (total)", self.elementsxrow, int(self.elementsxrow) * int(self.rowsxfrag) * int(self.fragxdb) * int(self.hostxcube)) + "\n"
+        buf += "%30s: %s (%s)" % (
+        "Num. of fragments/DB (total)", self.fragxdb, int(self.fragxdb) * int(self.hostxcube)) + "\n"
+        buf += "%30s: %s (%s)" % ("Num. of rows/fragment (total)", self.rowsxfrag,
+                                  int(self.rowsxfrag) * int(self.fragxdb) * int(self.hostxcube)) + "\n"
+        buf += "%30s: %s (%s)" % ("Num. of elements/row (total)", self.elementsxrow,
+                                  int(self.elementsxrow) * int(self.rowsxfrag) * int(self.fragxdb) * int(
+                                      self.hostxcube)) + "\n"
         buf += "-" * 127 + "\n"
-        buf += "%15s %15s %15s %15s %15s %15s %15s %15s" % ("Dimension", "Data type", "Size", "Hierarchy", "Concept level", "Array", "Level", "Lattice name") + "\n"
+        buf += "%15s %15s %15s %15s %15s %15s %15s %15s" % (
+        "Dimension", "Data type", "Size", "Hierarchy", "Concept level", "Array", "Level", "Lattice name") + "\n"
         buf += "-" * 127 + "\n"
         for dim in self.dim_info:
-            buf += "%15s %15s %15s %15s %15s %15s %15s %15s" % (dim['name'], dim['type'], dim['size'], dim['hierarchy'], dim['concept_level'], dim['array'], dim['level'], dim['lattice_name']) + "\n"
+            buf += "%15s %15s %15s %15s %15s %15s %15s %15s" % (
+            dim['name'], dim['type'], dim['size'], dim['hierarchy'], dim['concept_level'], dim['array'], dim['level'],
+            dim['lattice_name']) + "\n"
         buf += "-" * 127 + "\n"
         return buf
