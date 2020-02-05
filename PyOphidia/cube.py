@@ -260,7 +260,7 @@ class Cube:
         :returns: None
         :rtype: None
         """
-        print(username)
+
         try:
             cls.client = _client.Client(username, password, server, port, token, read_env, api_mode)
         except Exception as e:
@@ -1510,19 +1510,15 @@ class Cube:
             query += 'grid=' + str(grid) + ';'
         if description is not None:
             query += 'description=' + str(description) + ';'
-        print("here1")
 
         try:
-            print("here2")
             if Cube.client.submit(query, display) is None:
-                print("here3")
                 raise RuntimeError()
 
             if Cube.client.last_response is not None:
                 if Cube.client.cube:
                     newcube = Cube(pid=Cube.client.cube)
         except Exception as e:
-            print("here4")
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
         else:
