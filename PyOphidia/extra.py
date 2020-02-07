@@ -230,6 +230,8 @@ def add(cube=cube, measure="measure", addend=0, ncores=1, nthreads=1, descriptio
 
     cube.info(display=False)
     if isinstance(addend, list):
+        if len(addend) != cube.elementsxrow:
+            raise RuntimeError("Wrong array size")
         indexes = _get_different_variables(addend)
         input_types_list = []
         output_types_list = []
