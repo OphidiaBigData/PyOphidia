@@ -25,6 +25,7 @@ import base64
 import struct
 import PyOphidia.cube as cube
 from inspect import currentframe
+
 sys.path.append(os.path.dirname(__file__))
 
 
@@ -156,6 +157,7 @@ def where(cube=cube, expression="x", if_true=1, if_false=0, ncores=1, nthreads=1
             else:
                 final_left_part = "x " + str(-1 * float_right_part_number)
         return measure, final_left_part, right_part
+
     cube.info(display=False)
     input_type = _get_input_type(cube.measure_type)
     output_type = _get_output_type(if_true, input_type)
@@ -180,5 +182,87 @@ def where(cube=cube, expression="x", if_true=1, if_false=0, ncores=1, nthreads=1
         raise RuntimeError()
     return results
 
+
+def add(cube=cube, measure="measure", addend=0, ncores=1, nthreads=1, description='-', display=False):
+    def _get_types(input, measure_type):
+        if isinstance(input, int):
+            if measure_type == "long":
+                return "oph_long", "oph_long"
+            elif measure_type == "float":
+                return "oph_float", "oph_float"
+            elif measure_type == "double":
+                return "oph_double", "oph_double"
+            return "oph_int", "oph_int"
+        elif isinstance(input, float):
+            if measure_type == "double":
+                return "oph_double", "oph_double"
+            return "oph_float", "oph_float"
+        elif isinstance(input, bytes):
+            if measure_type == "bytes":
+                return "oph_bytes", "oph_bytes"
+            else:
+                raise RuntimeError('you cant add bytes to numbers')
+        else:
+            raise RuntimeError('given input type is wrong')
+
+    def _get_different_variables(addend):
+        types = []
+        indexes = []
+        for i in range(0, len(addend)):
+            if type(addend[i]) not in types:
+                types.append(type(addend[i]))
+                indexes.append(i)
+        return indexes
+
+    def _get_output_type_when_array(output_types_list):
+        if len(list(set(output_types_list))) == 1:
+            return output_types_list[0]
+        else:
+            if "oph_int" and "oph_float" in output_types_list:
+                return "oph_float"
+            elif "oph_int" and "oph_double" in output_types_list:
+                return "oph_double"
+            elif "oph_float" and "oph_double" in output_types_list:
+                return "oph_float"
+            else:
+                raise RuntimeError("Something went wrong while deciding the ouput type. Make sure you have provided "
+                                   "the correct data types.")
+
+    cube.info(display=False)
+    if isinstance(addend, list):
+        indexes = _get_different_variables(addend)
+        input_types_list = []
+        output_types_list = []
+        for i in indexes:
+            input_type, output_type = _get_types(addend[i], cube.measure_type)
+            input_types_list.append(input_type)
+            output_types_list.append(output_type)
+        input_type = "|".join(input_types_list)
+        output_type = _get_output_type_when_array(output_types_list)
+        if measure == cube.measure:
+            measure = "measure"
+        else:
+            raise RuntimeError('measure is wrong')
+        try:
+            results = cube.apply(query="oph_sum_array('" + input_type + "','" + output_type + "',measure, "
+                                       + str(addend) + ")")
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong:", e)
+            raise RuntimeError()
+    elif isinstance(addend, int) or isinstance(addend, float):
+        input_type, output_type = _get_types(addend, cube.measure_type)
+        if measure == cube.measure:
+            measure = "measure"
+        else:
+            raise RuntimeError('measure is wrong')
+        try:
+            results = cube.apply(query="oph_sum_scalar('" + input_type + "','" + output_type + "',measure, "
+                                       + str(addend) + ")")
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong:", e)
+            raise RuntimeError()
+    else:
+        raise RuntimeError('addend type is wrong, must be int, float or list')
+    return results
 
 
