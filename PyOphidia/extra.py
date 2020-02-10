@@ -205,49 +205,22 @@ def add(cube=cube, measure="measure", addend=0, ncores=1, nthreads=1, descriptio
         else:
             raise RuntimeError('given input type is wrong')
 
-    def _get_different_variables(addend):
-        types = []
-        indexes = []
-        for i in range(0, len(addend)):
-            if type(addend[i]) not in types:
-                types.append(type(addend[i]))
-                indexes.append(i)
-        return indexes
-
-    def _get_output_type_when_array(output_types_list):
-        if len(list(set(output_types_list))) == 1:
-            return output_types_list[0]
-        else:
-            if "oph_int" and "oph_float" in output_types_list:
-                return "oph_float"
-            elif "oph_int" and "oph_double" in output_types_list:
-                return "oph_double"
-            elif "oph_float" and "oph_double" in output_types_list:
-                return "oph_float"
-            else:
-                raise RuntimeError("Something went wrong while deciding the ouput type. Make sure you have provided "
-                                   "the correct data types.")
-
     cube.info(display=False)
     if isinstance(addend, list):
-        if len(addend) != cube.elementsxrow:
+        if len(addend) != int(cube.elementsxrow):
             raise RuntimeError("Wrong array size")
-        indexes = _get_different_variables(addend)
-        input_types_list = []
-        output_types_list = []
-        for i in indexes:
-            input_type, output_type = _get_types(addend[i], cube.measure_type)
-            input_types_list.append(input_type)
-            output_types_list.append(output_type)
-        input_type = "|".join(input_types_list)
-        output_type = _get_output_type_when_array(output_types_list)
+        input_type, output_type = _get_types(addend[0], cube.measure_type)
+        input_type = "|".join([input_type, input_type])
         if measure == cube.measure:
             measure = "measure"
         else:
             raise RuntimeError('measure is wrong')
         try:
-            results = cube.apply(query="oph_sum_array('" + input_type + "','" + output_type + "',measure, "
-                                       + str(addend) + ")")
+            addend_string = ",".join([str(n) for n in addend])
+            results = cube.apply(query="oph_sum_array('" + input_type + "','" +
+                                       output_type + "',measure, oph_to_bin('','oph_float','" + addend_string + "'))",
+                                 check_type='no', ncores=ncores, nthreads=nthreads, description=description,
+                                 display=display)
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
@@ -259,7 +232,9 @@ def add(cube=cube, measure="measure", addend=0, ncores=1, nthreads=1, descriptio
             raise RuntimeError('measure is wrong')
         try:
             results = cube.apply(query="oph_sum_scalar('" + input_type + "','" + output_type + "',measure, "
-                                       + str(addend) + ")")
+                                       + str(addend) + ")",
+                                 check_type='no', ncores=ncores, nthreads=nthreads, description=description,
+                                 display=display)
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
@@ -267,4 +242,18 @@ def add(cube=cube, measure="measure", addend=0, ncores=1, nthreads=1, descriptio
         raise RuntimeError('addend type is wrong, must be int, float or list')
     return results
 
+
+from PyOphidia import cube
+cube.Cube.setclient(server="ophidialab.cmcc.it", port="11732", username="evachlas", password="F7_Nr9-ro1")
+mycube = cube.Cube(src_path='/public/data/ecas_training/tasmax_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc',
+                 measure='tasmax',
+                 import_metadata='yes',
+                 imp_dim='time',
+                 imp_concept_level='d', vocabulary='CF', hierarchy='oph_base|oph_base|oph_time',
+                 ncores=4,
+                 description='Max Temps'
+                 )
+addend = [1 for i in range(0, 1826)]
+results = add(cube=mycube, measure="tasmax", addend=addend)
+print(results.explore(limit_filter=1))
 
