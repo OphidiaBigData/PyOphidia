@@ -243,17 +243,3 @@ def add(cube=cube, measure="measure", addend=0, ncores=1, nthreads=1, descriptio
     return results
 
 
-from PyOphidia import cube
-cube.Cube.setclient(server="ophidialab.cmcc.it", port="11732", username="evachlas", password="F7_Nr9-ro1")
-mycube = cube.Cube(src_path='/public/data/ecas_training/tasmax_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc',
-                 measure='tasmax',
-                 import_metadata='yes',
-                 imp_dim='time',
-                 imp_concept_level='d', vocabulary='CF', hierarchy='oph_base|oph_base|oph_time',
-                 ncores=4,
-                 description='Max Temps'
-                 )
-addend = [1 for i in range(0, 1826)]
-results = add(cube=mycube, measure="tasmax", addend=addend)
-print(results.explore(limit_filter=1))
-

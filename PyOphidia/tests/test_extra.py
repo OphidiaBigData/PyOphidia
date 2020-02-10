@@ -24,10 +24,11 @@ def test_where(expression, if_true, if_false):
 
 
 @pytest.mark.parametrize(("measure", "addend"),
-                         [("tasmax", "2"), ("tasmax", 10), ("tasmax", 10.5), ("tasmax", 1000000000000)])
+                         [("tasmax", "2"), ("tasmax", 10), ("tasmax", 10.5), ("tasmax", 1000000000000),
+                          ("tasmax", [1 for i in range(0, 1826)]), ("tasmax", [1 for i in range(0, 10)])])
 def test_add(measure, addend):
     from PyOphidia import cube
-    cube.Cube.setclient(server="ophidialab.cmcc.it", port="11732", username="evachlas", password="F7_Nr9-ro1")
+    cube.Cube.setclient()
     cube = cube.Cube(src_path='/public/data/ecas_training/tasmax_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc',
                      measure='tasmax',
                      import_metadata='yes',
