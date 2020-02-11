@@ -72,6 +72,8 @@ def where(cube=cube, expression="x", if_true=1, if_false=0, ncores=1, nthreads=1
         if isinstance(if_true, int):
             if input_type == "oph_long":
                 return "oph_long"
+            if input_type == "oph_short":
+                return "oph_short"
             return "oph_int"
         elif isinstance(if_true, float):
             if input_type == "oph_double":
@@ -184,10 +186,39 @@ def where(cube=cube, expression="x", if_true=1, if_false=0, ncores=1, nthreads=1
 
 
 def add(cube=cube, measure="measure", addend=0, ncores=1, nthreads=1, description='-', display=False):
+    """add(cube=cube, measure="measure", addend=0, ncores=1, nthreads=1, description='-',
+            display=False) -> Pyophidia.cube : Get a cube object after having run the oph_sum_scalar or oph_sum_array
+    :param cube: the initial cube
+    :type cube: <class 'PyOphidia.cube.Cube'>
+    :param measure: the measure that will be used to add the addend/s
+    :type measure: str
+    :param addend: the integer/float or array of integers/floats that will be added to the measure
+    :type addend: int or float or list
+    :param ncores: the number of cores that we should use to perform the operation (default is 1)
+    :type ncores: int
+    :param nthreads: the number of threads that we should use to perform the operation (default is 1)
+    :type nthreads: int
+    :param description: additional description to be associated with the output container
+    :type description: str
+    :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+    :type display: bool
+    :returns: a 'PyOphidia.cube.Cube' object
+    :rtype: <class 'PyOphidia.cube.Cube'>
+    :raises: RuntimeError
+    """
     def _get_types(input, measure_type):
+        """_get_input_type(input_type) -> str : Get the ophidia input type of the where function
+        :param input: addent's type
+        :type input: int or float
+        :returns: a string that represents the Pyophidia type of the input variable
+        :rtype: str
+        :raises: RuntimeError
+        """
         if isinstance(input, int):
             if measure_type == "long":
                 return "oph_long", "oph_long"
+            elif measure_type == "short":
+                return "oph_short", "oph_short"
             elif measure_type == "float":
                 return "oph_float", "oph_float"
             elif measure_type == "double":
@@ -218,7 +249,8 @@ def add(cube=cube, measure="measure", addend=0, ncores=1, nthreads=1, descriptio
         try:
             addend_string = ",".join([str(n) for n in addend])
             results = cube.apply(query="oph_sum_array('" + input_type + "','" +
-                                       output_type + "',measure, oph_to_bin('','oph_float','" + addend_string + "'))",
+                                       output_type + "',measure, oph_to_bin('','" + input_type.split('|')[0] + "','"
+                                       + addend_string + "'))",
                                  check_type='no', ncores=ncores, nthreads=nthreads, description=description,
                                  display=display)
         except Exception as e:
@@ -233,6 +265,96 @@ def add(cube=cube, measure="measure", addend=0, ncores=1, nthreads=1, descriptio
         try:
             results = cube.apply(query="oph_sum_scalar('" + input_type + "','" + output_type + "',measure, "
                                        + str(addend) + ")",
+                                 check_type='no', ncores=ncores, nthreads=nthreads, description=description,
+                                 display=display)
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong:", e)
+            raise RuntimeError()
+    else:
+        raise RuntimeError('addend type is wrong, must be int, float or list')
+    return results
+
+
+def multiply(cube=cube, measure="measure", multiplier=1, ncores=1, nthreads=1, description='-', display=False):
+    """multiply(cube=cube, measure="measure", multiplier=1, ncores=1, nthreads=1, description='-',
+            display=False) -> Pyophidia.cube : Get a cube object after having run the oph_mul_scalar or oph_mul_array
+    :param cube: the initial cube
+    :type cube: <class 'PyOphidia.cube.Cube'>
+    :param measure: the measure that will be used to multiply
+    :type measure: str
+    :param multiplier: the integer/float or array of integers/floats that will be multiply the measure
+    :type multiplier: int or float or list
+    :param ncores: the number of cores that we should use to perform the operation (default is 1)
+    :type ncores: int
+    :param nthreads: the number of threads that we should use to perform the operation (default is 1)
+    :type nthreads: int
+    :param description: additional description to be associated with the output container
+    :type description: str
+    :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+    :type display: bool
+    :returns: a 'PyOphidia.cube.Cube' object
+    :rtype: <class 'PyOphidia.cube.Cube'>
+    :raises: RuntimeError
+    """
+    def _get_types(input, measure_type):
+        """_get_input_type(input_type) -> str : Get the ophidia input type of the where function
+        :param input: multiplier's type
+        :type input: int or float
+        :returns: a string that represents the Pyophidia type of the input variable
+        :rtype: str
+        :raises: RuntimeError
+        """
+        if isinstance(input, int):
+            if measure_type == "long":
+                return "oph_long", "oph_long"
+            elif measure_type == "short":
+                return "oph_short", "oph_short"
+            elif measure_type == "float":
+                return "oph_float", "oph_float"
+            elif measure_type == "double":
+                return "oph_double", "oph_double"
+            return "oph_int", "oph_int"
+        elif isinstance(input, float):
+            if measure_type == "double":
+                return "oph_double", "oph_double"
+            return "oph_float", "oph_float"
+        elif isinstance(input, bytes):
+            if measure_type == "bytes":
+                return "oph_bytes", "oph_bytes"
+            else:
+                raise RuntimeError('you cant add bytes to numbers')
+        else:
+            raise RuntimeError('given input type is wrong')
+
+    cube.info(display=False)
+    if isinstance(multiplier, list):
+        if len(multiplier) != int(cube.elementsxrow):
+            raise RuntimeError("Wrong array size")
+        input_type, output_type = _get_types(multiplier[0], cube.measure_type)
+        input_type = "|".join([input_type, input_type])
+        if measure == cube.measure:
+            measure = "measure"
+        else:
+            raise RuntimeError('measure is wrong')
+        try:
+            addend_string = ",".join([str(n) for n in multiplier])
+            results = cube.apply(query="oph_mul_array('" + input_type + "','" +
+                                       output_type + "',measure, oph_to_bin('','" + input_type.split('|')[0] + "','"
+                                       + addend_string + "'))",
+                                 check_type='no', ncores=ncores, nthreads=nthreads, description=description,
+                                 display=display)
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong:", e)
+            raise RuntimeError()
+    elif isinstance(multiplier, int) or isinstance(multiplier, float):
+        input_type, output_type = _get_types(multiplier, cube.measure_type)
+        if measure == cube.measure:
+            measure = "measure"
+        else:
+            raise RuntimeError('measure is wrong')
+        try:
+            results = cube.apply(query="oph_mul_scalar('" + input_type + "','" + output_type + "',measure, "
+                                       + str(multiplier) + ")",
                                  check_type='no', ncores=ncores, nthreads=nthreads, description=description,
                                  display=display)
         except Exception as e:
