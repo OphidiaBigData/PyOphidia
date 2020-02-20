@@ -206,6 +206,7 @@ def add(cube=cube, measure="measure", addend=0, ncores=1, nthreads=1, descriptio
     :rtype: <class 'PyOphidia.cube.Cube'>
     :raises: RuntimeError
     """
+
     def _get_types(input, measure_type):
         """_get_input_type(input_type) -> str : Get the ophidia input type of the where function
         :param input: addent's type
@@ -296,6 +297,7 @@ def multiply(cube=cube, measure="measure", multiplier=1, ncores=1, nthreads=1, d
     :rtype: <class 'PyOphidia.cube.Cube'>
     :raises: RuntimeError
     """
+
     def _get_types(input, measure_type):
         """_get_input_type(input_type) -> str : Get the ophidia input type of the where function
         :param input: multiplier's type
@@ -364,4 +366,115 @@ def multiply(cube=cube, measure="measure", multiplier=1, ncores=1, nthreads=1, d
         raise RuntimeError('addend type is wrong, must be int, float or list')
     return results
 
+
+def select(cube=cube, type="coord", dims={}, ncores=1, nthreads=1, description='-',
+           display=False, tolerance=0):
+
+    def _perform_checks(type, dims, cube, tolerance):
+        if len(dims.keys()) <= 0:
+            raise RuntimeError('Empty list of dimensions')
+        if type != "coord" and type != "index":
+            raise RuntimeError('Wrong type')
+        if type == "index" and tolerance != 0:
+            raise RuntimeError('Tolerance is incompatible with index type')
+        if "time" in dims.keys() and type == "index":
+            raise RuntimeError("Can't use time filter with index type")
+        cube_dims = [d["name"] for d in cube.dim_info]
+        for key in dims.keys():
+            if key not in cube_dims:
+                raise RuntimeError('Key {0} not in cube dimensions'.format(key))
+
+    def _convert_slice(slice_string):
+        if len(slice_string.split(":")) == 2:
+            return slice(slice_string.split(":")[0].strip(), slice_string.split(":")[1].strip())
+        elif len(slice_string.split(":")) == 3:
+            return slice(slice_string.split(":")[0].strip(), slice_string.split(":")[1].strip(),
+                         slice_string.split(":")[2].strip())
+        else:
+            raise RuntimeError('Wrong format in slice')
+
+    def _convert_filter(filters):
+        for i in range(0, len(filters)):
+            if ":" in filters[i]:
+                slice_obj = _convert_slice(filters[i].replace("[", "").replace("]", ""))
+                if slice_obj.stop == "-1":
+                    slice_obj = slice(slice_obj.start, "end", slice_obj.step)
+                if slice_obj.step:
+                    filters[i] = ":".join([slice_obj.start, slice_obj.stop, slice_obj.step])
+                else:
+                    filters[i] = ":".join([slice_obj.start, slice_obj.stop])
+        return ",".join(filters)
+
+    def _time_check(datetimes):
+        import datetime
+        date_formats = ['%Y-%m-%d', '%Y-%m', '%Y', '%Y-%m-%d %H', '%Y-%m-%d %H:%M', '%Y-%m-%d %H:%M:%S']
+        for i in range(0, len(datetimes)):
+            datetime_bool = False
+            if datetimes[i].strip() == "DJF":
+                datetime_bool = True
+            if datetimes[i].strip() == "MAM":
+                datetime_bool = True
+            if datetimes[i].strip() == "JJA":
+                datetime_bool = True
+            if datetimes[i].strip() == "SON":
+                datetime_bool = True
+            for date_format in date_formats:
+                try:
+                    datetime.datetime.strptime(datetimes[i], date_format)
+                    datetime_bool = True
+                except:
+                    pass
+            if not datetime_bool:
+                raise RuntimeError('Wrong date format')
+        return ",".join(datetimes)
+
+    time_filter = "no"
+    cube.info(display=False)
+    _perform_checks(type, dims, cube, tolerance)
+    for key in dims:
+        if key == "time":
+            time_filter = "yes"
+            dims[key] = _time_check(dims[key])
+        else:
+            dims[key] = _convert_filter(dims[key])
+    if type == "index":
+        return cube.subset(subset_type=type, subset_dims="|".join(dims.keys()),
+                           subset_filter="|".join(dims.values()), ncores=ncores,
+                           nthreads=nthreads, description=description, display=display, time_filter=time_filter)
+    else:
+        return cube.subset(subset_type=type, subset_dims="|".join(dims.keys()),
+                           subset_filter="|".join(dims.values()), ncores=ncores,
+                           nthreads=nthreads, description=description, display=display, offset=tolerance,
+                           time_filter=time_filter)
+
+
+from PyOphidia import cube
+
+cube.Cube.setclient()
+cube = cube.Cube(src_path='/public/data/ecas_training/tasmax_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc',
+                 measure='tasmax',
+                 import_metadata='yes',
+                 imp_dim='time',
+                 imp_concept_level='d', vocabulary='CF', hierarchy='oph_base|oph_base|oph_time',
+                 ncores=4,
+                 description='Max Temps'
+                 )
+
+
+dimensions = {}
+dimensions["lat"] = ["[1:5:1]"]
+dimensions["lon"] = ["[1:10:1]"]
+results = select(cube=cube, type="index", dims=dimensions, ncores=1, nthreads=1, description='-',
+                 display=False)
+results.info(display=False)
+print(results.size)
+
+dimensions = {}
+dimensions["lat"] = ["[1:5]"]
+dimensions["lon"] = ["[1:10]"]
+dimensions["time"] = ["2018", "2016"]
+results = select(cube=cube, type="coord", dims=dimensions, ncores=1, nthreads=1, description='-',
+                 display=False)
+results.info(display=False)
+print(results.size)
 
