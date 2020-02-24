@@ -367,10 +367,44 @@ def multiply(cube=cube, measure="measure", multiplier=1, ncores=1, nthreads=1, d
     return results
 
 
-def select(cube=cube, type="coord", dims={}, ncores=1, nthreads=1, description='-',
-           display=False, tolerance=0):
-
+def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
+           display=False, tolerance=0, **dims):
+    """select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
+           display=False, tolerance=0, **dims) -> Pyophidia.cube : Get a cube object after having run the subset method
+    :param cube: the initial cube
+    :type cube: <class 'PyOphidia.cube.Cube'>
+    :param type: index|coord
+    :type type: str
+    :param ncores: number of cores to use
+    :type ncores: int
+    :param nthreads: number of threads to use
+    :type nthreads: int
+    :param description: additional description to be associated with the output container
+    :type description: int
+    :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+    :type display: bool
+    :param tolerance: the integer to increase the bounds. Can be int and used only with type coord
+    :type tolerance: int
+    :param dims: keyword arguments
+    :type dims: dict
+    :returns: a 'PyOphidia.cube.Cube' object
+    :rtype: <class 'PyOphidia.cube.Cube'>
+    :raises: RuntimeError
+    """
     def _perform_checks(type, dims, cube, tolerance):
+        """_perform_checks(type, dims, cube, tolerance) -> void: performs data validation for the arguments
+        :param type: index|coord
+        :type type: str
+        :param dims: keyword arguments
+        :type dims: dict
+        :param cube: the cube object
+        :type cube:  <class 'PyOphidia.cube.Cube'>
+        :param tolerance: the integer to increase the bounds. Can be int and used only with type coord
+        :type tolerance: int
+        :returns: void
+        :rtype: <class 'str'>
+        :raises: RuntimeError
+        """
         if len(dims.keys()) <= 0:
             raise RuntimeError('Empty list of dimensions')
         if type != "coord" and type != "index":
@@ -385,6 +419,13 @@ def select(cube=cube, type="coord", dims={}, ncores=1, nthreads=1, description='
                 raise RuntimeError('Key {0} not in cube dimensions'.format(key))
 
     def _convert_slice(slice_string):
+        """_convert_slice(slice_string) -> slice object: converts a string and returns it as a slice object
+        :param slice_string: a string that has the sliced format
+        :type slice_string: str
+        :returns: a 'slice' object
+        :rtype: <class 'slice'>
+        :raises: RuntimeError
+        """
         if len(slice_string.split(":")) == 2:
             return slice(slice_string.split(":")[0].strip(), slice_string.split(":")[1].strip())
         elif len(slice_string.split(":")) == 3:
@@ -394,6 +435,12 @@ def select(cube=cube, type="coord", dims={}, ncores=1, nthreads=1, description='
             raise RuntimeError('Wrong format in slice')
 
     def _convert_filter(filters):
+        """_convert_filter(filters) -> str: converts a string and returns string to working format
+        :param slice_string: a string that represents the filter
+        :type slice_string: list
+        :returns: str
+        :rtype: <class 'str'>
+        """
         for i in range(0, len(filters)):
             if ":" in filters[i]:
                 slice_obj = _convert_slice(filters[i].replace("[", "").replace("]", ""))
@@ -406,6 +453,13 @@ def select(cube=cube, type="coord", dims={}, ncores=1, nthreads=1, description='
         return ",".join(filters)
 
     def _time_check(datetimes):
+        """_time_check(datetimes) -> str: checks if the string belongs to one of the selected datetime formats
+        :param datetimes: a string that represents a date
+        :type datetimes: str
+        :returns: str
+        :rtype: <class 'str'>
+        :raises: RuntimeError
+        """
         import datetime
         date_formats = ['%Y-%m-%d', '%Y-%m', '%Y', '%Y-%m-%d %H', '%Y-%m-%d %H:%M', '%Y-%m-%d %H:%M:%S']
         for i in range(0, len(datetimes)):
@@ -422,6 +476,7 @@ def select(cube=cube, type="coord", dims={}, ncores=1, nthreads=1, description='
                 try:
                     datetime.datetime.strptime(datetimes[i], date_format)
                     datetime_bool = True
+                    break
                 except:
                     pass
             if not datetime_bool:
@@ -446,35 +501,4 @@ def select(cube=cube, type="coord", dims={}, ncores=1, nthreads=1, description='
                            subset_filter="|".join(dims.values()), ncores=ncores,
                            nthreads=nthreads, description=description, display=display, offset=tolerance,
                            time_filter=time_filter)
-
-
-from PyOphidia import cube
-
-cube.Cube.setclient()
-cube = cube.Cube(src_path='/public/data/ecas_training/tasmax_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc',
-                 measure='tasmax',
-                 import_metadata='yes',
-                 imp_dim='time',
-                 imp_concept_level='d', vocabulary='CF', hierarchy='oph_base|oph_base|oph_time',
-                 ncores=4,
-                 description='Max Temps'
-                 )
-
-
-dimensions = {}
-dimensions["lat"] = ["[1:5:1]"]
-dimensions["lon"] = ["[1:10:1]"]
-results = select(cube=cube, type="index", dims=dimensions, ncores=1, nthreads=1, description='-',
-                 display=False)
-results.info(display=False)
-print(results.size)
-
-dimensions = {}
-dimensions["lat"] = ["[1:5]"]
-dimensions["lon"] = ["[1:10]"]
-dimensions["time"] = ["2018", "2016"]
-results = select(cube=cube, type="coord", dims=dimensions, ncores=1, nthreads=1, description='-',
-                 display=False)
-results.info(display=False)
-print(results.size)
 
