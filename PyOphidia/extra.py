@@ -427,14 +427,14 @@ def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
         :raises: RuntimeError
         """
         if len(slice_string.split(":")) == 2:
-            return slice(slice_string.split(":")[0].strip(), slice_string.split(":")[1].strip())
+            return slice(slice_string.split(":")[0].strip(), slice_string.split(":")[1].strip(), "1")
         elif len(slice_string.split(":")) == 3:
             return slice(slice_string.split(":")[0].strip(), slice_string.split(":")[1].strip(),
                          slice_string.split(":")[2].strip())
         else:
             raise RuntimeError('Wrong format in slice')
 
-    def _convert_filter(filters):
+    def _convert_filter(filters, type, cube, key):
         """_convert_filter(filters) -> str: converts a string and returns string to working format
         :param slice_string: a string that represents the filter
         :type slice_string: list
@@ -443,35 +443,59 @@ def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
         """
         for i in range(0, len(filters)):
             if ":" in filters[i]:
+                print(filters[i])
                 slice_obj = _convert_slice(filters[i].replace("[", "").replace("]", ""))
                 if slice_obj.stop == "-1":
                     slice_obj = slice(slice_obj.start, "end", slice_obj.step)
-                if slice_obj.step:
-                    filters[i] = ":".join([slice_obj.start, slice_obj.stop, slice_obj.step])
+                    if type == "index":
+                        slice_obj = slice(str(int(slice_obj.start) + 1), "end", slice_obj.step)
+                elif int(slice_obj.stop) < -1:
+                    if type == "index":
+                        for obj in cube.dim_info:
+                            if obj["name"] == key:
+                                start = str(int(slice_obj.start) + 1)
+                                end = str(int(obj["size"]) + int(slice_obj.stop))
+                                print(start)
+                                print(end)
+                                slice_obj = slice(start, end, slice_obj.step)
+                                break
                 else:
+                    if type == "index":
+                        slice_obj = slice(str(int(slice_obj.start) + 1), str(int(slice_obj.stop) + 1),
+                                               slice_obj.step)
+                if slice_obj.step == "1":
                     filters[i] = ":".join([slice_obj.start, slice_obj.stop])
+                else:
+                    filters[i] = ":".join([slice_obj.start, slice_obj.stop, slice_obj.step])
+                print(filters[i])
         return ",".join(filters)
 
     def _time_check(datetimes):
         """_time_check(datetimes) -> str: checks if the string belongs to one of the selected datetime formats
         :param datetimes: a string that represents a date
-        :type datetimes: str
+        :type datetimes: str|list
         :returns: str
         :rtype: <class 'str'>
         :raises: RuntimeError
         """
         import datetime
         date_formats = ['%Y-%m-%d', '%Y-%m', '%Y', '%Y-%m-%d %H', '%Y-%m-%d %H:%M', '%Y-%m-%d %H:%M:%S']
+        if isinstance(datetimes, str):
+            datetimes = [datetimes]
         for i in range(0, len(datetimes)):
             datetime_bool = False
             if datetimes[i].strip() == "DJF":
                 datetime_bool = True
+                break
             if datetimes[i].strip() == "MAM":
                 datetime_bool = True
+                break
             if datetimes[i].strip() == "JJA":
                 datetime_bool = True
+                break
             if datetimes[i].strip() == "SON":
                 datetime_bool = True
+                break
             for date_format in date_formats:
                 try:
                     datetime.datetime.strptime(datetimes[i], date_format)
@@ -488,10 +512,11 @@ def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
     _perform_checks(type, dims, cube, tolerance)
     for key in dims:
         if key == "time":
-            time_filter = "yes"
-            dims[key] = _time_check(dims[key])
+            if dims[key] is not None:
+                time_filter = "yes"
+                dims[key] = _time_check(dims[key])
         else:
-            dims[key] = _convert_filter(dims[key])
+            dims[key] = _convert_filter(dims[key], type, cube, key)
     if type == "index":
         return cube.subset(subset_type=type, subset_dims="|".join(dims.keys()),
                            subset_filter="|".join(dims.values()), ncores=ncores,
