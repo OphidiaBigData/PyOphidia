@@ -391,7 +391,7 @@ def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
     :rtype: <class 'PyOphidia.cube.Cube'>
     :raises: RuntimeError
     """
-    def _perform_checks(type, dims, cube, tolerance):
+    def _perform_checks(type, dims, cube, tolerance, time_dimension):
         """_perform_checks(type, dims, cube, tolerance) -> void: performs data validation for the arguments
         :param type: index|coord
         :type type: str
@@ -405,13 +405,32 @@ def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
         :rtype: <class 'str'>
         :raises: RuntimeError
         """
+        if type == "index":
+            for c in cube.dim_info:
+                if c["name"] in dims.keys():
+                    size = int(c["size"])
+                    values = dims[c["name"]]
+                    for value in values:
+                        if ":" in value:
+                            sliced_value = _convert_slice(value.replace("[", "").replace("]", ""))
+                            if int(sliced_value.start) < 0:
+                                raise RuntimeError('Wrong indexes in slice')
+                            if int(sliced_value.stop) < 0:
+                                if int(sliced_value.stop) * -1 > size:
+                                    raise RuntimeError('Wrong indexes in slice')
+                            else:
+                                if int(sliced_value.stop) >= size:
+                                    raise RuntimeError('Wrong indexes in slice')
+                        else:
+                            if int(value) > size or int(value) < 0:
+                                raise RuntimeError('Wrong indexes. Unique index greater than size or below zero')
         if len(dims.keys()) <= 0:
             raise RuntimeError('Empty list of dimensions')
         if type != "coord" and type != "index":
             raise RuntimeError('Wrong type')
         if type == "index" and tolerance != 0:
             raise RuntimeError('Tolerance is incompatible with index type')
-        if "time" in dims.keys() and type == "index":
+        if time_dimension in dims.keys() and type == "index":
             raise RuntimeError("Can't use time filter with index type")
         cube_dims = [d["name"] for d in cube.dim_info]
         for key in dims.keys():
@@ -443,7 +462,6 @@ def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
         """
         for i in range(0, len(filters)):
             if ":" in filters[i]:
-                print(filters[i])
                 slice_obj = _convert_slice(filters[i].replace("[", "").replace("]", ""))
                 if slice_obj.stop == "-1":
                     slice_obj = slice(slice_obj.start, "end", slice_obj.step)
@@ -455,8 +473,6 @@ def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
                             if obj["name"] == key:
                                 start = str(int(slice_obj.start) + 1)
                                 end = str(int(obj["size"]) + int(slice_obj.stop))
-                                print(start)
-                                print(end)
                                 slice_obj = slice(start, end, slice_obj.step)
                                 break
                 else:
@@ -467,7 +483,6 @@ def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
                     filters[i] = ":".join([slice_obj.start, slice_obj.stop])
                 else:
                     filters[i] = ":".join([slice_obj.start, slice_obj.stop, slice_obj.step])
-                print(filters[i])
         return ",".join(filters)
 
     def _time_check(datetimes):
@@ -507,11 +522,25 @@ def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
                 raise RuntimeError('Wrong date format')
         return ",".join(datetimes)
 
+    def _time_dimension_finder(cube):
+        """
+        _time_dimension_finder(cube) -> str: finds the time dimension, if any
+        :param cube: the cube object
+        :type cube:  <class 'PyOphidia.cube.Cube'>
+        :returns: str|None
+        :rtype: <class 'str'>
+        """
+        for c in cube.dim_info:
+            if c["type"].lower() == "oph_time":
+                return c["name"]
+        return None
+
     time_filter = "no"
     cube.info(display=False)
-    _perform_checks(type, dims, cube, tolerance)
+    time_dimension = _time_dimension_finder(cube)
+    _perform_checks(type, dims, cube, tolerance, time_dimension)
     for key in dims:
-        if key == "time":
+        if key == time_dimension:
             if dims[key] is not None:
                 time_filter = "yes"
                 dims[key] = _time_check(dims[key])
@@ -526,4 +555,6 @@ def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
                            subset_filter="|".join(dims.values()), ncores=ncores,
                            nthreads=nthreads, description=description, display=display, offset=tolerance,
                            time_filter=time_filter)
+
+
 

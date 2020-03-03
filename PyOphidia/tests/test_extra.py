@@ -63,7 +63,8 @@ def test_multiply(measure, multiplier):
 
 @pytest.mark.parametrize(("type", "tolerance", "lat", "lon"),
                          [("index", 0, ["1:5:1", "2"], ["1:10:1"]), ("index", 0, ["1:-5:3", "2"], ["1:-2"]),
-                          ("coord", 2, ["[1:5]", "2"], ["43"]), ("index", 12, ["[1:5:1]", "2"], ["[1:10:1]"])])
+                          ("coord", 2, ["[1:5]", "2"], ["43"]), ("index", 12, ["[1:5:1]", "2"], ["[1:10:1]"]),
+                          ("index", 12, ["[1:200:1]", "2"], ["[1:10:1]"])])
 def test_select(type, tolerance, lat, lon):
     from PyOphidia import cube
 
