@@ -391,6 +391,7 @@ def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
     :rtype: <class 'PyOphidia.cube.Cube'>
     :raises: RuntimeError
     """
+
     def _perform_checks(type, dims, cube, tolerance, time_dimension):
         """_perform_checks(type, dims, cube, tolerance) -> void: performs data validation for the arguments
         :param type: index|coord
@@ -478,7 +479,7 @@ def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
                 else:
                     if type == "index":
                         slice_obj = slice(str(int(slice_obj.start) + 1), str(int(slice_obj.stop) + 1),
-                                               slice_obj.step)
+                                          slice_obj.step)
                 if slice_obj.step == "1":
                     filters[i] = ":".join([slice_obj.start, slice_obj.stop])
                 else:
@@ -555,6 +556,91 @@ def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
                            subset_filter="|".join(dims.values()), ncores=ncores,
                            nthreads=nthreads, description=description, display=display, offset=tolerance,
                            time_filter=time_filter)
+
+
+def summary(cube=cube):
+    def get_unpack_format(element_num, output_type):
+        if output_type == 'float':
+            format = str(element_num) + 'f'
+        elif output_type == 'double':
+            format = str(element_num) + 'd'
+        elif output_type == 'int':
+            format = str(element_num) + 'i'
+        elif output_type == 'long':
+            format = str(element_num) + 'l'
+        else:
+            raise RuntimeError('The value type is not valid')
+        return format
+
+    def calculate_decoded_length(decoded_string, output_type):
+        if output_type == 'float' or output_type == 'int':
+            num = int(float(len(decoded_string)) / float(4))
+        elif output_type == 'double' or output_type == 'long':
+            num = int(float(len(decoded_string)) / float(8))
+        else:
+            raise RuntimeError('The value type is not valid')
+        return num
+
+    def _decode_dimensions_response(response):
+        data_values = {}
+        data_values["dimension"] = {}
+        data_values["measure"] = {}
+        try:
+            dimensions = []
+            for response_i in response['response']:
+                if response_i['objkey'] == 'cubeschema_dimvalues':
+                    for response_j in response_i['objcontent'][:3] + response_i['objcontent'][-3:]:
+                        if response_j['title'] and response_j['rowfieldtypes'] and response_j['rowfieldtypes'][1] and \
+                                response_j['rowvalues']:
+                            curr_dim = {}
+                            curr_dim['name'] = response_j['title']
+                            dim_array = []
+                            if response_j['title'] == 'time':
+                                for val in response_j['rowvalues'][:3] + response_j['rowvalues'][-3:]:
+                                    dims = [s.strip() for s in val[1].split(',')]
+                                    for v in dims:
+                                        dim_array.append(v)
+                            else:
+                                for val in response_j['rowvalues'][:3] + response_j['rowvalues'][-3:]:
+                                    decoded_bin = base64.b64decode(val[1])
+                                    length = calculate_decoded_length(decoded_bin, response_j['rowfieldtypes'][1])
+                                    format = get_unpack_format(length, response_j['rowfieldtypes'][1])
+                                    dims = struct.unpack(format, decoded_bin)
+                                    for v in dims:
+                                        dim_array.append(v)
+                            curr_dim['values'] = dim_array
+                            dimensions.append(curr_dim)
+
+                        else:
+                            raise RuntimeError("Unable to get dimension name or values in response")
+                    break
+            dim_num = len(dimensions)
+            if dim_num == 0:
+                raise RuntimeError("No dimension found")
+            data_values["dimension"] = dimensions
+        except Exception as e:
+            print(get_linenumber(), "Unable to get dimensions from response:", e)
+            return None
+        return data_values
+
+    cube.info(display=False)
+    cube.cubeschema(level=1, display=False, base64="yes", show_index="yes", show_time="yes")
+    dim_response = cube.client.deserialize_response()
+    dimensions = _decode_dimensions_response(dim_response)
+    dimensions_print = "Dimensions:\t({0})"
+    coordinates_print = "\t* {0}\t\t({0}) {1} {2} ... {3}"
+    variable_print = "Variable:\t\t{0}\t({1}) {2} ..."
+    print(dimensions_print.format(", ".join([c["name"] + ":" + c["size"] for c in cube.dim_info])))
+    print("Coordinates:")
+    for c in cube.dim_info:
+        size = c["size"]
+        type = c["type"]
+        name = c["name"]
+        values = [d["values"] for d in dimensions["dimension"] if d["name"] == name][0]
+        print(coordinates_print.format(name, type, ", ".join([str(v) for v in values[:3]]),
+                                       ", ".join([str(v) for v in values[3:]])))
+    print(variable_print.format(cube.measure, ", ".join([c["name"] + ":" + c["size"] for c in cube.dim_info]),
+                                cube.measure_type))
 
 
 
