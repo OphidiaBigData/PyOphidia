@@ -60,7 +60,7 @@ def test_multiply(measure, multiplier):
     cube.info(display=False)
     results = multiply(cube=cube, measure=measure, multiplier=multiplier)
 
-
+@pytest.mark.skip(reason="skipping this")
 @pytest.mark.parametrize(("type", "tolerance", "lat", "lon"),
                          [("index", 0, ["1:5:1", "2"], ["1:10:1"]), ("index", 0, ["1:-5:3", "2"], ["1:-2"]),
                           ("coord", 2, ["[1:5]", "2"], ["43"]), ("index", 12, ["[1:5:1]", "2"], ["[1:10:1]"]),
@@ -83,3 +83,17 @@ def test_select(type, tolerance, lat, lon):
     else:
         results = select(cube=cube, type=type, ncores=1, nthreads=1, description='-',
                          display=False, tolerance=tolerance, lat=lat, lon=lon)
+
+
+from PyOphidia import cube
+
+cube.Cube.setclient()
+random_cube_1 = cube.Cube.randcube(container="mytest", dim="lat|lon|k|l|time", dim_size="4|2|2|2|1", exp_ndim=4,
+                                   host_partition="main", measure="tos", measure_type="double", nfrag=8, ntuple=4,
+                                   nhost=1)
+random_cube_2 = cube.Cube.randcube(container="mytest", dim="lat|lon|time", dim_size="4|2|1", exp_ndim=2,
+                                   host_partition="main", measure="tos", measure_type="double", nfrag=4, ntuple=2,
+                                   nhost=1)
+@pytest.mark.parametrize(("cube", "precision"),[(random_cube_1, 2), (random_cube_2, 5)])
+def test_summary(cube, precision):
+    summary(cube, precision)

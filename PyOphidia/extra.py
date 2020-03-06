@@ -558,7 +558,7 @@ def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
                            time_filter=time_filter)
 
 
-def summary(cube=cube):
+def summary(cube=cube, precision=2):
     def get_unpack_format(element_num, output_type):
         if output_type == 'float':
             format = str(element_num) + 'f'
@@ -628,7 +628,8 @@ def summary(cube=cube):
     dim_response = cube.client.deserialize_response()
     dimensions = _decode_dimensions_response(dim_response)
     dimensions_print = "Dimensions:\t({0})"
-    coordinates_print = "\t* {0}\t\t({0}) {1} {2} ... {3}"
+    coordinates_print = "\t* {0}\t\t({0})\t{1} {2} ... {3}"
+    coordinates_print_small_size = "\t* {0}\t\t({0})\t{1} {2}"
     variable_print = "Variable:\t\t{0}\t({1}) {2} ..."
     print(dimensions_print.format(", ".join([c["name"] + ":" + c["size"] for c in cube.dim_info])))
     print("Coordinates:")
@@ -637,8 +638,19 @@ def summary(cube=cube):
         type = c["type"]
         name = c["name"]
         values = [d["values"] for d in dimensions["dimension"] if d["name"] == name][0]
-        print(coordinates_print.format(name, type, ", ".join([str(v) for v in values[:3]]),
-                                       ", ".join([str(v) for v in values[3:]])))
+        if int(size) <= 6:
+            try:
+                print(coordinates_print_small_size.format(name, type, ", ".join([str(round(float(v), precision))
+                                                                                 for v in values])))
+            except ValueError:
+                print(coordinates_print_small_size.format(name, type, ", ".join([str(v) for v in values])))
+        else:
+            try:
+                print(coordinates_print.format(name, type, ", ".join([str(round(float(v), precision)) for v in values[:3]]),
+                                               ", ".join([str(round(float(v), precision)) for v in values[3:]])))
+            except ValueError:
+                print(coordinates_print.format(name, type, ", ".join([str(v) for v in values[:3]]),
+                                               ", ".join([str(v) for v in values[3:]])))
     print(variable_print.format(cube.measure, ", ".join([c["name"] + ":" + c["size"] for c in cube.dim_info]),
                                 cube.measure_type))
 
