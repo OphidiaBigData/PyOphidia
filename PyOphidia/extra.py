@@ -180,5 +180,168 @@ def where(cube=cube, expression="x", if_true=1, if_false=0, ncores=1, nthreads=1
         raise RuntimeError()
     return results
 
+def convert_to_xarray(cube):
+    def _get_unpack_format(element_num, output_type):
+        if output_type == 'float':
+            format = str(element_num) + 'f'
+        elif output_type == 'double':
+            format = str(element_num) + 'd'
+        elif output_type == 'int':
+            format = str(element_num) + 'i'
+        elif output_type == 'long':
+            format = str(element_num) + 'l'
+        elif output_type == 'short':
+            format = str(element_num) + 'h'
+        elif output_type == 'char':
+            format = str(element_num) + 'c'
+        else:
+            raise RuntimeError('The value type is not valid')
+        return format
 
+    def _calculate_decoded_length(decoded_string, output_type):
+        if output_type == 'float' or output_type == 'int':
+            num = int(float(len(decoded_string)) / float(4))
+        elif output_type == 'double' or output_type == 'long':
+            num = int(float(len(decoded_string)) / float(8))
+        elif output_type == 'short':
+            num = int(float(len(decoded_string)) / float(2))
+        elif output_type == 'char':
+            num = int(float(len(decoded_string)) / float(1))
+        else:
+            raise RuntimeError('The value type is not valid')
+        return num
+
+    def _add_coordinates_and_data(cube, dr, response):
+        lengths = []
+        try:
+            for response_i in response['response']:
+                if response_i['objkey'] == 'explorecube_dimvalues':
+                    for response_j in response_i['objcontent']:
+                        if response_j['title'] and response_j['rowfieldtypes'] and response_j['rowfieldtypes'][1] and \
+                                response_j['rowvalues']:
+                            if response_j['title'] == 'time':
+                                temp_array = []
+                                for val in response_j['rowvalues']:
+                                    dims = [s.strip() for s in val[1].split(',')]
+                                    temp_array.append(dims[0])
+                                dr[response_j['title']] = temp_array
+                            else:
+                                lengths.append(len(response_j['rowvalues']))
+                                temp_array = []
+                                for val in response_j['rowvalues']:
+                                    decoded_bin = base64.b64decode(val[1])
+                                    length = _calculate_decoded_length(decoded_bin, response_j['rowfieldtypes'][1])
+                                    format = _get_unpack_format(length, response_j['rowfieldtypes'][1])
+                                    dims = struct.unpack(format, decoded_bin)
+                                    temp_array.append(dims[0])
+                                dr[response_j['title']] = list(temp_array)
+                            last_dim_length = len(response_j['rowvalues'])
+                        else:
+                            raise RuntimeError("Unable to get dimension name or values in response")
+                    break
+        except Exception as e:
+            print(get_linenumber(), "Unable to get dimensions from response:", e)
+            return None
+        try:
+            for response_i in response['response']:
+                if response_i['objkey'] == 'explorecube_data':
+                    for response_j in response_i['objcontent']:
+                        if response_j['title'] and response_j['rowkeys'] and response_j['rowfieldtypes'] \
+                                and response_j['rowvalues']:
+                            measure_name = ""
+                            measure_index = 0
+                            # if not adimCube:
+                            #     # Check that implicit dimension is just one
+                            #     if len(data_values["dimension"].keys()) - (
+                            #             len(response_j['rowkeys']) - 1) / 2.0 > 1:
+                            #         raise RuntimeError("More than one implicit dimension")
+                            for i, t in enumerate(response_j['rowkeys']):
+                                if response_j['title'] == t:
+                                    measure_name = t
+                                    measure_index = i
+                                    break
+                            if measure_index == 0:
+                                raise RuntimeError("Unable to get measure name in response")
+                            measure = []
+                            values = []
+                            last_length = 1
+                            for val in response_j['rowvalues']:
+                                decoded_bin = base64.b64decode(val[measure_index])
+                                length = _calculate_decoded_length(decoded_bin,
+                                                                  response_j['rowfieldtypes'][measure_index])
+                                format = _get_unpack_format(length, response_j['rowfieldtypes'][measure_index])
+                                measure = struct.unpack(format, decoded_bin)
+                                if (type(measure)) is (tuple or list) and len(measure) == 1:
+                                    values.append(measure[0])
+                                else:
+                                    for v in measure:
+                                        values.append(v)
+                                last_length = len(measure)
+                            for i in range(len(lengths) - 1, -1, -1):
+                                current_array = []
+                                if i == len(lengths) - 1:
+                                    for j in range(0, len(values), lengths[i]):
+                                        current_array.append(values[j:j + lengths[i]])
+                                else:
+                                    for j in range(0, len(previous_array), lengths[i]):
+                                        current_array.append(previous_array[j:j + lengths[i]])
+                                previous_array = current_array
+                            measure = previous_array[0]
+                        else:
+                            raise RuntimeError("Unable to get measure values in response")
+                        break
+                    break
+            # if len(data_values["measure"].keys()) == 0:
+            #     raise RuntimeError("No measure found")
+        except Exception as e:
+            print("Unable to get measure from response:", e)
+            return None
+        sorted_coordinates = []
+        for l in lengths:
+            for c in cube.dim_info:
+                if l == int(c["size"]):
+                    sorted_coordinates.append(c["name"])
+                    break
+        dr[cube.measure] = (sorted_coordinates,  measure)
+        return dr
+
+
+    def _initiate_xarray_object(cube):
+        coordinates = [c["name"] for c in cube.dim_info]
+        dr = xr.Dataset({cube.measure: ""})
+        for c in coordinates:
+            dr = dr.assign_coords(coords={c: []})
+        return dr
+
+    import xarray as xr
+    cube.info(display=False)
+    dr = _initiate_xarray_object(cube)
+    pid = cube.pid
+    query = 'oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=0;cube={0};'.\
+        format(pid)
+    cube.client.submit(query, display=False)
+    response = cube.client.deserialize_response()
+    dr = _add_coordinates_and_data(cube, dr, response)
+    return dr
+
+
+
+
+from PyOphidia import cube
+
+cube.Cube.setclient()
+# rand_cube = cube.Cube(src_path='/public/data/ecas_training/tasmax_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc',
+#                  measure='tasmax',
+#                  import_metadata='yes',
+#                  imp_dim='time',
+#                  imp_concept_level='d', vocabulary='CF', hierarchy='oph_base|oph_base|oph_time',
+#                  ncores=4,
+#                  description='Max Temps'
+#                  )
+rand_cube = cube.Cube.randcube(container="mytest", dim="lat|lon|time", dim_size="4|2|1", exp_ndim=2,
+                                   host_partition="main", measure="tos", measure_type="double", nfrag=4, ntuple=2,
+                                   nhost=1)
+rand_cube.info(display=False)
+dr = convert_to_xarray(rand_cube)
+print(dr)
 
