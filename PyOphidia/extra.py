@@ -25,6 +25,7 @@ import base64
 import struct
 import PyOphidia.cube as cube
 from inspect import currentframe
+
 sys.path.append(os.path.dirname(__file__))
 
 
@@ -156,6 +157,7 @@ def where(cube=cube, expression="x", if_true=1, if_false=0, ncores=1, nthreads=1
             else:
                 final_left_part = "x " + str(-1 * float_right_part_number)
         return measure, final_left_part, right_part
+
     cube.info(display=False)
     input_type = _get_input_type(cube.measure_type)
     output_type = _get_output_type(if_true, input_type)
@@ -179,6 +181,7 @@ def where(cube=cube, expression="x", if_true=1, if_false=0, ncores=1, nthreads=1
         print(get_linenumber(), "Something went wrong:", e)
         raise RuntimeError()
     return results
+
 
 def convert_to_xarray(cube):
     def _get_unpack_format(element_num, output_type):
@@ -262,13 +265,12 @@ def convert_to_xarray(cube):
                                     break
                             if measure_index == 0:
                                 raise RuntimeError("Unable to get measure name in response")
-                            measure = []
                             values = []
                             last_length = 1
                             for val in response_j['rowvalues']:
                                 decoded_bin = base64.b64decode(val[measure_index])
                                 length = _calculate_decoded_length(decoded_bin,
-                                                                  response_j['rowfieldtypes'][measure_index])
+                                                                   response_j['rowfieldtypes'][measure_index])
                                 format = _get_unpack_format(length, response_j['rowfieldtypes'][measure_index])
                                 measure = struct.unpack(format, decoded_bin)
                                 if (type(measure)) is (tuple or list) and len(measure) == 1:
@@ -299,25 +301,40 @@ def convert_to_xarray(cube):
         sorted_coordinates = []
         for l in lengths:
             for c in cube.dim_info:
-                if l == int(c["size"]):
+                if l == int(c["size"]) and c["name"] not in sorted_coordinates:
                     sorted_coordinates.append(c["name"])
                     break
-        dr[cube.measure] = (sorted_coordinates,  measure)
+        dr[cube.measure] = (sorted_coordinates, measure)
         return dr
 
+    def _get_meta_info(response):
+        meta_dict = {}
+        for obj in response["response"]:
+            if "objcontent" in obj.keys():
+                if "rowvalues" in obj["objcontent"][0].keys():
+                    for row in obj["objcontent"][0]["rowvalues"]:
+                        key = row[2]
+                        value = row[4]
+                        meta_dict[key] = value
+        return meta_dict
 
-    def _initiate_xarray_object(cube):
+    def _initiate_xarray_object(cube, meta_info_dict):
         coordinates = [c["name"] for c in cube.dim_info]
-        dr = xr.Dataset({cube.measure: ""})
+        dr = xr.Dataset({cube.measure: ""}, attrs=meta_info_dict)
         for c in coordinates:
             dr = dr.assign_coords(coords={c: []})
         return dr
 
     import xarray as xr
     cube.info(display=False)
-    dr = _initiate_xarray_object(cube)
     pid = cube.pid
-    query = 'oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=0;cube={0};'.\
+    query = 'oph_metadata cube={0}'.format(pid)
+    cube.client.submit(query, display=False)
+    meta_response = cube.client.deserialize_response()
+    meta_info_dict = _get_meta_info(meta_response)
+    dr = _initiate_xarray_object(cube, meta_info_dict)
+
+    query = 'oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=0;cube={0};'. \
         format(pid)
     cube.client.submit(query, display=False)
     response = cube.client.deserialize_response()
@@ -325,23 +342,24 @@ def convert_to_xarray(cube):
     return dr
 
 
-
-
 from PyOphidia import cube
 
 cube.Cube.setclient()
-# rand_cube = cube.Cube(src_path='/public/data/ecas_training/tasmax_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc',
-#                  measure='tasmax',
-#                  import_metadata='yes',
-#                  imp_dim='time',
-#                  imp_concept_level='d', vocabulary='CF', hierarchy='oph_base|oph_base|oph_time',
-#                  ncores=4,
-#                  description='Max Temps'
-#                  )
-rand_cube = cube.Cube.randcube(container="mytest", dim="lat|lon|time", dim_size="4|2|1", exp_ndim=2,
-                                   host_partition="main", measure="tos", measure_type="double", nfrag=4, ntuple=2,
-                                   nhost=1)
+rand_cube = cube.Cube(src_path='/public/data/ecas_training/tasmax_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc',
+                      measure='tasmax',
+                      import_metadata='yes',
+                      imp_dim='time',
+                      imp_concept_level='d', vocabulary='CF', hierarchy='oph_base|oph_base|oph_time',
+                      ncores=4,
+                      description='Max Temps'
+                      )
+# rand_cube = cube.Cube.randcube(container="mytest", dim="lat|lon|time", dim_size="4|2|1", exp_ndim=2,
+#                                    host_partition="main", measure="tos", measure_type="double", nfrag=4, ntuple=2,
+#                                    nhost=1)
 rand_cube.info(display=False)
+
+#
+# print(rand_cube.dim_info)
+# quit()
 dr = convert_to_xarray(rand_cube)
 print(dr)
-
