@@ -184,6 +184,27 @@ def where(cube=cube, expression="x", if_true=1, if_false=0, ncores=1, nthreads=1
 
 
 def convert_to_xarray(cube):
+    """convert_to_xarray(cube=cube) -> xarray.core.dataset.Dataset : convert a Pyophidia.cube to xarray.dataset
+    :param cube: the initial cube
+    :type cube: <class 'PyOphidia.cube.Cube'>
+    :returns: a 'xarray.core.dataset.Dataset' object
+    :rtype: <class 'Pxarray.core.dataset.Dataset'>
+    :raises: RuntimeError
+    """
+
+    def _time_dimension_finder(cube):
+        """
+        _time_dimension_finder(cube) -> str: finds the time dimension, if any
+        :param cube: the cube object
+        :type cube:  <class 'PyOphidia.cube.Cube'>
+        :returns: str|None
+        :rtype: <class 'str'>
+        """
+        for c in cube.dim_info:
+            if c["type"].lower() == "oph_time":
+                return c["name"]
+        return None
+
     def _get_unpack_format(element_num, output_type):
         if output_type == 'float':
             format = str(element_num) + 'f'
@@ -214,7 +235,19 @@ def convert_to_xarray(cube):
             raise RuntimeError('The value type is not valid')
         return num
 
-    def _add_coordinates_and_data(cube, dr, response):
+    def _add_coordinates(cube, ds, response):
+        """
+        _add_coordinates(cube, dr, response) -> xarray.core.dataset.Dataset,int: a function that uses the response from
+            the oph_explorecube and adds coordinates to the dataarray object
+        :param cube: the cube object
+        :type cube:  <class 'PyOphidia.cube.Cube'>
+        :param ds: the xarray dataset object
+        :type ds:  <class 'xarray.core.dataset.Dataset'>
+        :param response: response from pyophidia query
+        :type response:  <class 'dict'>
+        :returns: xarray.core.dataset.Dataset,int|None
+        :rtype: <class 'xarray.core.dataset.Dataset'>,<class 'int'>|None
+        """
         lengths = []
         try:
             for response_i in response['response']:
@@ -222,12 +255,12 @@ def convert_to_xarray(cube):
                     for response_j in response_i['objcontent']:
                         if response_j['title'] and response_j['rowfieldtypes'] and response_j['rowfieldtypes'][1] and \
                                 response_j['rowvalues']:
-                            if response_j['title'] == 'time':
+                            if response_j['title'] == _time_dimension_finder(cube):
                                 temp_array = []
                                 for val in response_j['rowvalues']:
                                     dims = [s.strip() for s in val[1].split(',')]
                                     temp_array.append(dims[0])
-                                dr[response_j['title']] = temp_array
+                                ds[response_j['title']] = temp_array
                             else:
                                 lengths.append(len(response_j['rowvalues']))
                                 temp_array = []
@@ -237,36 +270,44 @@ def convert_to_xarray(cube):
                                     format = _get_unpack_format(length, response_j['rowfieldtypes'][1])
                                     dims = struct.unpack(format, decoded_bin)
                                     temp_array.append(dims[0])
-                                dr[response_j['title']] = list(temp_array)
-                            last_dim_length = len(response_j['rowvalues'])
+                                ds[response_j['title']] = list(temp_array)
                         else:
                             raise RuntimeError("Unable to get dimension name or values in response")
                     break
         except Exception as e:
             print(get_linenumber(), "Unable to get dimensions from response:", e)
             return None
+        return ds, lengths
+
+    def _add_measure(cube, ds, response, lengths):
+        """
+        _add_measure(cube, dr, response) -> xarray.core.dataset.Dataset: a function that uses the response from
+            the oph_explorecube and adds the measure to the dataarray object
+        :param cube: the cube object
+        :type cube:  <class 'PyOphidia.cube.Cube'>
+        :param ds: the xarray dataset object
+        :type ds:  <class 'xarray.core.dataset.Dataset'>
+        :param response: response from pyophidia query
+        :type response:  <class 'dict'>
+        :param lengths: list of the coordinate lengths
+        :type lengths:  <class 'list'>
+        :returns: xarray.core.dataset.Dataset|None
+        :rtype: <class 'xarray.core.dataset.Dataset'>|None
+        """
         try:
             for response_i in response['response']:
                 if response_i['objkey'] == 'explorecube_data':
                     for response_j in response_i['objcontent']:
                         if response_j['title'] and response_j['rowkeys'] and response_j['rowfieldtypes'] \
                                 and response_j['rowvalues']:
-                            measure_name = ""
                             measure_index = 0
-                            # if not adimCube:
-                            #     # Check that implicit dimension is just one
-                            #     if len(data_values["dimension"].keys()) - (
-                            #             len(response_j['rowkeys']) - 1) / 2.0 > 1:
-                            #         raise RuntimeError("More than one implicit dimension")
                             for i, t in enumerate(response_j['rowkeys']):
                                 if response_j['title'] == t:
-                                    measure_name = t
                                     measure_index = i
                                     break
                             if measure_index == 0:
                                 raise RuntimeError("Unable to get measure name in response")
                             values = []
-                            last_length = 1
                             for val in response_j['rowvalues']:
                                 decoded_bin = base64.b64decode(val[measure_index])
                                 length = _calculate_decoded_length(decoded_bin,
@@ -278,7 +319,6 @@ def convert_to_xarray(cube):
                                 else:
                                     for v in measure:
                                         values.append(v)
-                                last_length = len(measure)
                             for i in range(len(lengths) - 1, -1, -1):
                                 current_array = []
                                 if i == len(lengths) - 1:
@@ -293,8 +333,8 @@ def convert_to_xarray(cube):
                             raise RuntimeError("Unable to get measure values in response")
                         break
                     break
-            # if len(data_values["measure"].keys()) == 0:
-            #     raise RuntimeError("No measure found")
+            if len(measure) == 0:
+                raise RuntimeError("No measure found")
         except Exception as e:
             print("Unable to get measure from response:", e)
             return None
@@ -304,26 +344,66 @@ def convert_to_xarray(cube):
                 if l == int(c["size"]) and c["name"] not in sorted_coordinates:
                     sorted_coordinates.append(c["name"])
                     break
-        dr[cube.measure] = (sorted_coordinates, measure)
-        return dr
+        ds[cube.measure] = (sorted_coordinates, measure)
+        return ds
 
     def _get_meta_info(response):
-        meta_dict = {}
-        for obj in response["response"]:
-            if "objcontent" in obj.keys():
-                if "rowvalues" in obj["objcontent"][0].keys():
-                    for row in obj["objcontent"][0]["rowvalues"]:
-                        key = row[2]
-                        value = row[4]
-                        meta_dict[key] = value
+        """
+        _get_meta_info(response) -> <class 'dict'>: a function that uses the response from
+            the oph_metadata and returns meta information
+        :param response: response from pyophidia query
+        :type response:  <class 'dict'>
+        :returns: dict
+        :rtype: <class 'dict'>|None
+        """
+        try:
+            meta_dict = {}
+            for obj in response["response"]:
+                if "objcontent" in obj.keys():
+                    if ("rowvalues" and "rowkeys") in obj["objcontent"][0].keys():
+                        key_indx, value_indx = _get_indexes(obj["objcontent"][0]["rowkeys"])
+                        for row in obj["objcontent"][0]["rowvalues"]:
+                            key = row[key_indx]
+                            value = row[value_indx]
+                            meta_dict[key] = value
+        except Exception as e:
+            print("Unable to parse meta info from response:", e)
+            return None
         return meta_dict
 
-    def _initiate_xarray_object(cube, meta_info_dict):
+    def _initiate_xarray_object(cube, meta_info):
+        """
+        _initiate_xarray_object(cube, meta_info) -> xarray.core.dataset.Dataset: a function that initiates the
+            xarray.dataset object with the meta information
+        :param cube: the cube object
+        :type cube:  <class 'PyOphidia.cube.Cube'>
+        :param meta_info: meta information dict
+        :type meta_info:  <class 'dict'>
+        :returns: xarray.core.dataset.Dataset|None
+        :rtype: <class 'xarray.core.dataset.Dataset'>|None
+        """
         coordinates = [c["name"] for c in cube.dim_info]
-        dr = xr.Dataset({cube.measure: ""}, attrs=meta_info_dict)
+        if len(coordinates) == 0:
+            raise RuntimeError("No coordinates")
+        ds = xr.Dataset({cube.measure: ""}, attrs=meta_info)
         for c in coordinates:
-            dr = dr.assign_coords(coords={c: []})
-        return dr
+            ds = ds.assign_coords(coords={c: []})
+        return ds
+
+    def _get_indexes(rowkeys):
+        """
+        _get_indexes(response) -> <class 'int'>, <class 'int'>: a function that takes as input a list of strings and
+            returns the indexes of the ones that match Key and Value
+        :param rowkeys: list of strings
+        :type rowkeys:  <class 'list'>
+        :returns: int,int
+        :rtype: <class 'int'>, <class 'int'>|None
+        """
+        try:
+            return rowkeys.index("Key"), rowkeys.index("Value")
+        except Exception as e:
+            print("Unable to parse meta info from response:", e)
+            return None
 
     import xarray as xr
     cube.info(display=False)
@@ -331,35 +411,20 @@ def convert_to_xarray(cube):
     query = 'oph_metadata cube={0}'.format(pid)
     cube.client.submit(query, display=False)
     meta_response = cube.client.deserialize_response()
-    meta_info_dict = _get_meta_info(meta_response)
-    dr = _initiate_xarray_object(cube, meta_info_dict)
-
+    meta_dict = _get_meta_info(meta_response)
+    ds = _initiate_xarray_object(cube, meta_dict)
     query = 'oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=0;cube={0};'. \
         format(pid)
     cube.client.submit(query, display=False)
     response = cube.client.deserialize_response()
-    dr = _add_coordinates_and_data(cube, dr, response)
-    return dr
-
-
-from PyOphidia import cube
-
-cube.Cube.setclient()
-rand_cube = cube.Cube(src_path='/public/data/ecas_training/tasmax_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc',
-                      measure='tasmax',
-                      import_metadata='yes',
-                      imp_dim='time',
-                      imp_concept_level='d', vocabulary='CF', hierarchy='oph_base|oph_base|oph_time',
-                      ncores=4,
-                      description='Max Temps'
-                      )
-# rand_cube = cube.Cube.randcube(container="mytest", dim="lat|lon|time", dim_size="4|2|1", exp_ndim=2,
-#                                    host_partition="main", measure="tos", measure_type="double", nfrag=4, ntuple=2,
-#                                    nhost=1)
-rand_cube.info(display=False)
-
-#
-# print(rand_cube.dim_info)
-# quit()
-dr = convert_to_xarray(rand_cube)
-print(dr)
+    try:
+        ds, lengths = _add_coordinates(cube, ds, response)
+    except Exception as e:
+        print(get_linenumber(), "Something is wrong with the coordinates, error: ", e)
+        return None
+    try:
+        ds = _add_measure(cube, ds, response, lengths)
+    except Exception as e:
+        print(get_linenumber(), "Something is wrong with the measure, error: ", e)
+        return None
+    return ds
