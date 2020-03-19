@@ -43,6 +43,31 @@ def convert_to_xarray(cube):
     :raises: RuntimeError
     """
 
+    def _scientific_notation(num):
+        """_scientific_notation(v) -> str : converts a large number to scientific notation
+        :params num: our number (int or float)
+        :type num: <class 'int'> | <class 'float'>
+        :returns: str
+        :rtype: <class 'str'>
+        """
+        from decimal import Decimal
+        d = Decimal(eval(str(num)))
+        e = format(d, '.6e')
+        a = e.split('e')
+        b = a[0].replace('0', '')
+        return b + 'e' + a[1]
+
+    def _dependency_check():
+        """_dependency_check() -> checks for xarray dependency in user's system
+        :returns: NoneType
+        :rtype: <class 'NoneType'>
+        :raises: RuntimeError
+        """
+        try:
+            import xarray
+        except ModuleNotFoundError:
+            raise RuntimeError('xarray is not installed')
+
     def _time_dimension_finder(cube):
         """
         _time_dimension_finder(cube) -> str: finds the time dimension, if any
@@ -215,11 +240,14 @@ def convert_to_xarray(cube):
             for obj in response["response"]:
                 if "objcontent" in obj.keys():
                     if ("rowvalues" and "rowkeys") in obj["objcontent"][0].keys():
-                        key_indx, value_indx, variable_indx = _get_indexes(obj["objcontent"][0]["rowkeys"])
+                        key_indx, value_indx, variable_indx, type_indx = _get_indexes(obj["objcontent"][0]["rowkeys"])
                         for row in obj["objcontent"][0]["rowvalues"]:
                             key = row[key_indx]
                             value = row[value_indx]
                             variable = row[variable_indx]
+                            _type = row[type_indx]
+                            if (_type == "float" or _type == "int") and len(str(value)) > 9:
+                                value = _scientific_notation(value)
                             meta_list.append({"key": key, "value": value, "variable": variable})
         except Exception as e:
             print("Unable to parse meta info from response:", e)
@@ -253,19 +281,20 @@ def convert_to_xarray(cube):
 
     def _get_indexes(rowkeys):
         """
-        _get_indexes(response) -> <class 'int'>, <class 'int'>: a function that takes as input a list of strings and
-            returns the indexes of the ones that match Key and Value
+        _get_indexes(response) -> <class 'int'>, <class 'int'>, <class 'int'>, <class 'int'>: a function that takes as
+            input a list of strings and returns the indexes of the ones that match Key and Value
         :param rowkeys: list of strings
         :type rowkeys:  <class 'list'>
-        :returns: int,int
+        :returns: int, int, int, int
         :rtype: <class 'int'>, <class 'int'>|None
         """
         try:
-            return rowkeys.index("Key"), rowkeys.index("Value"), rowkeys.index("Variable")
+            return rowkeys.index("Key"), rowkeys.index("Value"), rowkeys.index("Variable"), rowkeys.index("Type")
         except Exception as e:
             print("Unable to parse meta info from response:", e)
             return None
 
+    _dependency_check()
     import xarray as xr
     cube.info(display=False)
     pid = cube.pid
@@ -289,4 +318,3 @@ def convert_to_xarray(cube):
         print(get_linenumber(), "Something is wrong with the measure, error: ", e)
         return None
     return ds
-
