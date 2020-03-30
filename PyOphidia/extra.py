@@ -624,14 +624,17 @@ def summary(cube=cube, precision=2):
         return data_values
 
     cube.info(display=False)
+
     cube.cubeschema(level=1, display=False, base64="yes", show_index="yes", show_time="yes")
     dim_response = cube.client.deserialize_response()
     dimensions = _decode_dimensions_response(dim_response)
-    dimensions_print = "Dimensions:\t({0})"
-    coordinates_print = "\t* {0}\t\t({0})\t{1} {2} ... {3}"
-    coordinates_print_small_size = "\t* {0}\t\t({0})\t{1} {2}"
+    dimensions_print = "Dimensions:\t{0}"
+    coordinates_print = "\t* {0}{1}({0}:{2})\t{3} {4} ... {5}"
+    coordinates_print_small_size = "\t* {0}{1}({0}:{2})\t{3} {4}"
     variable_print = "Variable:\t\t{0}\t({1}) {2} ..."
-    print(dimensions_print.format(", ".join([c["name"] + ":" + c["size"] for c in cube.dim_info])))
+    space = 10
+    print("Cubepid: {0}".format(cube.pid))
+    print(dimensions_print.format("; ".join([c["name"] + ":" + c["size"] + (" (explicit)" if c["array"] == "no" else " (implicit)") for c in cube.dim_info])))
     print("Coordinates:")
     for c in cube.dim_info:
         size = c["size"]
@@ -640,19 +643,19 @@ def summary(cube=cube, precision=2):
         values = [d["values"] for d in dimensions["dimension"] if d["name"] == name][0]
         if int(size) <= 6:
             try:
-                print(coordinates_print_small_size.format(name, type, ", ".join([str(round(float(v), precision))
+                print(coordinates_print_small_size.format(name, " " * (space - len(name)), size, type, ", ".join([str(round(float(v), precision))
                                                                                  for v in values])))
             except ValueError:
-                print(coordinates_print_small_size.format(name, type, ", ".join([str(v) for v in values])))
+                print(coordinates_print_small_size.format(name, " " * (space - len(name)), size, type, ", ".join([str(v) for v in values])))
         else:
             try:
-                print(coordinates_print.format(name, type, ", ".join([str(round(float(v), precision)) for v in values[:3]]),
+                print(coordinates_print.format(name, " " * (space - len(name)), size, type, ", ".join([str(round(float(v), precision)) for v in values[:3]]),
                                                ", ".join([str(round(float(v), precision)) for v in values[3:]])))
             except ValueError:
-                print(coordinates_print.format(name, type, ", ".join([str(v) for v in values[:3]]),
+                print(coordinates_print.format(name, " " * (space - len(name)), size, type, ", ".join([str(v) for v in values[:3]]),
                                                ", ".join([str(v) for v in values[3:]])))
     print(variable_print.format(cube.measure, ", ".join([c["name"] + ":" + c["size"] for c in cube.dim_info]),
                                 cube.measure_type))
-
-
-
+    print("Cube size: {0}".format(cube.size))
+    print("Partitioning: hosts: {0}; frag x host: {1}; rows x frag: {2}; array length: {3}".
+          format(cube.hostxcube, cube.nfragments, cube.rowsxfrag, cube.nelements))
