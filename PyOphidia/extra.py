@@ -634,7 +634,8 @@ def summary(cube=cube, precision=2):
     variable_print = "Variable:\t\t{0}\t({1}) {2} ..."
     space = max([len(c["name"]) for c in cube.dim_info]) + 8
     print("Cubepid: {0}".format(cube.pid))
-    print(dimensions_print.format("; ".join([c["name"] + ":" + c["size"] + (" (explicit)" if c["array"] == "no" else " (implicit)") for c in cube.dim_info])))
+    print(dimensions_print.format("; ".join([c["name"] + ":" + c["size"] + (" (explicit)" if c["array"] == "no" else
+                                                                            " (implicit)") for c in cube.dim_info])))
     print("Coordinates:")
     for c in cube.dim_info:
         size = c["size"]
@@ -643,16 +644,19 @@ def summary(cube=cube, precision=2):
         values = [d["values"] for d in dimensions["dimension"] if d["name"] == name][0]
         if int(size) <= 6:
             try:
-                print(coordinates_print_small_size.format(name, " " * (space - len(name)), size, type, ", ".join([str(round(float(v), precision))
-                                                                                 for v in values])))
+                print(coordinates_print_small_size.format(name, " " * (space - len(name)), size, type, ", "
+                                                          .join([str(round(float(v), precision)) for v in values])))
             except ValueError:
-                print(coordinates_print_small_size.format(name, " " * (space - len(name)), size, type, ", ".join([str(v) for v in values])))
+                print(coordinates_print_small_size.format(name, " " * (space - len(name)), size, type,
+                                                          ", ".join([str(v) for v in values])))
         else:
             try:
-                print(coordinates_print.format(name, " " * (space - len(name)), size, type, ", ".join([str(round(float(v), precision)) for v in values[:3]]),
+                print(coordinates_print.format(name, " " * (space - len(name)), size, type, ", "
+                                               .join([str(round(float(v), precision)) for v in values[:3]]),
                                                ", ".join([str(round(float(v), precision)) for v in values[3:]])))
             except ValueError:
-                print(coordinates_print.format(name, " " * (space - len(name)), size, type, ", ".join([str(v) for v in values[:3]]),
+                print(coordinates_print.format(name, " " * (space - len(name)), size, type,
+                                               ", ".join([str(v) for v in values[:3]]),
                                                ", ".join([str(v) for v in values[3:]])))
     print(variable_print.format(cube.measure, ", ".join([c["name"] + ":" + c["size"] for c in cube.dim_info]),
                                 cube.measure_type))
