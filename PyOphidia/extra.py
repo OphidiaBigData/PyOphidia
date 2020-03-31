@@ -629,10 +629,10 @@ def summary(cube=cube, precision=2):
     dim_response = cube.client.deserialize_response()
     dimensions = _decode_dimensions_response(dim_response)
     dimensions_print = "Dimensions:\t{0}"
-    coordinates_print = "\t* {0}{1}({0}:{2})\t{3} {4} ... {5}"
-    coordinates_print_small_size = "\t* {0}{1}({0}:{2})\t{3} {4}"
+    coordinates_print = "\t- {0}{1}({0}:{2})\t{3} {4} ... {5}"
+    coordinates_print_small_size = "\t- {0}{1}({0}:{2})\t{3} {4}"
     variable_print = "Variable:\t\t{0}\t({1}) {2} ..."
-    space = 10
+    space = max([len(c["name"]) for c in cube.dim_info]) + 8
     print("Cubepid: {0}".format(cube.pid))
     print(dimensions_print.format("; ".join([c["name"] + ":" + c["size"] + (" (explicit)" if c["array"] == "no" else " (implicit)") for c in cube.dim_info])))
     print("Coordinates:")
