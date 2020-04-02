@@ -77,7 +77,7 @@ def convert_to_xarray(cube):
         :rtype: <class 'str'>
         """
         for c in cube.dim_info:
-            if c["type"].lower() == "oph_time":
+            if c["hierarchy"].lower() == "oph_time":
                 return c["name"]
         return None
 
@@ -303,8 +303,8 @@ def convert_to_xarray(cube):
     meta_response = cube.client.deserialize_response()
     meta_list = _get_meta_info(meta_response)
     ds = _initiate_xarray_object(cube, meta_list)
-    query = 'oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=0;cube={0};'. \
-        format(pid)
+    query = 'oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=0;show_time=yes;'\
+            'cube={0};'.format(pid)
     cube.client.submit(query, display=False)
     response = cube.client.deserialize_response()
     try:
