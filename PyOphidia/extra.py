@@ -43,6 +43,27 @@ def convert_to_xarray(cube):
     :raises: RuntimeError
     """
 
+    def _append_with_format(var, frmt):
+        """_append_with_format(var, frmt) -> numpy.float32|numpy.float64|numpy.int32|numpy.int64 converts a variable
+            to the appropriate format according to pyophidia's type
+        :param var: the variable to convert
+        :type var: int|float|str
+        :param frmt: a string representing pyophidias format
+        :type frmt: str
+        :rtype: <class 'numpy.float32'>|<class 'numpy.float64'>|<class 'numpy.int32'>|<class 'numpy.int64'>
+        """
+        import numpy
+        if frmt == "float":
+            return numpy.float32(var)
+        elif frmt == "double":
+            return numpy.float64(var)
+        elif frmt == "int":
+            return numpy.int32(var)
+        elif frmt == "long":
+            return numpy.int64(var)
+        else:
+            return var
+
     def _scientific_notation(num):
         """_scientific_notation(v) -> str : converts a large number to scientific notation
         :params num: our number (int or float)
@@ -145,7 +166,7 @@ def convert_to_xarray(cube):
                                     length = _calculate_decoded_length(decoded_bin, response_j['rowfieldtypes'][1])
                                     format = _get_unpack_format(length, response_j['rowfieldtypes'][1])
                                     dims = struct.unpack(format, decoded_bin)
-                                    temp_array.append(dims[0])
+                                    temp_array.append(_append_with_format(dims[0], response_j['rowfieldtypes'][1]))
                                 ds[response_j['title']] = list(temp_array)
                                 ds[response_j['title']].attrs = convert_to_metadict(meta_info,
                                                                                     filter=response_j['title'])
@@ -179,6 +200,7 @@ def convert_to_xarray(cube):
                         if response_j['title'] and response_j['rowkeys'] and response_j['rowfieldtypes'] \
                                 and response_j['rowvalues']:
                             measure_index = 0
+
                             for i, t in enumerate(response_j['rowkeys']):
                                 if response_j['title'] == t:
                                     measure_index = i
@@ -191,12 +213,13 @@ def convert_to_xarray(cube):
                                 length = _calculate_decoded_length(decoded_bin,
                                                                    response_j['rowfieldtypes'][measure_index])
                                 format = _get_unpack_format(length, response_j['rowfieldtypes'][measure_index])
+                                data_format = response_j['rowfieldtypes'][measure_index]
                                 measure = struct.unpack(format, decoded_bin)
                                 if (type(measure)) is (tuple or list) and len(measure) == 1:
-                                    values.append(measure[0])
+                                    values.append(_append_with_format(measure[0], data_format))
                                 else:
                                     for v in measure:
-                                        values.append(v)
+                                        values.append(_append_with_format(v, data_format))
                             for i in range(len(lengths) - 1, -1, -1):
                                 current_array = []
                                 if i == len(lengths) - 1:
