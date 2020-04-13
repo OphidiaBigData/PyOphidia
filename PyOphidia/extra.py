@@ -532,7 +532,7 @@ def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
         :rtype: <class 'str'>
         """
         for c in cube.dim_info:
-            if c["type"].lower() == "oph_time":
+            if c["hierarchy"].lower() == "oph_time":
                 return c["name"]
         return None
 
