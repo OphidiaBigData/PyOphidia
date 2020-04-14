@@ -660,6 +660,8 @@ def summary(cube=cube, precision=2):
                                                ", ".join([str(v) for v in values[3:]])))
     print(variable_print.format(cube.measure, ", ".join([c["name"] + ":" + c["size"] for c in cube.dim_info]),
                                 cube.measure_type))
-    print("Cube size: {0}".format(cube.size))
+    print("Cube size: {0}".format(str(round(float(cube.size.split(" ")[0].strip()), 3)))
+          + " " + cube.size.split(" ")[-1])
     print("Partitioning: hosts: {0}; frag x host: {1}; rows x frag: {2}; array length: {3}".
           format(cube.hostxcube, cube.nfragments, cube.rowsxfrag, cube.nelements))
+
