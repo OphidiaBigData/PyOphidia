@@ -2417,8 +2417,11 @@ if __name__ == '__main__':
 
             if script is not None:
                 if python_code:
-                    script_path = createScript(script)
-                    query += 'script=' + str(script_path) + ';'
+                    if sys.version_info[0] < 3:
+                        raise RuntimeError('Python 3 is required to use a Python function as a scripts')
+                    else:
+                        script_path = createScript(script)
+                        query += 'script=' + str(script_path) + ';'
                 else:
                     query += 'script=' + str(script) + ';'
 
