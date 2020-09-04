@@ -140,7 +140,7 @@ class Cube():
           -> dict or None : wrapper of the operator OPH_UNPUBLISH
 
     Class Methods:
-        setclient(username='', password='', server, port='11732', token='', read_env=False)
+        setclient(username='', password='', server, port='11732', token='', read_env=False, project=None)
           -> None : Instantiate the Client, common for all Cube objects, for submitting requests
         b2drop(action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False)
           -> dict or None : wrapper of the operator OPH_B2DROP
@@ -234,7 +234,7 @@ class Cube():
     client = None
 
     @classmethod
-    def setclient(cls, username='', password='', server='', port='11732', token='', read_env=False, api_mode=True):
+    def setclient(cls, username='', password='', server='', port='11732', token='', read_env=False, api_mode=True, project=None):
         """setclient(username='', password='', server='', port='11732', token='', read_env=False, api_mode=True) -> None : Instantiate the Client, common for all Cube objects, for submitting requests
 
         :param username: Ophidia user
@@ -251,12 +251,14 @@ class Cube():
         :type read_env: bool
         :param api_mode: If True, use the class as an API and catch also framework-level errors
         :type api_mode: bool
+        :param project: String with project ID to be used for job scheduling
+        :type project: str
         :returns: None
         :rtype: None
         """
 
         try:
-            cls.client = _client.Client(username, password, server, port, token, read_env, api_mode)
+            cls.client = _client.Client(username, password, server, port, token, read_env, api_mode, project)
         except Exception as e:
             print(get_linenumber(), "Something went wrong in setting the client:", e)
         finally:
