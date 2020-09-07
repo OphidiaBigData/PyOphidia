@@ -77,7 +77,7 @@ class Client():
     """
 
     def __init__(self, username='', password='', server='', port='11732', token='', read_env=False, api_mode=True, project=None):
-        """Client(username='', password='', server='', port='11732', token='', read_env=False, api_mode=True) -> obj
+        """Client(username='', password='', server='', port='11732', token='', read_env=False, api_mode=True, project=None) -> obj
         :param api_mode: If True, use the class as an API and catch also framework-level errors
         :type api_mode: bool
         :param username: Ophidia username

@@ -235,7 +235,7 @@ class Cube():
 
     @classmethod
     def setclient(cls, username='', password='', server='', port='11732', token='', read_env=False, api_mode=True, project=None):
-        """setclient(username='', password='', server='', port='11732', token='', read_env=False, api_mode=True) -> None : Instantiate the Client, common for all Cube objects, for submitting requests
+        """setclient(username='', password='', server='', port='11732', token='', read_env=False, api_mode=True, project=None) -> None : Instantiate the Client, common for all Cube objects, for submitting requests
 
         :param username: Ophidia user
         :type username: str
