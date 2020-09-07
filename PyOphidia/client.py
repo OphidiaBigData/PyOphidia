@@ -758,6 +758,8 @@ class Client():
             request['exec_mode'] = self.exec_mode
         if self.ncores and 'ncores' not in request:
             request['ncores'] = str(self.ncores)
+        if self.project and 'project' not in request:
+            request['project'] = str(self.project)
         self.last_request = json.dumps(request)
         try:
             err, err_msg = self.wisvalid(self.last_request)
