@@ -827,7 +827,7 @@ class Client():
 
         # Remove comment blocks
         checked_workflow = re.sub(re.compile('/\*.*?\*/|//.*?\n', re.DOTALL), '\n', workflow)
-        print(checked_workflow)
+
         if isinstance(checked_workflow, str):
             try:
                 w = json.loads(checked_workflow)
