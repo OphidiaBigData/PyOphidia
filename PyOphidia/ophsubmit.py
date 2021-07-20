@@ -66,11 +66,13 @@ WRAPPING_WORKFLOW3 = "\n  \"exec_mode\":\""
 WRAPPING_WORKFLOW3_1 = "\","
 WRAPPING_WORKFLOW4 = "\n  \"callback_url\":\""
 WRAPPING_WORKFLOW4_1 = "\","
-WRAPPING_WORKFLOW5 = "\n  \"tasks\": [\n    {\n      \"name\":\"Task 0\",\n      \"operator\":\""
-WRAPPING_WORKFLOW5_1 = "\",\n      \"arguments\": ["
-WRAPPING_WORKFLOW6 = "\"%s\""
-WRAPPING_WORKFLOW7 = ",\"%s\""
-WRAPPING_WORKFLOW8 = "]\n    }\n  ]\n}"
+WRAPPING_WORKFLOW5 = "\n  \"project\":\""
+WRAPPING_WORKFLOW5_1 = "\","
+WRAPPING_WORKFLOW6 = "\n  \"tasks\": [\n    {\n      \"name\":\"Task 0\",\n      \"operator\":\""
+WRAPPING_WORKFLOW6_1 = "\",\n      \"arguments\": ["
+WRAPPING_WORKFLOW7 = "\"%s\""
+WRAPPING_WORKFLOW8 = ",\"%s\""
+WRAPPING_WORKFLOW9 = "]\n    }\n  ]\n}"
 
 
 def submit(username, password, server, port, query):
@@ -130,19 +132,27 @@ def submit(username, password, server, port, query):
                 if element_list[0] == 'callback_url':
                     request += WRAPPING_WORKFLOW4 + element_list[1] + WRAPPING_WORKFLOW4_1
                     break
-        request += WRAPPING_WORKFLOW5 + operator + WRAPPING_WORKFLOW5_1
+        # project
+        for element in query_list:
+            if element:
+                element_list = element.split('=', 1)
+                if element_list[0] == 'project':
+                    request += WRAPPING_WORKFLOW5 + element_list[1] + WRAPPING_WORKFLOW5_1
+                    break
+        request += WRAPPING_WORKFLOW6 + operator + WRAPPING_WORKFLOW6_1
         # all remaining arguments
         step = 0
         for element in query_list:
             if element:
                 element_list = element.split('=', 1)
-                if element_list[0] != 'operator' and element_list[0] != 'sessionid' and element_list[0] != 'exec_mode' and element_list[0] != 'callback_url':
+                if element_list[0] != 'operator' and element_list[0] != 'sessionid' and element_list[0] != 'exec_mode' and element_list[0] != 'callback_url' and element_list[0] != 'project':
                     step += 1
                     if step == 1:
-                        request += WRAPPING_WORKFLOW6.replace('%s', element)
-                    else:
                         request += WRAPPING_WORKFLOW7.replace('%s', element)
-        request += WRAPPING_WORKFLOW8
+                    else:
+                        request += WRAPPING_WORKFLOW8.replace('%s', element)
+        request += WRAPPING_WORKFLOW9
+
     try:
         # Escape &, <, > and \n chars for http
         request = request.replace("&", "&amp;")

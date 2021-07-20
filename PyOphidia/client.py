@@ -36,7 +36,7 @@ def get_linenumber():
 
 
 class Client():
-    """Client(username='', password='', server='', port='11732', token='', read_env=False, api_mode=True) -> obj
+    """Client(username='', password='', server='', port='11732', token='', read_env=False, api_mode=True, project=None) -> obj
 
     Attributes:
         username: Ophidia username
@@ -57,6 +57,7 @@ class Client():
         last_return_value: Last return value associated to response
         last_error: Last error value associated to response
         last_exec_time: Last execution time associated to response
+        project: Project ID to be used for the resource manager (if required)
 
     Methods:
         submit(query, display=False) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the
@@ -75,8 +76,8 @@ class Client():
         pretty_print(response, response_i) -> self : Prints the last_response JSON string attribute as a formatted response
     """
 
-    def __init__(self, username='', password='', server='', port='11732', token='', read_env=False, api_mode=True):
-        """Client(username='', password='', server='', port='11732', token='', read_env=False, api_mode=True) -> obj
+    def __init__(self, username='', password='', server='', port='11732', token='', read_env=False, api_mode=True, project=None):
+        """Client(username='', password='', server='', port='11732', token='', read_env=False, api_mode=True, project=None) -> obj
         :param api_mode: If True, use the class as an API and catch also framework-level errors
         :type api_mode: bool
         :param username: Ophidia username
@@ -91,6 +92,8 @@ class Client():
         :type token: str
         :param read_env: If True read the client variables from the environment
         :type read_env: bool
+        :param project: String with project ID to be used for job scheduling
+        :type project: str
         :returns: None
         :rtype: None
         :raises: RuntimeError
@@ -124,6 +127,8 @@ class Client():
                 access_token = token
             else:
                 access_token = os.environ.get('OPH_TOKEN')
+
+        self.project = project
 
         self.session = ''
         self.cwd = '/'
@@ -188,6 +193,7 @@ class Client():
         del self.last_jobid
         del self.last_return_value
         del self.last_error
+        del self.project
 
     def submit(self, query, display=False):
         """submit(query,display=False) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the Ophidia server
@@ -227,6 +233,8 @@ class Client():
             query += 'exec_mode=' + self.exec_mode + ';'
         if self.ncores and 'ncores' not in query:
             query += 'ncores=' + str(self.ncores) + ';'
+        if self.project and 'project' not in query:
+            query += 'project=' + str(self.project) + ';'
         self.last_request = query
         try:
             self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
@@ -750,6 +758,8 @@ class Client():
             request['exec_mode'] = self.exec_mode
         if self.ncores and 'ncores' not in request:
             request['ncores'] = str(self.ncores)
+        if self.project and 'project' not in request:
+            request['project'] = str(self.project)
         self.last_request = json.dumps(request)
         try:
             err, err_msg = self.wisvalid(self.last_request)
