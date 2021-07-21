@@ -53,6 +53,7 @@ class Client:
         ncores: Number of cores for each operation (default is 1)
         last_request: Last submitted query
         last_response: Last response received from the server (JSON string)
+        last_response_status: Status of last response received from the server (string)
         last_jobid: Job ID associated to the last request
         last_return_value: Last return value associated to response
         last_error: Last error value associated to response
@@ -140,6 +141,7 @@ class Client:
         self.ncores = 1
         self.last_request = ""
         self.last_response = ""
+        self.last_response_status = ""
         self.last_jobid = ""
         self.last_return_value = 0
         self.last_error = ""
@@ -190,6 +192,7 @@ class Client:
         del self.ncores
         del self.last_request
         del self.last_response
+        del self.last_response_status
         del self.last_jobid
         del self.last_return_value
         del self.last_error
@@ -265,6 +268,14 @@ class Client:
                             index += 1
 
                 for response_i in response["response"]:
+                    if response_i["objclass"] == "text" and response_i["objkey"] == "status":
+                        if "message" in response_i["objcontent"][0]:
+                            self.last_response_status = response_i["objcontent"][0]["title"] + ": " + response_i["objcontent"][0]["message"]
+                        else:
+                            self.last_response_status = response_i["objcontent"][0]["title"]
+                        break
+
+                for response_i in response["response"]:
                     if response_i["objclass"] == "text" and response_i["objcontent"][0]["title"] == "Current Working Directory":
                         self.cwd = response_i["objcontent"][0]["message"]
                         break
@@ -281,6 +292,10 @@ class Client:
                             self.last_exec_time = float(response["extra"]["values"][index])
                         elif response_i == "access_token":
                             self.password = response["extra"]["values"][index]
+                        elif response_i == "cwd":
+                            self.cwd = response["extra"]["values"][index]
+                        elif response_i == "cdd":
+                            self.cdd = response["extra"]["values"][index]
                         index += 1
 
                 if self.api_mode and display is True:
@@ -802,6 +817,14 @@ class Client:
                                 self.cube = response["extra"]["values"][index]
                                 break
                             index += 1
+
+                for response_i in response["response"]:
+                    if response_i["objclass"] == "text" and response_i["objkey"] == "status":
+                        if "message" in response_i["objcontent"][0]:
+                            self.last_response_status = response_i["objcontent"][0]["title"] + ": " + response_i["objcontent"][0]["message"]
+                        else:
+                            self.last_response_status = response_i["objcontent"][0]["title"]
+                        break
 
                 for response_i in response["response"]:
                     if response_i["objclass"] == "text" and response_i["objcontent"][0]["title"] == "Current Working Directory":
