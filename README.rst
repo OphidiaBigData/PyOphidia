@@ -5,7 +5,7 @@ PyOphidia: Python bindings for Ophidia
 
 It is an alternative to Oph_Term, the Ophidia no-GUI interpreter component, and a convenient way to submit SOAP HTTPS requests to an Ophidia server or to develop your own application using Python. 
 
-It runs on Python 2.7, 3.3, 3.4, 3.5 and 3.6 has no Python dependencies and is pure-Python code. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v1.9) is compatible with Ophidia v1.6.
+It runs on Python 2.7, 3.3, 3.4, 3.5, 3.6 and 3.7 has no Python dependencies and is pure-Python code. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v1.9) is compatible with Ophidia v1.6.
 
 It provides 2 main modules:
 
@@ -90,10 +90,12 @@ Client attributes
 - *ncores*: Number of cores for each operation (default is 1)
 - *last_request*: Last submitted query
 - *last_response*: Last response received from the server (JSON string)
+- *last_response_status*: Status of last response received from the server (string)
 - *last_jobid*: Job ID associated to the last request
 - *last_return_value*: Last return value associated to response
 - *last_error*: Last error value associated to response
 - *last_exec_time*: Last execution time value associated to response
+- *project*: Project to be used for the resource manager (if required)
 
 Client methods
 ^^^^^^^^^^^^^^
