@@ -87,7 +87,7 @@ class Cube:
         cubesize( schedule=0, ncores=1, byte_unit='MB', algorithm='euristic', objkey_filter='all', exec_mode='sync', display=True)
           -> dict or None : wrapper of the operator OPH_CUBESIZE
         delete(ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False)
-          -> dict or None : wrapper of the operator OPH_DELETE
+          -> None : wrapper of the operator OPH_DELETE
         drilldown(ndim=1, container='-', ncores=1, exec_mode='sync', schedule=0, description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_DRILLDOWN
         duplicate(container='-', ncores=1, nthreads=1, exec_mode='sync', description='-', display=False)
@@ -136,34 +136,34 @@ class Cube:
                 description='-', check_grid='no', display=False)
           -> Cube or None : wrapper of the operator OPH_SUBSET2. (Deprecated since Ophidia v1.1)
         to_b2drop(cdd=None, auth_path='-', dst_path='-', ncores=1, export_metadata='yes')
-          -> dict or None : method that integrates the features of OPH_EXPORTNC2 and OPH_B2DROP operators to upload a cube to B2DROP as a NetCDF file
+          -> None : method that integrates the features of OPH_EXPORTNC2 and OPH_B2DROP operators to upload a cube to B2DROP as a NetCDF file
         unpublish( exec_mode='sync', display=False)
-          -> dict or None : wrapper of the operator OPH_UNPUBLISH
+          -> None : wrapper of the operator OPH_UNPUBLISH
 
     Class Methods:
-        setclient(username='', password='', server, port='11732', token='', read_env=False, project=None)
+        setclient(username='', password='', server, port='11732', token='', read_env=False, api_mode=True, project=None)
           -> None : Instantiate the Client, common for all Cube objects, for submitting requests
         b2drop(action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False)
-          -> dict or None : wrapper of the operator OPH_B2DROP
+          -> None : wrapper of the operator OPH_B2DROP
         cancel(id=None, type='kill', objkey_filter='all', display=False)
-          -> dict or None : wrapper of the operator OPH_CANCEL
+          -> None : wrapper of the operator OPH_CANCEL
         cluster(action='info', nhost=1, host_partition='all', host_type='io', user_filter='all', exec_mode='sync', display=False)
-          -> dict or None : wrapper of the operator OPH_CLUSTER
+          -> None : wrapper of the operator OPH_CLUSTER
         containerschema(container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CONTAINERSCHEMA
         createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base', base_time='1900-01-01 00:00:00',
                         units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', leap_year=0, leap_month=2, vocabulary='CF',
                         compressed='no', description='-', display=False)
-          -> dict or None : wrapper of the operator OPH_CREATECONTAINER
+          -> None : wrapper of the operator OPH_CREATECONTAINER
         deletecontainer(container=None, container_pid='-', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False)
-          -> dict or None : wrapper of the operator OPH_DELETECONTAINER
+          -> None : wrapper of the operator OPH_DELETECONTAINER
         explorenc(exec_mode='sync', schedule=0, measure='-', src_path=None, cdd=None, exp_dim='-', imp_dim='-', subset_dims='none', subset_type='index',
                   subset_filter='all', limit_filter=100, show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no',
                   level=0, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0, wavelet_coeff='no', objkey_filter='all', display=True)
-          -> None : wrapper of the operator OPH_EXPLORENC
+          -> dict or None : wrapper of the operator OPH_EXPLORENC
         folder(command=None, cwd=None, path=None, exec_mode='sync', display=False)
-          -> dict or None : wrapper of the operator OPH_FOLDER
+          -> None : wrapper of the operator OPH_FOLDER
         fs(command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync', display=False)
-          -> dict or None : wrapper of the operator OPH_FS
+          -> None : wrapper of the operator OPH_FS
         get_config(key='all', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_GET_CONFIG
         hierarchy(hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', display=True)
@@ -203,7 +203,7 @@ class Cube:
         mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, order='none', description='-', dim='-', display=False)
           -> Cube or None: wrapper of the operator OPH_MERGECUBES2
         movecontainer(container=None, cwd=None, exec_mode='sync', display=False)
-          -> dict or None : wrapper of the operator OPH_MOVECONTAINER
+          -> None : wrapper of the operator OPH_MOVECONTAINER
         operators(operator_filter=None, limit_filter=0, exec_mode='sync', display=True)
           -> dict or None : wrapper of the operator OPH_OPERATORS_LIST
         primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync',
@@ -220,7 +220,7 @@ class Cube:
         resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
           -> dict or None : wrapper of the operator OPH_RESUME
         script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', python_code=False, display=False)
-          -> dict or None : wrapper of the operator OPH_SCRIPT
+          -> None : wrapper of the operator OPH_SCRIPT
         search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all',
                cwd=None, recursive='no', display=True)
           -> dict or None : wrapper of the operator OPH_SEARCH
@@ -268,7 +268,7 @@ class Cube:
     @classmethod
     def b2drop(cls, action="put", auth_path="-", src_path=None, dst_path="-", cdd=None, exec_mode="sync", display=False):
         """b2drop(action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False)
-          -> dict or None : wrapper of the operator OPH_B2DROP
+          -> None : wrapper of the operator OPH_B2DROP
 
         :param action: put|get
         :type action: str
@@ -284,12 +284,11 @@ class Cube:
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
-        :returns: response or None
-        :rtype: dict or None
+        :returns: None
+        :rtype: None
         :raises: RuntimeError
         """
 
-        response = None
         try:
             if Cube.client is None or src_path is None:
                 raise RuntimeError("Cube.client or src_path is None")
@@ -312,15 +311,13 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
     @classmethod
     def cluster(cls, action="info", nhost=1, host_partition="all", host_type="io", user_filter="all", exec_mode="sync", display=False):
-        """cluster(action='info', nhost=1, host_partition='all', host_type='io', user_filter='all', exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_CLUSTER
+        """cluster(action='info', nhost=1, host_partition='all', host_type='io', user_filter='all', exec_mode='sync', display=False) -> None : wrapper of the operator OPH_CLUSTER
 
         :param action: info|info_cluster|deploy|undeploy
         :type action: str
@@ -336,12 +333,11 @@ class Cube:
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
-        :returns: response or None
-        :rtype: dict or None
+        :returns: None
+        :rtype: None
         :raises: RuntimeError
         """
 
-        response = None
         try:
             if Cube.client is None or Cube.client.host_partition is None:
                 raise RuntimeError("Cube.client is None")
@@ -363,9 +359,6 @@ class Cube:
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
-
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
 
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
@@ -409,12 +402,13 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def createcontainer(
@@ -472,12 +466,11 @@ class Cube:
         :type description: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
-        :returns: response or None
-        :rtype: dict or None
+        :returns: None
+        :rtype: None
         :raises: RuntimeError
         """
 
-        response = None
         try:
             if Cube.client is None or container is None or dim is None or dim_type is None or (cwd is None and Cube.client.cwd is None):
                 raise RuntimeError("Cube.client, container, dim, dim_type or cwd is None")
@@ -518,9 +511,6 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
@@ -528,7 +518,7 @@ class Cube:
     @classmethod
     def deletecontainer(cls, container=None, container_pid="-", force="no", cwd=None, nthreads=1, exec_mode="sync", objkey_filter="all", display=False):
         """deletecontainer(container=None, container_pid='-', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False)
-             -> dict or None : wrapper of the operator OPH_DELETECONTAINER
+             -> None : wrapper of the operator OPH_DELETECONTAINER
 
         :param container: container name
         :type container: str
@@ -544,12 +534,11 @@ class Cube:
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
-        :returns: response or None
-        :rtype: dict or None
+        :returns: None
+        :rtype: None
         :raises: RuntimeError
         """
 
-        response = None
         try:
             if Cube.client is None or ((container is None or (cwd is None and Cube.client.cwd is None)) and container_pid == "-"):
                 raise RuntimeError("Cube.client, container and container_pid or cwd is None")
@@ -574,16 +563,13 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
     @classmethod
     def cancel(cls, id=None, type="kill", objkey_filter="all", display=False):
-        """cancel(id=None, type='kill', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_CANCEL
+        """cancel(id=None, type='kill', objkey_filter='all', display=False) -> None : wrapper of the operator OPH_CANCEL
 
         :param id: identifier of the workflow to be stopped
         :type id: int
@@ -593,11 +579,11 @@ class Cube:
         :type objkey_filter: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
-        :returns: response or None
-        :rtype: dict or None
+        :returns: None
+        :rtype: None
         :raises: RuntimeError
         """
-        response = None
+
         try:
             if Cube.client is None or id is None:
                 raise RuntimeError("Cube.client or id is None")
@@ -613,9 +599,6 @@ class Cube:
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
-
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
 
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
@@ -663,12 +646,13 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def get_config(cls, key="all", objkey_filter="all", display=True):
@@ -700,12 +684,13 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def manage_session(cls, action="list", session="this", key="user", value="null", objkey_filter="all", display=True):
@@ -749,12 +734,13 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def instances(cls, action="read", level=1, host_filter="all", nhost=0, host_partition="all", ioserver_filter="all", host_status="all", exec_mode="sync", objkey_filter="all", display=True):
@@ -815,12 +801,13 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def log_info(cls, log_type="server", container_id=0, ioserver="mysql", nlines=10, exec_mode="sync", objkey_filter="all", display=True):
@@ -867,12 +854,13 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def loggingbk(
@@ -986,16 +974,17 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def folder(cls, command=None, path="-", cwd=None, exec_mode="sync", objkey_filter="all", display=False):
-        """folder(command=None, cwd=None, path=None, exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_FOLDER
+        """folder(command=None, cwd=None, path=None, exec_mode='sync', display=False) -> None : wrapper of the operator OPH_FOLDER
 
         :param command: cd|mkdir|mv|rm
         :type command: str
@@ -1007,12 +996,11 @@ class Cube:
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
-        :returns: response or None
-        :rtype: dict or None
+        :returns: None
+        :rtype: None
         :raises: RuntimeError
         """
 
-        response = None
         try:
             if Cube.client is None or command is None or (cwd is None and Cube.client.cwd is None):
                 raise RuntimeError("Cube.client, command or cwd is None")
@@ -1033,16 +1021,13 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
     @classmethod
     def fs(cls, command="ls", dpath="-", file="-", cdd=None, recursive="no", depth=0, realpath="no", exec_mode="sync", objkey_filter="all", display=False):
-        """fs(command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_FS
+        """fs(command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync', objkey_filter='all', display=False) -> None : wrapper of the operator OPH_FS
 
         :param command: ls|cd|mkdir|rm|mv
         :type command: str
@@ -1062,12 +1047,11 @@ class Cube:
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
-        :returns: response or None
-        :rtype: dict or None
+        :returns: None
+        :rtype: None
         :raises: RuntimeError
         """
 
-        response = None
         try:
             if Cube.client is None:
                 raise RuntimeError("Cube.client, is None")
@@ -1095,9 +1079,6 @@ class Cube:
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
-
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
 
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
@@ -1155,12 +1136,13 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def showgrid(cls, container=None, grid="all", dim="all", show_index="no", cwd=None, exec_mode="sync", objkey_filter="all", display=True):
@@ -1210,12 +1192,13 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def search(cls, container_filter="all", metadata_key_filter="all", metadata_value_filter="all", path="-", cwd=None, recursive="no", exec_mode="sync", objkey_filter="all", display=True):
@@ -1270,12 +1253,13 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def hierarchy(cls, hierarchy="all", hierarchy_version="latest", exec_mode="sync", objkey_filter="all", display=True):
@@ -1313,12 +1297,13 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def list(
@@ -1414,12 +1399,13 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def randcube(
@@ -1886,12 +1872,13 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def importnc(
@@ -2388,16 +2375,17 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def movecontainer(cls, container=None, cwd=None, exec_mode="sync", display=False):
-        """movecontainer(container=None, cwd=None, exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_MOVECONTAINER
+        """movecontainer(container=None, cwd=None, exec_mode='sync', display=False) -> None : wrapper of the operator OPH_MOVECONTAINER
 
         :param container: container name
         :type container: str
@@ -2407,12 +2395,11 @@ class Cube:
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
-        :returns: response or None
-        :rtype: dict or None
+        :returns: None
+        :rtype: None
         :raises: RuntimeError
         """
 
-        response = None
         try:
             if Cube.client is None or container is None or (cwd is None and Cube.client.cwd is None):
                 raise RuntimeError("Cube.client, container or cwd is None")
@@ -2428,9 +2415,6 @@ class Cube:
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
-
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
 
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
@@ -2472,12 +2456,13 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def primitives(cls, level=1, dbms_filter=None, return_type="all", primitive_type="all", primitive_filter="", limit_filter=0, exec_mode="sync", objkey_filter="all", display=True):
@@ -2532,15 +2517,17 @@ class Cube:
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def script(cls, script=":", args=" ", stdout="stdout", stderr="stderr", list="no", space="no", python_code=False, exec_mode="sync", ncores=1, display=False):
-        """script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', python_code=False, display=False) -> dict or None : wrapper of the operator OPH_SCRIPT
+        """script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', python_code=False, display=False) -> None : wrapper of the operator OPH_SCRIPT
 
         :param script: script/executable filename
         :type script: str
@@ -2562,8 +2549,8 @@ class Cube:
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
-        :returns: response or None
-        :rtype: dict or None
+        :returns: None
+        :rtype: None
         :raises: RuntimeError
         """
 
@@ -2630,7 +2617,6 @@ if __name__ == '__main__':
 
             return script_path
 
-        response = None
         try:
             if Cube.client is None:
                 raise RuntimeError("Cube.client is None")
@@ -2668,15 +2654,13 @@ if __name__ == '__main__':
 
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
     @classmethod
     def resume(cls, session="this", id=0, id_type="workflow", document_type="response", level=1, user="", status_filter="11111111", save="no", objkey_filter="all", display=True):
-        """ resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
+        """resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
               -> dict or None : wrapper of the operator OPH_RESUME
 
         :param session: identifier of the intended session, by default it is the working session
@@ -2731,12 +2715,13 @@ if __name__ == '__main__':
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     @classmethod
     def mergecubes(cls, ncores=1, exec_mode="sync", cubes=None, schedule=0, container="-", mode="i", hold_values="no", number=1, order="none", description="-", display=False):
@@ -3629,8 +3614,8 @@ if __name__ == '__main__':
         display=False,
     ):
         """concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
- subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0, display=False)
- -> Cube or None : wrapper of the operator OPH_CONCATNC
+        subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0, display=False)
+        -> Cube or None : wrapper of the operator OPH_CONCATNC
 
         :param src_path: path of file to be imported
         :type src_path: str
@@ -3742,8 +3727,8 @@ if __name__ == '__main__':
         display=False,
     ):
         """concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
- subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False)
- -> Cube or None : wrapper of the operator OPH_CONCATNC2
+        subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False)
+        -> Cube or None : wrapper of the operator OPH_CONCATNC2
 
         :param src_path: path of file to be imported
         :type src_path: str
@@ -3871,15 +3856,16 @@ if __name__ == '__main__':
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     def delete(self, ncores=1, nthreads=1, exec_mode="sync", schedule=0, display=False):
-        """delete(ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False) -> dict or None : wrapper of the operator OPH_DELETE
+        """delete(ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False) -> None : wrapper of the operator OPH_DELETE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -3891,8 +3877,8 @@ if __name__ == '__main__':
         :type schedule: int
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
-        :returns: response or None
-        :rtype: dict or None
+        :returns: None
+        :rtype: None
         :raises: RuntimeError
         """
 
@@ -4141,15 +4127,16 @@ if __name__ == '__main__':
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     def publish(self, content="all", schedule=0, show_index="no", show_id="no", show_time="no", ncores=1, exec_mode="sync", display=True):
-        """ publish( ncores=1, content='all', exec_mode='sync', show_id= 'no', show_index='no', schedule=0, show_time='no', display=True) -> dict or None : wrapper of the operator OPH_PUBLISH
+        """publish( ncores=1, content='all', exec_mode='sync', show_id= 'no', show_index='no', schedule=0, show_time='no', display=True) -> dict or None : wrapper of the operator OPH_PUBLISH
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4199,28 +4186,28 @@ if __name__ == '__main__':
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     def unpublish(self, exec_mode="sync", display=False):
-        """ unpublish( exec_mode='sync', display=False) -> dict or None : wrapper of the operator OPH_UNPUBLISH
+        """unpublish( exec_mode='sync', display=False) -> None : wrapper of the operator OPH_UNPUBLISH
 
         :param exec_mode: async or sync
         :type exec_mode: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
-        :returns: response or None
-        :rtype: dict or None
+        :returns: None
+        :rtype: None
         :raises: RuntimeError
         """
 
         if Cube.client is None or self.pid is None:
             raise RuntimeError("Cube.client or pid is None")
-        response = None
 
         query = "oph_unpublish ncores=1;"
 
@@ -4232,9 +4219,6 @@ if __name__ == '__main__':
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
@@ -4242,7 +4226,7 @@ if __name__ == '__main__':
     def cubeschema(
         self, level=0, dim="all", show_index="no", show_time="no", base64="no", action="read", concept_level="c", dim_level=1, dim_array="yes", exec_mode="sync", objkey_filter="all", display=True
     ):
-        """ cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', action='read', concept_level='c', dim_level=1, dim_array='yes', display=True) -> dict or None : wrapper of the operator OPH_CUBESCHEMA
+        """cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', action='read', concept_level='c', dim_level=1, dim_array='yes', display=True) -> dict or None : wrapper of the operator OPH_CUBESCHEMA
 
         :param level: 0|1|2
         :type level: int
@@ -4306,15 +4290,16 @@ if __name__ == '__main__':
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     def cubesize(self, schedule=0, exec_mode="sync", byte_unit="MB", algorithm="euristic", ncores=1, objkey_filter="all", display=True):
-        """ cubesize( schedule=0, ncores=1, byte_unit='MB', algorithm='euristic', objkey_filter='all', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_CUBESIZE
+        """cubesize( schedule=0, ncores=1, byte_unit='MB', algorithm='euristic', objkey_filter='all', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_CUBESIZE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4358,15 +4343,16 @@ if __name__ == '__main__':
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     def cubeelements(self, schedule=0, exec_mode="sync", algorithm="dim_product", ncores=1, objkey_filter="all", display=True):
-        """ cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
+        """cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4406,12 +4392,13 @@ if __name__ == '__main__':
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
-
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     def intercube(self, ncores=1, exec_mode="sync", cube2=None, cubes=None, operation="sub", missingvalue="NAN", measure="null", schedule=0, container="-", description="-", display=False):
         """intercube(cube2=None, cubes=None, operation='sub', container='-', exec_mode='sync', ncores=1, description='-', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE
@@ -4627,11 +4614,13 @@ if __name__ == '__main__':
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
 
-            if Cube.client.last_response is not None:
-                response = Cube.client.deserialize_response()
+            if Cube.client.last_response is not None and display is False:
+                response = Cube.client.deserialize_response()["response"]
         except Exception as e:
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
+        else:
+            return response
 
     def permute(self, ncores=1, nthreads=1, exec_mode="sync", schedule=0, dim_pos=None, container="-", description="-", display=False):
         """permute(dim_pos=None, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', display=False) -> Cube or None : wrapper of the operator OPH_PERMUTE
@@ -5199,7 +5188,7 @@ if __name__ == '__main__':
 
     def to_b2drop(self, cdd=None, auth_path="-", dst_path="-", ncores=1, export_metadata="yes"):
         """to_b2drop(cdd=None, auth_path='-', dst_path='-', ncores=1, export_metadata='yes')
-          -> dict or None : method that integrates the features of OPH_EXPORTNC2 and OPH_B2DROP operators to upload a cube to B2DROP as a NetCDF file
+          -> None : method that integrates the features of OPH_EXPORTNC2 and OPH_B2DROP operators to upload a cube to B2DROP as a NetCDF file
 
         :param cdd: absolute path corresponding to the current directory on data repository
         :type cdd: str
@@ -5213,8 +5202,8 @@ if __name__ == '__main__':
         :type export_metadata: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
-        :returns: response or None
-        :rtype: dict or None
+        :returns: None
+        :rtype: None
         :raises: RuntimeError
         """
 
