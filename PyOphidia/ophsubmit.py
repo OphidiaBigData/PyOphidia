@@ -19,7 +19,7 @@
 import sys
 import base64
 import re
-from xml.dom import minidom
+import xml.etree.ElementTree as ET
 from inspect import currentframe
 
 if sys.version_info < (3, 0):
@@ -193,15 +193,15 @@ def submit(username, password, server, port, query):
             print(get_linenumber(), "Something went wrong in submitting the request:", statuscode, statusmessage)
             return (None, None, None, 1, statusmessage)
 
-        xmldoc = minidom.parseString(reply)
-        response = xmldoc.getElementsByTagName("oph:ophResponse")[0]
+        xmltree = ET.fromstring(reply)
+        response = xmltree.findall('.//oph:ophResponse',namespaces={"oph":"urn:oph"})[0]
         res_error, res_response, res_jobid = None, None, None
-        if len(response.getElementsByTagName("jobid")) > 0 and response.getElementsByTagName("jobid")[0].firstChild is not None:
-            res_jobid = response.getElementsByTagName("jobid")[0].firstChild.data
-        if len(response.getElementsByTagName("error")) > 0 and response.getElementsByTagName("error")[0].firstChild is not None:
-            res_error = int(response.getElementsByTagName("error")[0].firstChild.data)
-        if len(response.getElementsByTagName("response")) > 0 and response.getElementsByTagName("response")[0].firstChild is not None:
-            res_response = response.getElementsByTagName("response")[0].firstChild.data
+        if len(response.findall('jobid')) > 0 and response.findall('jobid')[0].text is not None:
+            res_jobid = response.findall('jobid')[0].text
+        if len(response.findall('error')) > 0 and response.findall('error')[0].text is not None:
+            res_error = int(response.findall('error')[0].text)
+        if len(response.findall('response')) > 0 and response.findall('response')[0].text is not None:
+            res_response = response.findall('response')[0].text
     except Exception as e:
         print(get_linenumber(), "Something went wrong in submitting the request:", e)
         return (None, None, None, 1, e)
