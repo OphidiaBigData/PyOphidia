@@ -64,10 +64,10 @@ class Cube:
         client: instance of class Client through which it is possible to submit all requests
 
     Methods:
-        aggregate(ncores=1, nthreads=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='NAN', grid='-', container='-',
+        aggregate(ncores=1, nthreads=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='-', grid='-', container='-',
                   description='-', check_grid='no', display=False)
           -> Cube or None : wrapper of the operator OPH_AGGREGATE
-        aggregate2(ncores=1, nthreads=1, exec_mode='sync', schedule=0, dim='-', concept_level='A', midnight='24', operation=None, grid='-', missingvalue='NAN',
+        aggregate2(ncores=1, nthreads=1, exec_mode='sync', schedule=0, dim='-', concept_level='A', midnight='24', operation=None, grid='-', missingvalue='-',
                    container='-', description='-', check_grid='no', display=False)
           -> Cube or None : wrapper of the operator OPH_AGGREGATE2
         apply(ncores=1, nthreads=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes',
@@ -106,7 +106,7 @@ class Cube:
           -> dict or None : wrapper of the operator OPH_EXPLORECUBE
         info(display=True)
           -> None : call OPH_CUBESIZE and OPH_CUBESCHEMA to fill all Cube attributes
-        intercube(cube2=None, cubes=None, operation='sub', container='-', exec_mode='sync', ncores=1, description='-', display=False)
+        intercube(cube2=None, cubes=None, operation='sub', missingvalue="-", container='-', exec_mode='sync', ncores=1, description='-', display=False)
           -> Cube or None : wrapper of the operator OPH_INTERCUBE
         merge(nmerge=0, schedule=0, description='-', container='-', exec_mode='sync', ncores=1, display=False)
           -> Cube or None : wrapper of the operator OPH_MERGE
@@ -119,10 +119,10 @@ class Cube:
           -> dict or None : wrapper of the operator OPH_CUBEIO
         publish( ncores=1, content='all', exec_mode='sync', show_id= 'no', show_index='no', schedule=0, show_time='no', display=True)
           -> dict or None : wrapper of the operator OPH_PUBLISH
-        reduce(operation=None, container=None, exec_mode='sync', grid='-', group_size='all', ncores=1, nthreads=1, schedule=0, order=2, description='-',
+        reduce(operation=None, container=None, exec_mode='sync', missingvalue="-", grid='-', group_size='all', ncores=1, nthreads=1, schedule=0, order=2, description='-',
                objkey_filter='all', check_grid='no', display=False)
           -> Cube or None : wrapper of the operator OPH_REDUCE
-        reduce2(dim=None, operation=None, concept_level='A', container='-', exec_mode='sync', grid='-', midnight='24', order=2, description='-',
+        reduce2(dim=None, operation=None, concept_level='A', missingvalue="-", container='-', exec_mode='sync', grid='-', midnight='24', order=2, description='-',
                 schedule=0, ncores=1, nthreads=1, check_grid='no', display=False)
           -> Cube or None : wrapper of the operator OPH_REDUCE2
         rollup(ndim=1, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', display=False)
@@ -3303,9 +3303,9 @@ if __name__ == '__main__':
             raise RuntimeError()
 
     def aggregate(
-        self, ncores=1, nthreads=1, exec_mode="sync", schedule=0, group_size="all", operation=None, missingvalue="NAN", grid="-", container="-", description="-", check_grid="no", display=False
+        self, ncores=1, nthreads=1, exec_mode="sync", schedule=0, group_size="all", operation=None, missingvalue="-", grid="-", container="-", description="-", check_grid="no", display=False
     ):
-        """aggregate( ncores=1, nthreads=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='NAN', grid='-', container='-', description='-', check_grid='no', display=False)
+        """aggregate( ncores=1, nthreads=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='-', grid='-', container='-', description='-', check_grid='no', display=False)
              -> Cube or None : wrapper of the operator OPH_AGGREGATE
 
         :param ncores: number of cores to use
@@ -3324,7 +3324,7 @@ if __name__ == '__main__':
         :type grid: str
         :param group_size: number of tuples per group to consider in the aggregation function
         :type group_size: int or str
-        :param missingvalue: value to be considered as missing value; by default it is NAN (for float and double)
+        :param missingvalue: missing value; by default it is the value from the file if defined, NAN otherwise (for float and double)
         :type missingvalue: float
         :param description: additional description to be associated with the output cube
         :type description: str
@@ -3392,13 +3392,13 @@ if __name__ == '__main__':
         midnight="24",
         operation=None,
         grid="-",
-        missingvalue="NAN",
+        missingvalue="-",
         container="-",
         description="-",
         check_grid="no",
         display=False,
     ):
-        """aggregate2(ncores=1, nthreads=1, exec_mode='sync', schedule=0, dim='-', concept_level='A', midnight='24', operation=None, grid='-', missingvalue='NAN', container='-', description='-',
+        """aggregate2(ncores=1, nthreads=1, exec_mode='sync', schedule=0, dim='-', concept_level='A', midnight='24', operation=None, grid='-', missingvalue='-', container='-', description='-',
                       check_grid='no', display=False)
              -> Cube or None : wrapper of the operator OPH_AGGREGATE2
 
@@ -3422,7 +3422,7 @@ if __name__ == '__main__':
         :type grid: str
         :param midnight: 00|24
         :type midnight: str
-        :param missingvalue: value to be considered as missing value; by default it is NAN (for float and double)
+        :param missingvalue: missing value; by default it is the value from the file if defined, NAN otherwise (for float and double)
         :type missingvalue: float
         :param description: additional description to be associated with the output cube
         :type description: str
@@ -4395,8 +4395,8 @@ if __name__ == '__main__':
         else:
             return response
 
-    def intercube(self, ncores=1, exec_mode="sync", cube2=None, cubes=None, operation="sub", missingvalue="NAN", measure="null", schedule=0, container="-", description="-", display=False):
-        """intercube(cube2=None, cubes=None, operation='sub', container='-', exec_mode='sync', ncores=1, description='-', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE
+    def intercube(self, ncores=1, exec_mode="sync", cube2=None, cubes=None, operation="sub", missingvalue="-", measure="null", schedule=0, container="-", description="-", display=False):
+        """intercube(ncores=1, exec_mode='sync', cube2=None, cubes=None, operation='sub', missingvalue='-', measure='null', schedule=0, container='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4410,7 +4410,7 @@ if __name__ == '__main__':
         :type cubes: str
         :param operation: sum|sub|mul|div|abs|arg|corr|mask|max|min|arg_max|arg_min
         :type operation: str
-        :param missingvalue: value to be considered as missing value; by default it is NAN (for float and double)
+        :param missingvalue: missing value; by default it is the value from the file if defined, NAN otherwise (for float and double)
         :type missingvalue: float
         :param measure: new measure name
         :type measure: str
@@ -4686,14 +4686,14 @@ if __name__ == '__main__':
         group_size="all",
         operation=None,
         order=2,
-        missingvalue="NAN",
+        missingvalue="-",
         grid="-",
         container="-",
         description="-",
         check_grid="no",
         display=False,
     ):
-        """reduce(operation=None, container=None, exec_mode='sync', grid='-', group_size='all', ncores=1, nthreads=1, schedule=0, order=2, description='-', objkey_filter='all', check_grid='no', display=False)
+        """reduce(operation=None, container=None, exec_mode='sync', missingvalue='-', grid='-', group_size='all', ncores=1, nthreads=1, schedule=0, order=2, description='-', objkey_filter='all', check_grid='no', display=False)
              -> Cube or None : wrapper of the operator OPH_REDUCE
 
         :param ncores: number of cores to use
@@ -4708,7 +4708,7 @@ if __name__ == '__main__':
         :type operation: str
         :param order: order used in evaluation the moments or value of the quantile in range [0, 1]
         :type order: float
-        :param missingvalue: value to be considered as missing value; by default it is NAN (for float and double)
+        :param missingvalue: missing value; by default it is the value from the file if defined, NAN otherwise (for float and double)
         :type missingvalue: float
         :param container: name of the container to be used to store the output cube, by default it is the input container
         :type container: str
@@ -4783,7 +4783,7 @@ if __name__ == '__main__':
         midnight="24",
         operation=None,
         order=2,
-        missingvalue="NAN",
+        missingvalue="-",
         grid="-",
         container="-",
         description="-",
@@ -4791,7 +4791,7 @@ if __name__ == '__main__':
         check_grid="no",
         display=False,
     ):
-        """reduce2(dim=None, operation=None, concept_level='A', container='-', exec_mode='sync', grid='-', midnight='24', order=2, description='-', schedule=0, ncores=1, nthreads=1, check_grid='no', display=False)
+        """reduce2(dim=None, operation=None, concept_level='A', container='-', exec_mode='sync', grid='-', midnight='24', order=2, missingvalue="-", description='-', schedule=0, ncores=1, nthreads=1, check_grid='no', display=False)
              -> Cube or None : wrapper of the operator OPH_REDUCE2
 
         :param ncores: number of cores to use
@@ -4814,7 +4814,7 @@ if __name__ == '__main__':
         :type midnight: str
         :param order: order used in evaluation the moments or value of the quantile in range [0, 1]
         :type order: float
-        :param missingvalue: value to be considered as missing value; by default it is NAN (for float and double)
+        :param missingvalue: missing value; by default it is the value from the file if defined, NAN otherwise (for float and double)
         :type missingvalue: float
         :param description: additional description to be associated with the output cube
         :type description: str
