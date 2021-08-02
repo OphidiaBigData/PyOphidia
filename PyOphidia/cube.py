@@ -35,12 +35,13 @@ def get_linenumber():
 
 
 class Cube:
-    """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
-            exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
-            ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
-            subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-            leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', policy='rr', description='-', schedule=0,
-            pid=None, check_grid='no', display=False) -> obj
+    """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,
+            cdd=None, compressed='no', exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='no',
+            check_compliance='no', offset=0, ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none',
+            subset_filter='all', time_filter='yes', subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00',
+            calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0,
+            month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', policy='rr',
+            description='-', schedule=0, pid=None, check_grid='no', save='yes', display=False) -> obj
          or Cube(pid=None) -> obj
 
     Attributes:
@@ -64,167 +65,196 @@ class Cube:
         client: instance of class Client through which it is possible to submit all requests
 
     Methods:
-        aggregate(ncores=1, nthreads=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='-', grid='-', container='-',
-                  description='-', check_grid='no', display=False)
+        aggregate(ncores=1, nthreads=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='-',
+                  grid='-', container='-', description='-', check_grid='no', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_AGGREGATE
-        aggregate2(ncores=1, nthreads=1, exec_mode='sync', schedule=0, dim='-', concept_level='A', midnight='24', operation=None, grid='-', missingvalue='-',
-                   container='-', description='-', check_grid='no', display=False)
+        aggregate2(ncores=1, nthreads=1, exec_mode='sync', schedule=0, dim='-', concept_level='A', midnight='24', operation=None,
+                   grid='-', missingvalue='-', container='-', description='-', check_grid='no', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_AGGREGATE2
-        apply(ncores=1, nthreads=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes',
-              on_reduce='skip', compressed='auto', schedule=0,container='-', description='-', display=False)
+        apply(ncores=1, nthreads=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual',
+              dim_type='manual', check_type='yes', on_reduce='skip', compressed='auto', schedule=0,container='-', description='-',
+              save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_APPLY
-        concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
-                          subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0, display=False)
-                  -> Cube or None : wrapper of the operator OPH_CONCATNC
-        concatnc2(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
-                          subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False)
-                  -> Cube or None : wrapper of the operator OPH_CONCATNC2
-        cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', display=True)
+        concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0,
+                 description='-', subset_dims='none', subset_filter='all', subset_type='index', time_filter='yes', ncores=1,
+                 exec_mode='sync', schedule=0, save='yes', display=False)
+          -> Cube or None : wrapper of the operator OPH_CONCATNC
+        concatnc2(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0,
+                  description='-', subset_dims='none', subset_filter='all', subset_type='index', time_filter='yes', ncores=1,
+                  nthreads=1, exec_mode='sync', schedule=0, save='yes', display=False)
+           -> Cube or None : wrapper of the operator OPH_CONCATNC2
+        cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
-        cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', 'action=read', concept_level='c',
-              dim_level=1, dim_array='yes', display=True)
+        cubeschema(objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no',
+                   action='read', concept_level='c', dim_level=1, dim_array='yes', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_CUBESCHEMA
-        cubesize( schedule=0, ncores=1, byte_unit='MB', algorithm='euristic', objkey_filter='all', exec_mode='sync', display=True)
+        cubesize(schedule=0, ncores=1, byte_unit='MB', algorithm='euristic', objkey_filter='all', exec_mode='sync',
+                 save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_CUBESIZE
-        delete(ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False)
+        delete(ncores=1, nthreads=1, exec_mode='sync', schedule=0, save='yes', display=False)
           -> None : wrapper of the operator OPH_DELETE
-        drilldown(ndim=1, container='-', ncores=1, exec_mode='sync', schedule=0, description='-', display=False)
+        drilldown(ndim=1, container='-', ncores=1, exec_mode='sync', schedule=0, description='-', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_DRILLDOWN
-        duplicate(container='-', ncores=1, nthreads=1, exec_mode='sync', description='-', display=False)
+        duplicate(container='-', ncores=1, nthreads=1, exec_mode='sync', description='-', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_DUPLICATE
-        explore(schedule=0, limit_filter=100, subset_dims=None, subset_filter='all', time_filter='yes', subset_type='index', show_index='no', show_id='no',
-                show_time='no', level=1, output_path='default', output_name='default', cdd=None, base64='no', ncores=1, exec_mode='sync', objkey_filter='all',
-                display=True)
+        explore(schedule=0, limit_filter=100, subset_dims=None, subset_filter='all', time_filter='yes', subset_type='index',
+                show_index='no', show_id='no', show_time='no', level=1, output_path='default', output_name='default', cdd=None,
+                base64='no', ncores=1, exec_mode='sync', objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_EXPLORECUBE
-        exportnc(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1,
-                 display=False)
+        exportnc(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0,
+                 exec_mode='sync', ncores=1, save='yes', display=False)
           -> None : wrapper of the operator OPH_EXPORTNC
-        exportnc2(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1,
-                  display=False)
+        exportnc2(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0,
+                  exec_mode='sync', ncores=1, save='yes', display=False)
           -> None : wrapper of the operator OPH_EXPORTNC2
         export_array(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no')
-          -> dict or None : wrapper of the operator OPH_EXPLORECUBE
+          -> dict or None : return data from an Ophidia datacube into a Python structure
         info(display=True)
           -> None : call OPH_CUBESIZE and OPH_CUBESCHEMA to fill all Cube attributes
-        intercube(cube2=None, cubes=None, operation='sub', missingvalue="-", container='-', exec_mode='sync', ncores=1, description='-', display=False)
+        intercube(cube2=None, cubes=None, operation='sub', missingvalue="-", container='-', exec_mode='sync', ncores=1,
+                  description='-', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_INTERCUBE
-        merge(nmerge=0, schedule=0, description='-', container='-', exec_mode='sync', ncores=1, display=False)
+        merge(nmerge=0, schedule=0, description='-', container='-', exec_mode='sync', ncores=1, save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_MERGE
-        metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, variable_filter=None,
-                 metadata_type_filter=None, metadata_value_filter=None, force='no', exec_mode='sync', objkey_filter='all', display=True)
+        metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None,
+                 variable_filter=None, metadata_type_filter=None, metadata_value_filter=None, force='no', exec_mode='sync',
+                 objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_METADATA
-        permute(dim_pos=None, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', display=False)
+        permute(dim_pos=None, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', save='yes',
+                display=False)
           -> Cube or None : wrapper of the operator OPH_PERMUTE
-        provenance(branch='all', exec_mode='sync', objkey_filter='all', display=True)
+        provenance(branch='all', exec_mode='sync', objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_CUBEIO
-        publish( ncores=1, content='all', exec_mode='sync', show_id= 'no', show_index='no', schedule=0, show_time='no', display=True)
+        publish(ncores=1, content='all', exec_mode='sync', show_id= 'no', show_index='no', schedule=0, show_time='no',
+                save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_PUBLISH
-        reduce(operation=None, container=None, exec_mode='sync', missingvalue="-", grid='-', group_size='all', ncores=1, nthreads=1, schedule=0, order=2, description='-',
-               objkey_filter='all', check_grid='no', display=False)
+        reduce(operation=None, container=None, exec_mode='sync', missingvalue="-", grid='-', group_size='all', ncores=1,
+               nthreads=1, schedule=0, order=2, description='-', objkey_filter='all', check_grid='no', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_REDUCE
-        reduce2(dim=None, operation=None, concept_level='A', missingvalue="-", container='-', exec_mode='sync', grid='-', midnight='24', order=2, description='-',
-                schedule=0, ncores=1, nthreads=1, check_grid='no', display=False)
+        reduce2(dim=None, operation=None, concept_level='A', missingvalue="-", container='-', exec_mode='sync', grid='-',
+                midnight='24', order=2, description='-', schedule=0, ncores=1, nthreads=1, check_grid='no', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_REDUCE2
-        rollup(ndim=1, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', display=False)
+        rollup(ndim=1, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_ROLLUP
-        split(nsplit=2, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', display=False)
+        split(nsplit=2, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_SPLIT
         subset(subset_dims='none', subset_filter='all', container='-', exec_mode='sync', subset_type='index',
-               time_filter='yes', offset=0, grid='-', ncores=1, nthreads=1, schedule=0, description='-', check_grid='no', display=False)
+               time_filter='yes', offset=0, grid='-', ncores=1, nthreads=1, schedule=0, description='-', check_grid='no',
+               save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_SUBSET
-        unpublish( exec_mode='sync', display=False)
+        unpublish( exec_mode='sync', save='yes', display=False)
           -> None : wrapper of the operator OPH_UNPUBLISH
 
     Class Methods:
         setclient(username='', password='', server, port='11732', token='', read_env=False, api_mode=True, project=None)
           -> None : Instantiate the Client, common for all Cube objects, for submitting requests
-        b2drop(action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False)
+        b2drop(action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', save='yes', display=False)
           -> None : wrapper of the operator OPH_B2DROP
         cancel(id=None, type='kill', objkey_filter='all', display=False)
           -> None : wrapper of the operator OPH_CANCEL
         cluster(action='info', nhost=1, host_partition='all', host_type='io', user_filter='all', exec_mode='sync', display=False)
           -> None : wrapper of the operator OPH_CLUSTER
-        containerschema(container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CONTAINERSCHEMA
-        createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base', base_time='1900-01-01 00:00:00',
-                        units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', leap_year=0, leap_month=2, vocabulary='CF',
-                        compressed='no', description='-', display=False)
+        containerschema(container=None, cwd=None, exec_mode='sync', objkey_filter='all', save='yes', display=True)
+          -> dict or None : wrapper of the operator OPH_CONTAINERSCHEMA
+        createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base',
+                        base_time='1900-01-01 00:00:00', units='d', calendar='standard',
+                        month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', leap_year=0, leap_month=2, vocabulary='CF',
+                        compressed='no', description='-', save='yes', display=False)
           -> None : wrapper of the operator OPH_CREATECONTAINER
-        deletecontainer(container=None, container_pid='-', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False)
+        deletecontainer(container=None, container_pid='-', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all',
+                        save='yes', display=False)
           -> None : wrapper of the operator OPH_DELETECONTAINER
-        explorenc(exec_mode='sync', schedule=0, measure='-', src_path=None, cdd=None, exp_dim='-', imp_dim='-', subset_dims='none', subset_type='index',
-                  subset_filter='all', limit_filter=100, show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no',
-                  level=0, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0, wavelet_coeff='no', objkey_filter='all', display=True)
+        explorenc(exec_mode='sync', schedule=0, measure='-', src_path=None, cdd=None, exp_dim='-', imp_dim='-', subset_dims='none',
+                  subset_type='index', subset_filter='all', limit_filter=100, show_index='no', show_id='no', show_time='no',
+                  show_stats='00000000000000', show_fit='no', level=0, imp_num_point=0, offset=50, operation='avg', wavelet='no',
+                  wavelet_ratio=0, wavelet_coeff='no', objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_EXPLORENC
-        folder(command=None, cwd=None, path=None, exec_mode='sync', display=False)
+        folder(command=None, cwd=None, path=None, exec_mode='sync', save='yes', display=False)
           -> None : wrapper of the operator OPH_FOLDER
-        fs(command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync', display=False)
+        fs(command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync', save='yes',
+           display=False)
           -> None : wrapper of the operator OPH_FS
         get_config(key='all', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_GET_CONFIG
-        hierarchy(hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', display=True)
+        hierarchy(hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_HIERARCHY
-        importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
-                 exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
-                 ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
-                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', policy='rr', schedule=0, check_grid='no')
+        importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,
+                 cdd=None, compressed='no', exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes',
+                 check_compliance='no', offset=0, ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none',
+                 subset_filter='all', time_filter='yes', subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00',
+                 calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0,
+                 month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-',
+                 policy='rr', schedule=0, check_grid='no', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_IMPORTNC
-        importnc2(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
-                 exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
-                 ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
-                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', policy='rr', schedule=0, check_grid='no')
+        importnc2(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,
+                  cdd=None, compressed='no', exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes',
+                  check_compliance='no', offset=0, ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0,
+                  subset_dims='none', subset_filter='all', time_filter='yes', subset_type='index', exec_mode='sync',
+                  base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0,
+                  month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-',
+                  policy='rr', schedule=0, check_grid='no', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_IMPORTNC2
         instances(action='read', level=1, host_filter='all', nhost=0, host_partition='all', ioserver_filter='all', host_status='all',
-                  exec_mode='sync', objkey_filter='all', display=True)
+                  exec_mode='sync', objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_INSTANCES
         list(level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all', dbms_filter='all',
-             measure_filter='all', ntransform='all', src_filter='all', db_filter='all', recursive='no', objkey_filter='all', display=True)
+             measure_filter='all', ntransform='all', src_filter='all', db_filter='all', recursive='no', objkey_filter='all',
+             save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_LIST
         loggingbk(session_level=0, job_level=0, mask=000, session_filter='all', session_label_filter='all',
                   session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', workflowid_filter='all', markerid_filter='all',
                   parent_job_filter='all', job_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', job_status_filter='all',
                   submission_string_filter='all', job_start_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
-                  job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', nlines=100, objkey_filter='all', exec_mode='sync', display=True)
+                  job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', nlines=100, objkey_filter='all', exec_mode='sync',
+                  save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_LOGGINGBK
-        log_info(log_type='server', container_id=0, ioserver='mysql', nlines=10, exec_mode='sync', objkey_filter='all', display=True)
+        log_info(log_type='server', container_id=0, ioserver='mysql', nlines=10, exec_mode='sync', objkey_filter='all',
+                 save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_LOG_INFO
-        man(function=None, function_type='operator', function_version='latest', exec_mode='sync', display=True)
+        man(function=None, function_type='operator', function_version='latest', exec_mode='sync', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_MAN
-        manage_session(action='list', session='this', key='user', value='null', objkey_filter='all', display=True)
+        manage_session(action='list', session='this', key='user', value='null', objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
-        mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no', number=1, order='none', description='-', display=False)
+        mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no', number=1,
+                   order='none', description='-', save='yes', display=False)
           -> Cube : wrapper of the operator OPH_MERGECUBES
-        mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, order='none', description='-', dim='-', display=False)
+        mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, order='none',
+                    description='-', dim='-', save='yes', display=False)
           -> Cube or None: wrapper of the operator OPH_MERGECUBES2
-        movecontainer(container=None, cwd=None, exec_mode='sync', display=False)
+        movecontainer(container=None, cwd=None, exec_mode='sync', save='yes', display=False)
           -> None : wrapper of the operator OPH_MOVECONTAINER
-        operators(operator_filter=None, limit_filter=0, exec_mode='sync', display=True)
+        operators(operator_filter=None, limit_filter=0, exec_mode='sync', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_OPERATORS_LIST
-        primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync',
-                   objkey_filter='all', display=True)
+        primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None,
+                   exec_mode='sync', objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
-        randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='mysql_table', schedule=0, algorithm='default',
-                 policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
-                 dim_size=None, compressed='no', grid='-', description='-', display=False)
+        randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='mysql_table', schedule=0,
+                 algorithm='default', policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None,
+                 exp_ndim=None, dim=None, concept_level='c', dim_size=None, compressed='no', grid='-', description='-',
+                 save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_RANDCUBE
-        randcube2(ncores=1, nthreads=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='ophidiaio_memory', schedule=0, algorithm='default',
-                 policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
-                 dim_size=None, compressed='no', grid='-', description='-', display=False)
+        randcube2(ncores=1, nthreads=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='ophidiaio_memory',
+                  schedule=0, algorithm='default', policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None,
+                  exp_ndim=None, dim=None, concept_level='c', dim_size=None, compressed='no', grid='-', description='-', save='yes',
+                  display=False)
           -> Cube or None : wrapper of the operator OPH_RANDCUBE2
-        resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
+        resume(id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all',
+               user='', display=True)
           -> dict or None : wrapper of the operator OPH_RESUME
-        script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', python_code=False, display=False)
+        script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no',
+               python_code=False, save='yes', display=False)
           -> None : wrapper of the operator OPH_SCRIPT
-        search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all',
-               cwd=None, recursive='no', display=True)
+        search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all',
+               objkey_filter='all', cwd=None, recursive='no', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_SEARCH
-        service(status='', level=1, enable='none', disable='none', objkey_filter='all', display=False)
+        service(status='', level=1, enable='none', disable='none', objkey_filter='all', save='yes', display=False)
           -> dict or None : wrapper of the operator OPH_SERVICE
-        showgrid(container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync', objkey_filter='all', display=True)
+        showgrid(container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync', objkey_filter='all',
+                 save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_SHOWGRID
-        tasks(cls, cube_filter='all', path='-', operator_filter='all', cwd=None, recursive='no', container='all', objkey_filter='all', exec_mode='sync', display=True)
-          -> dict or None : wrapper of the operator OPH_tasks
+        tasks(cls, cube_filter='all', path='-', operator_filter='all', cwd=None, recursive='no', container='all', objkey_filter='all',
+              exec_mode='sync', save='yes', display=True)
+          -> dict or None : wrapper of the operator OPH_TASKS
     """
 
     client = None
@@ -261,8 +291,8 @@ class Cube:
             pass
 
     @classmethod
-    def b2drop(cls, action="put", auth_path="-", src_path=None, dst_path="-", cdd=None, exec_mode="sync", display=False):
-        """b2drop(action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', display=False)
+    def b2drop(cls, action="put", auth_path="-", src_path=None, dst_path="-", cdd=None, exec_mode="sync", save="yes", display=False):
+        """b2drop(action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', save='yes', display=False)
           -> None : wrapper of the operator OPH_B2DROP
 
         :param action: put|get
@@ -277,6 +307,8 @@ class Cube:
         :type cdd: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: None
@@ -302,6 +334,8 @@ class Cube:
                 query += "cdd=" + str(cdd) + ";"
             if exec_mode is not None:
                 query += "exec_mode=" + str(exec_mode) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -360,8 +394,8 @@ class Cube:
             raise RuntimeError()
 
     @classmethod
-    def containerschema(cls, container=None, cwd=None, exec_mode="sync", objkey_filter="all", display=True):
-        """containerschema(container=None, cwd=None, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CONTAINERSCHEMA
+    def containerschema(cls, container=None, cwd=None, exec_mode="sync", objkey_filter="all", save="yes", display=True):
+        """containerschema(container=None, cwd=None, exec_mode='sync', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_CONTAINERSCHEMA
 
         :param container: container name
         :type container: str
@@ -371,7 +405,9 @@ class Cube:
         :type exec_mode: str
         :param objkey_filter: filter on the output of the operator
         :type objkey_filter: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -393,6 +429,8 @@ class Cube:
                 query += "exec_mode=" + str(exec_mode) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -423,11 +461,13 @@ class Cube:
         vocabulary="CF",
         compressed="no",
         description="-",
+        save="yes",
         display=False,
     ):
         """createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base',
-                        base_time='1900-01-01 00:00:00', units='d', calendar='standard', month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
-                        leap_year=0, leap_month=2, vocabulary='CF', compressed='no', description='-', display=False) -> dict or None : wrapper of the operator OPH_CREATECONTAINER
+                           base_time='1900-01-01 00:00:00', units='d', calendar='standard',
+                           month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', leap_year=0, leap_month=2, vocabulary='CF',
+                           compressed='no', description='-', save='yes', display=False) -> dict or None : wrapper of the operator OPH_CREATECONTAINER
 
         :param exec_mode: async or sync
         :type exec_mode: str
@@ -459,6 +499,8 @@ class Cube:
         :type compressed: str
         :param description: additional description to be associated with the output container
         :type description: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: None
@@ -502,6 +544,8 @@ class Cube:
                 query += "compressed=" + str(compressed) + ";"
             if description is not None:
                 query += "description=" + str(description) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -511,8 +555,8 @@ class Cube:
             raise RuntimeError()
 
     @classmethod
-    def deletecontainer(cls, container=None, container_pid="-", force="no", cwd=None, nthreads=1, exec_mode="sync", objkey_filter="all", display=False):
-        """deletecontainer(container=None, container_pid='-', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', display=False)
+    def deletecontainer(cls, container=None, container_pid="-", force="no", cwd=None, nthreads=1, exec_mode="sync", objkey_filter="all", save="yes", display=False):
+        """deletecontainer(container=None, container_pid='-', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', save='yes', display=False)
              -> None : wrapper of the operator OPH_DELETECONTAINER
 
         :param container: container name
@@ -527,6 +571,8 @@ class Cube:
         :type nthreads: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: None
@@ -554,6 +600,8 @@ class Cube:
                 query += "exec_mode=" + str(exec_mode) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -688,8 +736,8 @@ class Cube:
             return response
 
     @classmethod
-    def manage_session(cls, action="list", session="this", key="user", value="null", objkey_filter="all", display=True):
-        """manage_session(action='list', session='this', key='user', value='null', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
+    def manage_session(cls, action="list", session="this", key="user", value="null", objkey_filter="all", save="yes", display=True):
+        """manage_session(action='list', session='this', key='user', value='null', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
 
         :param action: disable|enable|env|grant|list|listusers|new|remove|revoke|setenv
         :type action: str
@@ -701,6 +749,8 @@ class Cube:
         :type value: str
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: response or None
@@ -725,6 +775,8 @@ class Cube:
                 query += "value=" + str(value) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -738,9 +790,11 @@ class Cube:
             return response
 
     @classmethod
-    def instances(cls, action="read", level=1, host_filter="all", nhost=0, host_partition="all", ioserver_filter="all", host_status="all", exec_mode="sync", objkey_filter="all", display=True):
-        """instances(level=1, action='read', level=1, host_filter='all', nhost=0, host_partition='all', ioserver_filter='all', host_status='all',
-                     exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_INSTANCES
+    def instances(
+        cls, action="read", level=1, host_filter="all", nhost=0, host_partition="all", ioserver_filter="all", host_status="all", exec_mode="sync", objkey_filter="all", save="yes", display=True
+    ):
+        """instances(level=1, action='read', level=1, host_filter='all', nhost=0, host_partition='all', ioserver_filter='all',
+                     host_status='all', exec_mode='sync', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_INSTANCES
 
         :param action: read|add|remove
         :type action: str
@@ -760,6 +814,8 @@ class Cube:
         :type exec_mode: str
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -792,6 +848,8 @@ class Cube:
                 query += "exec_mode=" + str(exec_mode) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -805,8 +863,8 @@ class Cube:
             return response
 
     @classmethod
-    def log_info(cls, log_type="server", container_id=0, ioserver="mysql", nlines=10, exec_mode="sync", objkey_filter="all", display=True):
-        """log_info(log_type='server', container_id=0, ioserver='mysql', nlines=10, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_LOG_INFO
+    def log_info(cls, log_type="server", container_id=0, ioserver="mysql", nlines=10, exec_mode="sync", objkey_filter="all", save="yes", display=True):
+        """log_info(log_type='server', container_id=0, ioserver='mysql', nlines=10, exec_mode='sync', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_LOG_INFO
 
         :param log_type: server|container|ioserver
         :type log_type: str
@@ -820,6 +878,8 @@ class Cube:
         :type objkey_filter: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -845,6 +905,8 @@ class Cube:
                 query += "exec_mode=" + str(exec_mode) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -877,13 +939,15 @@ class Cube:
         nlines=100,
         objkey_filter="all",
         exec_mode="sync",
+        save="yes",
         display=True,
     ):
         """loggingbk(session_level=0, job_level=0, mask=000, session_filter='all', session_label_filter='all',
                      session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', workflowid_filter='all', markerid_filter='all',
                      parent_job_filter='all', job_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', job_status_filter='all',
                      submission_string_filter='all', job_start_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
-                     job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', nlines=100, objkey_filter='all', exec_mode='sync', display=True)
+                     job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', nlines=100, objkey_filter='all', exec_mode='sync',
+                     save='yes', display=True)
              -> dict or None : wrapper of the operator OPH_LOGGINGBK
 
         :param session_level: 0|1
@@ -918,6 +982,8 @@ class Cube:
         :type nlines: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -965,6 +1031,8 @@ class Cube:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
             if exec_mode is not None:
                 query += "exec_mode=" + str(exec_mode) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -978,8 +1046,8 @@ class Cube:
             return response
 
     @classmethod
-    def folder(cls, command=None, path="-", cwd=None, exec_mode="sync", objkey_filter="all", display=False):
-        """folder(command=None, cwd=None, path=None, exec_mode='sync', display=False) -> None : wrapper of the operator OPH_FOLDER
+    def folder(cls, command=None, path="-", cwd=None, exec_mode="sync", objkey_filter="all", save="yes", display=False):
+        """folder(command=None, cwd=None, path=None, exec_mode='sync', save='yes', display=False) -> None : wrapper of the operator OPH_FOLDER
 
         :param command: cd|mkdir|mv|rm
         :type command: str
@@ -989,6 +1057,8 @@ class Cube:
         :type path: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: None
@@ -1012,6 +1082,8 @@ class Cube:
                 query += "exec_mode=" + str(exec_mode) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -1021,8 +1093,9 @@ class Cube:
             raise RuntimeError()
 
     @classmethod
-    def fs(cls, command="ls", dpath="-", file="-", cdd=None, recursive="no", depth=0, realpath="no", exec_mode="sync", objkey_filter="all", display=False):
-        """fs(command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync', objkey_filter='all', display=False) -> None : wrapper of the operator OPH_FS
+    def fs(cls, command="ls", dpath="-", file="-", cdd=None, recursive="no", depth=0, realpath="no", exec_mode="sync", objkey_filter="all", save="yes", display=False):
+        """fs(command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync',
+              objkey_filter='all', save='yes', display=False) -> None : wrapper of the operator OPH_FS
 
         :param command: ls|cd|mkdir|rm|mv
         :type command: str
@@ -1040,6 +1113,8 @@ class Cube:
         :type realpath: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: None
@@ -1071,6 +1146,8 @@ class Cube:
                 query += "exec_mode=" + str(exec_mode) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -1080,8 +1157,9 @@ class Cube:
             raise RuntimeError()
 
     @classmethod
-    def tasks(cls, cube_filter="all", operator_filter="all", path="-", cwd=None, recursive="no", container="all", exec_mode="sync", objkey_filter="all", display=True):
-        """tasks(cls, cube_filter='all', path='-', operator_filter='all', cwd=None, recursive='no',  container='all', objkey_filter='all', exec_mode='sync', display=True)
+    def tasks(cls, cube_filter="all", operator_filter="all", path="-", cwd=None, recursive="no", container="all", exec_mode="sync", objkey_filter="all", save="yes", display=True):
+        """tasks(cls, cube_filter='all', path='-', operator_filter='all', cwd=None, recursive='no', container='all',
+                 objkey_filter='all', exec_mode='sync', save='yes', display=True)
              -> dict or None : wrapper of the operator OPH_tasks
 
         :param cube_filter: optional filter on cube
@@ -1098,6 +1176,8 @@ class Cube:
         :type container: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -1127,6 +1207,8 @@ class Cube:
                 query += "exec_mode=" + str(exec_mode) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -1140,8 +1222,9 @@ class Cube:
             return response
 
     @classmethod
-    def showgrid(cls, container=None, grid="all", dim="all", show_index="no", cwd=None, exec_mode="sync", objkey_filter="all", display=True):
-        """showgrid(container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_SHOWGRID
+    def showgrid(cls, container=None, grid="all", dim="all", show_index="no", cwd=None, exec_mode="sync", objkey_filter="all", save="yes", display=True):
+        """showgrid(container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync', objkey_filter='all',
+                    save='yes', display=True) -> dict or None : wrapper of the operator OPH_SHOWGRID
 
         :param container: name of the input container
         :type container: str
@@ -1155,6 +1238,8 @@ class Cube:
         :type cwd: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -1183,6 +1268,8 @@ class Cube:
                 query += "exec_mode=" + str(exec_mode) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -1196,8 +1283,11 @@ class Cube:
             return response
 
     @classmethod
-    def search(cls, container_filter="all", metadata_key_filter="all", metadata_value_filter="all", path="-", cwd=None, recursive="no", exec_mode="sync", objkey_filter="all", display=True):
-        """search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all', cwd=None,  recursive='no', display=True)
+    def search(
+        cls, container_filter="all", metadata_key_filter="all", metadata_value_filter="all", path="-", cwd=None, recursive="no", exec_mode="sync", objkey_filter="all", save="yes", display=True
+    ):
+        """search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all',
+                 objkey_filter='all', cwd=None, recursive='no', save='yes', display=True)
              -> dict or None : wrapper of the operator OPH_SEARCH
 
         :param container_filter: filter on container name
@@ -1214,6 +1304,8 @@ class Cube:
         :type recursive: yes|no
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -1244,6 +1336,8 @@ class Cube:
                 query += "exec_mode=" + str(exec_mode) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -1257,8 +1351,8 @@ class Cube:
             return response
 
     @classmethod
-    def hierarchy(cls, hierarchy="all", hierarchy_version="latest", exec_mode="sync", objkey_filter="all", display=True):
-        """hierarchy(hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_HIERARCHY
+    def hierarchy(cls, hierarchy="all", hierarchy_version="latest", exec_mode="sync", objkey_filter="all", save="yes", display=True):
+        """hierarchy(hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_HIERARCHY
 
         :param hierarchy: name of the requested hierarchy
         :type hierarchy: str
@@ -1266,6 +1360,8 @@ class Cube:
         :type hierarchy_version: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -1288,6 +1384,8 @@ class Cube:
                 query += "exec_mode=" + str(exec_mode) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -1317,10 +1415,12 @@ class Cube:
         db_filter="all",
         recursive="no",
         objkey_filter="all",
+        save="yes",
         display=True,
     ):
-        """list(level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all', dbms_filter='all', measure_filter='all',
-                ntransform='all', src_filter='all', db_filter='all', recursive='no', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_LIST
+        """list(level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all', dbms_filter='all',
+                measure_filter='all', ntransform='all', src_filter='all', db_filter='all', recursive='no', objkey_filter='all',
+                save='yes', display=True) -> dict or None : wrapper of the operator OPH_LIST
 
         :param level: 0|1|2|3|4|5|6|7|8
         :type level: int
@@ -1348,6 +1448,8 @@ class Cube:
         :type cwd: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -1390,6 +1492,8 @@ class Cube:
                 query += "recursive=" + str(recursive) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -1427,11 +1531,13 @@ class Cube:
         compressed="no",
         grid="-",
         description="-",
+        save="yes",
         display=False,
     ):
-        """randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='mysql_table', schedule=0, algorithm='default',
-                 policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
-                 dim_size=None, compressed='no', grid='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_RANDCUBE
+        """randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='mysql_table', schedule=0,
+                    algorithm='default', policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None,
+                    exp_ndim=None, dim=None, concept_level='c', dim_size=None, compressed='no', grid='-', description='-',
+                    save='yes', display=False) -> Cube or None : wrapper of the operator OPH_RANDCUBE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -1477,6 +1583,8 @@ class Cube:
         :type grid: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: obj or None
@@ -1545,6 +1653,8 @@ class Cube:
             query += "grid=" + str(grid) + ";"
         if description is not None:
             query += "description=" + str(description) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         try:
             if Cube.client.submit(query, display) is None:
@@ -1585,11 +1695,13 @@ class Cube:
         compressed="no",
         grid="-",
         description="-",
+        save="yes",
         display=False,
     ):
-        """randcube2(ncores=1, nthreads=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='ophidiaio_memory', schedule=0, algorithm='default',
-                 policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c',
-                 dim_size=None, compressed='no', grid='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_RANDCUBE2
+        """randcube2(ncores=1, nthreads=1, exec_mode='sync', container=None, cwd=None, host_partition='auto',
+                    ioserver='ophidiaio_memory', schedule=0, algorithm='default', policy='rr', nhost=0, run='yes', nfrag=1,
+                    ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c', dim_size=None,
+                    compressed='no', grid='-', description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_RANDCUBE2
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -1637,6 +1749,8 @@ class Cube:
         :type grid: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: obj or None
@@ -1707,6 +1821,8 @@ class Cube:
             query += "grid=" + str(grid) + ";"
         if description is not None:
             query += "description=" + str(description) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         try:
             if Cube.client.submit(query, display) is None:
@@ -1748,11 +1864,13 @@ class Cube:
         wavelet_ratio=0,
         wavelet_coeff="no",
         objkey_filter="all",
+        save="yes",
         display=True,
     ):
-        """explorenc(exec_mode='sync', schedule=0, measure='-', src_path=None, cdd=None, exp_dim='-', imp_dim='-', subset_dims='none', subset_type='index', subset_filter='all', limit_filter=100,
-                     show_index='no', show_id='no', show_time='no', show_stats='00000000000000', show_fit='no', level=0, imp_num_point=0, offset=50, operation='avg', wavelet='no', wavelet_ratio=0,
-                     wavelet_coeff='no', objkey_filter='all', display=True)
+        """explorenc(exec_mode='sync', schedule=0, measure='-', src_path=None, cdd=None, exp_dim='-', imp_dim='-', subset_dims='none',
+                     subset_type='index', subset_filter='all', limit_filter=100, show_index='no', show_id='no', show_time='no',
+                     show_stats='00000000000000', show_fit='no', level=0, imp_num_point=0, offset=50, operation='avg', wavelet='no',
+                     wavelet_ratio=0, wavelet_coeff='no', objkey_filter='all', save='yes', display=True)
              -> None : wrapper of the operator OPH_EXPLORENC
 
         :param exec_mode: async or sync
@@ -1801,6 +1919,8 @@ class Cube:
         :type wavelet_ratio: float
         :param wavelet_coeff: yes|no
         :type wavelet_coeff: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: response or None
@@ -1863,6 +1983,8 @@ class Cube:
                 query += "wavelet_coeff=" + str(wavelet_coeff) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -1915,14 +2037,16 @@ class Cube:
         policy="rr",
         schedule=0,
         check_grid="no",
+        save="yes",
         display=False,
     ):
-        """importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,  cdd=None, compressed='no',
-                    exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
-                    ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
-                    subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                    leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', policy='rr', schedule=0,
-                    check_grid='no')
+        """importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,
+                    cdd=None, compressed='no', exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes',
+                    check_compliance='no', offset=0, ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none',
+                    subset_filter='all', time_filter='yes', subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00',
+                    calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0,
+                    month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-',
+                    policy='rr', schedule=0, check_grid='no', save='yes', display=False)
              -> Cube or None : wrapper of the operator OPH_IMPORTNC
 
         :param ncores: number of cores to use
@@ -1999,6 +2123,8 @@ class Cube:
         :type policy: str
         :param check_grid: yes|no
         :type check_grid: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: obj or None
@@ -2086,6 +2212,8 @@ class Cube:
             query += "description=" + str(description) + ";"
         if check_grid is not None:
             query += "check_grid=" + str(check_grid) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         try:
             if Cube.client.submit(query, display) is None:
@@ -2141,13 +2269,16 @@ class Cube:
         policy="rr",
         schedule=0,
         check_grid="no",
+        save="yes",
         display=False,
     ):
-        """importnc2(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
-                 exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes', check_compliance='no', offset=0,
-                 ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
-                 subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                 leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-', policy='rr', schedule=0, check_grid='no')
+        """importnc2(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,
+                     cdd=None, compressed='no', exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes',
+                     check_compliance='no', offset=0, ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0,
+                     subset_dims='none', subset_filter='all', time_filter='yes', subset_type='index', exec_mode='sync',
+                     base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
+                     leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF',
+                     description='-', policy='rr', schedule=0, check_grid='no', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_IMPORTNC2
 
 
@@ -2227,6 +2358,8 @@ class Cube:
         :type description: str
         :param check_grid: yes|no
         :type check_grid: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: obj or None
@@ -2316,6 +2449,8 @@ class Cube:
             query += "description=" + str(description) + ";"
         if check_grid is not None:
             query += "check_grid=" + str(check_grid) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         try:
             if Cube.client.submit(query, display) is None:
@@ -2331,8 +2466,8 @@ class Cube:
             return newcube
 
     @classmethod
-    def man(cls, function=None, function_version="latest", function_type="operator", exec_mode="sync", objkey_filter="all", display=True):
-        """man(function=None, function_type='operator', function_version='latest', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_MAN
+    def man(cls, function=None, function_version="latest", function_type="operator", exec_mode="sync", objkey_filter="all", save="yes", display=True):
+        """man(function=None, function_type='operator', function_version='latest', exec_mode='sync', save='yes', display=True) -> dict or None : wrapper of the operator OPH_MAN
 
         :param function: operator or primitive name
         :type function: str
@@ -2342,6 +2477,8 @@ class Cube:
         :type function_version: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -2366,6 +2503,8 @@ class Cube:
                 query += "exec_mode=" + str(exec_mode) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -2379,8 +2518,8 @@ class Cube:
             return response
 
     @classmethod
-    def movecontainer(cls, container=None, cwd=None, exec_mode="sync", display=False):
-        """movecontainer(container=None, cwd=None, exec_mode='sync', display=False) -> None : wrapper of the operator OPH_MOVECONTAINER
+    def movecontainer(cls, container=None, cwd=None, exec_mode="sync", save="yes", display=False):
+        """movecontainer(container=None, cwd=None, exec_mode='sync', save='yes', display=False) -> None : wrapper of the operator OPH_MOVECONTAINER
 
         :param container: container name
         :type container: str
@@ -2388,6 +2527,8 @@ class Cube:
         :type cwd: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: None
@@ -2407,6 +2548,8 @@ class Cube:
                 query += "cwd=" + str(cwd) + ";"
             if exec_mode is not None:
                 query += "exec_mode=" + str(exec_mode) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -2416,8 +2559,8 @@ class Cube:
             raise RuntimeError()
 
     @classmethod
-    def operators(cls, operator_filter=None, limit_filter=0, exec_mode="sync", objkey_filter="all", display=True):
-        """operators(operator_filter=None, limit_filter=0, exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_OPERATORS_LIST
+    def operators(cls, operator_filter=None, limit_filter=0, exec_mode="sync", objkey_filter="all", save="yes", display=True):
+        """operators(operator_filter=None, limit_filter=0, exec_mode='sync', save='yes', display=True) -> dict or None : wrapper of the operator OPH_OPERATORS_LIST
 
         :param operator_filter: filter on operator name
         :type operator_filter: str
@@ -2425,6 +2568,8 @@ class Cube:
         :type limit_filter: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -2447,6 +2592,8 @@ class Cube:
                 query += "exec_mode=" + str(exec_mode) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -2460,8 +2607,8 @@ class Cube:
             return response
 
     @classmethod
-    def primitives(cls, level=1, dbms_filter=None, return_type="all", primitive_type="all", primitive_filter="", limit_filter=0, exec_mode="sync", objkey_filter="all", display=True):
-        """primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync', objkey_filter='all', display=True) ->
+    def primitives(cls, level=1, dbms_filter=None, return_type="all", primitive_type="all", primitive_filter="", limit_filter=0, exec_mode="sync", objkey_filter="all", save="yes", display=True):
+        """primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync', objkey_filter='all', save='yes', display=True) ->
            dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
 
         :param dbms_filter: filter on DBMS
@@ -2478,6 +2625,8 @@ class Cube:
         :type return_type: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -2508,6 +2657,8 @@ class Cube:
                 query += "exec_mode=" + str(exec_mode) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -2521,8 +2672,8 @@ class Cube:
             return response
 
     @classmethod
-    def script(cls, script=":", args=" ", stdout="stdout", stderr="stderr", list="no", space="no", python_code=False, exec_mode="sync", ncores=1, display=False):
-        """script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', python_code=False, display=False) -> None : wrapper of the operator OPH_SCRIPT
+    def script(cls, script=":", args=" ", stdout="stdout", stderr="stderr", list="no", space="no", python_code=False, exec_mode="sync", ncores=1, save="yes", display=False):
+        """script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', python_code=False, save='yes', display=False) -> None : wrapper of the operator OPH_SCRIPT
 
         :param script: script/executable filename
         :type script: str
@@ -2542,6 +2693,8 @@ class Cube:
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: None
@@ -2642,6 +2795,8 @@ if __name__ == '__main__':
                 query += "exec_mode=" + str(exec_mode) + ";"
             if ncores is not None:
                 query += "ncores=" + str(ncores) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 if script is not None and python_code:
@@ -2706,6 +2861,8 @@ if __name__ == '__main__':
                 query += "save=" + str(save) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
 
             if Cube.client.submit(query, display) is None:
                 raise RuntimeError()
@@ -2719,8 +2876,8 @@ if __name__ == '__main__':
             return response
 
     @classmethod
-    def mergecubes(cls, ncores=1, exec_mode="sync", cubes=None, schedule=0, container="-", mode="i", hold_values="no", number=1, order="none", description="-", display=False):
-        """mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no', number=1, order='none', description='-', display=False) -> Cube : wrapper of the operator OPH_MERGECUBES
+    def mergecubes(cls, ncores=1, exec_mode="sync", cubes=None, schedule=0, container="-", mode="i", hold_values="no", number=1, order="none", description="-", save="yes", display=False):
+        """mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no', number=1, order='none', description='-', save='yes', display=False) -> Cube : wrapper of the operator OPH_MERGECUBES
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -2742,6 +2899,8 @@ if __name__ == '__main__':
         :type order: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -2775,6 +2934,8 @@ if __name__ == '__main__':
             query += "order=" + str(order) + ";"
         if description is not None:
             query += "description=" + str(description) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         try:
             if Cube.client.submit(query, display) is None:
@@ -2790,8 +2951,8 @@ if __name__ == '__main__':
             return newcube
 
     @classmethod
-    def mergecubes2(cls, ncores=1, exec_mode="sync", cubes=None, schedule=0, container="-", dim_type="long", number=1, order="none", description="-", dim="-", display=False):
-        """mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, order='none', description='-', dim='-', display=False) -> Cube or None: wrapper of the operator OPH_MERGECUBES2
+    def mergecubes2(cls, ncores=1, exec_mode="sync", cubes=None, schedule=0, container="-", dim_type="long", number=1, order="none", description="-", dim="-", save="yes", display=False):
+        """mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, order='none', description='-', dim='-', save='yes', display=False) -> Cube or None: wrapper of the operator OPH_MERGECUBES2
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -2813,6 +2974,8 @@ if __name__ == '__main__':
         :type description: str
         :param dim: name of the new dimension to be created
         :type dim: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -2846,6 +3009,8 @@ if __name__ == '__main__':
             query += "dim_type=" + str(dim_type) + ";"
         if dim is not None:
             query += "dim=" + str(dim) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         try:
             if Cube.client.submit(query, display) is None:
@@ -2900,14 +3065,15 @@ if __name__ == '__main__':
         schedule=0,
         pid=None,
         check_grid="no",
+        save="yes",
         display=False,
     ):
-        """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
-                exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no', offset=0,
-                ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes'
-                subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', description='-', policy='rr', schedule=0,
-                pid=None, check_grid='no', display=False) -> obj
+        """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None,
+                compressed='no', exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no',
+                offset=0, ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
+                subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base',
+                leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-',
+                description='-', policy='rr', schedule=0, pid=None, check_grid='no', save='yes', display=False) -> obj
              or Cube(pid=None) -> obj
 
         :param ncores: number of cores to use
@@ -2986,6 +3152,8 @@ if __name__ == '__main__':
         :type pid: str
         :param check_grid: yes|no
         :type check_grid: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: obj or None
@@ -3095,6 +3263,8 @@ if __name__ == '__main__':
                         query += "description=" + str(description) + ";"
                     if check_grid is not None:
                         query += "check_grid=" + str(check_grid) + ";"
+                    if save is not None:
+                        query += "save=" + str(save) + ";"
 
                     try:
                         if Cube.client.submit(query, display) is None:
@@ -3178,8 +3348,8 @@ if __name__ == '__main__':
                         element["lattice_name"] = row_i[7]
                         self.dim_info.append(element)
 
-    def exportnc(self, misc="no", output_path="default", output_name="default", cdd=None, force="no", export_metadata="yes", schedule=0, exec_mode="sync", ncores=1, display=False):
-        """exportnc(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1, display=False)
+    def exportnc(self, misc="no", output_path="default", output_name="default", cdd=None, force="no", export_metadata="yes", schedule=0, exec_mode="sync", ncores=1, save="yes", display=False):
+        """exportnc(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1, save='yes', display=False)
              -> None : wrapper of the operator OPH_EXPORTNC
 
         :param ncores: number of cores to use
@@ -3200,6 +3370,8 @@ if __name__ == '__main__':
         :type output_path: str
         :param output_name: name of the output file
         :type output_name: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: None
@@ -3230,6 +3402,8 @@ if __name__ == '__main__':
             query += "exec_mode=" + str(exec_mode) + ";"
         if ncores is not None:
             query += "ncores=" + str(ncores) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -3240,8 +3414,8 @@ if __name__ == '__main__':
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def exportnc2(self, misc="no", output_path="default", output_name="default", cdd=None, force="no", export_metadata="yes", schedule=0, exec_mode="sync", ncores=1, display=False):
-        """exportnc2(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1, display=False)
+    def exportnc2(self, misc="no", output_path="default", output_name="default", cdd=None, force="no", export_metadata="yes", schedule=0, exec_mode="sync", ncores=1, save="yes", display=False):
+        """exportnc2(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1, save='yes', display=False)
              -> None : wrapper of the operator OPH_EXPORTNC2
 
         :param ncores: number of cores to use
@@ -3262,6 +3436,8 @@ if __name__ == '__main__':
         :type output_path: str
         :param output_name: name of the output file
         :type output_name: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: None
@@ -3292,6 +3468,8 @@ if __name__ == '__main__':
             query += "exec_mode=" + str(exec_mode) + ";"
         if ncores is not None:
             query += "ncores=" + str(ncores) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -3303,9 +3481,22 @@ if __name__ == '__main__':
             raise RuntimeError()
 
     def aggregate(
-        self, ncores=1, nthreads=1, exec_mode="sync", schedule=0, group_size="all", operation=None, missingvalue="-", grid="-", container="-", description="-", check_grid="no", display=False
+        self,
+        ncores=1,
+        nthreads=1,
+        exec_mode="sync",
+        schedule=0,
+        group_size="all",
+        operation=None,
+        missingvalue="-",
+        grid="-",
+        container="-",
+        description="-",
+        check_grid="no",
+        save="yes",
+        display=False,
     ):
-        """aggregate( ncores=1, nthreads=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='-', grid='-', container='-', description='-', check_grid='no', display=False)
+        """aggregate( ncores=1, nthreads=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='-', grid='-', container='-', description='-', check_grid='no', save='yes', display=False)
              -> Cube or None : wrapper of the operator OPH_AGGREGATE
 
         :param ncores: number of cores to use
@@ -3330,6 +3521,8 @@ if __name__ == '__main__':
         :type description: str
         :param check_grid: yes|no
         :type check_grid: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -3365,6 +3558,8 @@ if __name__ == '__main__':
             query += "check_grid=" + str(check_grid) + ";"
         if nthreads is not None:
             query += "nthreads=" + str(nthreads) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -3396,10 +3591,11 @@ if __name__ == '__main__':
         container="-",
         description="-",
         check_grid="no",
+        save="yes",
         display=False,
     ):
         """aggregate2(ncores=1, nthreads=1, exec_mode='sync', schedule=0, dim='-', concept_level='A', midnight='24', operation=None, grid='-', missingvalue='-', container='-', description='-',
-                      check_grid='no', display=False)
+                      check_grid='no', save='yes', display=False)
              -> Cube or None : wrapper of the operator OPH_AGGREGATE2
 
         :param ncores: number of cores to use
@@ -3428,6 +3624,8 @@ if __name__ == '__main__':
         :type description: str
         :param check_grid: yes|no
         :type check_grid: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -3467,6 +3665,8 @@ if __name__ == '__main__':
             query += "check_grid=" + str(check_grid) + ";"
         if nthreads is not None:
             query += "nthreads=" + str(nthreads) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -3499,10 +3699,11 @@ if __name__ == '__main__':
         schedule=0,
         container="-",
         description="-",
+        save="yes",
         display=False,
     ):
         """apply(ncores=1, nthreads=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes', on_reduce='skip', compressed='auto',
-                 schedule=0, container='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_APPLY
+                 schedule=0, container='-', description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_APPLY
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -3532,6 +3733,8 @@ if __name__ == '__main__':
         :type measure_type: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -3573,6 +3776,8 @@ if __name__ == '__main__':
             internal_query += "description=" + str(description) + ";"
         if nthreads is not None:
             query += "nthreads=" + str(nthreads) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         internal_query += "cube=" + str(self.pid) + ";"
 
@@ -3606,10 +3811,11 @@ if __name__ == '__main__':
         ncores=1,
         exec_mode="sync",
         schedule=0,
+        save="yes",
         display=False,
     ):
         """concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
-        subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0, display=False)
+        subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0, save='yes', display=False)
         -> Cube or None : wrapper of the operator OPH_CONCATNC
 
         :param src_path: path of file to be imported
@@ -3642,6 +3848,8 @@ if __name__ == '__main__':
         :type dim_continue: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -3685,6 +3893,8 @@ if __name__ == '__main__':
             query += "dim_offset=" + str(dim_offset) + ";"
         if dim_continue is not None:
             query += "dim_continue=" + str(dim_continue) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -3719,10 +3929,11 @@ if __name__ == '__main__':
         nthreads=1,
         exec_mode="sync",
         schedule=0,
+        save="yes",
         display=False,
     ):
         """concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
-        subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False)
+        subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync', schedule=0, save='yes', display=False)
         -> Cube or None : wrapper of the operator OPH_CONCATNC2
 
         :param src_path: path of file to be imported
@@ -3757,6 +3968,8 @@ if __name__ == '__main__':
         :type dim_continue: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -3802,6 +4015,8 @@ if __name__ == '__main__':
             query += "dim_offset=" + str(dim_offset) + ";"
         if dim_continue is not None:
             query += "dim_continue=" + str(dim_continue) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -3818,13 +4033,15 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def provenance(self, branch="all", exec_mode="sync", objkey_filter="all", display=True):
-        """provenance(branch='all', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CUBEIO
+    def provenance(self, branch="all", exec_mode="sync", objkey_filter="all", save="yes", display=True):
+        """provenance(branch='all', exec_mode='sync', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_CUBEIO
 
         :param branch: parent|children|all
         :type branch: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -3844,6 +4061,8 @@ if __name__ == '__main__':
             query += "exec_mode=" + str(exec_mode) + ";"
         if objkey_filter is not None:
             query += "objkey_filter=" + str(objkey_filter) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -3859,8 +4078,8 @@ if __name__ == '__main__':
         else:
             return response
 
-    def delete(self, ncores=1, nthreads=1, exec_mode="sync", schedule=0, display=False):
-        """delete(ncores=1, nthreads=1, exec_mode='sync', schedule=0, display=False) -> None : wrapper of the operator OPH_DELETE
+    def delete(self, ncores=1, nthreads=1, exec_mode="sync", schedule=0, save="yes", display=False):
+        """delete(ncores=1, nthreads=1, exec_mode='sync', schedule=0, save='yes', display=False) -> None : wrapper of the operator OPH_DELETE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -3870,6 +4089,8 @@ if __name__ == '__main__':
         :type exec_mode: str
         :param schedule: 0
         :type schedule: int
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: None
@@ -3890,6 +4111,8 @@ if __name__ == '__main__':
             query += "schedule=" + str(schedule) + ";"
         if nthreads is not None:
             query += "nthreads=" + str(nthreads) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -3900,8 +4123,8 @@ if __name__ == '__main__':
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def drilldown(self, ncores=1, exec_mode="sync", schedule=0, ndim=1, container="-", description="-", display=False):
-        """drilldown(ndim=1, container='-', ncores=1, exec_mode='sync', schedule=0, description='-', display=False) -> Cube or None : wrapper of the operator OPH_DRILLDOWN
+    def drilldown(self, ncores=1, exec_mode="sync", schedule=0, ndim=1, container="-", description="-", save="yes", display=False):
+        """drilldown(ndim=1, container='-', ncores=1, exec_mode='sync', schedule=0, description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_DRILLDOWN
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -3915,6 +4138,8 @@ if __name__ == '__main__':
         :type container: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -3940,6 +4165,8 @@ if __name__ == '__main__':
             query += "container=" + str(container) + ";"
         if description is not None:
             query += "description=" + str(description) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -3956,8 +4183,8 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def duplicate(self, ncores=1, nthreads=1, exec_mode="sync", schedule=0, container="-", description="-", display=False):
-        """duplicate(container='-', ncores=1, nthreads=1, exec_mode='sync', description='-', display=False) -> Cube or None : wrapper of the operator OPH_DUPLICATE
+    def duplicate(self, ncores=1, nthreads=1, exec_mode="sync", schedule=0, container="-", description="-", save="yes", display=False):
+        """duplicate(container='-', ncores=1, nthreads=1, exec_mode='sync', description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_DUPLICATE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -3971,6 +4198,8 @@ if __name__ == '__main__':
         :type container: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -3996,6 +4225,8 @@ if __name__ == '__main__':
             query += "description=" + str(description) + ";"
         if nthreads is not None:
             query += "nthreads=" + str(nthreads) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -4031,10 +4262,11 @@ if __name__ == '__main__':
         ncores=1,
         exec_mode="sync",
         objkey_filter="all",
+        save="yes",
         display=True,
     ):
         """explore(schedule=0, limit_filter=100, subset_dims=None, subset_filter='all', time_filter='yes', subset_type='index', show_index='no', show_id='no', show_time='no', level=1, output_path='default',
-                   output_name='default', cdd=None, base64='no', ncores=1, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_EXPLORECUBE
+                   output_name='default', cdd=None, base64='no', ncores=1, exec_mode='sync', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_EXPLORECUBE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4068,6 +4300,8 @@ if __name__ == '__main__':
         :type subset_dims: str
         :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
         :type subset_filter: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -4115,6 +4349,8 @@ if __name__ == '__main__':
             query += "exec_mode=" + str(exec_mode) + ";"
         if objkey_filter is not None:
             query += "objkey_filter=" + str(objkey_filter) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -4130,8 +4366,8 @@ if __name__ == '__main__':
         else:
             return response
 
-    def publish(self, content="all", schedule=0, show_index="no", show_id="no", show_time="no", ncores=1, exec_mode="sync", display=True):
-        """publish( ncores=1, content='all', exec_mode='sync', show_id= 'no', show_index='no', schedule=0, show_time='no', display=True) -> dict or None : wrapper of the operator OPH_PUBLISH
+    def publish(self, content="all", schedule=0, show_index="no", show_id="no", show_time="no", ncores=1, exec_mode="sync", save="yes", display=True):
+        """publish( ncores=1, content='all', exec_mode='sync', show_id= 'no', show_index='no', schedule=0, show_time='no', save='yes', display=True) -> dict or None : wrapper of the operator OPH_PUBLISH
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4147,6 +4383,8 @@ if __name__ == '__main__':
         :type show_time: str
         :param content: all|data|metadata
         :type content: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -4174,6 +4412,8 @@ if __name__ == '__main__':
             query += "ncores=" + str(ncores) + ";"
         if exec_mode is not None:
             query += "exec_mode=" + str(exec_mode) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -4189,11 +4429,13 @@ if __name__ == '__main__':
         else:
             return response
 
-    def unpublish(self, exec_mode="sync", display=False):
-        """unpublish( exec_mode='sync', display=False) -> None : wrapper of the operator OPH_UNPUBLISH
+    def unpublish(self, exec_mode="sync", save="yes", display=False):
+        """unpublish( exec_mode='sync', save='yes', display=False) -> None : wrapper of the operator OPH_UNPUBLISH
 
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: None
@@ -4208,6 +4450,8 @@ if __name__ == '__main__':
 
         if exec_mode is not None:
             query += "exec_mode=" + str(exec_mode) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
         try:
@@ -4219,9 +4463,22 @@ if __name__ == '__main__':
             raise RuntimeError()
 
     def cubeschema(
-        self, level=0, dim="all", show_index="no", show_time="no", base64="no", action="read", concept_level="c", dim_level=1, dim_array="yes", exec_mode="sync", objkey_filter="all", display=True
+        self,
+        level=0,
+        dim="all",
+        show_index="no",
+        show_time="no",
+        base64="no",
+        action="read",
+        concept_level="c",
+        dim_level=1,
+        dim_array="yes",
+        exec_mode="sync",
+        objkey_filter="all",
+        save="yes",
+        display=True,
     ):
-        """cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', action='read', concept_level='c', dim_level=1, dim_array='yes', display=True) -> dict or None : wrapper of the operator OPH_CUBESCHEMA
+        """cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', action='read', concept_level='c', dim_level=1, dim_array='yes', save='yes', display=True) -> dict or None : wrapper of the operator OPH_CUBESCHEMA
 
         :param level: 0|1|2
         :type level: int
@@ -4243,6 +4500,8 @@ if __name__ == '__main__':
         :type dim_array: str
         :param exec_mode: async or sync
         :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -4278,6 +4537,8 @@ if __name__ == '__main__':
             query += "exec_mode=" + str(exec_mode) + ";"
         if objkey_filter is not None:
             query += "objkey_filter=" + str(objkey_filter) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -4293,8 +4554,8 @@ if __name__ == '__main__':
         else:
             return response
 
-    def cubesize(self, schedule=0, exec_mode="sync", byte_unit="MB", algorithm="euristic", ncores=1, objkey_filter="all", display=True):
-        """cubesize( schedule=0, ncores=1, byte_unit='MB', algorithm='euristic', objkey_filter='all', exec_mode='sync', display=True) -> dict or None : wrapper of the operator OPH_CUBESIZE
+    def cubesize(self, schedule=0, exec_mode="sync", byte_unit="MB", algorithm="euristic", ncores=1, objkey_filter="all", save="yes", display=True):
+        """cubesize( schedule=0, ncores=1, byte_unit='MB', algorithm='euristic', objkey_filter='all', exec_mode='sync', save='yes', display=True) -> dict or None : wrapper of the operator OPH_CUBESIZE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4306,6 +4567,8 @@ if __name__ == '__main__':
         :type byte_unit: str
         :param algorithm: euristic|count
         :type algorithm: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -4331,6 +4594,8 @@ if __name__ == '__main__':
             query += "ncores=" + str(ncores) + ";"
         if objkey_filter is not None:
             query += "objkey_filter=" + str(objkey_filter) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -4346,8 +4611,8 @@ if __name__ == '__main__':
         else:
             return response
 
-    def cubeelements(self, schedule=0, exec_mode="sync", algorithm="dim_product", ncores=1, objkey_filter="all", display=True):
-        """cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
+    def cubeelements(self, schedule=0, exec_mode="sync", algorithm="dim_product", ncores=1, objkey_filter="all", save="yes", display=True):
+        """cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4357,6 +4622,8 @@ if __name__ == '__main__':
         :type schedule: int
         :param algorithm: dim_product|count
         :type algorithm: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
@@ -4380,6 +4647,8 @@ if __name__ == '__main__':
             query += "ncores=" + str(ncores) + ";"
         if objkey_filter is not None:
             query += "objkey_filter=" + str(objkey_filter) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -4395,8 +4664,8 @@ if __name__ == '__main__':
         else:
             return response
 
-    def intercube(self, ncores=1, exec_mode="sync", cube2=None, cubes=None, operation="sub", missingvalue="-", measure="null", schedule=0, container="-", description="-", display=False):
-        """intercube(ncores=1, exec_mode='sync', cube2=None, cubes=None, operation='sub', missingvalue='-', measure='null', schedule=0, container='-', description='-', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE
+    def intercube(self, ncores=1, exec_mode="sync", cube2=None, cubes=None, operation="sub", missingvalue="-", measure="null", schedule=0, container="-", description="-", save="yes", display=False):
+        """intercube(ncores=1, exec_mode='sync', cube2=None, cubes=None, operation='sub', missingvalue='-', measure='null', schedule=0, container='-', description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4418,6 +4687,8 @@ if __name__ == '__main__':
         :type container: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -4454,6 +4725,8 @@ if __name__ == '__main__':
             query += "container=" + str(container) + ";"
         if description is not None:
             query += "description=" + str(description) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         try:
             if Cube.client.submit(query, display) is None:
@@ -4468,8 +4741,8 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def merge(self, ncores=1, exec_mode="sync", schedule=0, nmerge=0, container="-", description="-", display=False):
-        """merge(nmerge=0, schedule=0, description='-', container='-', exec_mode='sync', ncores=1, display=False) -> Cube or None : wrapper of the operator OPH_MERGE
+    def merge(self, ncores=1, exec_mode="sync", schedule=0, nmerge=0, container="-", description="-", save="yes", display=False):
+        """merge(nmerge=0, schedule=0, description='-', container='-', exec_mode='sync', ncores=1, save='yes', display=False) -> Cube or None : wrapper of the operator OPH_MERGE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4483,6 +4756,8 @@ if __name__ == '__main__':
         :type container: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -4508,6 +4783,8 @@ if __name__ == '__main__':
             query += "container=" + str(container) + ";"
         if description is not None:
             query += "description=" + str(description) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -4538,10 +4815,11 @@ if __name__ == '__main__':
         force="no",
         exec_mode="sync",
         objkey_filter="all",
+        save="yes",
         display=True,
     ):
         """metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, variable_filter=None, metadata_type_filter=None,
-                    metadata_value_filter=None, force='no', exec_mode='sync', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_METADATA
+                    metadata_value_filter=None, force='no', exec_mode='sync', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_METADATA
 
         :param mode: insert|read|update|delete
         :type mode: str
@@ -4565,7 +4843,9 @@ if __name__ == '__main__':
         :type force: str
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is Ture)
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -4602,6 +4882,8 @@ if __name__ == '__main__':
             query += "exec_mode=" + str(exec_mode) + ";"
         if objkey_filter is not None:
             query += "objkey_filter=" + str(objkey_filter) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -4617,8 +4899,8 @@ if __name__ == '__main__':
         else:
             return response
 
-    def permute(self, ncores=1, nthreads=1, exec_mode="sync", schedule=0, dim_pos=None, container="-", description="-", display=False):
-        """permute(dim_pos=None, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', display=False) -> Cube or None : wrapper of the operator OPH_PERMUTE
+    def permute(self, ncores=1, nthreads=1, exec_mode="sync", schedule=0, dim_pos=None, container="-", description="-", save="yes", display=False):
+        """permute(dim_pos=None, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_PERMUTE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4634,6 +4916,8 @@ if __name__ == '__main__':
         :type container: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -4661,6 +4945,8 @@ if __name__ == '__main__':
             query += "description=" + str(description) + ";"
         if nthreads is not None:
             query += "nthreads=" + str(nthreads) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -4691,9 +4977,10 @@ if __name__ == '__main__':
         container="-",
         description="-",
         check_grid="no",
+        save="yes",
         display=False,
     ):
-        """reduce(operation=None, container=None, exec_mode='sync', missingvalue='-', grid='-', group_size='all', ncores=1, nthreads=1, schedule=0, order=2, description='-', objkey_filter='all', check_grid='no', display=False)
+        """reduce(operation=None, container=None, exec_mode='sync', missingvalue='-', grid='-', group_size='all', ncores=1, nthreads=1, schedule=0, order=2, description='-', objkey_filter='all', check_grid='no', save='yes', display=False)
              -> Cube or None : wrapper of the operator OPH_REDUCE
 
         :param ncores: number of cores to use
@@ -4720,6 +5007,8 @@ if __name__ == '__main__':
         :type description: str
         :param check_grid: yes|no
         :type check_grid: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -4757,6 +5046,8 @@ if __name__ == '__main__':
             query += "check_grid=" + str(check_grid) + ";"
         if nthreads is not None:
             query += "nthreads=" + str(nthreads) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -4789,9 +5080,10 @@ if __name__ == '__main__':
         description="-",
         nthreads=1,
         check_grid="no",
+        save="yes",
         display=False,
     ):
-        """reduce2(dim=None, operation=None, concept_level='A', container='-', exec_mode='sync', grid='-', midnight='24', order=2, missingvalue="-", description='-', schedule=0, ncores=1, nthreads=1, check_grid='no', display=False)
+        """reduce2(dim=None, operation=None, concept_level='A', container='-', exec_mode='sync', grid='-', midnight='24', order=2, missingvalue="-", description='-', schedule=0, ncores=1, nthreads=1, check_grid='no', save='yes', display=False)
              -> Cube or None : wrapper of the operator OPH_REDUCE2
 
         :param ncores: number of cores to use
@@ -4822,6 +5114,8 @@ if __name__ == '__main__':
         :type nthreads: int
         :param check_grid: yes|no
         :type check_grid: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -4863,6 +5157,8 @@ if __name__ == '__main__':
             query += "check_grid=" + str(check_grid) + ";"
         if nthreads is not None:
             query += "nthreads=" + str(nthreads) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -4879,8 +5175,8 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def rollup(self, ncores=1, nthreads=1, exec_mode="sync", schedule=0, ndim=1, container="-", description="-", display=False):
-        """rollup(ndim=1, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', display=False) -> Cube or None : wrapper of the operator OPH_ROLLUP
+    def rollup(self, ncores=1, nthreads=1, exec_mode="sync", schedule=0, ndim=1, container="-", description="-", save="yes", display=False):
+        """rollup(ndim=1, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_ROLLUP
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4896,6 +5192,8 @@ if __name__ == '__main__':
         :type container: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -4923,6 +5221,8 @@ if __name__ == '__main__':
             query += "description=" + str(description) + ";"
         if nthreads is not None:
             query += "nthreads=" + str(nthreads) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -4939,8 +5239,8 @@ if __name__ == '__main__':
         else:
             return newcube
 
-    def split(self, ncores=1, nthreads=1, exec_mode="sync", schedule=0, nsplit=2, container="-", description="-", display=False):
-        """split(nsplit=2, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', display=False) -> Cube or None : wrapper of the operator OPH_SPLIT
+    def split(self, ncores=1, nthreads=1, exec_mode="sync", schedule=0, nsplit=2, container="-", description="-", save="yes", display=False):
+        """split(nsplit=2, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_SPLIT
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4956,6 +5256,8 @@ if __name__ == '__main__':
         :type container: str
         :param description: additional description to be associated with the output cube
         :type description: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -4983,6 +5285,8 @@ if __name__ == '__main__':
             query += "description=" + str(description) + ";"
         if nthreads is not None:
             query += "nthreads=" + str(nthreads) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -5014,10 +5318,11 @@ if __name__ == '__main__':
         container="-",
         description="-",
         check_grid="no",
+        save="yes",
         display=False,
     ):
         """subset(subset_dims='none', subset_filter='all', container='-', exec_mode='sync', subset_type='index', time_filter='yes', offset=0, grid='-', ncores=1, nthreads=1, schedule=0, description='-',
-                  check_grid='no', display=False)
+                  check_grid='no', save='yes', display=False)
              -> Cube or None : wrapper of the operator OPH_SUBSET
 
         :param ncores: number of cores to use
@@ -5046,6 +5351,8 @@ if __name__ == '__main__':
         :type description: str
         :param check_grid: yes|no
         :type check_grid: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
@@ -5085,6 +5392,8 @@ if __name__ == '__main__':
             query += "check_grid=" + str(check_grid) + ";"
         if nthreads is not None:
             query += "nthreads=" + str(nthreads) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
 
         query += "cube=" + str(self.pid) + ";"
 
@@ -5149,8 +5458,8 @@ if __name__ == '__main__':
             print(get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def export_array(self, show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no'):
-        """export_array(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no') -> dict or None : wrapper of the operator OPH_EXPLORECUBE
+    def export_array(self, show_id="no", show_time="no", subset_dims=None, subset_filter=None, time_filter="no"):
+        """export_array(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no') -> dict or None : return data from an Ophidia datacube into a Python structure
 
         :param show_id: yes|no
         :type show_id: str
@@ -5171,7 +5480,7 @@ if __name__ == '__main__':
             raise RuntimeError("Cube.client or pid is None")
         response = None
 
-        query = "oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=0;"
+        query = "oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=0;save=no;"
 
         if time_filter is not None:
             query += "time_filter=" + str(time_filter) + ";"
