@@ -1,4 +1,30 @@
 
+v1.9.1 - 2021-08-02
+-------------------
+
+Added:
+~~~~~~
+
+- Argument 'save' for saving the JSON response in most cube methods
+
+Changed:
+~~~~~~~~
+
+- Default values of 'disable' and 'enable' argument in 'service' method in cube class
+- Default value of 'missingvalue' argument in cube class to '-'
+
+Fixed:
+~~~~~~
+
+- Slow parsing of large XML response documents in ophsubmit.py `#34 <https://github.com/OphidiaBigData/PyOphidia/issues/34>`_
+
+
+Removed:
+~~~~~~~~
+
+- Deprecated 'subset2' method from cube `#35 <https://github.com/OphidiaBigData/PyOphidia/pull/35>`_
+
+
 v1.9.0 - 2021-07-21
 -------------------
 

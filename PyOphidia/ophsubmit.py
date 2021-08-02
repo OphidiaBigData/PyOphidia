@@ -194,14 +194,14 @@ def submit(username, password, server, port, query):
             return (None, None, None, 1, statusmessage)
 
         xmltree = ET.fromstring(reply)
-        response = xmltree.findall('.//oph:ophResponse',namespaces={"oph":"urn:oph"})[0]
+        response = xmltree.findall(".//oph:ophResponse", namespaces={"oph": "urn:oph"})[0]
         res_error, res_response, res_jobid = None, None, None
-        if len(response.findall('jobid')) > 0 and response.findall('jobid')[0].text is not None:
-            res_jobid = response.findall('jobid')[0].text
-        if len(response.findall('error')) > 0 and response.findall('error')[0].text is not None:
-            res_error = int(response.findall('error')[0].text)
-        if len(response.findall('response')) > 0 and response.findall('response')[0].text is not None:
-            res_response = response.findall('response')[0].text
+        if len(response.findall("jobid")) > 0 and response.findall("jobid")[0].text is not None:
+            res_jobid = response.findall("jobid")[0].text
+        if len(response.findall("error")) > 0 and response.findall("error")[0].text is not None:
+            res_error = int(response.findall("error")[0].text)
+        if len(response.findall("response")) > 0 and response.findall("response")[0].text is not None:
+            res_response = response.findall("response")[0].text
     except Exception as e:
         print(get_linenumber(), "Something went wrong in submitting the request:", e)
         return (None, None, None, 1, e)
