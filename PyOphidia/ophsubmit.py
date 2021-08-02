@@ -1,6 +1,6 @@
 #
 #     PyOphidia - Python bindings for Ophidia
-#     Copyright (C) 2015-2017 CMCC Foundation
+#     Copyright (C) 2015-2021 CMCC Foundation
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -19,8 +19,9 @@
 import sys
 import base64
 import re
-from xml.dom import minidom
+import xml.etree.ElementTree as ET
 from inspect import currentframe
+
 if sys.version_info < (3, 0):
     import httplib
 else:
@@ -57,20 +58,22 @@ OPH_SERVER_SYSTEM_ERROR = 6
 OPH_SERVER_WRONG_PARAMETER_ERROR = 7
 OPH_SERVER_NO_RESPONSE = 8
 
-OPH_WORKFLOW_DELIMITER = '?'
+OPH_WORKFLOW_DELIMITER = "?"
 
-WRAPPING_WORKFLOW1 = "{\n  \"name\":\"NAME\",\n  \"author\":\"AUTHOR\",\n  \"abstract\":\"Workflow generated automatically to wrap a command\","
-WRAPPING_WORKFLOW2 = "\n  \"sessionid\":\""
-WRAPPING_WORKFLOW2_1 = "\","
-WRAPPING_WORKFLOW3 = "\n  \"exec_mode\":\""
-WRAPPING_WORKFLOW3_1 = "\","
-WRAPPING_WORKFLOW4 = "\n  \"callback_url\":\""
-WRAPPING_WORKFLOW4_1 = "\","
-WRAPPING_WORKFLOW5 = "\n  \"tasks\": [\n    {\n      \"name\":\"Task 0\",\n      \"operator\":\""
-WRAPPING_WORKFLOW5_1 = "\",\n      \"arguments\": ["
-WRAPPING_WORKFLOW6 = "\"%s\""
-WRAPPING_WORKFLOW7 = ",\"%s\""
-WRAPPING_WORKFLOW8 = "]\n    }\n  ]\n}"
+WRAPPING_WORKFLOW1 = '{\n  "name":"NAME",\n  "author":"AUTHOR",\n  "abstract":"Workflow generated automatically to wrap a command",'
+WRAPPING_WORKFLOW2 = '\n  "sessionid":"'
+WRAPPING_WORKFLOW2_1 = '",'
+WRAPPING_WORKFLOW3 = '\n  "exec_mode":"'
+WRAPPING_WORKFLOW3_1 = '",'
+WRAPPING_WORKFLOW4 = '\n  "callback_url":"'
+WRAPPING_WORKFLOW4_1 = '",'
+WRAPPING_WORKFLOW5 = '\n  "project":"'
+WRAPPING_WORKFLOW5_1 = '",'
+WRAPPING_WORKFLOW6 = '\n  "tasks": [\n    {\n      "name":"Task 0",\n      "operator":"'
+WRAPPING_WORKFLOW6_1 = '",\n      "arguments": ['
+WRAPPING_WORKFLOW7 = '"%s"'
+WRAPPING_WORKFLOW8 = ',"%s"'
+WRAPPING_WORKFLOW9 = "]\n    }\n  ]\n}"
 
 
 def submit(username, password, server, port, query):
@@ -79,32 +82,33 @@ def submit(username, password, server, port, query):
             client = httplib.HTTPS(str(server) + ":" + str(port))
         else:
             import ssl
+
             context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
             context.verify_mode = ssl.CERT_NONE
             client = httplib.HTTPSConnection(str(server), str(port), context=context)
         client.putrequest("POST", "")
         client.putheader("User-Agent", "Ophidia Python client")
-        client.putheader("Content-type", "text/xml; charset=\"UTF-8\"")
+        client.putheader("Content-type", 'text/xml; charset="UTF-8"')
     except Exception as e:
         print(get_linenumber(), "Something went wrong in connection setup:", e)
         return (None, None, None, 1, e)
     request = str(query)
-    if not request.lstrip(' \n\t').startswith('{'):
-        wrapped_query = request.lstrip(' \n\t')
-        if not wrapped_query.startswith('operator='):
-            if not wrapped_query.startswith('oph_'):
+    if not request.lstrip(" \n\t").startswith("{"):
+        wrapped_query = request.lstrip(" \n\t")
+        if not wrapped_query.startswith("operator="):
+            if not wrapped_query.startswith("oph_"):
                 return (None, None, None, 3, "Invalid request")
-        if wrapped_query.startswith('oph_'):
-            wrapped_query = 'operator=' + wrapped_query[:wrapped_query.find(' ')] + ';' + wrapped_query[wrapped_query.find(' ') + 1:]
-        query_list = re.split(r'(?![^\[]*\]);+', wrapped_query)
+        if wrapped_query.startswith("oph_"):
+            wrapped_query = "operator=" + wrapped_query[: wrapped_query.find(" ")] + ";" + wrapped_query[wrapped_query.find(" ") + 1 :]
+        query_list = re.split(r"(?![^\[]*\]);+", wrapped_query)
         if not query_list:
             return (None, None, None, 3, "Invalid request")
         # operator
         for element in query_list:
             if element:
-                element_list = element.split('=', 1)
-                if element_list[0] == 'operator':
-                    request = WRAPPING_WORKFLOW1.replace('NAME', element_list[1]).replace('AUTHOR', str(username))
+                element_list = element.split("=", 1)
+                if element_list[0] == "operator":
+                    request = WRAPPING_WORKFLOW1.replace("NAME", element_list[1]).replace("AUTHOR", str(username))
                     operator = element_list[1]
                     break
         else:
@@ -112,54 +116,62 @@ def submit(username, password, server, port, query):
         # sessionid
         for element in query_list:
             if element:
-                element_list = element.split('=', 1)
-                if element_list[0] == 'sessionid':
+                element_list = element.split("=", 1)
+                if element_list[0] == "sessionid":
                     request += WRAPPING_WORKFLOW2 + element_list[1] + WRAPPING_WORKFLOW2_1
                     break
         # exec_mode
         for element in query_list:
             if element:
-                element_list = element.split('=', 1)
-                if element_list[0] == 'exec_mode':
+                element_list = element.split("=", 1)
+                if element_list[0] == "exec_mode":
                     request += WRAPPING_WORKFLOW3 + element_list[1] + WRAPPING_WORKFLOW3_1
                     break
         # callback_url
         for element in query_list:
             if element:
-                element_list = element.split('=', 1)
-                if element_list[0] == 'callback_url':
+                element_list = element.split("=", 1)
+                if element_list[0] == "callback_url":
                     request += WRAPPING_WORKFLOW4 + element_list[1] + WRAPPING_WORKFLOW4_1
                     break
-        request += WRAPPING_WORKFLOW5 + operator + WRAPPING_WORKFLOW5_1
+        # project
+        for element in query_list:
+            if element:
+                element_list = element.split("=", 1)
+                if element_list[0] == "project":
+                    request += WRAPPING_WORKFLOW5 + element_list[1] + WRAPPING_WORKFLOW5_1
+                    break
+        request += WRAPPING_WORKFLOW6 + operator + WRAPPING_WORKFLOW6_1
         # all remaining arguments
         step = 0
         for element in query_list:
             if element:
-                element_list = element.split('=', 1)
-                if element_list[0] != 'operator' and element_list[0] != 'sessionid' and element_list[0] != 'exec_mode' and element_list[0] != 'callback_url':
+                element_list = element.split("=", 1)
+                if element_list[0] != "operator" and element_list[0] != "sessionid" and element_list[0] != "exec_mode" and element_list[0] != "callback_url" and element_list[0] != "project":
                     step += 1
                     if step == 1:
-                        request += WRAPPING_WORKFLOW6.replace('%s', element)
+                        request += WRAPPING_WORKFLOW7.replace("%s", element)
                     else:
-                        request += WRAPPING_WORKFLOW7.replace('%s', element)
-        request += WRAPPING_WORKFLOW8
+                        request += WRAPPING_WORKFLOW8.replace("%s", element)
+        request += WRAPPING_WORKFLOW9
+
     try:
-        #Escape &, <, > and \n chars for http
+        # Escape &, <, > and \n chars for http
         request = request.replace("&", "&amp;")
         request = request.replace("<", "&lt;")
         request = request.replace(">", "&gt;")
         request = request.replace("\n", "&#xA;")
         soapMessage = SOAP_MESSAGE_TEMPLATE % request
         client.putheader("Content-length", "%d" % len(soapMessage))
-        client.putheader("SOAPAction", "\"\"")
-        user = str(username) + ':' + str(password)
+        client.putheader("SOAPAction", '""')
+        user = str(username) + ":" + str(password)
 
         if sys.version_info < (3, 0):
-            auth = 'Basic ' + base64.b64encode(user)
+            auth = "Basic " + base64.b64encode(user)
         else:
-            auth = 'Basic ' + base64.b64encode(bytes(user, "utf-8")).decode("ISO-8859-1")
+            auth = "Basic " + base64.b64encode(bytes(user, "utf-8")).decode("ISO-8859-1")
 
-        client.putheader('Authorization', auth)
+        client.putheader("Authorization", auth)
         client.endheaders()
 
         if sys.version_info < (3, 0):
@@ -181,15 +193,15 @@ def submit(username, password, server, port, query):
             print(get_linenumber(), "Something went wrong in submitting the request:", statuscode, statusmessage)
             return (None, None, None, 1, statusmessage)
 
-        xmldoc = minidom.parseString(reply)
-        response = xmldoc.getElementsByTagName('oph:ophResponse')[0]
+        xmltree = ET.fromstring(reply)
+        response = xmltree.findall('.//oph:ophResponse',namespaces={"oph":"urn:oph"})[0]
         res_error, res_response, res_jobid = None, None, None
-        if len(response.getElementsByTagName('jobid')) > 0 and response.getElementsByTagName('jobid')[0].firstChild is not None:
-            res_jobid = response.getElementsByTagName('jobid')[0].firstChild.data
-        if len(response.getElementsByTagName('error')) > 0 and response.getElementsByTagName('error')[0].firstChild is not None:
-            res_error = int(response.getElementsByTagName('error')[0].firstChild.data)
-        if len(response.getElementsByTagName('response')) > 0 and response.getElementsByTagName('response')[0].firstChild is not None:
-            res_response = response.getElementsByTagName('response')[0].firstChild.data
+        if len(response.findall('jobid')) > 0 and response.findall('jobid')[0].text is not None:
+            res_jobid = response.findall('jobid')[0].text
+        if len(response.findall('error')) > 0 and response.findall('error')[0].text is not None:
+            res_error = int(response.findall('error')[0].text)
+        if len(response.findall('response')) > 0 and response.findall('response')[0].text is not None:
+            res_response = response.findall('response')[0].text
     except Exception as e:
         print(get_linenumber(), "Something went wrong in submitting the request:", e)
         return (None, None, None, 1, e)
@@ -198,9 +210,29 @@ def submit(username, password, server, port, query):
     if res_error == OPH_SERVER_OK:
         response, jobid, newsession, return_value, error = None, None, None, 0, None
         if res_response is not None:
-            if '"title": "ERROR"' in res_response or ('"title": "Workflow Status"' in res_response and '"message": "OPH_STATUS_ERROR"' in res_response):
-                error = "There was an error in one or more tasks"
-            response = str(res_response.encode('utf-8'))
+            if (
+                '"title": "ERROR"' in res_response
+                or ('"title": "Workflow Status"' in res_response and '"message": "OPH_STATUS_ERROR"' in res_response)
+                or ('"title": "Massive Operation Status"' in res_response and '"message": "OPH_STATUS_ERROR"' in res_response)
+            ):
+                if '"title": "Workflow Status"' in res_response:
+                    error = "There was an error in one or more workflow tasks"
+                elif '"title": "Massive Operation Status"' in res_response:
+                    error = "There was an error in one or more tasks of the massive operation"
+                else:
+                    if '"message":' in res_response:
+                        try:
+                            a = res_response.index('"message": "') + len('"message": "')
+                            b = res_response.index('\\n"', a)
+                            error = res_response[a:b]
+                        except Exception:
+                            error = "There was an error in the task"
+                    else:
+                        error = "There was an error in the task"
+            if sys.version_info < (3, 0):
+                response = str(res_response.encode("ISO-8859-1"))
+            else:
+                response = str(res_response.encode("ISO-8859-1").decode("UTF-8"))
         if res_jobid is not None:
             if len(res_jobid) != 0:
                 jobid = str(res_jobid)
