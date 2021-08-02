@@ -219,7 +219,7 @@ class Cube:
         search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all', objkey_filter='all',
                cwd=None, recursive='no', display=True)
           -> dict or None : wrapper of the operator OPH_SEARCH
-        service(status='', level=1, enable='all', disable='all', objkey_filter='all', display=False)
+        service(status='', level=1, enable='none', disable='none', objkey_filter='all', display=False)
           -> dict or None : wrapper of the operator OPH_SERVICE
         showgrid(container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_SHOWGRID
@@ -600,16 +600,16 @@ class Cube:
             raise RuntimeError()
 
     @classmethod
-    def service(cls, status="", level=1, enable="all", disable="all", objkey_filter="all", display=False):
-        """service(status='', level=1, enable='all', disable='all', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_SERVICE
+    def service(cls, status="", level=1, enable="none", disable="none", objkey_filter="all", display=False):
+        """service(status='', level=1, enable='none', disable='none', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_SERVICE
 
         :param status: up|down
         :type status: str
         :param level: 1|2
         :type level: int
-        :param enable: list of the users to be enabled
+        :param enable: list of the users to be enabled ('all' to enable all users)
         :type enable: str
-        :param disable: list of the users to be disabled
+        :param disable: list of the users to be disabled ('all' to disable all users)
         :type disable: str
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
