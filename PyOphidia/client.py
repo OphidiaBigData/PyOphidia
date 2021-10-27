@@ -36,7 +36,7 @@ def get_linenumber():
 
 
 class Client:
-    """Client(username='', password='', server='', port='11732', token='', read_env=False, api_mode=True, project=None) -> obj
+    """Client(username='', password='', server='', port='', token='', read_env=False, api_mode=True, project=None) -> obj
 
     Attributes:
         username: Ophidia username
@@ -77,8 +77,8 @@ class Client:
         pretty_print(response, response_i) -> self : Prints the last_response JSON string attribute as a formatted response
     """
 
-    def __init__(self, username="", password="", server="", port="11732", token="", read_env=False, api_mode=True, project=None):
-        """Client(username='', password='', server='', port='11732', token='', read_env=False, api_mode=True, project=None) -> obj
+    def __init__(self, username="", password="", server="", port="", token="", read_env=False, api_mode=True, project=None):
+        """Client(username='', password='', server='', port='', token='', read_env=False, api_mode=True, project=None) -> obj
         :param api_mode: If True, use the class as an API and catch also framework-level errors
         :type api_mode: bool
         :param username: Ophidia username
@@ -105,7 +105,10 @@ class Client:
             self.username = username
             self.password = password
             self.server = server
-            self.port = port
+            if port:
+                self.port = port
+            else:
+                self.port = "11732"
             access_token = token
         else:
             if username:
