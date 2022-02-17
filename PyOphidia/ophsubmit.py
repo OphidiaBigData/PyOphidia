@@ -60,7 +60,7 @@ OPH_SERVER_NO_RESPONSE = 8
 
 OPH_WORKFLOW_DELIMITER = "?"
 
-WRAPPING_WORKFLOW1 = '{\n  "name":"NAME",\n  "author":"AUTHOR",\n  "abstract":"Workflow generated automatically to wrap a command",'
+WRAPPING_WORKFLOW1 = '{\n  "name":"NAME",\n  "author":"AUTHOR",\n  "abstract":"Workflow generated automatically to wrap a command",\n  "command":"COMMAND",'
 WRAPPING_WORKFLOW2 = '\n  "sessionid":"'
 WRAPPING_WORKFLOW2_1 = '",'
 WRAPPING_WORKFLOW3 = '\n  "exec_mode":"'
@@ -99,7 +99,7 @@ def submit(username, password, server, port, query):
             if not wrapped_query.startswith("oph_"):
                 return (None, None, None, 3, "Invalid request")
         if wrapped_query.startswith("oph_"):
-            wrapped_query = "operator=" + wrapped_query[: wrapped_query.find(" ")] + ";" + wrapped_query[wrapped_query.find(" ") + 1 :]
+            wrapped_query = "operator=" + wrapped_query[: wrapped_query.find(" ")] + ";" + wrapped_query[wrapped_query.find(" ") + 1:]
         query_list = re.split(r"(?![^\[]*\]);+", wrapped_query)
         if not query_list:
             return (None, None, None, 3, "Invalid request")
@@ -108,7 +108,7 @@ def submit(username, password, server, port, query):
             if element:
                 element_list = element.split("=", 1)
                 if element_list[0] == "operator":
-                    request = WRAPPING_WORKFLOW1.replace("NAME", element_list[1]).replace("AUTHOR", str(username))
+                    request = WRAPPING_WORKFLOW1.replace("NAME", element_list[1]).replace("AUTHOR", str(username)).replace("COMMAND", request)
                     operator = element_list[1]
                     break
         else:

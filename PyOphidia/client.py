@@ -450,8 +450,8 @@ class Client:
                                     print(
                                         VERTICAL_CHAR
                                         + " "
-                                        + response_i["objcontent"][0]["rowkeys"][j][start[j] : start[j] + max_column_width[j]]
-                                        + " " * ((max_column_width[j] + 2) - (len(response_i["objcontent"][0]["rowkeys"][j][start[j] : start[j] + max_column_width[j]]) + 1)),
+                                        + response_i["objcontent"][0]["rowkeys"][j][start[j]: start[j] + max_column_width[j]]
+                                        + " " * ((max_column_width[j] + 2) - (len(response_i["objcontent"][0]["rowkeys"][j][start[j]: start[j] + max_column_width[j]]) + 1)),
                                         end="",
                                     )
                                     start[j] = start[j] + max_column_width[j]
@@ -491,16 +491,16 @@ class Client:
                             for x in range(maximum_rows[i]):
                                 for j in columns:
                                     if start[i][j] < text_length[i][j]:
-                                        index = rowvalues[j][start[i][j] : start[i][j] + max_column_width[j]].find("\n")
+                                        index = rowvalues[j][start[i][j]: start[i][j] + max_column_width[j]].find("\n")
                                         if index != -1:
                                             # Delete newline char
-                                            rowvalues[j] = rowvalues[j][: start[i][j] + index] + rowvalues[j][start[i][j] + index + 1 :]
+                                            rowvalues[j] = rowvalues[j][: start[i][j] + index] + rowvalues[j][start[i][j] + index + 1:]
                                             actual_len = start[i][j] + index
                                         else:
                                             actual_len = start[i][j] + max_column_width[j]
 
                                         print(
-                                            VERTICAL_CHAR + " " + rowvalues[j][start[i][j] : actual_len] + " " * ((max_column_width[j] + 2) - (len(rowvalues[j][start[i][j] : actual_len]) + 1)), end=""
+                                            VERTICAL_CHAR + " " + rowvalues[j][start[i][j]: actual_len] + " " * ((max_column_width[j] + 2) - (len(rowvalues[j][start[i][j]: actual_len]) + 1)), end=""
                                         )
                                         start[i][j] = actual_len
                                     else:
@@ -741,6 +741,7 @@ class Client:
             raise RuntimeError("one or more login parameters are None")
         request = None
 
+        params_list = ""
         if os.path.isfile(workflow):
             try:
                 file = open(workflow, "r")
@@ -749,6 +750,8 @@ class Client:
                 for index, param in enumerate(params, start=1):
                     buffer = buffer.replace("${" + str(index) + "}", str(param))
                     buffer = re.sub(r"(\$" + str(index) + r")([^0-9]|$)", str(param) + r"\g<2>", buffer)
+                    params_list += " " + str(param)
+                    #params_list += ", " + str(param)
                 buffer = re.sub(r"(\$\{?(\d*)\}?)", "", buffer)
                 # Remove comment blocks
                 buffer = re.sub(re.compile(r"/\*.*?\*/|//.*?\n", re.DOTALL), "\n", buffer)
@@ -763,6 +766,8 @@ class Client:
                 for index, param in enumerate(params, start=1):
                     buffer = buffer.replace("${" + str(index) + "}", str(param))
                     buffer = re.sub(r"(\$" + str(index) + r")([^0-9]|$)", str(param) + r"\g<2>", buffer)
+                    params_list += " " + str(param)
+                    #params_list += ", " + str(param)
                 buffer = re.sub(r"(\$\{?(\d*)\}?)", "", buffer)
                 # Remove comment blocks
                 buffer = re.sub(re.compile(r"/\*.*?\*/|//.*?\n", re.DOTALL), "\n", buffer)
@@ -788,6 +793,9 @@ class Client:
             request["ncores"] = str(self.ncores)
         if self.project and "project" not in request:
             request["project"] = str(self.project)
+        if "command" not in request:
+            request["command"] = "wsubmit(" + workflow + ")" + params_list
+            #request["command"] = "wsubmit(" + workflow + params_list + ")"
         self.last_request = json.dumps(request)
         try:
             err, err_msg = self.wisvalid(self.last_request)
