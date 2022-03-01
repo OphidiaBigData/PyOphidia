@@ -751,7 +751,6 @@ class Client:
                     buffer = buffer.replace("${" + str(index) + "}", str(param))
                     buffer = re.sub(r"(\$" + str(index) + r")([^0-9]|$)", str(param) + r"\g<2>", buffer)
                     params_list += " " + str(param)
-                    #params_list += ", " + str(param)
                 buffer = re.sub(r"(\$\{?(\d*)\}?)", "", buffer)
                 # Remove comment blocks
                 buffer = re.sub(re.compile(r"/\*.*?\*/|//.*?\n", re.DOTALL), "\n", buffer)
@@ -767,7 +766,6 @@ class Client:
                     buffer = buffer.replace("${" + str(index) + "}", str(param))
                     buffer = re.sub(r"(\$" + str(index) + r")([^0-9]|$)", str(param) + r"\g<2>", buffer)
                     params_list += " " + str(param)
-                    #params_list += ", " + str(param)
                 buffer = re.sub(r"(\$\{?(\d*)\}?)", "", buffer)
                 # Remove comment blocks
                 buffer = re.sub(re.compile(r"/\*.*?\*/|//.*?\n", re.DOTALL), "\n", buffer)
@@ -794,8 +792,7 @@ class Client:
         if self.project and "project" not in request:
             request["project"] = str(self.project)
         if "command" not in request:
-            request["command"] = "wsubmit(" + workflow + ")" + params_list
-            #request["command"] = "wsubmit(" + workflow + params_list + ")"
+            request["command"] = workflow + params_list
         self.last_request = json.dumps(request)
         try:
             err, err_msg = self.wisvalid(self.last_request)
