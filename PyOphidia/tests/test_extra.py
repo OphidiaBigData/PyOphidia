@@ -1,9 +1,12 @@
 import pytest
-
 from PyOphidia import cube
 from ..extra import *
 
 cube.Cube.setclient()
+try:
+    cube.Cube.createcontainer(container="mytest")
+except RuntimeError:
+    pass
 random_cube_1 = cube.Cube.randcube(container="mytest", dim="lat|lon|k|l|time",
                                    dim_size="4|2|2|2|1", exp_ndim=4,
                                    host_partition="main", measure="tos",
