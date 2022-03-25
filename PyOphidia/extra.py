@@ -16,14 +16,14 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-from __future__ import absolute_import
-import sys
-import os
+
 import base64
+import os
 import struct
-import PyOphidia.cube as cube
+import sys
 from inspect import currentframe
 
 sys.path.append(os.path.dirname(__file__))
@@ -34,494 +34,64 @@ def get_linenumber():
     return __file__, cf.f_back.f_lineno
 
 
-def where(cube=cube, expression="x", if_true=1, if_false=0, ncores=1, nthreads=1,
-          description='-', display=False):
-    """where(cube=cube, expression="x", if_true=1, if_false=0, ncores=1, nthreads=1,
-          description='-') -> Pyophidia.cube : Get a cube object after having run the predicate query
+def convert_to_xarray(cube):
+    """convert_to_xarray(cube=cube) -> xarray.core.dataset.Dataset : convert
+    a Pyophidia.cube to xarray.dataset
     :param cube: the initial cube
     :type cube: <class 'PyOphidia.cube.Cube'>
-    :param expression: a mathematical equation which represents a way to validate the results we want
-    :type expression: str
-    :param if_true: the  return value if the expression is true (default is 1)
-    :type if_true: str or int or bool
-    :param if_false: the  return value if the expression is false (default is 0)
-    :type if_false: str or int or bool
-    :param ncores: the number of cores that we should use to perform the operation (default is 1)
-    :type ncores: int
-    :param nthreads: the number of threads that we should use to perform the operation (default is 1)
-    :type nthreads: int
-    :param description: additional description to be associated with the output container
-    :type description: str
-    :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
-    :type display: bool
-    :returns: a 'PyOphidia.cube.Cube' object
-    :rtype: <class 'PyOphidia.cube.Cube'>
+    :returns: a 'xarray.core.dataset.Dataset' object
+    :rtype: <class 'Pxarray.core.dataset.Dataset'>
     :raises: RuntimeError
     """
 
-    def _get_output_type(if_true, input_type):
-        """_get_output_type(if_true, input_type) -> str : Get the ophidia output type of the where function
-        :param if_true: the type of the positive result
-        :type if_true: int or str or bytes
-        :param input_type: the Pyophidia input type
-        :type input_type: str
-        :returns: a string that represents the Pyophidia type of the output variable
-        :rtype: str
-        :raises: RuntimeError
+    def _append_with_format(var, frmt):
+        """_append_with_format(var, frmt) ->
+        numpy.float32|numpy.float64|numpy.int32|numpy.int64 converts a variable
+            to the appropriate format according to pyophidia's type
+        :param var: the variable to convert
+        :type var: int|float|str
+        :param frmt: a string representing pyophidias format
+        :type frmt: str
+        :rtype: <class 'numpy.float32'>|<class 'numpy.float64'>|<class
+        'numpy.int32'>|<class 'numpy.int64'>
         """
-        if isinstance(if_true, int):
-            if input_type == "oph_long":
-                return "oph_long"
-            if input_type == "oph_short":
-                return "oph_short"
-            return "oph_int"
-        elif isinstance(if_true, float):
-            if input_type == "oph_double":
-                return "oph_double"
-            return "oph_float"
-        elif isinstance(if_true, bytes):
-            return "oph_bytes"
+        import numpy
+        if frmt == "float":
+            return numpy.float32(var)
+        elif frmt == "double":
+            return numpy.float64(var)
+        elif frmt == "int":
+            return numpy.int32(var)
+        elif frmt == "long":
+            return numpy.int64(var)
         else:
-            raise RuntimeError('given if_true is wrong')
+            return var
 
-    def _get_input_type(input_type):
-        """_get_input_type(input_type) -> str : Get the ophidia input type of the where function
-        :param input_type: the Pyophidia input type
-        :type input_type: str
-        :returns: a string that represents the Pyophidia type of the input variable
-        :rtype: str
-        :raises: RuntimeError
-        """
-        if input_type == "float":
-            return "oph_float"
-        elif input_type == "int":
-            return "oph_int"
-        elif input_type == "bytes":
-            return "oph_bytes"
-        elif input_type == "double":
-            return "oph_double"
-        else:
-            raise RuntimeError('given input_type is wrong')
-
-    def _split_expression(expression):
-        """_split_expression(expression) -> str, str, str split the expression to 3 parts so it will be easier to use on
-        predicate
-        :param expression: a string that represents an equation that will be used for the predicate method
-        :type expression: str
-        :return: measure
-        :rtype: str
-        :return: measure
-        :rtype: str
-        :return: final_left_part
-        :rtype: str
-        :return: right_part
-        :rtype: str
-        :raises: RuntimeError
-        """
-        cube.info(display=False)
-        comparison_operators = ["=", ">", "!=", ">=", "<", "<="]
-        arithmetical_operators = ["+", "-", "/", "*", "**", "%", "//"]
-        for comparison_operator in comparison_operators:
-            if comparison_operator in expression:
-                current_comparison_operator = comparison_operator
-                left_part = expression.split(comparison_operator)[0]
-                right_part_number = expression.split(comparison_operator)[1]
-                break
-        try:
-            float_right_part_number = float(right_part_number)
-        except Exception as e:
-            print(get_linenumber(), "Something went wrong:", e)
-            raise RuntimeError()
-        right_part = current_comparison_operator + "0"
-        found_number = False
-        for arithmetical_operator in arithmetical_operators:
-            if arithmetical_operator in left_part:
-                found_number = True
-                current_arithmetical_operator = arithmetical_operator
-                left_part_number = current_arithmetical_operator + left_part.split(arithmetical_operator)[1]
-                break
-        if found_number:
-            measure = left_part.split(current_arithmetical_operator)[0]
-            try:
-                float_left_part_number = float(left_part_number)
-            except Exception as e:
-                print(get_linenumber(), "Something went wrong:", e)
-                raise RuntimeError()
-            float_combined_number = float_left_part_number + (-1 * float_right_part_number)
-            if float_combined_number > 0:
-                final_left_part = "x + " + str(float_combined_number)
-            else:
-                final_left_part = "x " + str(float_combined_number)
-        else:
-            measure = left_part
-            if -1 * float_right_part_number > 0:
-                final_left_part = "x + " + str(float_right_part_number)
-            else:
-                final_left_part = "x " + str(-1 * float_right_part_number)
-        return measure, final_left_part, right_part
-
-    cube.info(display=False)
-    input_type = _get_input_type(cube.measure_type)
-    output_type = _get_output_type(if_true, input_type)
-    if not output_type:
-        raise RuntimeError('given output_type is wrong')
-    if not input_type:
-        raise RuntimeError('given input_type is wrong')
-    measure, measure_modification, comparison = _split_expression(expression)
-    if measure == cube.measure:
-        measure = "measure"
-    else:
-        raise RuntimeError('measure is wrong')
-    try:
-        results = cube.apply(
-            query="oph_predicate('" + input_type + "','" + output_type + "'," + measure + ",'" +
-                  measure_modification + "','" + comparison + "','" + str(if_true) + "','" +
-                  str(if_false) + "')", ncores=ncores, nthreads=nthreads, description=description,
-            display=display
-        )
-    except Exception as e:
-        print(get_linenumber(), "Something went wrong:", e)
-        raise RuntimeError()
-    return results
-
-
-def add(cube=cube, measure="measure", addend=0, ncores=1, nthreads=1, description='-', display=False):
-    """add(cube=cube, measure="measure", addend=0, ncores=1, nthreads=1, description='-',
-            display=False) -> Pyophidia.cube : Get a cube object after having run the oph_sum_scalar or oph_sum_array
-    :param cube: the initial cube
-    :type cube: <class 'PyOphidia.cube.Cube'>
-    :param measure: the measure that will be used to add the addend/s
-    :type measure: str
-    :param addend: the integer/float or array of integers/floats that will be added to the measure
-    :type addend: int or float or list
-    :param ncores: the number of cores that we should use to perform the operation (default is 1)
-    :type ncores: int
-    :param nthreads: the number of threads that we should use to perform the operation (default is 1)
-    :type nthreads: int
-    :param description: additional description to be associated with the output container
-    :type description: str
-    :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
-    :type display: bool
-    :returns: a 'PyOphidia.cube.Cube' object
-    :rtype: <class 'PyOphidia.cube.Cube'>
-    :raises: RuntimeError
-    """
-
-    def _get_types(input, measure_type):
-        """_get_input_type(input_type) -> str : Get the ophidia input type of the where function
-        :param input: addent's type
-        :type input: int or float
-        :returns: a string that represents the Pyophidia type of the input variable
-        :rtype: str
-        :raises: RuntimeError
-        """
-        if isinstance(input, int):
-            if measure_type == "long":
-                return "oph_long", "oph_long"
-            elif measure_type == "short":
-                return "oph_short", "oph_short"
-            elif measure_type == "float":
-                return "oph_float", "oph_float"
-            elif measure_type == "double":
-                return "oph_double", "oph_double"
-            return "oph_int", "oph_int"
-        elif isinstance(input, float):
-            if measure_type == "double":
-                return "oph_double", "oph_double"
-            return "oph_float", "oph_float"
-        elif isinstance(input, bytes):
-            if measure_type == "bytes":
-                return "oph_bytes", "oph_bytes"
-            else:
-                raise RuntimeError('you cant add bytes to numbers')
-        else:
-            raise RuntimeError('given input type is wrong')
-
-    cube.info(display=False)
-    if isinstance(addend, list):
-        if len(addend) != int(cube.elementsxrow):
-            raise RuntimeError("Wrong array size")
-        input_type, output_type = _get_types(addend[0], cube.measure_type)
-        input_type = "|".join([input_type, input_type])
-        if measure == cube.measure:
-            measure = "measure"
-        else:
-            raise RuntimeError('measure is wrong')
-        try:
-            addend_string = ",".join([str(n) for n in addend])
-            results = cube.apply(query="oph_sum_array('" + input_type + "','" +
-                                       output_type + "',measure, oph_to_bin('','" + input_type.split('|')[0] + "','"
-                                       + addend_string + "'))",
-                                 check_type='no', ncores=ncores, nthreads=nthreads, description=description,
-                                 display=display)
-        except Exception as e:
-            print(get_linenumber(), "Something went wrong:", e)
-            raise RuntimeError()
-    elif isinstance(addend, int) or isinstance(addend, float):
-        input_type, output_type = _get_types(addend, cube.measure_type)
-        if measure == cube.measure:
-            measure = "measure"
-        else:
-            raise RuntimeError('measure is wrong')
-        try:
-            results = cube.apply(query="oph_sum_scalar('" + input_type + "','" + output_type + "',measure, "
-                                       + str(addend) + ")",
-                                 check_type='no', ncores=ncores, nthreads=nthreads, description=description,
-                                 display=display)
-        except Exception as e:
-            print(get_linenumber(), "Something went wrong:", e)
-            raise RuntimeError()
-    else:
-        raise RuntimeError('addend type is wrong, must be int, float or list')
-    return results
-
-
-def multiply(cube=cube, measure="measure", multiplier=1, ncores=1, nthreads=1, description='-', display=False):
-    """multiply(cube=cube, measure="measure", multiplier=1, ncores=1, nthreads=1, description='-',
-            display=False) -> Pyophidia.cube : Get a cube object after having run the oph_mul_scalar or oph_mul_array
-    :param cube: the initial cube
-    :type cube: <class 'PyOphidia.cube.Cube'>
-    :param measure: the measure that will be used to multiply
-    :type measure: str
-    :param multiplier: the integer/float or array of integers/floats that will be multiply the measure
-    :type multiplier: int or float or list
-    :param ncores: the number of cores that we should use to perform the operation (default is 1)
-    :type ncores: int
-    :param nthreads: the number of threads that we should use to perform the operation (default is 1)
-    :type nthreads: int
-    :param description: additional description to be associated with the output container
-    :type description: str
-    :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
-    :type display: bool
-    :returns: a 'PyOphidia.cube.Cube' object
-    :rtype: <class 'PyOphidia.cube.Cube'>
-    :raises: RuntimeError
-    """
-
-    def _get_types(input, measure_type):
-        """_get_input_type(input_type) -> str : Get the ophidia input type of the where function
-        :param input: multiplier's type
-        :type input: int or float
-        :returns: a string that represents the Pyophidia type of the input variable
-        :rtype: str
-        :raises: RuntimeError
-        """
-        if isinstance(input, int):
-            if measure_type == "long":
-                return "oph_long", "oph_long"
-            elif measure_type == "short":
-                return "oph_short", "oph_short"
-            elif measure_type == "float":
-                return "oph_float", "oph_float"
-            elif measure_type == "double":
-                return "oph_double", "oph_double"
-            return "oph_int", "oph_int"
-        elif isinstance(input, float):
-            if measure_type == "double":
-                return "oph_double", "oph_double"
-            return "oph_float", "oph_float"
-        elif isinstance(input, bytes):
-            if measure_type == "bytes":
-                return "oph_bytes", "oph_bytes"
-            else:
-                raise RuntimeError('you cant add bytes to numbers')
-        else:
-            raise RuntimeError('given input type is wrong')
-
-    cube.info(display=False)
-    if isinstance(multiplier, list):
-        if len(multiplier) != int(cube.elementsxrow):
-            raise RuntimeError("Wrong array size")
-        input_type, output_type = _get_types(multiplier[0], cube.measure_type)
-        input_type = "|".join([input_type, input_type])
-        if measure == cube.measure:
-            measure = "measure"
-        else:
-            raise RuntimeError('measure is wrong')
-        try:
-            addend_string = ",".join([str(n) for n in multiplier])
-            results = cube.apply(query="oph_mul_array('" + input_type + "','" +
-                                       output_type + "',measure, oph_to_bin('','" + input_type.split('|')[0] + "','"
-                                       + addend_string + "'))",
-                                 check_type='no', ncores=ncores, nthreads=nthreads, description=description,
-                                 display=display)
-        except Exception as e:
-            print(get_linenumber(), "Something went wrong:", e)
-            raise RuntimeError()
-    elif isinstance(multiplier, int) or isinstance(multiplier, float):
-        input_type, output_type = _get_types(multiplier, cube.measure_type)
-        if measure == cube.measure:
-            measure = "measure"
-        else:
-            raise RuntimeError('measure is wrong')
-        try:
-            results = cube.apply(query="oph_mul_scalar('" + input_type + "','" + output_type + "',measure, "
-                                       + str(multiplier) + ")",
-                                 check_type='no', ncores=ncores, nthreads=nthreads, description=description,
-                                 display=display)
-        except Exception as e:
-            print(get_linenumber(), "Something went wrong:", e)
-            raise RuntimeError()
-    else:
-        raise RuntimeError('addend type is wrong, must be int, float or list')
-    return results
-
-
-def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
-           display=False, tolerance=0, **dims):
-    """select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
-           display=False, tolerance=0, **dims) -> Pyophidia.cube : Get a cube object after having run the subset method
-    :param cube: the initial cube
-    :type cube: <class 'PyOphidia.cube.Cube'>
-    :param type: index|coord
-    :type type: str
-    :param ncores: number of cores to use
-    :type ncores: int
-    :param nthreads: number of threads to use
-    :type nthreads: int
-    :param description: additional description to be associated with the output container
-    :type description: int
-    :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
-    :type display: bool
-    :param tolerance: the integer to increase the bounds. Can be int and used only with type coord
-    :type tolerance: int
-    :param dims: keyword arguments
-    :type dims: dict
-    :returns: a 'PyOphidia.cube.Cube' object
-    :rtype: <class 'PyOphidia.cube.Cube'>
-    :raises: RuntimeError
-    """
-
-    def _perform_checks(type, dims, cube, tolerance, time_dimension):
-        """_perform_checks(type, dims, cube, tolerance) -> void: performs data validation for the arguments
-        :param type: index|coord
-        :type type: str
-        :param dims: keyword arguments
-        :type dims: dict
-        :param cube: the cube object
-        :type cube:  <class 'PyOphidia.cube.Cube'>
-        :param tolerance: the integer to increase the bounds. Can be int and used only with type coord
-        :type tolerance: int
-        :returns: void
-        :rtype: <class 'str'>
-        :raises: RuntimeError
-        """
-        if type == "index":
-            for c in cube.dim_info:
-                if c["name"] in dims.keys():
-                    size = int(c["size"])
-                    values = dims[c["name"]]
-                    for value in values:
-                        if ":" in value:
-                            sliced_value = _convert_slice(value.replace("[", "").replace("]", ""))
-                            if int(sliced_value.start) < 0:
-                                raise RuntimeError('Wrong indexes in slice')
-                            if int(sliced_value.stop) < 0:
-                                if int(sliced_value.stop) * -1 > size:
-                                    raise RuntimeError('Wrong indexes in slice')
-                            else:
-                                if int(sliced_value.stop) >= size:
-                                    raise RuntimeError('Wrong indexes in slice')
-                        else:
-                            if int(value) > size or int(value) < 0:
-                                raise RuntimeError('Wrong indexes. Unique index greater than size or below zero')
-        if len(dims.keys()) <= 0:
-            raise RuntimeError('Empty list of dimensions')
-        if type != "coord" and type != "index":
-            raise RuntimeError('Wrong type')
-        if type == "index" and tolerance != 0:
-            raise RuntimeError('Tolerance is incompatible with index type')
-        if time_dimension in dims.keys() and type == "index":
-            raise RuntimeError("Can't use time filter with index type")
-        cube_dims = [d["name"] for d in cube.dim_info]
-        for key in dims.keys():
-            if key not in cube_dims:
-                raise RuntimeError('Key {0} not in cube dimensions'.format(key))
-
-    def _convert_slice(slice_string):
-        """_convert_slice(slice_string) -> slice object: converts a string and returns it as a slice object
-        :param slice_string: a string that has the sliced format
-        :type slice_string: str
-        :returns: a 'slice' object
-        :rtype: <class 'slice'>
-        :raises: RuntimeError
-        """
-        if len(slice_string.split(":")) == 2:
-            return slice(slice_string.split(":")[0].strip(), slice_string.split(":")[1].strip(), "1")
-        elif len(slice_string.split(":")) == 3:
-            return slice(slice_string.split(":")[0].strip(), slice_string.split(":")[1].strip(),
-                         slice_string.split(":")[2].strip())
-        else:
-            raise RuntimeError('Wrong format in slice')
-
-    def _convert_filter(filters, type, cube, key):
-        """_convert_filter(filters) -> str: converts a string and returns string to working format
-        :param slice_string: a string that represents the filter
-        :type slice_string: list
+    def _scientific_notation(num):
+        """_scientific_notation(v) -> str : converts a large number to
+        scientific notation
+        :params num: our number (int or float)
+        :type num: <class 'int'> | <class 'float'>
         :returns: str
         :rtype: <class 'str'>
         """
-        for i in range(0, len(filters)):
-            if ":" in filters[i]:
-                slice_obj = _convert_slice(filters[i].replace("[", "").replace("]", ""))
-                if slice_obj.stop == "-1":
-                    slice_obj = slice(slice_obj.start, "end", slice_obj.step)
-                    if type == "index":
-                        slice_obj = slice(str(int(slice_obj.start) + 1), "end", slice_obj.step)
-                elif int(slice_obj.stop) < -1:
-                    if type == "index":
-                        for obj in cube.dim_info:
-                            if obj["name"] == key:
-                                start = str(int(slice_obj.start) + 1)
-                                end = str(int(obj["size"]) + int(slice_obj.stop))
-                                slice_obj = slice(start, end, slice_obj.step)
-                                break
-                else:
-                    if type == "index":
-                        slice_obj = slice(str(int(slice_obj.start) + 1), str(int(slice_obj.stop) + 1),
-                                          slice_obj.step)
-                if slice_obj.step == "1":
-                    filters[i] = ":".join([slice_obj.start, slice_obj.stop])
-                else:
-                    filters[i] = ":".join([slice_obj.start, slice_obj.stop, slice_obj.step])
-        return ",".join(filters)
+        from decimal import Decimal
+        d = Decimal(eval(str(num)))
+        e = format(d, '.6e')
+        a = e.split('e')
+        b = a[0].replace('0', '')
+        return b + 'e' + a[1]
 
-    def _time_check(datetimes):
-        """_time_check(datetimes) -> str: checks if the string belongs to one of the selected datetime formats
-        :param datetimes: a string that represents a date
-        :type datetimes: str|list
-        :returns: str
-        :rtype: <class 'str'>
+    def _dependency_check():
+        """_dependency_check() -> checks for xarray dependency in user's system
+        :returns: NoneType
+        :rtype: <class 'NoneType'>
         :raises: RuntimeError
         """
-        import datetime
-        date_formats = ['%Y-%m-%d', '%Y-%m', '%Y', '%Y-%m-%d %H', '%Y-%m-%d %H:%M', '%Y-%m-%d %H:%M:%S']
-        if isinstance(datetimes, str):
-            datetimes = [datetimes]
-        for i in range(0, len(datetimes)):
-            datetime_bool = False
-            if datetimes[i].strip() == "DJF":
-                datetime_bool = True
-                break
-            if datetimes[i].strip() == "MAM":
-                datetime_bool = True
-                break
-            if datetimes[i].strip() == "JJA":
-                datetime_bool = True
-                break
-            if datetimes[i].strip() == "SON":
-                datetime_bool = True
-                break
-            for date_format in date_formats:
-                try:
-                    datetime.datetime.strptime(datetimes[i], date_format)
-                    datetime_bool = True
-                    break
-                except:
-                    pass
-            if not datetime_bool:
-                raise RuntimeError('Wrong date format')
-        return ",".join(datetimes)
+        try:
+            import xarray
+        except ModuleNotFoundError:
+            raise RuntimeError('xarray is not installed')
 
     def _time_dimension_finder(cube):
         """
@@ -536,30 +106,7 @@ def select(cube=cube, type="coord", ncores=1, nthreads=1, description='-',
                 return c["name"]
         return None
 
-    time_filter = "no"
-    cube.info(display=False)
-    time_dimension = _time_dimension_finder(cube)
-    _perform_checks(type, dims, cube, tolerance, time_dimension)
-    for key in dims:
-        if key == time_dimension:
-            if dims[key] is not None:
-                time_filter = "yes"
-                dims[key] = _time_check(dims[key])
-        else:
-            dims[key] = _convert_filter(dims[key], type, cube, key)
-    if type == "index":
-        return cube.subset(subset_type=type, subset_dims="|".join(dims.keys()),
-                           subset_filter="|".join(dims.values()), ncores=ncores,
-                           nthreads=nthreads, description=description, display=display, time_filter=time_filter)
-    else:
-        return cube.subset(subset_type=type, subset_dims="|".join(dims.keys()),
-                           subset_filter="|".join(dims.values()), ncores=ncores,
-                           nthreads=nthreads, description=description, display=display, offset=tolerance,
-                           time_filter=time_filter)
-
-
-def summary(cube=cube, precision=2):
-    def get_unpack_format(element_num, output_type):
+    def _get_unpack_format(element_num, output_type):
         if output_type == 'float':
             format = str(element_num) + 'f'
         elif output_type == 'double':
@@ -568,100 +115,489 @@ def summary(cube=cube, precision=2):
             format = str(element_num) + 'i'
         elif output_type == 'long':
             format = str(element_num) + 'l'
+        elif output_type == 'short':
+            format = str(element_num) + 'h'
+        elif output_type == 'char':
+            format = str(element_num) + 'c'
         else:
             raise RuntimeError('The value type is not valid')
         return format
 
-    def calculate_decoded_length(decoded_string, output_type):
+    def _calculate_decoded_length(decoded_string, output_type):
         if output_type == 'float' or output_type == 'int':
             num = int(float(len(decoded_string)) / float(4))
         elif output_type == 'double' or output_type == 'long':
             num = int(float(len(decoded_string)) / float(8))
+        elif output_type == 'short':
+            num = int(float(len(decoded_string)) / float(2))
+        elif output_type == 'char':
+            num = int(float(len(decoded_string)) / float(1))
         else:
             raise RuntimeError('The value type is not valid')
         return num
 
-    def _decode_dimensions_response(response):
-        data_values = {}
-        data_values["dimension"] = {}
-        data_values["measure"] = {}
+    def _add_coordinates(cube, ds, response, meta_info):
+        """
+        _add_coordinates(cube, dr, response) -> xarray.core.dataset.Dataset,
+        int: a function that uses the response from
+            the oph_explorecube and adds coordinates to the dataarray object
+        :param cube: the cube object
+        :type cube:  <class 'PyOphidia.cube.Cube'>
+        :param ds: the xarray dataset object
+        :type ds:  <class 'xarray.core.dataset.Dataset'>
+        :param response: response from pyophidia query
+        :type response:  <class 'dict'>
+        :returns: xarray.core.dataset.Dataset,int|None
+        :rtype: <class 'xarray.core.dataset.Dataset'>,<class 'int'>|None
+        """
+        lengths = []
         try:
-            dimensions = []
             for response_i in response['response']:
-                if response_i['objkey'] == 'cubeschema_dimvalues':
-                    for response_j in response_i['objcontent'][:3] + response_i['objcontent'][-3:]:
-                        if response_j['title'] and response_j['rowfieldtypes'] and response_j['rowfieldtypes'][1] and \
+                if response_i['objkey'] == 'explorecube_dimvalues':
+                    for response_j in response_i['objcontent']:
+                        if response_j['title'] and response_j[
+                            'rowfieldtypes'] and response_j['rowfieldtypes'][
+                            1] and \
                                 response_j['rowvalues']:
-                            curr_dim = {}
-                            curr_dim['name'] = response_j['title']
-                            dim_array = []
-                            if response_j['title'] == 'time':
-                                for val in response_j['rowvalues'][:3] + response_j['rowvalues'][-3:]:
-                                    dims = [s.strip() for s in val[1].split(',')]
-                                    for v in dims:
-                                        dim_array.append(v)
+                            if response_j['title'] == _time_dimension_finder(
+                                    cube):
+                                temp_array = []
+                                for val in response_j['rowvalues']:
+                                    dims = [s.strip() for s in
+                                            val[1].split(',')]
+                                    temp_array.append(dims[0])
+                                ds[response_j['title']] = temp_array
                             else:
-                                for val in response_j['rowvalues'][:3] + response_j['rowvalues'][-3:]:
+                                lengths.append(len(response_j['rowvalues']))
+                                temp_array = []
+                                for val in response_j['rowvalues']:
                                     decoded_bin = base64.b64decode(val[1])
-                                    length = calculate_decoded_length(decoded_bin, response_j['rowfieldtypes'][1])
-                                    format = get_unpack_format(length, response_j['rowfieldtypes'][1])
+                                    length = _calculate_decoded_length(
+                                        decoded_bin,
+                                        response_j['rowfieldtypes'][1])
+                                    format = _get_unpack_format(length,
+                                                                response_j[
+                                                                    'rowfieldtypes'][
+                                                                    1])
                                     dims = struct.unpack(format, decoded_bin)
-                                    for v in dims:
-                                        dim_array.append(v)
-                            curr_dim['values'] = dim_array
-                            dimensions.append(curr_dim)
-
+                                    temp_array.append(
+                                        _append_with_format(dims[0],
+                                                            response_j[
+                                                                'rowfieldtypes'][
+                                                                1]))
+                                ds[response_j['title']] = list(temp_array)
+                                ds[response_j[
+                                    'title']].attrs = convert_to_metadict(
+                                    meta_info,
+                                    filter=response_j['title'])
                         else:
-                            raise RuntimeError("Unable to get dimension name or values in response")
+                            raise RuntimeError(
+                                "Unable to get dimension name or values in "
+                                "response")
                     break
-            dim_num = len(dimensions)
-            if dim_num == 0:
-                raise RuntimeError("No dimension found")
-            data_values["dimension"] = dimensions
         except Exception as e:
-            print(get_linenumber(), "Unable to get dimensions from response:", e)
+            print(get_linenumber(), "Unable to get dimensions from response:",
+                  e)
             return None
-        return data_values
+        return ds, lengths
 
+    def _add_measure(cube, ds, response, lengths, meta_info):
+        """
+        _add_measure(cube, dr, response) -> xarray.core.dataset.Dataset: a
+        function that uses the response from
+            the oph_explorecube and adds the measure to the dataarray object
+        :param cube: the cube object
+        :type cube:  <class 'PyOphidia.cube.Cube'>
+        :param ds: the xarray dataset object
+        :type ds:  <class 'xarray.core.dataset.Dataset'>
+        :param response: response from pyophidia query
+        :type response:  <class 'dict'>
+        :param lengths: list of the coordinate lengths
+        :type lengths:  <class 'list'>
+        :returns: xarray.core.dataset.Dataset|None
+        :rtype: <class 'xarray.core.dataset.Dataset'>|None
+        """
+        try:
+            for response_i in response['response']:
+                if response_i['objkey'] == 'explorecube_data':
+                    for response_j in response_i['objcontent']:
+                        if response_j['title'] and response_j['rowkeys'] and \
+                                response_j['rowfieldtypes'] \
+                                and response_j['rowvalues']:
+                            measure_index = 0
+
+                            for i, t in enumerate(response_j['rowkeys']):
+                                if response_j['title'] == t:
+                                    measure_index = i
+                                    break
+                            if measure_index == 0:
+                                raise RuntimeError(
+                                    "Unable to get measure name in response")
+                            values = []
+                            for val in response_j['rowvalues']:
+                                decoded_bin = base64.b64decode(
+                                    val[measure_index])
+                                length = _calculate_decoded_length(decoded_bin,
+                                                                   response_j[
+                                                                       'rowfieldtypes'][
+                                                                       measure_index])
+                                format = _get_unpack_format(length, response_j[
+                                    'rowfieldtypes'][measure_index])
+                                data_format = response_j['rowfieldtypes'][
+                                    measure_index]
+                                measure = struct.unpack(format, decoded_bin)
+                                if (type(measure)) is (tuple or list) and len(
+                                        measure) == 1:
+                                    values.append(
+                                        _append_with_format(measure[0],
+                                                            data_format))
+                                else:
+                                    for v in measure:
+                                        values.append(_append_with_format(v,
+                                                                          data_format))
+                            for i in range(len(lengths) - 1, -1, -1):
+                                current_array = []
+                                if i == len(lengths) - 1:
+                                    for j in range(0, len(values), lengths[i]):
+                                        current_array.append(
+                                            values[j:j + lengths[i]])
+                                else:
+                                    for j in range(0, len(previous_array),
+                                                   lengths[i]):
+                                        current_array.append(
+                                            previous_array[j:j + lengths[i]])
+                                previous_array = current_array
+                            measure = previous_array[0]
+                        else:
+                            raise RuntimeError(
+                                "Unable to get measure values in response")
+                        break
+                    break
+            if len(measure) == 0:
+                raise RuntimeError("No measure found")
+        except Exception as e:
+            print("Unable to get measure from response:", e)
+            return None
+        sorted_coordinates = []
+        for l in lengths:
+            for c in cube.dim_info:
+                if l == int(c["size"]) and c["name"] not in sorted_coordinates:
+                    sorted_coordinates.append(c["name"])
+                    break
+        ds[cube.measure] = (sorted_coordinates, measure,)
+        ds[cube.measure].attrs = convert_to_metadict(meta_info,
+                                                     filter=response_j[
+                                                         'title'])
+        return ds
+
+    def _get_meta_info(response):
+        """
+        _get_meta_info(response) -> <class 'list'>: a function that uses the
+        response from
+            the oph_metadata and returns meta information
+        :param response: response from pyophidia query
+        :type response:  <class 'dict'>
+        :returns: list
+        :rtype: <class 'list'>|None
+        """
+        try:
+            meta_list = []
+            for obj in response["response"]:
+                if "objcontent" in obj.keys():
+                    if ("rowvalues" and "rowkeys") in obj["objcontent"][
+                        0].keys():
+                        key_indx, value_indx, variable_indx, type_indx = \
+                            _get_indexes(
+                                obj["objcontent"][0]["rowkeys"])
+                        for row in obj["objcontent"][0]["rowvalues"]:
+                            key = row[key_indx]
+                            value = row[value_indx]
+                            variable = row[variable_indx]
+                            _type = row[type_indx]
+                            if (_type == "float" or _type == "int") and len(
+                                    str(value)) > 9:
+                                value = _scientific_notation(value)
+                            meta_list.append({"key": key, "value": value,
+                                              "variable": variable})
+        except Exception as e:
+            print("Unable to parse meta info from response:", e)
+            return None
+        return meta_list
+
+    def convert_to_metadict(meta_list, filter=""):
+        meta_dict = {}
+        for d in meta_list:
+            if d["variable"] == filter:
+                meta_dict[d["key"]] = d["value"]
+        return meta_dict
+
+    def _initiate_xarray_object(cube, meta_info):
+        """
+        _initiate_xarray_object(cube, meta_info) ->
+        xarray.core.dataset.Dataset: a function that initiates the
+            xarray.dataset object with the meta information
+        :param cube: the cube object
+        :type cube:  <class 'PyOphidia.cube.Cube'>
+        :param meta_info: meta information dict
+        :type meta_info:  <class 'list'>
+        :returns: xarray.core.dataset.Dataset|None
+        :rtype: <class 'xarray.core.dataset.Dataset'>|None
+        """
+        coordinates = [c["name"] for c in cube.dim_info]
+        if len(coordinates) == 0:
+            raise RuntimeError("No coordinates")
+        ds = xr.Dataset({cube.measure: ""},
+                        attrs=convert_to_metadict(meta_info, filter=""))
+        return ds
+
+    def _get_indexes(rowkeys):
+        """
+        _get_indexes(response) -> <class 'int'>, <class 'int'>, <class
+        'int'>, <class 'int'>: a function that takes as
+            input a list of strings and returns the indexes of the ones that
+            match Key and Value
+        :param rowkeys: list of strings
+        :type rowkeys:  <class 'list'>
+        :returns: int, int, int, int
+        :rtype: <class 'int'>, <class 'int'>|None
+        """
+        try:
+            return rowkeys.index("Key"), rowkeys.index("Value"), rowkeys.index(
+                "Variable"), rowkeys.index("Type")
+        except Exception as e:
+            print("Unable to parse meta info from response:", e)
+            return None
+
+    _dependency_check()
+    import xarray as xr
     cube.info(display=False)
+    pid = cube.pid
+    query = 'oph_metadata cube={0}'.format(pid)
+    cube.client.submit(query, display=False)
+    meta_response = cube.client.deserialize_response()
+    meta_list = _get_meta_info(meta_response)
+    ds = _initiate_xarray_object(cube, meta_list)
+    query = 'oph_explorecube ' \
+            'ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord' \
+            ';limit_filter=0;show_time=yes;' \
+            'cube={0};'.format(pid)
+    cube.client.submit(query, display=False)
+    response = cube.client.deserialize_response()
+    try:
+        ds, lengths = _add_coordinates(cube, ds, response, meta_list)
+    except Exception as e:
+        print(get_linenumber(),
+              "Something is wrong with the coordinates, error: ", e)
+        return None
+    try:
+        ds = _add_measure(cube, ds, response, lengths, meta_list)
+    except Exception as e:
+        print(get_linenumber(), "Something is wrong with the measure, error: ",
+              e)
+        return None
+    return ds
 
-    cube.cubeschema(level=1, display=False, base64="yes", show_index="yes", show_time="yes")
-    dim_response = cube.client.deserialize_response()
-    dimensions = _decode_dimensions_response(dim_response)
-    dimensions_print = "Dimensions:\t{0}"
-    coordinates_print = "\t- {0}{1}({0}:{2})\t{3} {4} ... {5}"
-    coordinates_print_small_size = "\t- {0}{1}({0}:{2})\t{3} {4}"
-    variable_print = "Variable:\t\t{0}\t({1}) {2} ..."
-    space = max([len(c["name"]) for c in cube.dim_info]) + 8
-    print("Cubepid: {0}".format(cube.pid))
-    print(dimensions_print.format("; ".join([c["name"] + ":" + c["size"] + (" (explicit)" if c["array"] == "no" else
-                                                                            " (implicit)") for c in cube.dim_info])))
-    print("Coordinates:")
-    for c in cube.dim_info:
-        size = c["size"]
-        type = c["type"]
-        name = c["name"]
-        values = [d["values"] for d in dimensions["dimension"] if d["name"] == name][0]
-        if int(size) <= 6:
-            try:
-                print(coordinates_print_small_size.format(name, " " * (space - len(name)), size, type, ", "
-                                                          .join([str(round(float(v), precision)) for v in values])))
-            except ValueError:
-                print(coordinates_print_small_size.format(name, " " * (space - len(name)), size, type,
-                                                          ", ".join([str(v) for v in values])))
+
+def convert_to_dataframe(cube):
+    """convert_to_pandas(cube=cube) -> pandas.core.frame.DataFrame : convert
+    a Pyophidia.cube to pandas dataframe
+    :param cube: the initial cube
+    :type cube: <class 'PyOphidia.cube.Cube'>
+    :returns: a pandas.core.frame.DataFrame object
+    :rtype: <class 'pandas.core.frame.DataFrame'>
+    :raises: RuntimeError
+    """
+
+    def _dependency_check():
+        """_dependency_check() -> checks for xarray dependency in user's system
+        :returns: NoneType
+        :rtype: <class 'NoneType'>
+        :raises: RuntimeError
+        """
+        try:
+            import pandas
+        except ModuleNotFoundError:
+            raise RuntimeError('pandas is not installed')
+
+    def _time_dimension_finder(cube):
+        """
+        _time_dimension_finder(cube) -> str: finds the time dimension, if any
+        :param cube: the cube object
+        :type cube:  <class 'PyOphidia.cube.Cube'>
+        :returns: str|None
+        :rtype: <class 'str'>
+        """
+        for c in cube.dim_info:
+            if c["hierarchy"].lower() == "oph_time":
+                return c["name"]
+        return None
+
+    def _get_unpack_format(element_num, output_type):
+        if output_type == 'float':
+            format = str(element_num) + 'f'
+        elif output_type == 'double':
+            format = str(element_num) + 'd'
+        elif output_type == 'int':
+            format = str(element_num) + 'i'
+        elif output_type == 'long':
+            format = str(element_num) + 'l'
+        elif output_type == 'short':
+            format = str(element_num) + 'h'
+        elif output_type == 'char':
+            format = str(element_num) + 'c'
         else:
-            try:
-                print(coordinates_print.format(name, " " * (space - len(name)), size, type, ", "
-                                               .join([str(round(float(v), precision)) for v in values[:3]]),
-                                               ", ".join([str(round(float(v), precision)) for v in values[3:]])))
-            except ValueError:
-                print(coordinates_print.format(name, " " * (space - len(name)), size, type,
-                                               ", ".join([str(v) for v in values[:3]]),
-                                               ", ".join([str(v) for v in values[3:]])))
-    print(variable_print.format(cube.measure, ", ".join([c["name"] + ":" + c["size"] for c in cube.dim_info]),
-                                cube.measure_type))
-    print("Cube size: {0}".format(str(round(float(cube.size.split(" ")[0].strip()), 3)))
-          + " " + cube.size.split(" ")[-1])
-    print("Partitioning: hosts: {0}; frag x host: {1}; rows x frag: {2}; array length: {3}".
-          format(cube.hostxcube, cube.nfragments, cube.rowsxfrag, cube.nelements))
+            raise RuntimeError('The value type is not valid')
+        return format
 
+    def _calculate_decoded_length(decoded_string, output_type):
+        if output_type == 'float' or output_type == 'int':
+            num = int(float(len(decoded_string)) / float(4))
+        elif output_type == 'double' or output_type == 'long':
+            num = int(float(len(decoded_string)) / float(8))
+        elif output_type == 'short':
+            num = int(float(len(decoded_string)) / float(2))
+        elif output_type == 'char':
+            num = int(float(len(decoded_string)) / float(1))
+        else:
+            raise RuntimeError('The value type is not valid')
+        return num
+
+    def _add_coordinates(cube, response):
+        """
+        _add_coordinates(cube,response) ->
+        pandas.core.indexes.multi.MultiIndex: a function that uses the response
+            from the oph_explorecube and converts dimensions to pandas
+            multiIndex format
+        :param cube: the cube object
+        :type cube:  <class 'PyOphidia.cube.Cube'>
+        :param response: response from pyophidia query
+        :type response:  <class 'dict'>
+        :returns: pandas.core.indexes.multi.MultiIndex|None
+        :rtype: <class 'pandas.core.indexes.multi.MultiIndex'>|None
+        """
+        max_size = max([int(dim["size"]) for dim in cube.dim_info])
+        indexes = {}
+        try:
+            for response_i in response['response']:
+                if response_i['objkey'] == 'explorecube_dimvalues':
+                    for response_j in response_i['objcontent']:
+                        if response_j['title'] and response_j[
+                            'rowfieldtypes'] and response_j['rowfieldtypes'][
+                            1] and \
+                                response_j['rowvalues']:
+                            if response_j['title'] == _time_dimension_finder(
+                                    cube):
+                                temp_array = []
+                                for val in response_j['rowvalues']:
+                                    dims = [s.strip() for s in
+                                            val[1].split(',')]
+                                    temp_array.append(dims[0])
+                                indexes[response_j['title']] = temp_array
+                            else:
+                                temp_array = []
+                                for val in response_j['rowvalues']:
+                                    decoded_bin = base64.b64decode(val[1])
+                                    length = _calculate_decoded_length(
+                                        decoded_bin,
+                                        response_j['rowfieldtypes'][1])
+                                    format = _get_unpack_format(length,
+                                                                response_j[
+                                                                    'rowfieldtypes'][
+                                                                    1])
+                                    dims = struct.unpack(format, decoded_bin)
+                                    temp_array.append(dims[0])
+                                indexes[response_j['title']] = list(temp_array)
+                        else:
+                            raise RuntimeError(
+                                "Unable to get dimension name or values in "
+                                "response")
+                    break
+        except Exception as e:
+            print(get_linenumber(), "Unable to get dimensions from response:",
+                  e)
+            return None
+        return pd.MultiIndex.from_product(list(indexes.values()),
+                                          names=list(indexes.keys()))
+
+    def _add_measure(cube, indexes, response):
+        """
+        _add_measure(cube, indexes, response) ->
+        pandas.core.frame.DataFrame: a function that uses the response from
+            the oph_explorecube and creates the pandas.Dataframe
+        :param cube: the cube object
+        :type cube:  <class 'PyOphidia.cube.Cube'>
+        :param indexes: indexes in pandas multiindex format
+        :type indexes: <class 'pandas.core.indexes.multi.MultiIndex'>
+        :param response: response from pyophidia query
+        :type response:  <class 'dict'>
+        :returns: pandas.core.frame.DataFrame|None
+        :rtype: <class 'pandas.core.frame.DataFrame'>|None
+        """
+        try:
+            for response_i in response['response']:
+                if response_i['objkey'] == 'explorecube_data':
+                    for response_j in response_i['objcontent']:
+                        if response_j['title'] and response_j['rowkeys'] and \
+                                response_j['rowfieldtypes'] \
+                                and response_j['rowvalues']:
+                            measure_index = 0
+                            for i, t in enumerate(response_j['rowkeys']):
+                                if response_j['title'] == t:
+                                    measure_index = i
+                                    break
+                            if measure_index == 0:
+                                raise RuntimeError(
+                                    "Unable to get measure name in response")
+                            values = []
+                            for val in response_j['rowvalues']:
+                                decoded_bin = base64.b64decode(
+                                    val[measure_index])
+                                length = _calculate_decoded_length(decoded_bin,
+                                                                   response_j[
+                                                                       'rowfieldtypes'][
+                                                                       measure_index])
+                                format = _get_unpack_format(length, response_j[
+                                    'rowfieldtypes'][measure_index])
+                                measure = struct.unpack(format, decoded_bin)
+                                if (type(measure)) is (tuple or list) and len(
+                                        measure) == 1:
+                                    values.append(measure[0])
+                                else:
+                                    for v in measure:
+                                        values.append(v)
+                        else:
+                            raise RuntimeError(
+                                "Unable to get measure values in response")
+                        break
+                    break
+            if len(measure) == 0:
+                raise RuntimeError("No measure found")
+        except Exception as e:
+            print("Unable to get measure from response:", e)
+            return None
+        df = pd.DataFrame({cube.measure: values}, index=indexes)
+        return df
+
+    _dependency_check()
+    import pandas as pd
+    cube.info(display=False)
+    pid = cube.pid
+    query = 'oph_explorecube ' \
+            'ncore=1;base64=yes;level=2;show_time=yes;show_index=yes' \
+            ';subset_type=coord;' \
+            'limit_filter=0;cube={0};'.format(pid)
+    cube.client.submit(query, display=False)
+    response = cube.client.deserialize_response()
+    try:
+        indexes = _add_coordinates(cube, response)
+    except Exception as e:
+        print(get_linenumber(),
+              "Something is wrong with the coordinates, error: ", e)
+        return None
+    try:
+        df = _add_measure(cube, indexes, response)
+    except Exception as e:
+        print(get_linenumber(), "Something is wrong with the measure, error: ",
+              e)
+        return None
+    return df

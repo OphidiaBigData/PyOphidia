@@ -1,16 +1,46 @@
 
-Next release
-------------
+v1.9.1 - 2021-08-03
+-------------------
 
 Added:
 ~~~~~~
 
+- Argument 'save' for saving the JSON response in most cube methods
+
+Changed:
+~~~~~~~~
+
+- Default values of 'disable' and 'enable' argument in 'service' method in cube class
+- Default value of 'missingvalue' argument in cube class to '-'
+
+Fixed:
+~~~~~~
+
+- Slow parsing of large XML response documents in ophsubmit.py `#34 <https://github.com/OphidiaBigData/PyOphidia/issues/34>`_
+
+
+Removed:
+~~~~~~~~
+
+- Deprecated 'subset2' method from cube `#35 <https://github.com/OphidiaBigData/PyOphidia/pull/35>`_
+
+
+v1.9.0 - 2021-07-21
+-------------------
+
+Added:
+~~~~~~
+
+- New attribute 'last_response_status' in client class
+- Option to specify 'project' value for interacting with the job scheduler `#33 <https://github.com/OphidiaBigData/PyOphidia/pull/33>`_
 - New methods 'last_workflowid' and 'last_markerid' in client class  `#26 <https://github.com/OphidiaBigData/PyOphidia/pull/26>`_
 - New parameter 'cubes' to OPH_INTERCUBE
 
 Changed:
 ~~~~~~~~
 
+- Return value to JSON response for multiple metadata and info methods in cube class when display is set to False 
+- Removed workflow json print from wisvalid method
 - Cube methods interfaces to comply with Ophidia operators in v1.6.0
 - Improve export_array method in cube class `#28 <https://github.com/OphidiaBigData/PyOphidia/pull/28>`_
 - sectlient method in cube class with new argument 'api_mode' `#27 <https://github.com/OphidiaBigData/PyOphidia/pull/27>`_
@@ -21,6 +51,7 @@ Changed:
 Fixed:
 ~~~~~~
 
+- Input arguments usage in concatnc and concatnc2 methods in cube class 
 - randcube2 method in cube class to use the proper operator
 
 
