@@ -34,6 +34,74 @@ def get_linenumber():
     return __file__, cf.f_back.f_lineno
 
 
+def _dependency_check(dependency):
+    """_dependency_check() -> checks for xarray dependency in user's system
+    :param dependency: the dependency to be checked. pandas or xarray
+    :type cube:  str
+    :returns: NoneType
+    :rtype: <class 'NoneType'>
+    :raises: RuntimeError, AttributeError
+    """
+    if dependency == "pandas":
+        try:
+            import pandas
+        except ModuleNotFoundError:
+            raise RuntimeError('pandas is not installed')
+    elif dependency == "xarray":
+        try:
+            import xarray
+        except ModuleNotFoundError:
+            raise RuntimeError('xarray is not installed')
+    else:
+        raise AttributeError("Dependency variable must be xarray or pandas")
+
+
+def _time_dimension_finder(cube):
+    """
+    _time_dimension_finder(cube) -> str: finds the time dimension, if any
+    :param cube: the cube object
+    :type cube:  <class 'PyOphidia.cube.Cube'>
+    :returns: str|None
+    :rtype: <class 'str'>
+    """
+    for c in cube.dim_info:
+        if c["hierarchy"].lower() == "oph_time":
+            return c["name"]
+    return None
+
+
+def _get_unpack_format(element_num, output_type):
+    if output_type == 'float':
+        format = str(element_num) + 'f'
+    elif output_type == 'double':
+        format = str(element_num) + 'd'
+    elif output_type == 'int':
+        format = str(element_num) + 'i'
+    elif output_type == 'long':
+        format = str(element_num) + 'l'
+    elif output_type == 'short':
+        format = str(element_num) + 'h'
+    elif output_type == 'char':
+        format = str(element_num) + 'c'
+    else:
+        raise RuntimeError('The value type is not valid')
+    return format
+
+
+def _calculate_decoded_length(decoded_string, output_type):
+    if output_type == 'float' or output_type == 'int':
+        num = int(float(len(decoded_string)) / float(4))
+    elif output_type == 'double' or output_type == 'long':
+        num = int(float(len(decoded_string)) / float(8))
+    elif output_type == 'short':
+        num = int(float(len(decoded_string)) / float(2))
+    elif output_type == 'char':
+        num = int(float(len(decoded_string)) / float(1))
+    else:
+        raise RuntimeError('The value type is not valid')
+    return num
+
+
 def convert_to_xarray(cube):
     """convert_to_xarray(cube=cube) -> xarray.core.dataset.Dataset : convert
     a Pyophidia.cube to xarray.dataset
@@ -81,60 +149,6 @@ def convert_to_xarray(cube):
         a = e.split('e')
         b = a[0].replace('0', '')
         return b + 'e' + a[1]
-
-    def _dependency_check():
-        """_dependency_check() -> checks for xarray dependency in user's system
-        :returns: NoneType
-        :rtype: <class 'NoneType'>
-        :raises: RuntimeError
-        """
-        try:
-            import xarray
-        except ModuleNotFoundError:
-            raise RuntimeError('xarray is not installed')
-
-    def _time_dimension_finder(cube):
-        """
-        _time_dimension_finder(cube) -> str: finds the time dimension, if any
-        :param cube: the cube object
-        :type cube:  <class 'PyOphidia.cube.Cube'>
-        :returns: str|None
-        :rtype: <class 'str'>
-        """
-        for c in cube.dim_info:
-            if c["hierarchy"].lower() == "oph_time":
-                return c["name"]
-        return None
-
-    def _get_unpack_format(element_num, output_type):
-        if output_type == 'float':
-            format = str(element_num) + 'f'
-        elif output_type == 'double':
-            format = str(element_num) + 'd'
-        elif output_type == 'int':
-            format = str(element_num) + 'i'
-        elif output_type == 'long':
-            format = str(element_num) + 'l'
-        elif output_type == 'short':
-            format = str(element_num) + 'h'
-        elif output_type == 'char':
-            format = str(element_num) + 'c'
-        else:
-            raise RuntimeError('The value type is not valid')
-        return format
-
-    def _calculate_decoded_length(decoded_string, output_type):
-        if output_type == 'float' or output_type == 'int':
-            num = int(float(len(decoded_string)) / float(4))
-        elif output_type == 'double' or output_type == 'long':
-            num = int(float(len(decoded_string)) / float(8))
-        elif output_type == 'short':
-            num = int(float(len(decoded_string)) / float(2))
-        elif output_type == 'char':
-            num = int(float(len(decoded_string)) / float(1))
-        else:
-            raise RuntimeError('The value type is not valid')
-        return num
 
     def _add_coordinates(cube, ds, response, meta_info):
         """
@@ -368,7 +382,7 @@ def convert_to_xarray(cube):
             print("Unable to parse meta info from response:", e)
             return None
 
-    _dependency_check()
+    _dependency_check(dependency="xarray")
     import xarray as xr
     cube.info(display=False)
     pid = cube.pid
@@ -407,60 +421,6 @@ def convert_to_dataframe(cube):
     :rtype: <class 'pandas.core.frame.DataFrame'>
     :raises: RuntimeError
     """
-
-    def _dependency_check():
-        """_dependency_check() -> checks for xarray dependency in user's system
-        :returns: NoneType
-        :rtype: <class 'NoneType'>
-        :raises: RuntimeError
-        """
-        try:
-            import pandas
-        except ModuleNotFoundError:
-            raise RuntimeError('pandas is not installed')
-
-    def _time_dimension_finder(cube):
-        """
-        _time_dimension_finder(cube) -> str: finds the time dimension, if any
-        :param cube: the cube object
-        :type cube:  <class 'PyOphidia.cube.Cube'>
-        :returns: str|None
-        :rtype: <class 'str'>
-        """
-        for c in cube.dim_info:
-            if c["hierarchy"].lower() == "oph_time":
-                return c["name"]
-        return None
-
-    def _get_unpack_format(element_num, output_type):
-        if output_type == 'float':
-            format = str(element_num) + 'f'
-        elif output_type == 'double':
-            format = str(element_num) + 'd'
-        elif output_type == 'int':
-            format = str(element_num) + 'i'
-        elif output_type == 'long':
-            format = str(element_num) + 'l'
-        elif output_type == 'short':
-            format = str(element_num) + 'h'
-        elif output_type == 'char':
-            format = str(element_num) + 'c'
-        else:
-            raise RuntimeError('The value type is not valid')
-        return format
-
-    def _calculate_decoded_length(decoded_string, output_type):
-        if output_type == 'float' or output_type == 'int':
-            num = int(float(len(decoded_string)) / float(4))
-        elif output_type == 'double' or output_type == 'long':
-            num = int(float(len(decoded_string)) / float(8))
-        elif output_type == 'short':
-            num = int(float(len(decoded_string)) / float(2))
-        elif output_type == 'char':
-            num = int(float(len(decoded_string)) / float(1))
-        else:
-            raise RuntimeError('The value type is not valid')
-        return num
 
     def _add_coordinates(cube, response):
         """
@@ -578,7 +538,7 @@ def convert_to_dataframe(cube):
         df = pd.DataFrame({cube.measure: values}, index=indexes)
         return df
 
-    _dependency_check()
+    _dependency_check(dependency="pandas")
     import pandas as pd
     cube.info(display=False)
     pid = cube.pid
