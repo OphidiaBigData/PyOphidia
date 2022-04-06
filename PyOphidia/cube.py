@@ -194,6 +194,14 @@ class Cube:
                   month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-',
                   policy='rr', schedule=0, check_grid='no', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_IMPORTNC2
+        importncs(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,
+                  cdd=None, compressed='no', exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes',
+                  check_compliance='no', offset=0, ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0,
+                  subset_dims='none', subset_filter='all', time_filter='yes', subset_type='index', exec_mode='sync',
+                  base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0,
+                  month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-',
+                  policy='rr', schedule=0, check_grid='no', save='yes', display=False)
+          -> Cube or None : wrapper of the operator OPH_IMPORTNCS
         instances(action='read', level=1, host_filter='all', nhost=0, host_partition='all', ioserver_filter='all', host_status='all',
                   exec_mode='sync', objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_INSTANCES
@@ -2403,6 +2411,251 @@ class Cube:
             query += "measure=" + str(measure) + ";"
         if src_path is not None:
             query += "src_path=" + str(src_path) + ";"
+        if cdd is not None:
+            query += "cdd=" + str(cdd) + ";"
+        if exp_dim is not None:
+            query += "exp_dim=" + str(exp_dim) + ";"
+        if imp_dim is not None:
+            query += "imp_dim=" + str(imp_dim) + ";"
+        if subset_dims is not None:
+            query += "subset_dims=" + str(subset_dims) + ";"
+        if subset_type is not None:
+            query += "subset_type=" + str(subset_type) + ";"
+        if subset_filter is not None:
+            query += "subset_filter=" + str(subset_filter) + ";"
+        if time_filter is not None:
+            query += "time_filter=" + str(time_filter) + ";"
+        if offset is not None:
+            query += "offset=" + str(offset) + ";"
+        if exp_concept_level is not None:
+            query += "exp_concept_level=" + str(exp_concept_level) + ";"
+        if imp_concept_level is not None:
+            query += "imp_concept_level=" + str(imp_concept_level) + ";"
+        if compressed is not None:
+            query += "compressed=" + str(compressed) + ";"
+        if grid is not None:
+            query += "grid=" + str(grid) + ";"
+        if hierarchy is not None:
+            query += "hierarchy=" + str(hierarchy) + ";"
+        if vocabulary is not None:
+            query += "vocabulary=" + str(vocabulary) + ";"
+        if base_time is not None:
+            query += "base_time=" + str(base_time) + ";"
+        if units is not None:
+            query += "units=" + str(units) + ";"
+        if calendar is not None:
+            query += "calendar=" + str(calendar) + ";"
+        if month_lengths is not None:
+            query += "month_lengths=" + str(month_lengths) + ";"
+        if leap_year is not None:
+            query += "leap_year=" + str(leap_year) + ";"
+        if leap_month is not None:
+            query += "leap_month=" + str(leap_month) + ";"
+        if policy is not None:
+            query += "policy=" + str(policy) + ";"
+        if description is not None:
+            query += "description=" + str(description) + ";"
+        if check_grid is not None:
+            query += "check_grid=" + str(check_grid) + ";"
+        if save is not None:
+            query += "save=" + str(save) + ";"
+
+        try:
+            if Cube.client.submit(query, display) is None:
+                raise RuntimeError()
+
+            if Cube.client.last_response is not None:
+                if Cube.client.cube:
+                    newcube = Cube(pid=Cube.client.cube)
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong:", e)
+            raise RuntimeError()
+        else:
+            return newcube
+            
+    @classmethod
+    def importncs(
+        cls,
+        container="-",
+        cwd=None,
+        exp_dim="auto",
+        host_partition="auto",
+        imp_dim="auto",
+        measure=None,
+        src_path=None,
+        cdd=None,
+        compressed="no",
+        exp_concept_level="c",
+        grid="-",
+        imp_concept_level="c",
+        import_metadata="yes",
+        check_compliance="no",
+        offset=0,
+        ioserver="ophidiaio_memory",
+        ncores=1,
+        nthreads=1,
+        nfrag=0,
+        nhost=0,
+        subset_dims="none",
+        subset_filter="all",
+        time_filter="yes",
+        subset_type="index",
+        exec_mode="sync",
+        base_time="1900-01-01 00:00:00",
+        calendar="standard",
+        hierarchy="oph_base",
+        leap_month=2,
+        leap_year=0,
+        month_lengths="31,28,31,30,31,30,31,31,30,31,30,31",
+        run="yes",
+        units="d",
+        vocabulary="CF",
+        description="-",
+        policy="rr",
+        schedule=0,
+        check_grid="no",
+        save="yes",
+        display=False,
+    ):
+        """importncs(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,
+                     cdd=None, compressed='no', exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes',
+                     check_compliance='no', offset=0, ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0,
+                     subset_dims='none', subset_filter='all', time_filter='yes', subset_type='index', exec_mode='sync',
+                     base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
+                     leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF',
+                     description='-', policy='rr', schedule=0, check_grid='no', save='yes', display=False)
+          -> Cube or None : wrapper of the operator OPH_IMPORTNCS
+
+
+        :param ncores: number of cores to use
+        :type ncores: int
+        :param nthreads: number of threads to use
+        :type nthreads: int
+        :param exec_mode: async or sync
+        :type exec_mode: str
+        :param schedule: 0
+        :type schedule: int
+        :param container: container name
+        :type container: str
+        :param cwd: current working directory
+        :type cwd: str
+        :param exp_dim: pipe (|) separated list of explicit dimension names
+        :type exp_dim: str
+        :param host_partition: host partition name
+        :type host_partition: str
+        :param imp_dim: pipe (|) separated list of implicit dimension names
+        :type imp_dim: str
+        :param measure: measure to be imported
+        :type measure: str
+        :param src_path: list of file paths to be imported
+        :type src_path: str
+        :param cdd: absolute path corresponding to the current directory on data repository
+        :type cdd: str
+        :param compressed: yes|no
+        :type compressed: str
+        :param exp_concept_level: pipe (|) separated list of explicit dimensions hierarchy levels
+        :type exp_concept_level: str
+        :param grid: optionally group dimensions in a grid
+        :type grid: str
+        :param imp_concept_level: pipe (|) separated list of implicit dimensions hierarchy levels
+        :type imp_concept_level: str
+        :param import_metadata: yes|no
+        :type import_metadata: str
+        :param check_compliance: yes|no
+        :type check_compliance: str
+        :param offset: it is added to the bounds of subset intervals
+        :type offset: int
+        :param ioserver: ophdiaio_memory
+        :type ioserver: str
+        :param nfrag: number of fragments/db to use
+        :type nfrag: int
+        :param nhost: number of hosts to use
+        :type nhost: int
+        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :type subset_dims: str
+        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :type subset_filter: str
+        :param time_filter: yes|no
+        :type time_filter: str
+        :param subset_type: index|coord
+        :type subset_type: str
+        :param base_time: reference time
+        :type base_time: str
+        :param calendar: calendar used (standard|gregorian|proleptic_gregorian|julian|360_day|no_leap|all_leap|user_defined)
+        :type calendar: str
+        :param hierarchy: pipe (|) separated list of dimension hierarchies (oph_base|oph_time)
+        :type hierarchy: str
+        :param leap_month: leap month
+        :type leap_month: int
+        :param leap_year: leap year
+        :type leap_year: int
+        :param month_lengths: comma-separated list of month lengths
+        :type month_lengths: str
+        :param run: yes|no
+        :type run: str
+        :param units: unit of time (s|m|h|3|6|d)
+        :type units: str
+        :param vocabulary: metadata vocabulary
+        :type vocabulary: str
+        :param policy: rule to select how data are distribuited over hosts (rr|port)
+        :type policy: str
+        :param description: additional description to be associated with the output cube
+        :type description: str
+        :param check_grid: yes|no
+        :type check_grid: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
+        :returns: obj or None
+        :rtype: Cube or None
+        :raises: RuntimeError
+        """
+
+        if Cube.client is None or measure is None or src_path is None:
+            raise RuntimeError("Cube.client, measure or src_path is None")
+        newcube = None
+
+        query = "oph_importncs "
+
+        if ncores is not None:
+            query += "ncores=" + str(ncores) + ";"
+        if nthreads is not None:
+            query += "nthreads=" + str(nthreads) + ";"
+        if exec_mode is not None:
+            query += "exec_mode=" + str(exec_mode) + ";"
+        if container is not None:
+            query += "container=" + str(container) + ";"
+        if cwd is not None:
+            query += "cwd=" + str(cwd) + ";"
+        if host_partition is not None:
+            query += "host_partition=" + str(host_partition) + ";"
+        if ioserver is not None:
+            query += "ioserver=" + str(ioserver) + ";"
+        if import_metadata is not None:
+            query += "import_metadata=" + str(import_metadata) + ";"
+        if check_compliance is not None:
+            query += "check_compliance=" + str(check_compliance) + ";"
+        if schedule is not None:
+            query += "schedule=" + str(schedule) + ";"
+        if nhost is not None:
+            query += "nhost=" + str(nhost) + ";"
+        if nfrag is not None:
+            query += "nfrag=" + str(nfrag) + ";"
+        if run is not None:
+            query += "run=" + str(run) + ";"
+        if measure is not None:
+            query += "measure=" + str(measure) + ";"
+        if src_path is not None:
+            if type(src_path) == list:
+                query += "src_path="
+                for i in range(0, len(src_path)):
+                    query += str(src_path[i])
+                    if i < len(src_path)-1:
+                        query += "|"
+                query += ";"
+            else:
+                query += "src_path=" + str(src_path) + ";"
         if cdd is not None:
             query += "cdd=" + str(cdd) + ";"
         if exp_dim is not None:
@@ -5677,3 +5930,4 @@ if __name__ == '__main__':
             buf += "%15s %15s %15s %15s %15s %15s %15s %15s" % (dim["name"], dim["type"], dim["size"], dim["hierarchy"], dim["concept_level"], dim["array"], dim["level"], dim["lattice_name"]) + "\n"
         buf += "-" * 127 + "\n"
         return buf
+
