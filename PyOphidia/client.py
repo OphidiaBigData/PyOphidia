@@ -783,8 +783,6 @@ class Client:
             request["cdd"] = self.cdd
         if self.cube and "cube" not in request:
             request["cube"] = self.cube
-        if self.host_partition and "host_partition" not in request:
-            request["host_partition"] = self.host_partition
         if self.exec_mode and "exec_mode" not in request:
             request["exec_mode"] = self.exec_mode
         if self.ncores and "ncores" not in request:

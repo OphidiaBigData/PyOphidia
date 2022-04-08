@@ -22,6 +22,7 @@ Fixed:
 Removed:
 ~~~~~~~~
 
+- Automatic setting of host partition within the workflows submitted with wsubmit() 
 - Deprecated 'subset2' method from cube `#35 <https://github.com/OphidiaBigData/PyOphidia/pull/35>`_
 
 
