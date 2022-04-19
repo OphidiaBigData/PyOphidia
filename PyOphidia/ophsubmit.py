@@ -99,7 +99,7 @@ def submit(username, password, server, port, query):
             if not wrapped_query.startswith("oph_"):
                 return (None, None, None, 3, "Invalid request")
         if wrapped_query.startswith("oph_"):
-            wrapped_query = "operator=" + wrapped_query[: wrapped_query.find(" ")] + ";" + wrapped_query[wrapped_query.find(" ") + 1:]
+            wrapped_query = "operator=" + wrapped_query[: wrapped_query.find(" ")] + ";" + wrapped_query[wrapped_query.find(" ") + 1 :]
         query_list = re.split(r"(?![^\[]*\]);+", wrapped_query)
         if not query_list:
             return (None, None, None, 3, "Invalid request")

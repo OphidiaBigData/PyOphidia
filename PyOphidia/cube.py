@@ -477,11 +477,7 @@ class Cube:
 
         response = None
         try:
-            if (
-                Cube.client is None
-                or container is None
-                or (cwd is None and Cube.client.cwd is None)
-            ):
+            if Cube.client is None or container is None or (cwd is None and Cube.client.cwd is None):
                 raise RuntimeError("Cube.client, container or cwd is None")
 
             query = "oph_containerschema "
@@ -574,16 +570,8 @@ class Cube:
         """
 
         try:
-            if (
-                Cube.client is None
-                or container is None
-                or dim is None
-                or dim_type is None
-                or (cwd is None and Cube.client.cwd is None)
-            ):
-                raise RuntimeError(
-                    "Cube.client, container, dim, dim_type or cwd is None"
-                )
+            if Cube.client is None or container is None or dim is None or dim_type is None or (cwd is None and Cube.client.cwd is None):
+                raise RuntimeError("Cube.client, container, dim, dim_type or cwd is None")
 
             query = "oph_createcontainer "
 
@@ -665,13 +653,8 @@ class Cube:
         """
 
         try:
-            if Cube.client is None or (
-                (container is None or (cwd is None and Cube.client.cwd is None))
-                and container_pid == "-"
-            ):
-                raise RuntimeError(
-                    "Cube.client, container and container_pid or cwd is None"
-                )
+            if Cube.client is None or ((container is None or (cwd is None and Cube.client.cwd is None)) and container_pid == "-"):
+                raise RuntimeError("Cube.client, container and container_pid or cwd is None")
 
             query = "oph_deletecontainer "
 
@@ -1135,15 +1118,9 @@ class Cube:
             if session_filter is not None:
                 query += "session_filter=" + str(session_filter) + ";"
             if session_label_filter is not None:
-                query += (
-                    "session_label_filter=" + str(session_label_filter) + ";"
-                )
+                query += "session_label_filter=" + str(session_label_filter) + ";"
             if session_creation_filter is not None:
-                query += (
-                    "session_creation_filter="
-                    + str(session_creation_filter)
-                    + ";"
-                )
+                query += "session_creation_filter=" + str(session_creation_filter) + ";"
             if workflowid_filter is not None:
                 query += "workflowid_filter=" + str(workflowid_filter) + ";"
             if markerid_filter is not None:
@@ -1155,11 +1132,7 @@ class Cube:
             if job_status_filter is not None:
                 query += "job_status_filter=" + str(job_status_filter) + ";"
             if submission_string_filter is not None:
-                query += (
-                    "submission_string_filter="
-                    + str(submission_string_filter)
-                    + ";"
-                )
+                query += "submission_string_filter=" + str(submission_string_filter) + ";"
             if job_start_filter is not None:
                 query += "job_start_filter=" + str(job_start_filter) + ";"
             if job_end_filter is not None:
@@ -1213,11 +1186,7 @@ class Cube:
         """
 
         try:
-            if (
-                Cube.client is None
-                or command is None
-                or (cwd is None and Cube.client.cwd is None)
-            ):
+            if Cube.client is None or command is None or (cwd is None and Cube.client.cwd is None):
                 raise RuntimeError("Cube.client, command or cwd is None")
 
             query = "oph_folder "
@@ -1435,11 +1404,7 @@ class Cube:
 
         response = None
         try:
-            if (
-                Cube.client is None
-                or container is None
-                or (cwd is None and Cube.client.cwd is None)
-            ):
+            if Cube.client is None or container is None or (cwd is None and Cube.client.cwd is None):
                 raise RuntimeError("Cube.client, container or cwd is None")
 
             query = "oph_showgrid "
@@ -1525,9 +1490,7 @@ class Cube:
             if metadata_key_filter is not None:
                 query += "metadata_key_filter=" + str(metadata_key_filter) + ";"
             if metadata_value_filter is not None:
-                query += (
-                    "metadata_value_filter=" + str(metadata_value_filter) + ";"
-                )
+                query += "metadata_value_filter=" + str(metadata_value_filter) + ";"
             if path is not None:
                 query += "path=" + str(path) + ";"
             if cwd is not None:
@@ -1814,9 +1777,7 @@ class Cube:
             or dim is None
             or dim_size is None
         ):
-            raise RuntimeError(
-                "Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None"
-            )
+            raise RuntimeError("Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None")
         newcube = None
 
         query = "oph_randcube "
@@ -1982,9 +1943,7 @@ class Cube:
             or dim is None
             or dim_size is None
         ):
-            raise RuntimeError(
-                "Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None"
-            )
+            raise RuntimeError("Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None")
         newcube = None
 
         query = "oph_randcube2 "
@@ -3012,11 +2971,7 @@ class Cube:
         """
 
         try:
-            if (
-                Cube.client is None
-                or container is None
-                or (cwd is None and Cube.client.cwd is None)
-            ):
+            if Cube.client is None or container is None or (cwd is None and Cube.client.cwd is None):
                 raise RuntimeError("Cube.client, container or cwd is None")
 
             query = "oph_movecontainer "
@@ -3223,12 +3178,7 @@ class Cube:
             from time import time
 
             base_path = expanduser("~") + "/.ophidia/"
-            script_path = (
-                base_path
-                + function.__name__
-                + str(int(time() * 10**6))
-                + ".py"
-            )
+            script_path = base_path + function.__name__ + str(int(time() * 10**6)) + ".py"
 
             try:
                 # Check if hidden folder exists or create it otherwise
@@ -3274,9 +3224,7 @@ if __name__ == '__main__':
 
                 with open(script_path, "w") as file:
                     file.write(script_text)
-                    chmod(
-                        script_path, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP
-                    )
+                    chmod(script_path, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP)
 
             except (IOError, ValueError, TypeError, OSError) as e:
                 print(get_linenumber(), "Python function error: ", e)
@@ -3293,9 +3241,7 @@ if __name__ == '__main__':
             if script is not None:
                 if python_code:
                     if sys.version_info[0] < 3:
-                        raise RuntimeError(
-                            "Python 3 is required to use a Python function as a scripts"
-                        )
+                        raise RuntimeError("Python 3 is required to use a Python function as a scripts")
                     else:
                         script_path = createScript(script)
                         query += "script=" + str(script_path) + ";"
@@ -3743,17 +3689,9 @@ if __name__ == '__main__':
                 raise RuntimeError("Cube.client is None")
             self.pid = pid
         else:
-            if (Cube.client is not None) and (
-                cwd is not None or measure is not None or src_path is not None
-            ):
-                if (
-                    (cwd is None and Cube.client.cwd is None)
-                    or measure is None
-                    or src_path is None
-                ):
-                    raise RuntimeError(
-                        "one or more required parameters are None"
-                    )
+            if (Cube.client is not None) and (cwd is not None or measure is not None or src_path is not None):
+                if (cwd is None and Cube.client.cwd is None) or measure is None or src_path is None:
+                    raise RuntimeError("one or more required parameters are None")
 
                 else:
                     query = "oph_importnc "
@@ -3777,21 +3715,15 @@ if __name__ == '__main__':
                     if compressed is not None:
                         query += "compressed=" + str(compressed) + ";"
                     if exp_concept_level is not None:
-                        query += (
-                            "exp_concept_level=" + str(exp_concept_level) + ";"
-                        )
+                        query += "exp_concept_level=" + str(exp_concept_level) + ";"
                     if grid is not None:
                         query += "grid=" + str(grid) + ";"
                     if imp_concept_level is not None:
-                        query += (
-                            "imp_concept_level=" + str(imp_concept_level) + ";"
-                        )
+                        query += "imp_concept_level=" + str(imp_concept_level) + ";"
                     if import_metadata is not None:
                         query += "import_metadata=" + str(import_metadata) + ";"
                     if check_compliance is not None:
-                        query += (
-                            "check_compliance=" + str(check_compliance) + ";"
-                        )
+                        query += "check_compliance=" + str(check_compliance) + ";"
                     if ioserver is not None:
                         query += "ioserver=" + str(ioserver) + ";"
                     if ncores is not None:
@@ -3899,13 +3831,9 @@ if __name__ == '__main__':
             for res_i in res["response"]:
                 if res_i["objkey"] == "cubeschema_cubeinfo":
                     self.pid = res_i["objcontent"][0]["rowvalues"][0][0]
-                    self.creation_date = res_i["objcontent"][0]["rowvalues"][0][
-                        1
-                    ]
+                    self.creation_date = res_i["objcontent"][0]["rowvalues"][0][1]
                     self.measure = res_i["objcontent"][0]["rowvalues"][0][2]
-                    self.measure_type = res_i["objcontent"][0]["rowvalues"][0][
-                        3
-                    ]
+                    self.measure_type = res_i["objcontent"][0]["rowvalues"][0][3]
                     self.level = res_i["objcontent"][0]["rowvalues"][0][4]
                     self.nfragments = res_i["objcontent"][0]["rowvalues"][0][5]
                     self.source_file = res_i["objcontent"][0]["rowvalues"][0][6]
@@ -3913,15 +3841,9 @@ if __name__ == '__main__':
                     self.hostxcube = res_i["objcontent"][0]["rowvalues"][0][1]
                     self.fragxdb = res_i["objcontent"][0]["rowvalues"][0][2]
                     self.rowsxfrag = res_i["objcontent"][0]["rowvalues"][0][3]
-                    self.elementsxrow = res_i["objcontent"][0]["rowvalues"][0][
-                        4
-                    ]
+                    self.elementsxrow = res_i["objcontent"][0]["rowvalues"][0][4]
                     self.compressed = res_i["objcontent"][0]["rowvalues"][0][5]
-                    self.size = (
-                        res_i["objcontent"][0]["rowvalues"][0][6]
-                        + " "
-                        + res_i["objcontent"][0]["rowvalues"][0][7]
-                    )
+                    self.size = res_i["objcontent"][0]["rowvalues"][0][6] + " " + res_i["objcontent"][0]["rowvalues"][0][7]
                     self.nelements = res_i["objcontent"][0]["rowvalues"][0][8]
                 elif res_i["objkey"] == "cubeschema_diminfo":
                     self.dim_info = list()
@@ -5390,9 +5312,7 @@ if __name__ == '__main__':
         :raises: RuntimeError
         """
 
-        if Cube.client is None or (
-            (self.pid is None or cube2 is None) and cubes is None
-        ):
+        if Cube.client is None or ((self.pid is None or cube2 is None) and cubes is None):
             raise RuntimeError("Cube.client, pid, cube2 or cubes is None")
         newcube = None
 
@@ -5929,12 +5849,7 @@ if __name__ == '__main__':
         :raises: RuntimeError
         """
 
-        if (
-            Cube.client is None
-            or self.pid is None
-            or dim is None
-            or operation is None
-        ):
+        if Cube.client is None or self.pid is None or dim is None or operation is None:
             raise RuntimeError("Cube.client, pid, dim or operation is None")
         newcube = None
 
@@ -6290,12 +6205,7 @@ if __name__ == '__main__':
                 response = Cube.client.deserialize_response()
 
                 for response_i in response["response"]:
-                    if (
-                        response_i["objclass"] == "text"
-                        and "title" in response_i["objcontent"][0]
-                        and response_i["objcontent"][0]["title"]
-                        == "Output File"
-                    ):
+                    if response_i["objclass"] == "text" and "title" in response_i["objcontent"][0] and response_i["objcontent"][0]["title"] == "Output File":
                         file_path = response_i["objcontent"][0]["message"]
                         break
 
@@ -6415,12 +6325,7 @@ if __name__ == '__main__':
                     adimCube = False
 
                     for response_j in response_i["objcontent"]:
-                        if (
-                            response_j["title"]
-                            and response_j["rowfieldtypes"]
-                            and response_j["rowfieldtypes"][1]
-                            and response_j["rowvalues"]
-                        ):
+                        if response_j["title"] and response_j["rowfieldtypes"] and response_j["rowfieldtypes"][1] and response_j["rowvalues"]:
                             curr_dim = {}
                             curr_dim["name"] = response_j["title"]
 
@@ -6428,14 +6333,9 @@ if __name__ == '__main__':
                             dim_array = []
 
                             # Special case for time
-                            if (
-                                show_time == "yes"
-                                and response_j["title"] == "time"
-                            ):
+                            if show_time == "yes" and response_j["title"] == "time":
                                 for val in response_j["rowvalues"]:
-                                    dims = [
-                                        s.strip() for s in val[1].split(",")
-                                    ]
+                                    dims = [s.strip() for s in val[1].split(",")]
                                     for v in dims:
                                         dim_array.append(v)
                             else:
@@ -6445,9 +6345,7 @@ if __name__ == '__main__':
                                         decoded_bin,
                                         response_j["rowfieldtypes"][1],
                                     )
-                                    format = get_unpack_format(
-                                        length, response_j["rowfieldtypes"][1]
-                                    )
+                                    format = get_unpack_format(length, response_j["rowfieldtypes"][1])
                                     dims = struct.unpack(format, decoded_bin)
                                     for v in dims:
                                         dim_array.append(v)
@@ -6456,9 +6354,7 @@ if __name__ == '__main__':
                             dimensions.append(curr_dim)
 
                         else:
-                            raise RuntimeError(
-                                "Unable to get dimension name or values in response"
-                            )
+                            raise RuntimeError("Unable to get dimension name or values in response")
 
                     dim_num = len(dimensions)
                     if dim_num == 0:
@@ -6468,9 +6364,7 @@ if __name__ == '__main__':
                     break
 
         except Exception as e:
-            print(
-                get_linenumber(), "Unable to get dimensions from response:", e
-            )
+            print(get_linenumber(), "Unable to get dimensions from response:", e)
             return None
 
         # Read values
@@ -6480,26 +6374,15 @@ if __name__ == '__main__':
                 if response_i["objkey"] == "explorecube_data":
 
                     for response_j in response_i["objcontent"]:
-                        if (
-                            response_j["title"]
-                            and response_j["rowkeys"]
-                            and response_j["rowfieldtypes"]
-                            and response_j["rowvalues"]
-                        ):
+                        if response_j["title"] and response_j["rowkeys"] and response_j["rowfieldtypes"] and response_j["rowvalues"]:
                             curr_mes = {}
                             measure_name = ""
                             measure_index = 0
 
                             if not adimCube:
                                 # Check that implicit dimension is just one
-                                if (
-                                    dim_num
-                                    - (len(response_j["rowkeys"]) - 1) / 2.0
-                                    > 1
-                                ):
-                                    raise RuntimeError(
-                                        "More than one implicit dimension"
-                                    )
+                                if dim_num - (len(response_j["rowkeys"]) - 1) / 2.0 > 1:
+                                    raise RuntimeError("More than one implicit dimension")
 
                             for i, t in enumerate(response_j["rowkeys"]):
                                 if response_j["title"] == t:
@@ -6508,18 +6391,14 @@ if __name__ == '__main__':
                                     break
 
                             if measure_index == 0:
-                                raise RuntimeError(
-                                    "Unable to get measure name in response"
-                                )
+                                raise RuntimeError("Unable to get measure name in response")
 
                             curr_mes["name"] = measure_name
 
                             # Append actual values
                             measure_value = []
                             for val in response_j["rowvalues"]:
-                                decoded_bin = base64.b64decode(
-                                    val[measure_index]
-                                )
+                                decoded_bin = base64.b64decode(val[measure_index])
                                 length = calculate_decoded_length(
                                     decoded_bin,
                                     response_j["rowfieldtypes"][measure_index],
@@ -6539,9 +6418,7 @@ if __name__ == '__main__':
                             measures.append(curr_mes)
 
                         else:
-                            raise RuntimeError(
-                                "Unable to get measure values in response"
-                            )
+                            raise RuntimeError("Unable to get measure values in response")
 
                         break
 
@@ -6564,19 +6441,13 @@ if __name__ == '__main__':
         buf += "%30s: %s" % ("Cube", self.pid) + "\n"
         buf += "-" * 30 + "\n"
         buf += "%30s: %s" % ("Creation Date", self.creation_date) + "\n"
-        buf += (
-            "%30s: %s (%s)"
-            % ("Measure (type)", self.measure, self.measure_type)
-            + "\n"
-        )
+        buf += "%30s: %s (%s)" % ("Measure (type)", self.measure, self.measure_type) + "\n"
         buf += "%30s: %s" % ("Source file", self.source_file) + "\n"
         buf += "%30s: %s" % ("Level", self.level) + "\n"
         if self.compressed == "yes":
             buf += "%30s: %s (%s)" % ("Size", self.size, "compressed") + "\n"
         else:
-            buf += (
-                "%30s: %s (%s)" % ("Size", self.size, "not compressed") + "\n"
-            )
+            buf += "%30s: %s (%s)" % ("Size", self.size, "not compressed") + "\n"
         buf += "%30s: %s" % ("Num. of elements", self.nelements) + "\n"
         buf += "%30s: %s" % ("Num. of fragments", self.nfragments) + "\n"
         buf += "-" * 30 + "\n"
@@ -6604,10 +6475,7 @@ if __name__ == '__main__':
             % (
                 "Num. of elements/row (total)",
                 self.elementsxrow,
-                int(self.elementsxrow)
-                * int(self.rowsxfrag)
-                * int(self.fragxdb)
-                * int(self.hostxcube),
+                int(self.elementsxrow) * int(self.rowsxfrag) * int(self.fragxdb) * int(self.hostxcube),
             )
             + "\n"
         )

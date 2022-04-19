@@ -450,8 +450,8 @@ class Client:
                                     print(
                                         VERTICAL_CHAR
                                         + " "
-                                        + response_i["objcontent"][0]["rowkeys"][j][start[j]: start[j] + max_column_width[j]]
-                                        + " " * ((max_column_width[j] + 2) - (len(response_i["objcontent"][0]["rowkeys"][j][start[j]: start[j] + max_column_width[j]]) + 1)),
+                                        + response_i["objcontent"][0]["rowkeys"][j][start[j] : start[j] + max_column_width[j]]
+                                        + " " * ((max_column_width[j] + 2) - (len(response_i["objcontent"][0]["rowkeys"][j][start[j] : start[j] + max_column_width[j]]) + 1)),
                                         end="",
                                     )
                                     start[j] = start[j] + max_column_width[j]
@@ -491,16 +491,16 @@ class Client:
                             for x in range(maximum_rows[i]):
                                 for j in columns:
                                     if start[i][j] < text_length[i][j]:
-                                        index = rowvalues[j][start[i][j]: start[i][j] + max_column_width[j]].find("\n")
+                                        index = rowvalues[j][start[i][j] : start[i][j] + max_column_width[j]].find("\n")
                                         if index != -1:
                                             # Delete newline char
-                                            rowvalues[j] = rowvalues[j][: start[i][j] + index] + rowvalues[j][start[i][j] + index + 1:]
+                                            rowvalues[j] = rowvalues[j][: start[i][j] + index] + rowvalues[j][start[i][j] + index + 1 :]
                                             actual_len = start[i][j] + index
                                         else:
                                             actual_len = start[i][j] + max_column_width[j]
 
                                         print(
-                                            VERTICAL_CHAR + " " + rowvalues[j][start[i][j]: actual_len] + " " * ((max_column_width[j] + 2) - (len(rowvalues[j][start[i][j]: actual_len]) + 1)), end=""
+                                            VERTICAL_CHAR + " " + rowvalues[j][start[i][j] : actual_len] + " " * ((max_column_width[j] + 2) - (len(rowvalues[j][start[i][j] : actual_len]) + 1)), end=""
                                         )
                                         start[i][j] = actual_len
                                     else:
