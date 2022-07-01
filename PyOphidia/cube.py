@@ -178,6 +178,10 @@ class Cube:
            subset_type='index', subset_filter='all', time_filter='yes', vocabulary='CF', exec_mode='sync', offset=0, save='yes',
            display=False)
           -> None : wrapper of the operator OPH_FS
+        wait(type="clock", timeout=1, timeout_type="duration", key="-", value="-", filename="-", measure="-", message="-",
+             subset_dims="none", subset_type="index", subset_filter="all", time_filter="yes", offset=0, run="yes", exec_mode="sync",
+             save="yes", display=False)
+           -> None : wrapper of the operator OPH_WAIT
         get_config(key='all', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_GET_CONFIG
         hierarchy(hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', save='yes', display=True)
@@ -1315,6 +1319,116 @@ class Cube:
                 query += "exec_mode=" + str(exec_mode) + ";"
             if objkey_filter is not None:
                 query += "objkey_filter=" + str(objkey_filter) + ";"
+            if save is not None:
+                query += "save=" + str(save) + ";"
+
+            if Cube.client.submit(query, display) is None:
+                raise RuntimeError()
+
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong:", e)
+            raise RuntimeError()
+
+    @classmethod
+    def wait(
+        cls,
+        type="clock",
+        timeout=1,
+        timeout_type="duration",
+        key="-",
+        value="-",
+        filename="-",
+        measure="-",
+        message="-",
+        subset_dims="none",
+        subset_type="index",
+        subset_filter="all",
+        time_filter="yes",
+        offset=0,
+        run="yes",
+        exec_mode="sync",
+        save="yes",
+        display=False,
+    ):
+        """wait(type="clock", timeout=1, timeout_type="duration", key="-", value="-", filename="-", measure="-", message="-", subset_dims="none",
+                subset_type="index", subset_filter="all", time_filter="yes", offset=0, run="yes", exec_mode="sync", save="yes", display=False)
+            -> None : wrapper of the operator OPH_WAIT
+
+        :param type: clock|input|file
+        :type type: str
+        :param timeout: it is the duration (in seconds) or the end instant of the waiting interval
+        :type timeout: int
+        :param timeout_type: duration|deadline
+        :type timeout_type: str
+        :param key: name of the parameter
+        :type key: str
+        :param value: value of the parameter
+        :type value: str
+        :param filename: name of the file to be checked
+        :type filename: str
+        :param measure: name of the measure related to input file
+        :type measure: str
+        :param message: this user-defined message is appended to response in order to notify the waiting reason
+        :type message: str
+        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :type subset_dims: str
+        :param subset_type: index|coord
+        :type subset_type: str
+        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :type subset_filter: str
+        :param time_filter: yes|no
+        :type time_filter: str
+        :param offset: it is added to the bounds of subset intervals
+        :type offset: int
+        :param run: yes|no
+        :type run: str
+        :param exec_mode: async or sync
+        :type exec_mode: str
+        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :type save: str
+        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :type display: bool
+        :returns: None
+        :rtype: None
+        :raises: RuntimeError
+        """
+
+        try:
+            if Cube.client is None:
+                raise RuntimeError("Cube.client, is None")
+
+            query = "oph_wait "
+
+            if type is not None:
+                query += "type=" + str(type) + ";"
+            if timeout is not None:
+                query += "timeout=" + str(timeout) + ";"
+            if timeout_type is not None:
+                query += "timeout_type=" + str(timeout_type) + ";"
+            if measure is not None:
+                query += "measure=" + str(measure) + ";"
+            if filename is not None:
+                query += "filename=" + str(filename) + ";"
+            if message is not None:
+                query += "message=" + str(message) + ";"
+            if key is not None:
+                query += "key=" + str(key) + ";"
+            if value is not None:
+                query += "value=" + str(value) + ";"
+            if subset_dims is not None:
+                query += "subset_dims=" + str(subset_dims) + ";"
+            if subset_type is not None:
+                query += "subset_type=" + str(subset_type) + ";"
+            if subset_filter is not None:
+                query += "subset_filter=" + str(subset_filter) + ";"
+            if time_filter is not None:
+                query += "time_filter=" + str(time_filter) + ";"
+            if offset is not None:
+                query += "offset=" + str(offset) + ";"
+            if run is not None:
+                query += "run=" + str(run) + ";"
+            if exec_mode is not None:
+                query += "exec_mode=" + str(exec_mode) + ";"
             if save is not None:
                 query += "save=" + str(save) + ";"
 

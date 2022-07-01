@@ -5,6 +5,7 @@ v1.10.0 - 2022-07-01
 Added:
 ~~~~~~
 
+- Method for wait operator
 - Methods for intercube2 operator `#39 <https://github.com/OphidiaBigData/PyOphidia/issues/39>`_
 - Methods for importncs operator `#38 <https://github.com/OphidiaBigData/PyOphidia/issues/38>`_
 
