@@ -1,6 +1,6 @@
 #
 #     PyOphidia - Python bindings for Ophidia
-#     Copyright (C) 2015-2021 CMCC Foundation
+#     Copyright (C) 2015-2022 CMCC Foundation
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ def read(*paths):
 
 setup(
     name='PyOphidia',
-    version='1.9.1',
+    version='1.10.0',
     description='Python bindings for the Ophidia Data Analytics Platform',
     long_description=(read('README.rst') + '\n\n'),
     url='http://ophidia.cmcc.it',

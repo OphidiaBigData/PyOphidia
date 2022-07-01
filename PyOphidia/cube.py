@@ -1,6 +1,6 @@
 #
 #     PyOphidia - Python bindings for Ophidia
-#     Copyright (C) 2015-2021 CMCC Foundation
+#     Copyright (C) 2015-2022 CMCC Foundation
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -102,10 +102,10 @@ class Cube:
                 base64='no', ncores=1, exec_mode='sync', objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_EXPLORECUBE
         exportnc(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0,
-                 exec_mode='sync', ncores=1, save='yes', display=False)
+                 shuffle='no', deflate=0, exec_mode='sync', ncores=1, save='yes', display=False)
           -> None : wrapper of the operator OPH_EXPORTNC
         exportnc2(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0,
-                  exec_mode='sync', ncores=1, save='yes', display=False)
+                  shuffle='no', deflate=0, exec_mode='sync', ncores=1, save='yes', display=False)
           -> None : wrapper of the operator OPH_EXPORTNC2
         export_array(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no')
           -> dict or None : return data from an Ophidia datacube into a Python structure
@@ -174,7 +174,8 @@ class Cube:
           -> dict or None : wrapper of the operator OPH_EXPLORENC
         folder(command=None, cwd=None, path=None, exec_mode='sync', save='yes', display=False)
           -> None : wrapper of the operator OPH_FOLDER
-        fs(command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync', save='yes',
+        fs(command='ls', dpath='-', file='-', measure='-', cdd=None, recursive='no', depth=0, realpath='no', subset_dims='none',
+           subset_type='index', subset_filter='all', time_filter='yes', vocabulary='CF', exec_mode='sync', offset=0, save='yes',
            display=False)
           -> None : wrapper of the operator OPH_FS
         get_config(key='all', objkey_filter='all', display=True)
@@ -250,7 +251,7 @@ class Cube:
                   display=False)
           -> Cube or None : wrapper of the operator OPH_RANDCUBE2
         resume(id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all',
-               user='', display=True)
+               user='', execute='no', checkpoint='all', display=True)
           -> dict or None : wrapper of the operator OPH_RESUME
         script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no',
                python_code=False, save='yes', display=False)
@@ -1217,17 +1218,25 @@ class Cube:
         command="ls",
         dpath="-",
         file="-",
+        measure="-",
         cdd=None,
         recursive="no",
         depth=0,
         realpath="no",
+        subset_dims="none",
+        subset_type="index",
+        subset_filter="all",
+        time_filter="yes",
+        vocabulary="CF",
+        offset=0,
         exec_mode="sync",
         objkey_filter="all",
         save="yes",
         display=False,
     ):
-        """fs(command='ls', dpath='-', file='-', cdd=None, recursive='no', depth=0, realpath='no', exec_mode='sync',
-              objkey_filter='all', save='yes', display=False) -> None : wrapper of the operator OPH_FS
+        """fs(command='ls', dpath='-', file='-', measure='-', cdd=None, recursive='no', depth=0, realpath='no', subset_dims='none',
+              subset_type='index', subset_filter='all', time_filter='yes', vocabulary='CF', exec_mode='sync', offset=0, save='yes',
+              display=False) -> None : wrapper of the operator OPH_FS
 
         :param command: ls|cd|mkdir|rm|mv
         :type command: str
@@ -1235,6 +1244,8 @@ class Cube:
         :type dpath: str
         :param file: file filter
         :type file: str
+        :param measure: measure filter
+        :type measure: str
         :param cdd: absolute path corresponding to the current directory on data repository
         :type cdd: str
         :param recursive: if search is done recursively or not
@@ -1243,6 +1254,18 @@ class Cube:
         :type depth: int
         :param realpath: yes|no
         :type realpath: str
+        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :type subset_dims: str
+        :param subset_type: index|coord
+        :type subset_type: str
+        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :type subset_filter: str
+        :param time_filter: yes|no
+        :type time_filter: str
+        :param vocabulary: metadata vocabulary used for time filters
+        :type vocabulary: str
+        :param offset: it is added to the bounds of subset intervals
+        :type offset: int
         :param exec_mode: async or sync
         :type exec_mode: str
         :param save: option to enable/disable JSON response saving on the server-side (default is yes)
@@ -1266,6 +1289,8 @@ class Cube:
                 query += "dpath=" + str(dpath) + ";"
             if file is not None:
                 query += "file=" + str(file) + ";"
+            if measure is not None:
+                query += "measure=" + str(measure) + ";"
             if cdd is not None:
                 query += "cdd=" + str(cdd) + ";"
             if recursive is not None:
@@ -1274,6 +1299,18 @@ class Cube:
                 query += "depth=" + str(depth) + ";"
             if realpath is not None:
                 query += "realpath=" + str(realpath) + ";"
+            if subset_dims is not None:
+                query += "subset_dims=" + str(subset_dims) + ";"
+            if subset_type is not None:
+                query += "subset_type=" + str(subset_type) + ";"
+            if subset_filter is not None:
+                query += "subset_filter=" + str(subset_filter) + ";"
+            if time_filter is not None:
+                query += "time_filter=" + str(time_filter) + ";"
+            if vocabulary is not None:
+                query += "vocabulary=" + str(vocabulary) + ";"
+            if offset is not None:
+                query += "offset=" + str(offset) + ";"
             if exec_mode is not None:
                 query += "exec_mode=" + str(exec_mode) + ";"
             if objkey_filter is not None:
@@ -3178,7 +3215,7 @@ class Cube:
             from time import time
 
             base_path = expanduser("~") + "/.ophidia/"
-            script_path = base_path + function.__name__ + str(int(time() * 10**6)) + ".py"
+            script_path = base_path + function.__name__ + str(int(time() * 10 ** 6)) + ".py"
 
             try:
                 # Check if hidden folder exists or create it otherwise
@@ -3285,12 +3322,14 @@ if __name__ == '__main__':
         level=1,
         user="",
         status_filter="11111111",
+        execute="no",
+        checkpoint="all",
         save="no",
         objkey_filter="all",
         display=True,
     ):
-        """resume( id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='', display=True)
-              -> dict or None : wrapper of the operator OPH_RESUME
+        """resume(id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='',
+                  execute='no', checkpoint='all', display=True) -> dict or None : wrapper of the operator OPH_RESUME
 
         :param session: identifier of the intended session, by default it is the working session
         :type session: str
@@ -3306,6 +3345,13 @@ if __name__ == '__main__':
         :type user: str
         :param status_filter: filter by job status (bitmap)
         :type status_filter: str
+
+        :param execute: yes|no
+        :type execute: str
+        :param checkpoint: retrieve the sub-workflow associated with a checkpoint
+        :type checkpoint: str
+
+
         :param save: yes|no
         :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
@@ -3869,12 +3915,14 @@ if __name__ == '__main__':
         export_metadata="yes",
         schedule=0,
         exec_mode="sync",
+        shuffle="no",
+        deflate=0,
         ncores=1,
         save="yes",
         display=False,
     ):
-        """exportnc(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1, save='yes', display=False)
-             -> None : wrapper of the operator OPH_EXPORTNC
+        """exportnc(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, shuffle='no', deflate=0,
+                    exec_mode='sync', ncores=1, save='yes', display=False) -> None : wrapper of the operator OPH_EXPORTNC
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -3894,6 +3942,10 @@ if __name__ == '__main__':
         :type output_path: str
         :param output_name: name of the output file
         :type output_name: str
+        :param shuffle: flag to activate shuffle filter on compression (yes|no)
+        :type shuffle: str
+        :param deflate: deflate level (from 1 to 9) compression. 0 is no compression
+        :type deflate: int
         :param save: option to enable/disable JSON response saving on the server-side (default is yes)
         :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
@@ -3922,6 +3974,10 @@ if __name__ == '__main__':
             query += "export_metadata=" + str(export_metadata) + ";"
         if schedule is not None:
             query += "schedule=" + str(schedule) + ";"
+        if shuffle is not None:
+            query += "shuffle=" + str(shuffle) + ";"
+        if deflate is not None:
+            query += "deflate=" + str(deflate) + ";"
         if exec_mode is not None:
             query += "exec_mode=" + str(exec_mode) + ";"
         if ncores is not None:
@@ -3947,13 +4003,15 @@ if __name__ == '__main__':
         force="no",
         export_metadata="yes",
         schedule=0,
+        shuffle="no",
+        deflate=0,
         exec_mode="sync",
         ncores=1,
         save="yes",
         display=False,
     ):
-        """exportnc2(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, exec_mode='sync', ncores=1, save='yes', display=False)
-             -> None : wrapper of the operator OPH_EXPORTNC2
+        """exportnc2(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, shuffle='no', deflate=0,
+                     exec_mode='sync', ncores=1, save='yes', display=False) -> None : wrapper of the operator OPH_EXPORTNC2
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -3973,6 +4031,10 @@ if __name__ == '__main__':
         :type output_path: str
         :param output_name: name of the output file
         :type output_name: str
+        :param shuffle: flag to activate shuffle filter on compression (yes|no)
+        :type shuffle: str
+        :param deflate: deflate level (from 1 to 9) compression. 0 is no compression
+        :type deflate: int
         :param save: option to enable/disable JSON response saving on the server-side (default is yes)
         :type save: str
         :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
@@ -4001,6 +4063,10 @@ if __name__ == '__main__':
             query += "export_metadata=" + str(export_metadata) + ";"
         if schedule is not None:
             query += "schedule=" + str(schedule) + ";"
+        if shuffle is not None:
+            query += "shuffle=" + str(shuffle) + ";"
+        if deflate is not None:
+            query += "deflate=" + str(deflate) + ";"
         if exec_mode is not None:
             query += "exec_mode=" + str(exec_mode) + ";"
         if ncores is not None:
