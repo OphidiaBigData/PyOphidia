@@ -45,13 +45,18 @@ def _dependency_check(dependency):
             import xarray
         except ModuleNotFoundError:
             raise RuntimeError("xarray is not installed")
+    elif dependency == "numpy":
+        try:
+            import numpy
+        except ModuleNotFoundError:
+            raise RuntimeError("numpy is not installed")
     else:
-        raise AttributeError("Dependency must be xarray or pandas")
+        raise AttributeError("Dependency must be xarray, numpy or pandas")
 
 
 def _time_dimension_finder(cube):
     for c in cube.dim_info:
-        if c["hierarchy"].lower() == "oph_time":
+        if c["hierarchy"].lower() == "oph_time" or c["name"].lower() == "time":
             return c["name"]
     return None
 
@@ -5516,7 +5521,14 @@ if __name__ == '__main__':
             print(_get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
-    def export_array(self, show_id="no", show_time="no", subset_dims=None, subset_filter=None, time_filter="no"):
+    def export_array(
+        self,
+        show_id="no",
+        show_time="no",
+        subset_dims=None,
+        subset_filter=None,
+        time_filter="no",
+    ):
         """export_array(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no') -> dict or None : return data from an Ophidia datacube into a Python structure
 
         :param show_id: yes|no
@@ -5592,7 +5604,7 @@ if __name__ == '__main__':
                                         dim_array.append(v)
                             else:
                                 for val in response_j["rowvalues"]:
-                                    decoded_bin = base64.b64decode(val[1])
+                                    decoded_bin = base64.b64decode(val[1] + "==")
                                     length = _calculate_decoded_length(decoded_bin, response_j["rowfieldtypes"][1])
                                     format = _get_unpack_format(length, response_j["rowfieldtypes"][1])
                                     dims = struct.unpack(format, decoded_bin)
@@ -5647,7 +5659,7 @@ if __name__ == '__main__':
                             # Append actual values
                             measure_value = []
                             for val in response_j["rowvalues"]:
-                                decoded_bin = base64.b64decode(val[measure_index])
+                                decoded_bin = base64.b64decode(val[measure_index] + "==")
                                 length = _calculate_decoded_length(decoded_bin, response_j["rowfieldtypes"][measure_index])
                                 format = _get_unpack_format(length, response_j["rowfieldtypes"][measure_index])
                                 measure = struct.unpack(format, decoded_bin)
@@ -5702,16 +5714,17 @@ if __name__ == '__main__':
             :rtype: <class 'numpy.float32'>|<class 'numpy.float64'>|<class
             'numpy.int32'>|<class 'numpy.int64'>
             """
-            import numpy
+            _dependency_check("numpy")
+            import numpy as np
 
             if frmt == "float":
-                return numpy.float32(var)
+                return np.float32(var)
             elif frmt == "double":
-                return numpy.float64(var)
+                return np.float64(var)
             elif frmt == "int":
-                return numpy.int32(var)
+                return np.int32(var)
             elif frmt == "long":
-                return numpy.int64(var)
+                return np.int64(var)
             else:
                 return var
 
@@ -5726,7 +5739,7 @@ if __name__ == '__main__':
             from decimal import Decimal
 
             d = Decimal(eval(str(num)))
-            e = format(d, ".6e")
+            e = "{:.6e}".format(d)
             a = e.split("e")
             b = a[0].replace("0", "")
             return b + "e" + a[1]
@@ -5753,21 +5766,23 @@ if __name__ == '__main__':
                             if response_j["title"] and response_j["rowfieldtypes"] and response_j["rowfieldtypes"][1] and response_j["rowvalues"]:
                                 if response_j["title"] == _time_dimension_finder(cube):
                                     temp_array = []
+                                    lengths.append(len(response_j["rowvalues"]))
                                     for val in response_j["rowvalues"]:
                                         dims = [s.strip() for s in val[1].split(",")]
                                         temp_array.append(dims[0])
                                     ds[response_j["title"]] = temp_array
+                                    ds[response_j["title"]].attrs = _convert_to_metadict(meta_info, filter=response_j["title"])
                                 else:
                                     lengths.append(len(response_j["rowvalues"]))
                                     temp_array = []
                                     for val in response_j["rowvalues"]:
-                                        decoded_bin = base64.b64decode(val[1])
+                                        decoded_bin = base64.b64decode(val[1] + "==")
                                         length = _calculate_decoded_length(decoded_bin, response_j["rowfieldtypes"][1])
                                         format = _get_unpack_format(length, response_j["rowfieldtypes"][1])
                                         dims = struct.unpack(format, decoded_bin)
                                         temp_array.append(_append_with_format(dims[0], response_j["rowfieldtypes"][1]))
                                     ds[response_j["title"]] = list(temp_array)
-                                    ds[response_j["title"]].attrs = convert_to_metadict(meta_info, filter=response_j["title"])
+                                    ds[response_j["title"]].attrs = _convert_to_metadict(meta_info, filter=response_j["title"])
                             else:
                                 raise RuntimeError("Unable to get dimension name or values in " "response")
                         break
@@ -5807,7 +5822,7 @@ if __name__ == '__main__':
                                     raise RuntimeError("Unable to get measure name in response")
                                 values = []
                                 for val in response_j["rowvalues"]:
-                                    decoded_bin = base64.b64decode(val[measure_index])
+                                    decoded_bin = base64.b64decode(val[measure_index] + "==")
                                     length = _calculate_decoded_length(decoded_bin, response_j["rowfieldtypes"][measure_index])
                                     format = _get_unpack_format(length, response_j["rowfieldtypes"][measure_index])
                                     data_format = response_j["rowfieldtypes"][measure_index]
@@ -5837,6 +5852,7 @@ if __name__ == '__main__':
             except Exception as e:
                 print("Unable to get measure from response:", e)
                 return None
+
             sorted_coordinates = []
             for ln in lengths:
                 for c in cube.dim_info:
@@ -5847,7 +5863,8 @@ if __name__ == '__main__':
                 sorted_coordinates,
                 measure,
             )
-            ds[cube.measure].attrs = convert_to_metadict(meta_info, filter=response_j["title"])
+            ds[cube.measure].attrs = _convert_to_metadict(meta_info, filter=response_j["title"])
+            ds[cube.measure].data = _convert_missing_value(meta_info, response_j["title"], ds[cube.measure].data)
             return ds
 
         def _get_meta_info(response):
@@ -5879,12 +5896,29 @@ if __name__ == '__main__':
                 return None
             return meta_list
 
-        def convert_to_metadict(meta_list, filter=""):
+        def _convert_to_metadict(meta_list, filter=""):
             meta_dict = {}
             for d in meta_list:
                 if d["variable"] == filter:
                     meta_dict[d["key"]] = d["value"]
             return meta_dict
+
+        def _convert_missing_value(meta_info, measure_name, data):
+            try:
+                _dependency_check("numpy")
+                import numpy as np
+
+                meta = _convert_to_metadict(meta_info, filter=measure_name)
+                missing_val = None
+                for m in meta:
+                    if m == "_FillValue" or m == "missing_value":
+                        missing_val = meta[m]
+                if missing_val:
+                    data[data == float(missing_val)] = np.nan
+            except Exception as e:
+                print("Unable to convert missing values:", e)
+                return None
+            return data
 
         def _initiate_xarray_object(cube, meta_info):
             """
@@ -5901,7 +5935,7 @@ if __name__ == '__main__':
             coordinates = [c["name"] for c in cube.dim_info]
             if len(coordinates) == 0:
                 raise RuntimeError("No coordinates")
-            ds = xr.Dataset({cube.measure: ""}, attrs=convert_to_metadict(meta_info, filter=""))
+            ds = xr.Dataset({cube.measure: ""}, attrs=_convert_to_metadict(meta_info, filter=""))
             return ds
 
         def _get_indexes(rowkeys):
@@ -5923,6 +5957,9 @@ if __name__ == '__main__':
 
         _dependency_check(dependency="xarray")
         import xarray as xr
+
+        if self.dim_info is None:
+            self.info(display=False)
 
         query = "oph_metadata cube={0}".format(self.pid)
 
@@ -6003,7 +6040,7 @@ if __name__ == '__main__':
                                 else:
                                     temp_array = []
                                     for val in response_j["rowvalues"]:
-                                        decoded_bin = base64.b64decode(val[1])
+                                        decoded_bin = base64.b64decode(val[1] + "==")
                                         length = _calculate_decoded_length(decoded_bin, response_j["rowfieldtypes"][1])
                                         format = _get_unpack_format(length, response_j["rowfieldtypes"][1])
                                         dims = struct.unpack(format, decoded_bin)
@@ -6045,7 +6082,7 @@ if __name__ == '__main__':
                                     raise RuntimeError("Unable to get measure name in response")
                                 values = []
                                 for val in response_j["rowvalues"]:
-                                    decoded_bin = base64.b64decode(val[measure_index])
+                                    decoded_bin = base64.b64decode(val[measure_index] + "==")
                                     length = _calculate_decoded_length(decoded_bin, response_j["rowfieldtypes"][measure_index])
                                     format = _get_unpack_format(length, response_j["rowfieldtypes"][measure_index])
                                     measure = struct.unpack(format, decoded_bin)
