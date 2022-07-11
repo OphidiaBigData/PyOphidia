@@ -5864,7 +5864,7 @@ if __name__ == '__main__':
                 measure,
             )
             ds[cube.measure].attrs = _convert_to_metadict(meta_info, filter=response_j["title"])
-            ds[cube.measure].data = _convert_missing_value(meta_info, response_j["title"], ds[cube.measure].data)
+            ds[cube.measure].data = _convert_missing_value(meta_info, response_j["title"], cube.measure_type, ds[cube.measure].data)
             return ds
 
         def _get_meta_info(response):
@@ -5903,21 +5903,22 @@ if __name__ == '__main__':
                     meta_dict[d["key"]] = d["value"]
             return meta_dict
 
-        def _convert_missing_value(meta_info, measure_name, data):
-            try:
-                _dependency_check("numpy")
-                import numpy as np
+        def _convert_missing_value(meta_info, measure_name, measure_type, data):
+            if measure_type != "INT" and measure_type != "LONG":
+                try:
+                    _dependency_check("numpy")
+                    import numpy as np
 
-                meta = _convert_to_metadict(meta_info, filter=measure_name)
-                missing_val = None
-                for m in meta:
-                    if m == "_FillValue" or m == "missing_value":
-                        missing_val = meta[m]
-                if missing_val:
-                    data[data == float(missing_val)] = np.nan
-            except Exception as e:
-                print("Unable to convert missing values:", e)
-                return None
+                    meta = _convert_to_metadict(meta_info, filter=measure_name)
+                    missing_val = None
+                    for m in meta:
+                        if m == "_FillValue" or m == "missing_value":
+                            missing_val = meta[m]
+                    if missing_val:
+                        data[data == float(missing_val)] = np.nan
+                except Exception as e:
+                    print("Unable to convert missing values:", e)
+                    return None
             return data
 
         def _initiate_xarray_object(cube, meta_info):
