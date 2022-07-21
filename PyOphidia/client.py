@@ -796,6 +796,8 @@ class Client:
         if "command" not in request:
             request["command"] = "wsubmit(" + workflow + ")" + params_list
             #request["command"] = "wsubmit(" + workflow + params_list + ")"
+        if "direct_output" not in request:
+            request["direct_output"] = "yes"
         self.last_request = json.dumps(request)
         try:
             err, err_msg = self.wisvalid(self.last_request)
