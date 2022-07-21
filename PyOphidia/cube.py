@@ -2242,9 +2242,9 @@ class Cube:
         if subset_filter is not None:
             query += "subset_filter=" + str(subset_filter) + ";"
         if time_filter is not None:
-            if index_type is "index":
+            if index_type == "index":
                 query += "time_filter=no;"                
-            else
+            else:
                 query += "time_filter=" + str(time_filter) + ";"
         if offset is not None:
             query += "offset=" + str(offset) + ";"
@@ -2482,9 +2482,9 @@ class Cube:
         if subset_filter is not None:
             query += "subset_filter=" + str(subset_filter) + ";"
         if time_filter is not None:
-            if index_type is "index":
+            if index_type == "index":
                 query += "time_filter=no;"                
-            else
+            else:
                 query += "time_filter=" + str(time_filter) + ";"
         if offset is not None:
             query += "offset=" + str(offset) + ";"
@@ -3299,9 +3299,9 @@ if __name__ == '__main__':
                     if subset_filter is not None:
                         query += "subset_filter=" + str(subset_filter) + ";"
                     if time_filter is not None:
-                        if index_type is "index":
+                        if index_type == "index":
                             query += "time_filter=no;"                
-                        else
+                        else:
                             query += "time_filter=" + str(time_filter) + ";"
                     if offset is not None:
                         query += "offset=" + str(offset) + ";"
@@ -3948,9 +3948,9 @@ if __name__ == '__main__':
         if subset_filter is not None:
             query += "subset_filter=" + str(subset_filter) + ";"
         if time_filter is not None:
-            if index_type is "index":
+            if index_type == "index":
                 query += "time_filter=no;"                
-            else
+            else:
                 query += "time_filter=" + str(time_filter) + ";"
         if offset is not None:
             query += "offset=" + str(offset) + ";"
@@ -4071,9 +4071,9 @@ if __name__ == '__main__':
         if subset_filter is not None:
             query += "subset_filter=" + str(subset_filter) + ";"
         if time_filter is not None:
-            if index_type is "index":
+            if index_type == "index":
                 query += "time_filter=no;"                
-            else
+            else:
                 query += "time_filter=" + str(time_filter) + ";"
         if offset is not None:
             query += "offset=" + str(offset) + ";"
@@ -4402,9 +4402,9 @@ if __name__ == '__main__':
         if subset_filter is not None:
             query += "subset_filter=" + str(subset_filter) + ";"
         if time_filter is not None:
-            if index_type is "index":
+            if index_type == "index":
                 query += "time_filter=no;"                
-            else
+            else:
                 query += "time_filter=" + str(time_filter) + ";"
         if subset_type is not None:
             query += "subset_type=" + str(subset_type) + ";"
@@ -5460,9 +5460,9 @@ if __name__ == '__main__':
         if subset_type is not None:
             query += "subset_type=" + str(subset_type) + ";"
         if time_filter is not None:
-            if index_type is "index":
+            if index_type == "index":
                 query += "time_filter=no;"                
-            else
+            else:
                 query += "time_filter=" + str(time_filter) + ";"
         if offset is not None:
             query += "offset=" + str(offset) + ";"
