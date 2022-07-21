@@ -937,7 +937,8 @@ class Client:
                         task["on_error"] != "skip"
                         and task["on_error"] != "continue"
                         and task["on_error"] != "break"
-                        and (task["on_error"][:7] != "repeat " or not task["on_error"][7:].isdigit() or int(task["on_error"][7:]) < 0)
+                        and task["on_error"] != "abort"
+                        and task["on_error"][:7] != "repeat "
                     ):
                         return False, "Task 'on_error' is not correct in task: " + task_name
                 except KeyError:
