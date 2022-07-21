@@ -893,17 +893,14 @@ class Client:
             return False, "Workflow is not a valid dictionary"
         if "name" not in w or not w["name"]:
             return False, "Mandatory global argument 'name' is missing"
-        if "author" not in w or not w["author"]:
-            return False, "Mandatory global argument 'author' is missing"
-        if "abstract" not in w or not w["abstract"]:
-            return False, "Mandatory global argument 'abstract' is missing"
         if "on_error" in w:
             try:
                 if (
                     w["on_error"] != "skip"
                     and w["on_error"] != "continue"
                     and w["on_error"] != "break"
-                    and (w["on_error"][:7] != "repeat " or not w["on_error"][7:].isdigit() or int(w["on_error"][7:]) < 0)
+                    and w["on_error"] != "abort"
+                    and w["on_error"][:7] != "repeat "
                 ):
                     return False, "Mandatory global argument 'on_error' is not correct"
             except KeyError:
