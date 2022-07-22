@@ -4402,10 +4402,7 @@ if __name__ == '__main__':
         if subset_filter is not None:
             query += "subset_filter=" + str(subset_filter) + ";"
         if time_filter is not None:
-            if index_type == "index":
-                query += "time_filter=no;"                
-            else:
-                query += "time_filter=" + str(time_filter) + ";"
+            query += "time_filter=" + str(time_filter) + ";"
         if subset_type is not None:
             query += "subset_type=" + str(subset_type) + ";"
         if show_index is not None:
