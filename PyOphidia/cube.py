@@ -5928,7 +5928,7 @@ if __name__ == '__main__':
             return meta_dict
 
         def _convert_missing_value(meta_info, measure_name, measure_type, data):
-            if measure_type != "INT" and measure_type != "LONG":
+            if measure_type.lower() != "int" and measure_type.lower() != "long":
                 try:
                     _dependency_check("numpy")
                     import numpy as np
