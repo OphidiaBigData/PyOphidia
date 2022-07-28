@@ -56,6 +56,7 @@ setup(
         'Topic :: Scientific/Engineering',
         #'Private :: Do Not Upload',
     ],
+    setup_requires=['numpy'],
     install_requires=[
         'numpy',
         'pandas',
