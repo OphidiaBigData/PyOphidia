@@ -790,7 +790,9 @@ class Client:
         if self.project and "project" not in request:
             request["project"] = str(self.project)
         if "command" not in request:
-            request["command"] = workflow + params_list
+            request["command"] = "wsubmit(" + workflow + ")" + params_list
+        if "direct_output" not in request:
+            request["direct_output"] = "no"
         self.last_request = json.dumps(request)
         try:
             err, err_msg = self.wisvalid(self.last_request)
@@ -888,17 +890,14 @@ class Client:
             return False, "Workflow is not a valid dictionary"
         if "name" not in w or not w["name"]:
             return False, "Mandatory global argument 'name' is missing"
-        if "author" not in w or not w["author"]:
-            return False, "Mandatory global argument 'author' is missing"
-        if "abstract" not in w or not w["abstract"]:
-            return False, "Mandatory global argument 'abstract' is missing"
         if "on_error" in w:
             try:
                 if (
                     w["on_error"] != "skip"
                     and w["on_error"] != "continue"
                     and w["on_error"] != "break"
-                    and (w["on_error"][:7] != "repeat " or not w["on_error"][7:].isdigit() or int(w["on_error"][7:]) < 0)
+                    and w["on_error"] != "abort"
+                    and w["on_error"][:7] != "repeat "
                 ):
                     return False, "Mandatory global argument 'on_error' is not correct"
             except KeyError:
@@ -935,7 +934,8 @@ class Client:
                         task["on_error"] != "skip"
                         and task["on_error"] != "continue"
                         and task["on_error"] != "break"
-                        and (task["on_error"][:7] != "repeat " or not task["on_error"][7:].isdigit() or int(task["on_error"][7:]) < 0)
+                        and task["on_error"] != "abort"
+                        and task["on_error"][:7] != "repeat "
                     ):
                         return False, "Task 'on_error' is not correct in task: " + task_name
                 except KeyError:
