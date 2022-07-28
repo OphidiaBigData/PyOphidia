@@ -56,4 +56,9 @@ setup(
         'Topic :: Scientific/Engineering',
         #'Private :: Do Not Upload',
     ],
+    install_requires=[
+        'numpy',
+        'pandas',
+        'xarray'
+    ],
 )
