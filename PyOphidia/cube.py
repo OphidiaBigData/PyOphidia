@@ -1495,7 +1495,7 @@ class Cube:
                 raise RuntimeError()
 
         except Exception as e:
-            print(get_linenumber(), "Something went wrong:", e)
+            print(_get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
 
     @classmethod
@@ -3094,7 +3094,7 @@ class Cube:
                 if Cube.client.cube:
                     newcube = Cube(pid=Cube.client.cube)
         except Exception as e:
-            print(get_linenumber(), "Something went wrong:", e)
+            print(_get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
         else:
             return newcube
@@ -5694,7 +5694,7 @@ if __name__ == '__main__':
                 if Cube.client.cube:
                     newcube = Cube(pid=Cube.client.cube)
         except Exception as e:
-            print(get_linenumber(), "Something went wrong:", e)
+            print(_get_linenumber(), "Something went wrong:", e)
             raise RuntimeError()
         else:
             return newcube
@@ -6933,7 +6933,16 @@ if __name__ == '__main__':
             :rtype: <class 'int'>, <class 'int'>|None
             """
             try:
-                return rowkeys.index("NAME"), rowkeys.index("TYPE"), rowkeys.index("SIZE"), rowkeys.index("HIERARCHY"), rowkeys.index("CONCEPT LEVEL"), rowkeys.index("ARRAY"), rowkeys.index("LEVEL"), rowkeys.index("LATTICE NAME")
+                return (
+                    rowkeys.index("NAME"),
+                    rowkeys.index("TYPE"),
+                    rowkeys.index("SIZE"),
+                    rowkeys.index("HIERARCHY"),
+                    rowkeys.index("CONCEPT LEVEL"),
+                    rowkeys.index("ARRAY"),
+                    rowkeys.index("LEVEL"),
+                    rowkeys.index("LATTICE NAME"),
+                )
             except Exception as e:
                 print("Unable to parse dim info from response:", e)
                 return None

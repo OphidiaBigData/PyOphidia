@@ -892,13 +892,7 @@ class Client:
             return False, "Mandatory global argument 'name' is missing"
         if "on_error" in w:
             try:
-                if (
-                    w["on_error"] != "skip"
-                    and w["on_error"] != "continue"
-                    and w["on_error"] != "break"
-                    and w["on_error"] != "abort"
-                    and w["on_error"][:7] != "repeat "
-                ):
+                if w["on_error"] != "skip" and w["on_error"] != "continue" and w["on_error"] != "break" and w["on_error"] != "abort" and w["on_error"][:7] != "repeat ":
                     return False, "Mandatory global argument 'on_error' is not correct"
             except KeyError:
                 return False, "Mandatory global argument 'on_error' is missing"
@@ -930,13 +924,7 @@ class Client:
                             return False, "Dependency 'type' is not correct in task: " + task_name
             if "on_error" in task:
                 try:
-                    if (
-                        task["on_error"] != "skip"
-                        and task["on_error"] != "continue"
-                        and task["on_error"] != "break"
-                        and task["on_error"] != "abort"
-                        and task["on_error"][:7] != "repeat "
-                    ):
+                    if task["on_error"] != "skip" and task["on_error"] != "continue" and task["on_error"] != "break" and task["on_error"] != "abort" and task["on_error"][:7] != "repeat ":
                         return False, "Task 'on_error' is not correct in task: " + task_name
                 except KeyError:
                     return False, "Task 'on_error' is not correct in task: " + task_name
