@@ -1,7 +1,6 @@
 import pytest
 
 from PyOphidia import cube
-from ..extra import *
 
 cube.Cube.setclient()
 try:
@@ -34,10 +33,10 @@ random_cube_3 = cube.Cube(
 @pytest.mark.parametrize("cube",
                          [random_cube_1, random_cube_2, random_cube_3])
 def test_convert_to_xarray(cube):
-    ds = convert_to_xarray(cube)
+    ds = cube.to_dataset()
 
 
 @pytest.mark.parametrize(("cube"),
                          [(random_cube_1), (random_cube_2), (random_cube_3)])
 def test_convert_to_dataframe(cube):
-    df = convert_to_dataframe(cube)
+    df = cube.to_dataframe()
