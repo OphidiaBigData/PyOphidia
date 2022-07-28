@@ -1,10 +1,11 @@
 
-v1.10.0 - 2022-07-01
+v1.10.0 - 2022-07-28
 --------------------
 
 Added:
 ~~~~~~
 
+- to_dataset and to_dataframe methods `#40 https://github.com/OphidiaBigData/PyOphidia/pull/40>`_
 - Method for wait operator
 - Methods for intercube2 operator `#39 <https://github.com/OphidiaBigData/PyOphidia/issues/39>`_
 - Methods for importncs operator `#38 <https://github.com/OphidiaBigData/PyOphidia/issues/38>`_
@@ -12,12 +13,15 @@ Added:
 Changed:
 ~~~~~~~~
 
+- Update workflow supported keys
+- Direct ouput option to no when running workflows instead of single tasks
 - Cube methods interfaces to comply with Ophidia operators in v1.7.0
 - client requests with new field 'command' 
 
 Fixed:
 ~~~~~~
 
+- Subset methods to not use 'time_filter' when 'subset_type' is index 
 - Bug in server port parameter reading from the env 
 
 Removed:
