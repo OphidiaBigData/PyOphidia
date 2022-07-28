@@ -1,6 +1,6 @@
 #
 #     PyOphidia - Python bindings for Ophidia
-#     Copyright (C) 2015-2021 CMCC Foundation
+#     Copyright (C) 2015-2022 CMCC Foundation
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -450,8 +450,8 @@ class Client:
                                     print(
                                         VERTICAL_CHAR
                                         + " "
-                                        + response_i["objcontent"][0]["rowkeys"][j][start[j]: start[j] + max_column_width[j]]
-                                        + " " * ((max_column_width[j] + 2) - (len(response_i["objcontent"][0]["rowkeys"][j][start[j]: start[j] + max_column_width[j]]) + 1)),
+                                        + response_i["objcontent"][0]["rowkeys"][j][start[j] : start[j] + max_column_width[j]]
+                                        + " " * ((max_column_width[j] + 2) - (len(response_i["objcontent"][0]["rowkeys"][j][start[j] : start[j] + max_column_width[j]]) + 1)),
                                         end="",
                                     )
                                     start[j] = start[j] + max_column_width[j]
@@ -491,16 +491,16 @@ class Client:
                             for x in range(maximum_rows[i]):
                                 for j in columns:
                                     if start[i][j] < text_length[i][j]:
-                                        index = rowvalues[j][start[i][j]: start[i][j] + max_column_width[j]].find("\n")
+                                        index = rowvalues[j][start[i][j] : start[i][j] + max_column_width[j]].find("\n")
                                         if index != -1:
                                             # Delete newline char
-                                            rowvalues[j] = rowvalues[j][: start[i][j] + index] + rowvalues[j][start[i][j] + index + 1:]
+                                            rowvalues[j] = rowvalues[j][: start[i][j] + index] + rowvalues[j][start[i][j] + index + 1 :]
                                             actual_len = start[i][j] + index
                                         else:
                                             actual_len = start[i][j] + max_column_width[j]
 
                                         print(
-                                            VERTICAL_CHAR + " " + rowvalues[j][start[i][j]: actual_len] + " " * ((max_column_width[j] + 2) - (len(rowvalues[j][start[i][j]: actual_len]) + 1)), end=""
+                                            VERTICAL_CHAR + " " + rowvalues[j][start[i][j] : actual_len] + " " * ((max_column_width[j] + 2) - (len(rowvalues[j][start[i][j] : actual_len]) + 1)), end=""
                                         )
                                         start[i][j] = actual_len
                                     else:
@@ -751,7 +751,6 @@ class Client:
                     buffer = buffer.replace("${" + str(index) + "}", str(param))
                     buffer = re.sub(r"(\$" + str(index) + r")([^0-9]|$)", str(param) + r"\g<2>", buffer)
                     params_list += " " + str(param)
-                    #params_list += ", " + str(param)
                 buffer = re.sub(r"(\$\{?(\d*)\}?)", "", buffer)
                 # Remove comment blocks
                 buffer = re.sub(re.compile(r"/\*.*?\*/|//.*?\n", re.DOTALL), "\n", buffer)
@@ -767,7 +766,6 @@ class Client:
                     buffer = buffer.replace("${" + str(index) + "}", str(param))
                     buffer = re.sub(r"(\$" + str(index) + r")([^0-9]|$)", str(param) + r"\g<2>", buffer)
                     params_list += " " + str(param)
-                    #params_list += ", " + str(param)
                 buffer = re.sub(r"(\$\{?(\d*)\}?)", "", buffer)
                 # Remove comment blocks
                 buffer = re.sub(re.compile(r"/\*.*?\*/|//.*?\n", re.DOTALL), "\n", buffer)
@@ -785,8 +783,6 @@ class Client:
             request["cdd"] = self.cdd
         if self.cube and "cube" not in request:
             request["cube"] = self.cube
-        if self.host_partition and "host_partition" not in request:
-            request["host_partition"] = self.host_partition
         if self.exec_mode and "exec_mode" not in request:
             request["exec_mode"] = self.exec_mode
         if self.ncores and "ncores" not in request:
@@ -795,7 +791,6 @@ class Client:
             request["project"] = str(self.project)
         if "command" not in request:
             request["command"] = "wsubmit(" + workflow + ")" + params_list
-            #request["command"] = "wsubmit(" + workflow + params_list + ")"
         if "direct_output" not in request:
             request["direct_output"] = "no"
         self.last_request = json.dumps(request)

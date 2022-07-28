@@ -1,4 +1,31 @@
 
+v1.10.0 - 2022-07-01
+--------------------
+
+Added:
+~~~~~~
+
+- Method for wait operator
+- Methods for intercube2 operator `#39 <https://github.com/OphidiaBigData/PyOphidia/issues/39>`_
+- Methods for importncs operator `#38 <https://github.com/OphidiaBigData/PyOphidia/issues/38>`_
+
+Changed:
+~~~~~~~~
+
+- Cube methods interfaces to comply with Ophidia operators in v1.7.0
+- client requests with new field 'command' 
+
+Fixed:
+~~~~~~
+
+- Bug in server port parameter reading from the env 
+
+Removed:
+~~~~~~~~
+
+- Automatic setting of host partition within the workflows submitted with wsubmit() 
+
+
 v1.9.1 - 2021-08-03
 -------------------
 
