@@ -5,7 +5,7 @@ v1.10.0 - 2022-07-28
 Added:
 ~~~~~~
 
-- to_dataset and to_dataframe methods `#40 https://github.com/OphidiaBigData/PyOphidia/pull/40>`_
+- to_dataset and to_dataframe methods `#40 <https://github.com/OphidiaBigData/PyOphidia/pull/40>`_
 - Method for wait operator
 - Methods for intercube2 operator `#39 <https://github.com/OphidiaBigData/PyOphidia/issues/39>`_
 - Methods for importncs operator `#38 <https://github.com/OphidiaBigData/PyOphidia/issues/38>`_
