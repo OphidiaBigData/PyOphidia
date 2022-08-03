@@ -3,6 +3,7 @@ dist/
 lib/
 *.egg-info/
 *.egg
+.eggs/
 *.pyc
 *.pyo
 PKG-INFO
