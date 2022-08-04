@@ -5,7 +5,7 @@ PyOphidia: Python bindings for Ophidia
 
 It is an alternative to Oph_Term, the Ophidia no-GUI interpreter component, and a convenient way to submit SOAP HTTPS requests to an Ophidia server or to develop your own application using Python. 
 
-It runs on Python 2.7, 3.7, 3.8 and 3.9 it is pure-Python code and has some dependencies on Xarray, Pandas and Numpy. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v1.10) is compatible with Ophidia v1.7.
+It runs on Python 2.7, 3.7, 3.8, 3.9 and 3.10 it is pure-Python code and has some dependencies on Xarray, Pandas and Numpy. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v1.10) is compatible with Ophidia v1.7.
 
 It provides 2 main modules:
 
