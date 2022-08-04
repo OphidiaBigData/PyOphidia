@@ -48,18 +48,18 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Scientific/Engineering',
         #'Private :: Do Not Upload',
     ],
-    setup_requires=['numpy'],
+    setup_requires=['numpy >=1.19'],
     install_requires=[
-        'numpy',
-        'pandas',
+        'numpy >=1.19',
+        'pandas >=1.2',
         'xarray'
     ],
 )
