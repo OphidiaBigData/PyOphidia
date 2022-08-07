@@ -56,10 +56,10 @@ setup(
         'Topic :: Scientific/Engineering',
         #'Private :: Do Not Upload',
     ],
-    setup_requires=['numpy >=1.19'],
-    install_requires=[
-        'numpy >=1.19',
-        'pandas >=1.2',
+    extras_require={
+        "convert": [
+        'numpy>=1.19',
+        'pandas>=1.2',
         'xarray'
-    ],
+    ]},
 )
