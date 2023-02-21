@@ -36,7 +36,7 @@ def get_linenumber():
 
 
 class Client:
-    """Client(username='', password='', server='', port='', token='', read_env=False, api_mode=True, project=None) -> obj
+    """Client(username='', password='', server='', port='', token='', read_env=False, api_mode=True, local_mode=False, project=None) -> obj
 
     Attributes:
         username: Ophidia username
@@ -77,10 +77,12 @@ class Client:
         pretty_print(response, response_i) -> self : Prints the last_response JSON string attribute as a formatted response
     """
 
-    def __init__(self, username="", password="", server="", port="", token="", read_env=False, api_mode=True, project=None):
-        """Client(username='', password='', server='', port='', token='', read_env=False, api_mode=True, project=None) -> obj
+    def __init__(self, username="", password="", server="", port="", token="", read_env=False, api_mode=True, local_mode=False, project=None):
+        """Client(username='', password='', server='', port='', token='', read_env=False, api_mode=True, local_mode=False, project=None) -> obj
         :param api_mode: If True, use the class as an API and catch also framework-level errors
         :type api_mode: bool
+        :param local_mode: If True, use only the local feature from the class
+        :type local_mode: bool
         :param username: Ophidia username
         :type username: str
         :param password: Ophidia password
@@ -101,39 +103,8 @@ class Client:
         """
 
         self.api_mode = api_mode
-        if read_env is False:
-            self.username = username
-            self.password = password
-            self.server = server
-            if port:
-                self.port = port
-            else:
-                self.port = "11732"
-            access_token = token
-        else:
-            if username:
-                self.username = username
-            else:
-                self.username = os.environ.get("OPH_USER")
-            if password:
-                self.password = password
-            else:
-                self.password = os.environ.get("OPH_PASSWD")
-            if server:
-                self.server = server
-            else:
-                self.server = os.environ.get("OPH_SERVER_HOST")
-            if port:
-                self.port = port
-            else:
-                self.port = os.environ.get("OPH_SERVER_PORT")
-            if token:
-                access_token = token
-            else:
-                access_token = os.environ.get("OPH_TOKEN")
-
+        self.local_mode = local_mode
         self.project = project
-
         self.session = ""
         self.cwd = "/"
         self.cdd = "/"
@@ -149,38 +120,76 @@ class Client:
         self.last_return_value = 0
         self.last_error = ""
         self.last_exec_time = 0.0
+        
+        if local_mode is False:
+            if read_env is False:
+                self.username = username
+                self.password = password
+                self.server = server
+                if port:
+                    self.port = port
+                else:
+                    self.port = "11732"
+                access_token = token
+            else:
+                if username:
+                    self.username = username
+                else:
+                    self.username = os.environ.get("OPH_USER")
+                if password:
+                    self.password = password
+                else:
+                    self.password = os.environ.get("OPH_PASSWD")
+                if server:
+                    self.server = server
+                else:
+                    self.server = os.environ.get("OPH_SERVER_HOST")
+                if port:
+                    self.port = port
+                else:
+                    self.port = os.environ.get("OPH_SERVER_PORT")
+                if token:
+                    access_token = token
+                else:
+                    access_token = os.environ.get("OPH_TOKEN")
 
-        if not self.username and not self.password and access_token:
-            self.password = access_token
-            self.username = "__token__"
+            if not self.username and not self.password and access_token:
+                self.password = access_token
+                self.username = "__token__"
 
-        if not self.username or not self.password or not self.server or not self.port:
-            raise RuntimeError("one or more login parameters are None")
-        try:
-            if self.api_mode:
-                self.resume_session()
-                if self.session is not None and self.session:
-                    self.get_base_path()
-                    self.resume_cdd()
-                    self.resume_cwd()
-                    self.resume_cube()
-        except Exception as e:
-            print(get_linenumber(), "Something went wrong in resuming last session, cwd or cube:", e)
+            if not self.username or not self.password or not self.server or not self.port:
+                raise RuntimeError("one or more login parameters are None")
+            try:
+                if self.api_mode:
+                    self.resume_session()
+                    if self.session is not None and self.session:
+                        self.get_base_path()
+                        self.resume_cdd()
+                        self.resume_cwd()
+                        self.resume_cube()
+            except Exception as e:
+                print(get_linenumber(), "Something went wrong in resuming last session, cwd or cube:", e)
+            else:
+                if self.api_mode:
+                    if self.cdd:
+                        print("Current cdd is " + self.cdd)
+                    if self.session:
+                        print("Current session is " + self.session)
+                    if self.cwd:
+                        print("Current cwd is " + self.cwd)
+                    if self.cube:
+                        print("The last produced cube is " + self.cube)
+            finally:
+                pass
         else:
-            if self.api_mode:
-                if self.cdd:
-                    print("Current cdd is " + self.cdd)
-                if self.session:
-                    print("Current session is " + self.session)
-                if self.cwd:
-                    print("Current cwd is " + self.cwd)
-                if self.cube:
-                    print("The last produced cube is " + self.cube)
-        finally:
-            pass
+            self.username = None
+            self.password = None
+            self.server = None
+            self.port = None            
 
     def __del__(self):
         del self.api_mode
+        del self.local_mode
         del self.username
         del self.password
         del self.server
@@ -213,6 +222,8 @@ class Client:
         :raises: RuntimeError
         """
 
+        if self.local_mode is True:
+            raise RuntimeError("this function cannot be run when local_mode is set")
         if query is None:
             raise RuntimeError("query is not present")
         if self.username is None or self.password is None or self.server is None or self.port is None:
@@ -318,6 +329,8 @@ class Client:
         :raises: RuntimeError
         """
 
+        if self.local_mode is True:
+            raise RuntimeError("this function cannot be run when local_mode is set")
         if id is None and self.last_jobid is None:
             raise RuntimeError("no jobid specified")
         if self.username is None or self.password is None or self.server is None or self.port is None:
@@ -562,6 +575,8 @@ class Client:
         :raises: RuntimeError
         """
 
+        if self.local_mode is True:
+            raise RuntimeError("this function cannot be run when local_mode is set")
         if self.username is None or self.password is None or self.server is None or self.port is None:
             raise RuntimeError("one or more login parameters are None")
         query = "operator=oph_get_config;key=OPH_BASE_SRC_PATH;"
@@ -596,6 +611,8 @@ class Client:
         :raises: RuntimeError
         """
 
+        if self.local_mode is True:
+            raise RuntimeError("this function cannot be run when local_mode is set")        
         if self.username is None or self.password is None or self.server is None or self.port is None:
             raise RuntimeError("one or more login parameters are None")
         query = "operator=oph_get_config;key=OPH_SESSION_ID;"
@@ -630,6 +647,8 @@ class Client:
         :raises: RuntimeError
         """
 
+        if self.local_mode is True:
+            raise RuntimeError("this function cannot be run when local_mode is set")
         if self.username is None or self.password is None or self.server is None or self.port is None:
             raise RuntimeError("one or more login parameters are None")
         query = "operator=oph_get_config;key=OPH_CDD;"
@@ -664,6 +683,8 @@ class Client:
         :raises: RuntimeError
         """
 
+        if self.local_mode is True:
+            raise RuntimeError("this function cannot be run when local_mode is set")
         if self.username is None or self.password is None or self.server is None or self.port is None:
             raise RuntimeError("one or more login parameters are None")
         query = "operator=oph_get_config;key=OPH_CWD;"
@@ -698,6 +719,8 @@ class Client:
         :raises: RuntimeError
         """
 
+        if self.local_mode is True:
+            raise RuntimeError("this function cannot be run when local_mode is set")
         if self.username is None or self.password is None or self.server is None or self.port is None:
             raise RuntimeError("one or more login parameters are None")
         query = "operator=oph_get_config;key=OPH_DATACUBE;"
@@ -735,6 +758,8 @@ class Client:
         :raises: RuntimeError
         """
 
+        if self.local_mode is True:
+            raise RuntimeError("this function cannot be run when local_mode is set")
         if workflow is None:
             raise RuntimeError("workflow is not present")
         if self.username is None or self.password is None or self.server is None or self.port is None:
