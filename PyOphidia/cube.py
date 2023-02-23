@@ -3394,7 +3394,7 @@ class Cube:
             from time import time
 
             base_path = expanduser("~") + "/.ophidia/"
-            script_path = base_path + function.__name__ + str(int(time() * 10**6)) + ".py"
+            script_path = base_path + function.__name__ + str(int(time() * 10 ** 6)) + ".py"
 
             try:
                 # Check if hidden folder exists or create it otherwise

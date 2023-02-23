@@ -120,7 +120,7 @@ class Client:
         self.last_return_value = 0
         self.last_error = ""
         self.last_exec_time = 0.0
-        
+
         if local_mode is False:
             if read_env is False:
                 self.username = username
@@ -185,7 +185,7 @@ class Client:
             self.username = None
             self.password = None
             self.server = None
-            self.port = None            
+            self.port = None
 
     def __del__(self):
         del self.api_mode
@@ -612,7 +612,7 @@ class Client:
         """
 
         if self.local_mode is True:
-            raise RuntimeError("this function cannot be run when local_mode is set")        
+            raise RuntimeError("this function cannot be run when local_mode is set")
         if self.username is None or self.password is None or self.server is None or self.port is None:
             raise RuntimeError("one or more login parameters are None")
         query = "operator=oph_get_config;key=OPH_SESSION_ID;"
