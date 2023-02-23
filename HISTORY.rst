@@ -1,4 +1,13 @@
 
+v1.10.1 - 2023-02-23
+--------------------
+
+Added:
+~~~~~~
+
+- new argument in client class to support execution of local methods without a connection to the server
+
+
 v1.10.0 - 2022-07-28
 --------------------
 
