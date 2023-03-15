@@ -381,6 +381,7 @@ class Cube:
                 token,
                 read_env,
                 api_mode,
+                False,
                 project,
             )
         except Exception as e:

@@ -1,4 +1,13 @@
 
+Next release
+--------------------
+
+Fixed:
+~~~~~~
+
+- Method to set Client object as a property of Cube class
+
+
 v1.10.1 - 2023-02-23
 --------------------
 
