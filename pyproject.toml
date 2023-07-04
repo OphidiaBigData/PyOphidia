@@ -1,0 +1,4 @@
+[project]
+name = "pyophidia"
+authors = [{name = "CMCC", email = "ophidia-info@cmcc.it"}]
+dynamic = ["version", "description"]
