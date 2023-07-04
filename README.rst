@@ -12,8 +12,14 @@ It provides 2 main modules:
 - client.py: generic *low level* class to submit any type of requests (simple tasks and workflows), using SSL and SOAP with the client ophsubmit.py;
 - cube.py: *high level* cube-oriented class to interact directly with cubes, with several methods wrapping the operators.
 
+Documentation
+-------------
+
+https://pyophidia.readthedocs.io/en/latest/
+
 Installation
 ------------
+
 To install *PyOphidia* package run the following command:
 
 .. code-block:: bash 
@@ -31,6 +37,7 @@ To install *PyOphidia* with conda run the following command:
 
 Installation from sources
 -------------------------
+
 To install the latest developement version run the following commands:
 
 .. code-block:: bash 

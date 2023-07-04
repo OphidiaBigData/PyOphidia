@@ -9,7 +9,7 @@ To install *PyOphidia* package run the following command:
 
 .. code-block:: console 
 
-   (.venv) $ pip install pyophidia
+   $ pip install pyophidia
 
 Install with conda
 ------------------
@@ -18,7 +18,7 @@ To install *PyOphidia* with conda run the following command:
 
 .. code-block:: console 
 
-   (.venv) $ conda install -c conda-forge pyophidia 
+   $ conda install -c conda-forge pyophidia 
 
 Installation from sources
 -------------------------
@@ -26,9 +26,9 @@ To install the latest developement version run the following commands:
 
 .. code-block:: console 
 
-   (.venv) $ git clone https://github.com/OphidiaBigData/PyOphidia
-   (.venv) $ cd PyOphidia
-   (.venv) $ python setup.py install
+   $ git clone https://github.com/OphidiaBigData/PyOphidia
+   $ cd PyOphidia
+   $ python setup.py install
    
 Examples
 --------
