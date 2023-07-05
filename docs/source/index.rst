@@ -1,7 +1,7 @@
 Welcome to PyOphidia documentation!
 ===================================
 
-**PyOphidia** is a GPLv3-licensed Python package for interacting with the Ophidia Framework.
+**PyOphidia** is a GPLv3_-licensed Python package for interacting with the Ophidia_ Framework.
 
 It is an alternative to Oph_Term, the Ophidia no-GUI interpreter component, and a convenient way to submit SOAP HTTPS requests to an Ophidia server or to develop your own application using Python. 
 
@@ -9,8 +9,15 @@ It runs on Python 2.7, 3.3, 3.4, 3.5 and 3.6, has no Python dependencies and is 
 
 It provides 2 main modules:
 
-- client.py: generic *low level* class to submit any type of requests (simple tasks and workflows), using SSL and SOAP with the client ophsubmit.py;
-- cube.py: *high level* cube-oriented class to interact directly with cubes, with several methods wrapping the operators.
+- client.py: generic *low level* class to submit any type of requests (simple tasks and workflows), using SSL and SOAP with the client ophsubmit.py
+- cube.py: *high level* cube-oriented class to interact directly with cubes, with several methods wrapping the operators
+
+In particular, they implement two main classes:
+
+- Client class: it supports the submissions of Ophidia commands and workflows as well as the management of sessions from Python code
+- Cube class: it builds on the client class and provides the datacube type abstraction and the methods to manipulate, process and get information on cubes objects
+
+While the cube module provides a user-friendly interface, the client module allows a finer specification of the operators.
 
 Check out the :doc:`usage` section for further information, including
 how to :ref:`installation` the project.
@@ -24,4 +31,10 @@ Contents
 
 .. toctree::
 
+   installation
    usage
+   examples
+
+.. _GPLv3: https://www.gnu.org/licenses/gpl-3.0.txt
+.. _Ophidia: https://ophidia.cmcc.it
+
