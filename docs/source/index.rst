@@ -1,6 +1,11 @@
 Welcome to PyOphidia documentation!
 ===================================
 
+.. figure:: https://ophidia.cmcc.it/wp-content/themes/ophidia/images/oph_logo_symbol_big.png
+   :width: 30.0%
+   :align: center
+   :target: https://ophidia.cmcc.it
+
 **PyOphidia** is a GPLv3_-licensed Python package for interacting with the Ophidia_ Framework.
 
 It is an alternative to Oph_Term, the Ophidia no-GUI interpreter component, and a convenient way to submit SOAP HTTPS requests to an Ophidia server or to develop your own application using Python. 

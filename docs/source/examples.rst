@@ -129,7 +129,7 @@ We can also explore just a specific portion of the datacube. The *explore* opera
 
    tasmaxCube2.explore(subset_dims="lat|lon|time",subset_type="index",subset_filter="1:2|1:4|1:4")
 
-Let's compute the **maximum** value over the time series for each point in the spatial domain using ```operation='max'```. We can also compute other metrics (see http://ophidia.cmcc.it/documentation/users/operators/OPH_REDUCE.html)
+Let's compute the **maximum** value over the time series for each point in the spatial domain using ```operation='max'```. We can also compute other metrics (see the documentation of OPH_REDUCE_).
 
 .. code-block:: python
 
@@ -163,8 +163,9 @@ Let's export the data into a Python-friendly structure with the *export_array()*
 
 The structure looks something like this
 
-<img src="imgs/export_array.png" alt="Export Array" width="800">
-
+.. figure:: https://raw.githubusercontent.com/ESiWACE/hpda-vis-training/23ffc4e862a42b432ff5dbfbd25e1c13708014df/Training2022/Session1/imgs/export_array.png
+   :width: 100.0%
+   :align: center
 
 The data exported in the Python structure can be used to create a map (note the definition of a Python function)
 
@@ -231,7 +232,8 @@ We can save the results in a NetCDF file using the *exportnc* operator with the 
         output_name='max'
    )
 
-#### What If we want to consider the whole spatial domain and specify a subset only on the time range? 
+What If we want to consider the whole spatial domain and specify a subset only on the time range?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 We can perform the new set of operations on *mycube* object, without the need to re-import the dataset from the file. The time range can be provided in human-readable form with a datetime format (e.g ```subset_filter="2096-01-01_2097-01-01"```) setting ```time_filter="yes"```.
 
@@ -267,7 +269,8 @@ We can rerun the same operation on the new cube ...
    data = tasmaxCube3.export_array()
    plotData(data)
 
-#### What if we want to get the *minimum* instead of the maximum value?
+What if we want to get the *minimum* instead of the maximum value?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Again we can apply the *reduce* operator with ```operation='min'``` on *newMycube2* object, without the need to re-import or subset the dataset again
 
@@ -301,7 +304,7 @@ Now, we can import the NetCDF file for the tasmin variable...
         )
 
 
-We can use the ***predicate*** evaluation operation into the *apply* operator in order to identify the days with temperature over a given threshold, e.g. 293.15°K (see http://ophidia.cmcc.it/documentation/users/primitives/OPH_PREDICATE.html). 
+We can use the ***predicate*** evaluation operation into the *apply* operator in order to identify the days with temperature over a given threshold, e.g. 293.15°K (see the documentation of OPH_PREDICATE_). 
 
 Basically, we put to 1 the temperatures over 293.15°K (20°C), 0 otherwise.
 
@@ -334,7 +337,7 @@ Now, we can use the *to_dataset* method in order to export the datacube into an 
    tropicalNights_ds = tropicalNights.to_dataset().transpose('time','lat','lon')
 
 
-We can explore the result that consists of the *tasmin* variable, coordinates and attributes which together form a self describing dataset (see https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html)
+We can explore the result that consists of the *tasmin* variable, coordinates and attributes which together form a self describing dataset (see the documentation of xarray.Dataset_)
 
 .. code-block:: python
 
@@ -431,7 +434,8 @@ Let's plot all years from the dataset using **Matplotlib** and **Cartopy**. Basi
 
    plotData(tropicalNights_ds)
 
-#### Time series processing
+Time series processing
+^^^^^^^^^^^^^^^^^^^^^^
 
 Starting from the first imported datacube, we can extract a single time series for a given spatial point
 
@@ -447,7 +451,7 @@ Starting from the first imported datacube, we can extract a single time series f
 )
 
 
-Then compute the moving average on each element of the measure array using the *apply* operator with the *oph_moving_avg* primitive (see http://ophidia.cmcc.it/documentation/users/primitives/OPH_MOVING_AVG.html).
+Then compute the moving average on each element of the measure array using the *apply* operator with the *oph_moving_avg* primitive (see the documentation of OPH_MOVING_AVG_).
 
 **Note: the moving average is defined as an average of fixed number of items in the time series**
 
@@ -469,7 +473,7 @@ We export the datacubes into Xarray datasets...
    movingAvg_ds
 
 
-...and plot the two time series (*tasmaxCube2_ds* and *movingAvg_ds*) using the **Bokeh Visualization library** (see https://bokeh.org). 
+...and plot the two time series (*tasmaxCube2_ds* and *movingAvg_ds*) using the **Bokeh Visualization library** (see Bokeh_). 
 
 .. code-block:: python
 
@@ -645,3 +649,9 @@ The virtual file system should now be "clean"
    cube.Cube.list(level=2)
 
 .. _CMCC: https://www.cmcc.it
+.. _OPH_REDUCE https://ophidia.cmcc.it/documentation/users/operators/OPH_REDUCE.html
+.. _OPH_PREDICATE https://ophidia.cmcc.it/documentation/users/primitives/OPH_PREDICATE.html
+.. _xarray.Dataset https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html
+.. _OPH_MOVING_AVG http://ophidia.cmcc.it/documentation/users/primitives/OPH_MOVING_AVG.htmt
+.. _Bokeh https://bokeh.org
+
