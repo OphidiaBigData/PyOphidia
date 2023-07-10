@@ -1,12 +1,17 @@
 Ophidia Core Contributors - ophidia-info AT cmcc DOT it
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Andrea Mariello,
-Sandro Fiore,
-Alessandro D'Anca,
-Cosimo Palazzo,
-Donatello Elia
+- Donatello Elia
+- Cosimo Palazzo
+- Sandro Fiore
+- Andrea Mariello
+- Alessandro D'Anca
 
 Other Contributors
 ~~~~~~~~~~~~~~~~~~
-Pourya Samsolmoali - pshams55 AT gmail DOT com,
-Elisa Distante - elisa DOT distante AT gmail DOT com
+- Pourya Samsolmoali 
+- Elisa Distante
+- Charles Doutriaux
+- Paola Nassisi
+- Fabrizio Antonio
+- Emmanouil Vachlas
+- Sonia Scardigno
