@@ -36,6 +36,7 @@ Contents
    installation
    usage
    examples
+   tutorial
 
 .. _GPLv3: https://www.gnu.org/licenses/gpl-3.0.txt
 .. _Ophidia: https://ophidia.cmcc.it
