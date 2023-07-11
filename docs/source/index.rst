@@ -14,15 +14,10 @@ PyOphidia provides features for handling scientific data in the form of datacube
 
 It runs on Python 2.7, 3.7, 3.8, 3.9 and 3.10 it is pure-Python code and has some dependencies on Xarray, Pandas and Numpy. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v1.10) is compatible with Ophidia v1.7.
 
-It provides 2 main modules:
+It provides 2 main classes:
 
-- client.py: generic *low level* class to submit any type of requests (simple tasks and workflows), using SSL and SOAP with the client ophsubmit.py
-- cube.py: *high level* cube-oriented class to interact directly with cubes, with several methods wrapping the operators
-
-In particular, they implement two main classes:
-
-- Client class: it supports the submissions of Ophidia commands and workflows as well as the management of sessions from Python code
-- Cube class: it builds on the client class and provides the datacube type abstraction and the methods to manipulate, process and get information on cubes objects
+- Client class (client.py): generic *low level* class for the submissions of Ophidia commands and workflows as well as the management of sessions from Python code, using SSL and SOAP with the client ophsubmit.py
+- Cube class (cube.py): *high level* class and providing the datacube type abstraction and the methods to manipulate, process and get information on cubes objects
 
 While the cube module provides a user-friendly interface, the client module allows a finer specification of the operators.
 
