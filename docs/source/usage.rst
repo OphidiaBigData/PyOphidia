@@ -184,11 +184,29 @@ To export data into a single NetCDF file:
 Export to a Python array
 ------------------------
 
-To exports data in a python-friendly format:
+To export data in a python-friendly format:
 
 .. code-block:: python
 
    data = mycube3.export_array(show_time='yes')
+
+Export a datacube to a Xarray dataset
+-------------------------------------
+
+To export a datacube into a Xarray dataset:
+
+.. code-block:: python
+
+   data = mycube3.to_dataset()
+
+Export a datacube to a Pandas dataframe
+---------------------------------------
+
+To export a datacube into a Pandas dataframe:
+
+.. code-block:: python
+
+   data = mycube3.to_dataframe()
 
 Run a Python script with Ophidia
 --------------------------------
