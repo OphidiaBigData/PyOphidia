@@ -1,8 +1,8 @@
 Examples
 ========
 
-Tutorial
---------
+Basic functionalities
+---------------------
 
 First of all import PyOphidia modules
 
@@ -20,10 +20,6 @@ Let's now load a NetCDF file. We can inspect the file with the *explorenc* Ophid
 - *Dimension list*: it contains the NetCDF file dimensions and their size;
 - *Variable list*: it includes the NetCDF file variables, their type and the related dimensions;
 - *Metadata list*: it shows file attributes
-
-.. code-block:: python
-
-   !pwd
 
 .. code-block:: python
 
@@ -167,7 +163,7 @@ The structure looks something like this
    :width: 100.0%
    :align: center
 
-The data exported in the Python structure can be used to create a map (note the definition of a Python function)
+The data exported in the Python structure can be used to create a map with Cartopy and Matplolib (note the definition of a Python function)
 
 .. code-block:: python
 
