@@ -24,16 +24,16 @@ https://github.com/OphidiaBigData/PyOphidia
 
 Besides Python Standard Library, PyOphidia optionally depends on the following libraries:
 
-- NumPy</br>
-BSD License</br>
+- NumPy
+BSD License
 https://numpy.org/doc/stable/license.html
 
-- Pandas</br>
-BSD 3-Clause License</br>
+- Pandas
+BSD 3-Clause License
 https://pandas.pydata.org/docs/getting_started/overview.html#license
 
-- Xarray</br>
-Apache License 2.0</br>
+- Xarray
+Apache License 2.0
 https://github.com/pydata/xarray/blob/main/LICENSE
 
 =====================================================================
@@ -42,7 +42,7 @@ Acknowledgement:
 
 This software has been in part supported by:
 
-- the EU EuroHPC JA through the following projects: eFlows4HPC (Grant no. 955558). The JU receives support from the European Union’s Horizon 2020 research and innovation programme and Spain, Germany, France, Italy, Poland, Switzerland, and Norway. In Italy, it has been preliminarily approved for complimentary funding by Ministero dello Sviluppo Economico (MiSE) (ref. project prop. 2659).
+- the EuroHPC JA through the following projects: eFlows4HPC (Grant no. 955558). The JU receives support from the European Union’s Horizon 2020 research and innovation programme and Spain, Germany, France, Italy, Poland, Switzerland, and Norway. In Italy, it has been preliminarily approved for complimentary funding by Ministero dello Sviluppo Economico (MiSE) (ref. project prop. 2659).
 
 - the Horizon 2020 Framework Programme through the following projects: INDIGO-DataCloud (Grant no. 653549), EUBra-BIGSEA (Grant no. 690116), EOSC-Hub (Grant no. 777536), ESiWACE2 (Grant no. 823988),
 
