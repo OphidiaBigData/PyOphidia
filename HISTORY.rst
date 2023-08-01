@@ -1,5 +1,5 @@
 
-v1.11.0 - 2023-07-28
+v1.11.0 - 2023-08-01
 --------------------
 
 Fixed:
@@ -7,6 +7,12 @@ Fixed:
 
 - Method to set Client object as a property of Cube class
 
+Added:
+~~~~~~
+
+- Readthedocs documentation  `#40 <https://github.com/OphidiaBigData/PyOphidia/pull/42>`_
+- examples folder
+- 'local_mode' argument to client class
 
 v1.10.1 - 2023-02-23
 --------------------
@@ -34,18 +40,18 @@ Changed:
 - Update workflow supported keys
 - Direct ouput option to no when running workflows instead of single tasks
 - Cube methods interfaces to comply with Ophidia operators in v1.7.0
-- client requests with new field 'command' 
+- client requests with new field 'command'
 
 Fixed:
 ~~~~~~
 
-- Subset methods to not use 'time_filter' when 'subset_type' is index 
-- Bug in server port parameter reading from the env 
+- Subset methods to not use 'time_filter' when 'subset_type' is index
+- Bug in server port parameter reading from the env
 
 Removed:
 ~~~~~~~~
 
-- Automatic setting of host partition within the workflows submitted with wsubmit() 
+- Automatic setting of host partition within the workflows submitted with wsubmit()
 
 
 v1.9.1 - 2021-08-03
@@ -88,19 +94,19 @@ Added:
 Changed:
 ~~~~~~~~
 
-- Return value to JSON response for multiple metadata and info methods in cube class when display is set to False 
+- Return value to JSON response for multiple metadata and info methods in cube class when display is set to False
 - Removed workflow json print from wisvalid method
 - Cube methods interfaces to comply with Ophidia operators in v1.6.0
 - Improve export_array method in cube class `#28 <https://github.com/OphidiaBigData/PyOphidia/pull/28>`_
 - sectlient method in cube class with new argument 'api_mode' `#27 <https://github.com/OphidiaBigData/PyOphidia/pull/27>`_
 - script method with new parameter 'space' `#25 <https://github.com/OphidiaBigData/PyOphidia/pull/25>`_
 - b2drop method in cube class to support also 'get' action `#24 <https://github.com/OphidiaBigData/PyOphidia/pull/24>`_
-- script method in cube class to support the execution of python code through the operator `#23 <https://github.com/OphidiaBigData/PyOphidia/pull/23>`_  
+- script method in cube class to support the execution of python code through the operator `#23 <https://github.com/OphidiaBigData/PyOphidia/pull/23>`_
 
 Fixed:
 ~~~~~~
 
-- Input arguments usage in concatnc and concatnc2 methods in cube class 
+- Input arguments usage in concatnc and concatnc2 methods in cube class
 - randcube2 method in cube class to use the proper operator
 
 
@@ -142,12 +148,12 @@ Added:
 ~~~~~~
 
 - Features to retrive last CDD from server `#18 <https://github.com/OphidiaBigData/PyOphidia/pull/18>`_
-- Interfaces of 2 new methods: b2drop (class method) and to_b2drop 
- 
+- Interfaces of 2 new methods: b2drop (class method) and to_b2drop
+
 Changed:
 ~~~~~~~~
 
-- 'info' method in Cube class to avoid calling cubeelements operator 
+- 'info' method in Cube class to avoid calling cubeelements operator
 - Cube methods interfaces to comply with Ophidia operators in v1.4.0
 - Interfaces of several operators to allow multi-thread execution `#19 <https://github.com/OphidiaBigData/PyOphidia/pull/19>`_
 
@@ -161,11 +167,11 @@ Added:
 - Support to manage reserved or user-defined host partition `#14 <https://github.com/OphidiaBigData/PyOphidia/pull/14>`_
 - Support to parse comments and print validation errors in 'wsubmit' method `#13 <https://github.com/OphidiaBigData/PyOphidia/pull/13>`_
 - New method for containerschema operator in cube module `#10 <https://github.com/OphidiaBigData/PyOphidia/pull/10>`_
- 
+
 Changed:
 ~~~~~~~~
 
-- Connection functions to also get parameters from environment variables `#17 <https://github.com/OphidiaBigData/PyOphidia/pull/17>`_ 
+- Connection functions to also get parameters from environment variables `#17 <https://github.com/OphidiaBigData/PyOphidia/pull/17>`_
 - Reduce2 method in cube module for multiple threads `#15 <https://github.com/OphidiaBigData/PyOphidia/pull/15>`_
 - Client module to read variables from extra fields in JSON response `#12 <https://github.com/OphidiaBigData/PyOphidia/pull/12>`_
 - Metadata method in cube module to filter on variables `#11 <https://github.com/OphidiaBigData/PyOphidia/pull/11>`_
@@ -186,7 +192,7 @@ Added:
 - Support for Authentication, Authorization and Accounting as a Service (token-based access) `#7 <https://github.com/OphidiaBigData/PyOphidia/pull/7>`_
 - Method to monitor a workflow progress rate `#6 <https://github.com/OphidiaBigData/PyOphidia/pull/6>`_
 - Support to retrieve base_src_path from Ophidia server
- 
+
 Changed:
 ~~~~~~~~
 
@@ -266,5 +272,3 @@ v1.0.0 - 2015-06-05
 -------------------
 
 - Initial public release
-
-

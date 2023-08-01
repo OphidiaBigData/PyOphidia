@@ -3,11 +3,11 @@ PyOphidia: Python bindings for Ophidia
 
 *PyOphidia* is a GPLv3_-licensed Python package for interacting with the Ophidia_ framework.
 
-It aims at providing a user-friendly and programmatic interface for large-scale data analytics and a convenient way to submit SOAP HTTPS requests to an Ophidia server or to develop your own application using Python. 
+It aims at providing a user-friendly and programmatic interface for large-scale data analytics and a convenient way to submit SOAP HTTPS requests to an Ophidia server or to develop your own application using Python.
 
 PyOphidia provides features for handling scientific data in the form of datacubes, managing workflow execution, enabling parallel processing on HPC/Cloud systems and supporting integration with well-known modules from the Python scientific ecosystem.
 
-It runs on Python 2.7, 3.7, 3.8, 3.9 and 3.10 it is pure-Python code and has some dependencies on Xarray, Pandas and Numpy. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v1.10) is compatible with Ophidia v1.7.
+It runs on Python 2.7, 3.7, 3.8, 3.9, 3.10 and 3.11 it is pure-Python code and has some (optional) dependencies on Xarray, Pandas and Numpy. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v1.11) is compatible with Ophidia v1.8.
 
 It provides 2 main modules:
 
@@ -24,7 +24,7 @@ Installation
 
 To install *PyOphidia* package run the following command:
 
-.. code-block:: bash 
+.. code-block:: bash
 
    pip install pyophidia
 
@@ -33,22 +33,22 @@ Install with conda
 
 To install *PyOphidia* with conda run the following command:
 
-.. code-block:: bash 
+.. code-block:: bash
 
-   conda install -c conda-forge pyophidia 
+   conda install -c conda-forge pyophidia
 
 Installation from sources
 -------------------------
 
 To install the latest developement version run the following commands:
 
-.. code-block:: bash 
+.. code-block:: bash
 
    git clone https://github.com/OphidiaBigData/PyOphidia
    cd PyOphidia
    python setup.py install
 
-   
+
 Examples
 --------
 
@@ -76,7 +76,7 @@ In case of authentication token is used:
    ophclient = client.Client(token="token",server="127.0.0.1",port="11732")
 
 
-If *OPH_USER*, *OPH_PASSWD* (or *OPH_TOKEN*), *OPH_SERVER_HOST* and *OPH_SERVER_PORT* variables have been set in the environment (see the documentation_ for more details), a client can be also created reading directly the values from the environment without the need to specify any parameter. 
+If *OPH_USER*, *OPH_PASSWD* (or *OPH_TOKEN*), *OPH_SERVER_HOST* and *OPH_SERVER_PORT* variables have been set in the environment (see the documentation_ for more details), a client can be also created reading directly the values from the environment without the need to specify any parameter.
 
 .. code-block:: python
 
@@ -120,7 +120,7 @@ Client methods
 - *wisvalid(workflow) -> bool*: Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False and the related validation/error message.
 - *pretty_print(response, response_i) -> self*: Prints the last_response JSON string attribute as a formatted response.
 
-*To display the command output set "display=True"* 
+*To display the command output set "display=True"*
 
 Submit a request
 ^^^^^^^^^^^^^^^^
@@ -162,7 +162,7 @@ Instance attributes:
 Class attributes:
 
 - *client*: instance of class Client through which it is possible to submit all requests
- 
+
 Create a new container
 ^^^^^^^^^^^^^^^^^^^^^^
 Create a new container to contain our cubes called *test*, with 3 *double* dimensions (*lat*, *lon* and *time*):
@@ -231,7 +231,7 @@ To exports data in a python-friendly format:
 
 Run a Python script with Ophidia
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To run a Python script through Ophidia load or define the Python function in the script where PyOphidia is used (works only with Python 3), e.g.:
+To run a Python script through Ophidia load or define the Python function in the script where PyOphidia is used (works starting with Python 3+), e.g.:
 
 .. code-block:: python
 
