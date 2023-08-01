@@ -28,7 +28,7 @@ Besides Python Standard Library, PyOphidia optionally depends on the following l
 BSD License</br>
 https://numpy.org/doc/stable/license.html
 
-- MPICH</br>
+- Pandas</br>
 BSD 3-Clause License</br>
 https://pandas.pydata.org/docs/getting_started/overview.html#license
 
@@ -38,7 +38,8 @@ https://github.com/pydata/xarray/blob/main/LICENSE
 
 =====================================================================
 
-<b>Acknowledgement</b>:</br>
+Acknowledgement:
+
 This software has been in part supported by:
 
 - the EU EuroHPC JA through the following projects: eFlows4HPC (Grant no. 955558). The JU receives support from the European Union’s Horizon 2020 research and innovation programme and Spain, Germany, France, Italy, Poland, Switzerland, and Norway. In Italy, it has been preliminarily approved for complimentary funding by Ministero dello Sviluppo Economico (MiSE) (ref. project prop. 2659).

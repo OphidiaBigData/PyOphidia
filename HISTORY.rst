@@ -10,7 +10,7 @@ Fixed:
 Added:
 ~~~~~~
 
-- Readthedocs documentation  `#40 <https://github.com/OphidiaBigData/PyOphidia/pull/42>`_
+- Readthedocs documentation  `#42 <https://github.com/OphidiaBigData/PyOphidia/pull/42>`_
 - examples folder
 - 'local_mode' argument to client class
 
