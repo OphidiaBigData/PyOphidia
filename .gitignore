@@ -6,5 +6,6 @@ lib/
 .eggs/
 *.pyc
 *.pyo
+*.svg
 PKG-INFO
 *~
