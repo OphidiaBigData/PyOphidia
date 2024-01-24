@@ -63,4 +63,14 @@ setup(
         'pandas>=1.2',
         'xarray'
     ]},
+    install_requires=[
+        'click',
+        'graphviz>=0.14'
+    ],
+    entry_points  = {
+        'console_scripts': [
+            'esdm-pav-client = esdm_pav_client.utils.client:run',
+        ],
+    },
+    zip_safe=False
 )
