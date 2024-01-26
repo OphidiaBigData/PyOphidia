@@ -236,11 +236,12 @@ class Workflow:
                 if res["objkey"] == "workflow_list":
                     task_name_index = res["objcontent"][0]["rowkeys"].index("TASK NAME")
                     status_index = res["objcontent"][0]["rowkeys"].index("EXIT STATUS")
+                    input_index = res["objcontent"][0]["rowkeys"].index("INPUT")
                     output_index = res["objcontent"][0]["rowkeys"].index("OUTPUT")
                     btime_index = res["objcontent"][0]["rowkeys"].index("BEGIN TIME")
                     etime_index = res["objcontent"][0]["rowkeys"].index("END TIME")
                     for task in res["objcontent"][0]["rowvalues"]:
-                        task_dict[task[int(task_name_index)]] = (task[int(status_index)], task[int(output_index)], task[int(btime_index)], task[int(etime_index)])
+                        task_dict[task[int(task_name_index)]] = (task[int(status_index)], task[int(input_index)], task[int(output_index)], task[int(btime_index)], task[int(etime_index)])
             return task_dict
 
         def _match_shapes(operator, commands):
