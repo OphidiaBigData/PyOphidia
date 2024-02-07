@@ -16,6 +16,8 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from .client import Client
+from .cube import Cube
 from .experiment import Experiment
 from .workflow import Workflow
 from .task import Task

@@ -23,7 +23,6 @@ import sys
 import os
 import base64
 import struct
-import PyOphidia.client as _client
 from inspect import currentframe
 
 sys.path.append(os.path.dirname(__file__))
@@ -212,7 +211,7 @@ class Cube:
           -> None : wrapper of the operator OPH_UNPUBLISH
 
     Class Methods:
-        setclient(username='', password='', server, port='11732', token='', read_env=False, api_mode=True, project=None)
+        setclient(client)
           -> None : Instantiate the Client, common for all Cube objects, for submitting requests
         b2drop(action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', save='yes', display=False)
           -> None : wrapper of the operator OPH_B2DROP
@@ -341,53 +340,20 @@ class Cube:
     @classmethod
     def setclient(
         cls,
-        username="",
-        password="",
-        server="",
-        port="11732",
-        token="",
-        read_env=False,
-        api_mode=True,
-        project=None,
+        client,
     ):
-        """setclient(username='', password='', server='', port='11732', token='', read_env=False, api_mode=True, project=None) -> None : Instantiate the Client, common for all Cube objects, for submitting requests
-
-        :param username: Ophidia user
-        :type username: str
-        :param password: Ophidia password
-        :type password: str
-        :param server: Ophidia server address
-        :type server: str
-        :param port: Ophidia server port
-        :type port: str
-        :param token: Ophidia token
-        :type token: str
-        :param read_env: If true read the client variables from the environment
-        :type read_env: bool
-        :param api_mode: If True, use the class as an API and catch also framework-level errors
-        :type api_mode: bool
-        :param project: String with project ID to be used for job scheduling
-        :type project: str
+        """setclient(client) -> None : Instantiate the Client, common for all Cube objects, for submitting requests
+        :param client: PyOhidia client object
+        :type client: <class 'PyOphidia.client.Client'>
         :returns: None
         :rtype: None
         """
+        cls.client = client
 
-        try:
-            cls.client = _client.Client(
-                username,
-                password,
-                server,
-                port,
-                token,
-                read_env,
-                api_mode,
-                False,
-                project,
-            )
-        except Exception as e:
-            print(_get_linenumber(), "Something went wrong in setting the client:", e)
-        finally:
-            pass
+        if client is None or cls.client.last_return_value != 0:
+            raise AttributeError("Connection to Ophidia server is not valid")
+        else:
+            cls.client.resume_session()
 
     @classmethod
     def b2drop(

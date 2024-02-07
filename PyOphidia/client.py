@@ -24,10 +24,14 @@ import os
 import json
 import re
 from inspect import currentframe
-import PyOphidia.ophsubmit as _ophsubmit
+sys.path.append(os.path.dirname(__file__))
+
+try:
+    from ophsubmit import submit as ophsubmit
+except ImportError:
+    from .ophsubmit import submit as ophsubmit
 import shutil
 
-sys.path.append(os.path.dirname(__file__))
 
 
 def get_linenumber():
@@ -77,12 +81,8 @@ class Client:
         pretty_print(response, response_i) -> self : Prints the last_response JSON string attribute as a formatted response
     """
 
-    def __init__(self, username="", password="", server="", port="", token="", read_env=False, api_mode=True, local_mode=False, project=None):
+    def __init__(self, username="", password="", server="", port="11732", token="", read_env=False, api_mode=True, local_mode=False, project=None):
         """Client(username='', password='', server='', port='', token='', read_env=False, api_mode=True, local_mode=False, project=None) -> obj
-        :param api_mode: If True, use the class as an API and catch also framework-level errors
-        :type api_mode: bool
-        :param local_mode: If True, use only the local feature from the class
-        :type local_mode: bool
         :param username: Ophidia username
         :type username: str
         :param password: Ophidia password
@@ -93,8 +93,12 @@ class Client:
         :type port: str
         :param token: Ophidia token
         :type token: str
-        :param read_env: If True read the client variables from the environment
+        :param read_env: If true read the client variables from the environment
         :type read_env: bool
+        :param api_mode: If True, use the class as an API and catch also framework-level errors
+        :type api_mode: bool
+        :param local_mode: If True, use only the local feature from the class
+        :type local_mode: bool
         :param project: String with project ID to be used for job scheduling
         :type project: str
         :returns: None
@@ -254,7 +258,7 @@ class Client:
             query += "project=" + str(self.project) + ";"
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = ophsubmit(self.username, self.password, self.server, self.port, query)
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
             if self.api_mode and not self.last_return_value and self.last_error is not None:
@@ -582,7 +586,7 @@ class Client:
         query = "operator=oph_get_config;key=OPH_BASE_SRC_PATH;"
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = ophsubmit(self.username, self.password, self.server, self.port, query)
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
             if self.api_mode and not self.last_return_value and self.last_error is not None:
@@ -618,7 +622,7 @@ class Client:
         query = "operator=oph_get_config;key=OPH_SESSION_ID;"
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = ophsubmit(self.username, self.password, self.server, self.port, query)
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
             if self.api_mode and not self.last_return_value and self.last_error is not None:
@@ -654,7 +658,7 @@ class Client:
         query = "operator=oph_get_config;key=OPH_CDD;"
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = ophsubmit(self.username, self.password, self.server, self.port, query)
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
             if self.api_mode and not self.last_return_value and self.last_error is not None:
@@ -690,7 +694,7 @@ class Client:
         query = "operator=oph_get_config;key=OPH_CWD;"
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = ophsubmit(self.username, self.password, self.server, self.port, query)
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
             if self.api_mode and not self.last_return_value and self.last_error is not None:
@@ -726,7 +730,7 @@ class Client:
         query = "operator=oph_get_config;key=OPH_DATACUBE;"
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, query)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = ophsubmit(self.username, self.password, self.server, self.port, query)
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
             if self.api_mode and not self.last_return_value and self.last_error is not None:
@@ -824,7 +828,7 @@ class Client:
             if not err:
                 print("The workflow is not valid: " + str(err_msg))
                 return None
-            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit.submit(self.username, self.password, self.server, self.port, self.last_request)
+            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = ophsubmit(self.username, self.password, self.server, self.port, self.last_request)
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
             if self.api_mode and not self.last_return_value and self.last_error is not None:
