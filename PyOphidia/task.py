@@ -1,6 +1,19 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+import sys
+import os
+from inspect import currentframe
+
+sys.path.append(os.path.dirname(__file__))
+
+def _get_linenumber():
+    cf = currentframe()
+    return __file__, cf.f_back.f_lineno
+
 class Task:
     """
-    Creates a Task object that can be embedded in a ESDM-PAV experiment
+    Creates a Task object that can be embedded in a workflow experiment
     workflow
 
     Construction::
@@ -33,6 +46,7 @@ class Task:
         self.operator = operator
         self.arguments = ["{0}={1}".format(k, arguments[k]) for k in arguments.keys()]
         self.dependencies = []
+        self.extra = {}
         self.__dict__.update(kwargs)
 
     def deinit(self):
@@ -48,7 +62,7 @@ class Task:
 
         Parameters
         ----------
-        task : <class 'esdm_pav_client.task.Task'>
+        task : <class 'PyOphidia.task.Task'>
             task the current one depends on
         argument : str, optional
             argument to be set with the output of the task 'task'

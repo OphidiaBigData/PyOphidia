@@ -1,13 +1,29 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+import sys
+import os
+import json
+import time
+import re
+from inspect import currentframe
+
+sys.path.append(os.path.dirname(__file__))
+
+def _get_linenumber():
+    cf = currentframe()
+    return __file__, cf.f_back.f_lineno
+
 class Workflow:
     """
-    Submits, cancels and monitors a ESDM-PAV experiment execution (a workflow)
+    Submits, cancels and monitors a workflow experiment execution (a workflow)
 
     Construction::
     w1 = Workflow(experiment=e1)
 
     Parameters
     ----------
-    experiment: int or <class 'esdm_pav_client.experiment.Experiment'>
+    experiment: int or <class 'PyOphidia.experiment.Experiment'>
         Id of a running experiment or Experiment object
 
     Raises
@@ -17,15 +33,9 @@ class Workflow:
         object
     """
 
-    pyophidia_client = None
-    username = "oph-test"
-    password = "abcd"
-    server = "127.0.0.1"
-    port = "11732"
-    token = ''
-    read_env = False
-    project = None
+    client = None
     experiment_name = None
+    runtime_task_graph = None
 
     def __init__(self, experiment):
         try:
@@ -46,8 +56,42 @@ class Workflow:
         Reverse the initialization of the object
         """
         for k in dict(self.__dict__):
-            print(k)
             self.__delattr__(k)
+            
+    @classmethod
+    def setclient(
+        cls,
+        client,
+    ):
+        """
+        Instantiate the Client, common for all Workflow objects, for submitting requests
+        
+        
+        Parameters
+        ----------
+        client : <class 'PyOphidia.client.Client'>
+            PyOhidia client object
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        Exception
+            Raises an Exception in case of connection error
+
+
+        Example
+        -------
+        Workflow.setclient(client)
+        """
+        cls.client = client
+
+        if client is None or cls.client.last_return_value != 0:
+            raise AttributeError("Connection to Ophidia server is not valid")
+        else:
+            cls.client.resume_session()
 
     def cancel(self):
         """
@@ -66,23 +110,18 @@ class Workflow:
         w1.submit()
         w1.cancel()
         """
-        if self.workflow_id is None:
-            raise AttributeError("Cancel requires workflow_id")
-        self.__runtime_connect()
-        self.pyophidia_client.submit(
+        if Workflow.client is None or self.workflow_id is None:
+            raise AttributeError("Cancel requires workflow_id or Workflow.client is None")
+        self.client.submit(
             query="oph_cancel id={0};exec_mode=async;".format(self.workflow_id)
         )
 
-    def submit(self, *args, server="127.0.0.1", port="11732", checkpoint="all"):
+    def submit(self, *args, checkpoint="all"):
         """
-        Submit the PAV experiment on the ESDM-PAV runtime
+        Submit the PAV experiment on the Ophidia server
 
         Parameters
         ----------
-        server : str, optional
-            ESDM-PAV runtime DNS/IP address
-        port : str, optional
-            ESDM-PAV runtime port
         args : list
             list of arguments to be substituted in the workflow
         checkpoint : str, optional
@@ -98,36 +137,33 @@ class Workflow:
 
         Example
         -------
-        w1.submit(server="127.0.0.1", port="11732", "test")
+        w1.submit("test")
         """
 
-        self.server = server
-        self.port = port
-        self.__runtime_connect()
-
+        if Workflow.client is None:
+            raise AttributeError("Workflow.client is None")
         exec_mode = self.experiment_object.exec_mode
         self.experiment_object.exec_mode = "async"
-
+        self.experiment_object.output_format = "extended_compact"
+        
         if checkpoint == "all":
-
-            import json
 
             if self.workflow_id is not None:
                 raise AttributeError("You can't submit a workflow that was already" "submitted")
             dict_workflow = json.dumps(self.workflow_to_json())
             str_workflow = str(dict_workflow)
-            self.pyophidia_client.wsubmit(str_workflow, *args)
+            self.client.wsubmit(str_workflow, *args)
 
         else:
 
             query = "oph_resume document_type=request;execute=yes;"
             query += "id=" + self.workflow_id + ";"
             query += "checkpoint=" + checkpoint + ";"
-            self.pyophidia_client.submit(query)
+            self.client.submit(query)
 
-        if self.pyophidia_client.last_jobid is None:
-            raise AttributeError("Something went wrong during the submission: " + str(self.pyophidia_client.last_error) if self.pyophidia_client.last_error is not None else "")
-        self.workflow_id = self.pyophidia_client.last_jobid.split("?")[1].split("#")[0]
+        if self.client.last_jobid is None:
+            raise AttributeError("Something went wrong during the submission: " + str(self.client.last_error) if self.client.last_error is not None else "")
+        self.workflow_id = self.client.last_jobid.split("?")[1].split("#")[0]
         self.experiment_object.exec_mode = exec_mode
         return self.workflow_id
 
@@ -167,9 +203,6 @@ class Workflow:
          w1.monitor(frequency=10, iterative=True, visual_mode=True)
         """
         import graphviz
-        import json
-        import time
-        import re
 
         def _trim_text(text):
             return text[:7] + "..." if len(text) > 10 else text
@@ -180,10 +213,9 @@ class Workflow:
                     return d[k]
 
         def _check_workflow_validity():
-            import json
 
             self.__runtime_connect()
-            workflow_validity = self.pyophidia_client.wisvalid(json.dumps(self.workflow_to_json()))
+            workflow_validity = self.client.wisvalid(json.dumps(self.workflow_to_json()))
             if not workflow_validity[1] == "Workflow is valid":
                 raise AttributeError("Workflow is not valid")
 
@@ -233,16 +265,18 @@ class Workflow:
         def _extract_info(json_response):
             task_dict = {}
             for res in json_response["response"]:
+                print(res)
                 if res["objkey"] == "workflow_list":
-                    task_name_index = res["objcontent"][0]["rowkeys"].index("TASK NAME")
-                    status_index = res["objcontent"][0]["rowkeys"].index("EXIT STATUS")
-                    input_index = res["objcontent"][0]["rowkeys"].index("INPUT")
-                    output_index = res["objcontent"][0]["rowkeys"].index("OUTPUT")
-                    btime_index = res["objcontent"][0]["rowkeys"].index("BEGIN TIME")
-                    etime_index = res["objcontent"][0]["rowkeys"].index("END TIME")
-                    for task in res["objcontent"][0]["rowvalues"]:
-                        task_dict[task[int(task_name_index)]] = (task[int(status_index)], task[int(input_index)], task[int(output_index)], task[int(btime_index)], task[int(etime_index)])
-            return task_dict
+                    exec_keys = ["TASK NAME", "EXIT STATUS", "INPUT", "OUTPUT", "BEGIN TIME", "END TIME"]
+                    index = []
+                    if all(idx in res["objcontent"][0]["rowkeys"] for idx in exec_keys):
+                        for k in exec_keys:
+                            index.append(int(res["objcontent"][0]["rowkeys"].index(k)))
+                        for task in res["objcontent"][0]["rowvalues"]:
+                            task_dict[task[index[0]]] = dict((exec_keys[i], task[index[i]]) for i in range(1,len(exec_keys)))
+                        return task_dict
+                    else:
+                        return None
 
         def _match_shapes(operator, commands):
             for command in commands:
@@ -296,12 +330,24 @@ class Workflow:
                 new_tasks.append(task_obj)
             return new_tasks
 
+        def _add_runtimeinfo_task(status_response, tasks):
+            try:
+                from task import Task
+            except ImportError:
+                from .task import Task
+
+            task_dict = _extract_info(status_response)
+            if task_dict is None:
+                raise RuntimeError("Unable to extract information from JSON response")
+            for task in tasks:
+                if task.name in task_dict:
+                    task.extra = task_dict[task.name]
+            return tasks
+
         def _draw(
             tasks,
-            json_response,
             status_color_dictionary=None,
         ):
-            task_dict = _extract_info(json_response)
             diamond_commands = ["if", "endif", "else"]
             hexagonal_commands = ["for", "endfor"]
             dot = graphviz.Digraph(comment=self.experiment_name)
@@ -314,12 +360,12 @@ class Workflow:
                     style="",
                     fontsize="10pt",
                 )
-                if len(task_dict.keys()) == 0:
+                if len(task.extra.keys()) == 0:
                     dot.attr("node", fillcolor="red", style="filled")
-                if task.name in task_dict and status_color_dictionary:
+                if 'EXIT STATUS' in task.extra and status_color_dictionary:
                     dot.attr(
                         "node",
-                        fillcolor=_find_matches(status_color_dictionary, task_dict[task.name][0]),
+                        fillcolor=_find_matches(status_color_dictionary, task.extra['EXIT STATUS']),
                         style="filled",
                     )
                 dot.attr("edge", penwidth="1")
@@ -374,20 +420,28 @@ class Workflow:
             "(?i).*ABORTED": "red",
             "(?i).*SKIPPED": "yellow",
         }
-        self.__runtime_connect()
-        self.pyophidia_client.submit("oph_resume id={0};".format(self.workflow_id))
-        status_response = json.loads(self.pyophidia_client.last_response)
-        self.pyophidia_client.submit(
+        if Workflow.client is None:
+            raise AttributeError("Workflow.client is None")
+        self.client.submit("oph_resume id={0};".format(self.workflow_id))
+        status_response = json.loads(self.client.last_response)
+        self.client.submit(
             "oph_resume document_type=request;level=3;id={0};".format(self.workflow_id)
         )
-        json_response = json.loads(self.pyophidia_client.last_response)
+        json_response = json.loads(self.client.last_response)
         tasks = _modify_task(json_response)
-        sorted_tasks = _sort_tasks(tasks)
+        self.runtime_task_graph = _sort_tasks(tasks)
         workflow_status = _check_workflow_status(status_response)
+
         if iterative is True:
             while True:
+                try:
+                    self.runtime_task_graph = _add_runtimeinfo_task(status_response, self.runtime_task_graph)
+                except Exception as e:
+                    print(_get_linenumber(), "Unable to build status graph:", e)
+                    print(workflow_status)
+
                 if visual_mode is True:
-                    _draw(sorted_tasks, status_response, status_color_dictionary)
+                    _draw(self.runtime_task_graph, status_color_dictionary)
                 else:
                     print(workflow_status)
                 if not re.match("(?i).*RUNNING", workflow_status) and (
@@ -395,12 +449,18 @@ class Workflow:
                 ):
                     return workflow_status
                 time.sleep(frequency)
-                self.pyophidia_client.submit("oph_resume id={0};".format(self.workflow_id))
-                status_response = json.loads(self.pyophidia_client.last_response)
+                self.client.submit("oph_resume id={0};".format(self.workflow_id))
+                status_response = json.loads(self.client.last_response)
                 workflow_status = _check_workflow_status(status_response)
         else:
+            try:
+                self.runtime_task_graph = _add_runtimeinfo_task(status_response, self.runtime_task_graph)
+            except Exception as e:
+                print(_get_linenumber(), "Unable to build status graph:", e)
+                return workflow_status
+
             if visual_mode is True:
-                _draw(sorted_tasks, status_response, status_color_dictionary)
+                _draw(self.runtime_task_graph, status_color_dictionary)
                 return workflow_status
             else:
                 return workflow_status
@@ -428,47 +488,26 @@ class Workflow:
             return False
 
     def workflow_to_json(self):
-        non_workflow_fields = [
-            "pyophidia_client",
-            "task_name_counter",
-            "workflow_id",
-        ]
+        if self.runtime_task_graph:
+            new_workflow = {}
+            new_workflow["tasks"] = [t.__dict__ for t in self.runtime_task_graph]
+            return new_workflow
+        elif self.experiment_object.__class__.__name__ == "Experiment":
+            non_workflow_fields = [
+                "client",
+                "task_name_counter",
+                "workflow_id",
+                "runtime_task_graph",
+            ]
 
-        new_workflow = {
-            k: dict(self.experiment_object.__dict__)[k]
-            for k in dict(self.experiment_object.__dict__).keys()
-            if k not in non_workflow_fields
-        }
-        if "tasks" in new_workflow.keys():
-            new_workflow["tasks"] = [t.__dict__ for t in new_workflow["tasks"]]
-        return new_workflow
+            new_workflow = {
+                k: dict(self.experiment_object.__dict__)[k]
+                for k in dict(self.experiment_object.__dict__).keys()
+                if k not in non_workflow_fields
+            }
+            if "tasks" in new_workflow.keys():
+                new_workflow["tasks"] = [t.__dict__ for t in new_workflow["tasks"]]
+            return new_workflow
 
     def __repr__(self):
-        return self.workflow_to_json()
-
-    def __runtime_connect(self):
-        import PyOphidia.client as _client
-
-        self.__param_check(
-            [
-                {"name": "username", "value": self.username, "type": str},
-                {"name": "server", "value": self.server, "type": str},
-                {"name": "port", "value": self.port, "type": str},
-                {"name": "password", "value": self.password, "type": str},
-            ]
-        )
-        if self.pyophidia_client is None:
-            self.pyophidia_client = _client.Client(
-                username=self.username,
-                password=self.password,
-                server=self.server,
-                port=self.port,
-                token=self.token,
-                read_env=self.read_env,
-                project=self.project,
-                api_mode=False,
-            )
-            if self.pyophidia_client.last_return_value != 0:
-                raise AttributeError("failed to connect to the runtime")
-            else:
-                self.pyophidia_client.resume_session()
+        return json.dumps(self.workflow_to_json())

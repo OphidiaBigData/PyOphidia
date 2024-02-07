@@ -1,6 +1,21 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+import sys
+import os
+import json
+import copy
+from inspect import currentframe
+
+sys.path.append(os.path.dirname(__file__))
+
+def get_linenumber():
+    cf = currentframe()
+    return __file__, cf.f_back.f_lineno
+
 class Experiment:
     """
-    Creates or loads an ESDM-PAV experiment.
+    Creates or loads a workflow experiment.
 
     An experiment is a sequence of tasks. Each task can be either independent
     or dependent on other tasks, for instance it processes the output of other
@@ -92,7 +107,6 @@ class Experiment:
         return new_experiment
 
     def __repr__(self):
-        import json;
         return json.dumps(self.workflow_to_json())
 
     def deinit(self):
@@ -104,11 +118,11 @@ class Experiment:
 
     def addTask(self, task):
         """
-        Adds a task to the ESDM-PAV experiment
+        Adds a task to the workflow experiment
 
         Parameters
         ----------
-        task : <class 'esdm_pav_client.task.Task'>
+        task : <class 'PyOphidia.task.Task'>
             Task to be added to the experiment
 
         Raises
@@ -136,8 +150,8 @@ class Experiment:
 
     def getTask(self, taskname):
         """
-        Retrieve from the ESDM-PAV experiment the
-        esdm_pav_client.task.Task object with the given task name
+        Retrieve from the workflow experiment the
+        PyOphidia.task.Task object with the given task name
 
         Parameters
         ----------
@@ -146,7 +160,7 @@ class Experiment:
 
         Returns
         -------
-        task : <class 'esdm_pav_client.task.Task'>
+        task : <class 'PyOphidia.task.Task'>
             Returns the first task found
         None : Nonetype
             If no task was found then returns None
@@ -165,7 +179,7 @@ class Experiment:
 
     def save(self, experimentname):
         """
-        Save the ESDM-PAV experiment as a JSON document
+        Save the workflow experiment as a JSON document
 
         Parameters
         ----------
@@ -175,7 +189,7 @@ class Experiment:
 
         Example
         -------
-        from esdm_pav_client import experiment
+        from PyOphidia import experiment
         e1 = experiment(name="sample name", author="sample author",
                         abstract="sample abstract")
         e1.save("sample_experiment")
@@ -185,8 +199,6 @@ class Experiment:
         AttributeError
             If worfklowname is not a string or it is empty
         """
-        import json
-        import os
 
         if not isinstance(experimentname, str):
             raise AttributeError("experimentname must be string")
@@ -200,8 +212,8 @@ class Experiment:
 
     def newTask(self, operator, arguments={}, dependencies={}, name=None, **kwargs):
         """
-        Adds a new Task in the ESDM-PAV experiment without the need
-        of creating a esdm_pav_client.task.Task object
+        Adds a new Task in the workflow experiment without the need
+        of creating a PyOphidia.task.Task object
 
         Attributes
         ----------
@@ -224,7 +236,7 @@ class Experiment:
 
         Returns
         -------
-        t : <class 'esdm_pav_client.task.Task'>
+        t : <class 'PyOphidia.task.Task'>
             Returns the task that was created and added to the experiment
 
         Raises
@@ -269,11 +281,11 @@ class Experiment:
 
     def newSubexperiment(self, experiment, params, dependency={}):
         """
-        Embeds an ESDM-PAV experiment into another experiment
+        Embeds an workflow experiment into another experiment
 
         Parameters
         ----------
-        experiment : <class 'esdm_pav_client.experiment.experiment'>
+        experiment : <class 'PyOphidia.experiment.experiment'>
             The experiment that will be embeded into our main experiment
         params : dict of keywords
             a dict of keywords that will be used to replace placeholders in
@@ -303,8 +315,6 @@ class Experiment:
         task_array = e1.newSubexperiment(experiment=e2, params={},
                         dependency={})
         """
-        import copy
-
         try:
             from task import Task
         except ImportError:
@@ -316,7 +326,6 @@ class Experiment:
 
         def rename_tasks(e2):
             def _get_flag_id():
-                import re
 
                 greatest_id = 1
                 for task in self.tasks:
@@ -332,7 +341,6 @@ class Experiment:
             return e2
 
         def check_replace_args(params, task_arguments):
-            import re
 
             new_task_arguments = {}
             for k in task_arguments:
@@ -385,7 +393,7 @@ class Experiment:
     @staticmethod
     def load(file):
         """
-        Load a ESDM-PAV experiment from the JSON document
+        Load a workflow experiment from the JSON document
 
         Parameters
         ----------
@@ -394,7 +402,7 @@ class Experiment:
 
         Returns
         -------
-        experiment : <class 'esdm_pav_client.experiment.Experiment'>
+        experiment : <class 'PyOphidia.experiment.Experiment'>
             Returns the experiment object as it was loaded from the file
 
         Raises
@@ -411,8 +419,6 @@ class Experiment:
         """
 
         def file_check(filename):
-            import os
-            import json
 
             if not os.path.isfile(filename):
                 raise IOError("File does not exist")
@@ -456,7 +462,7 @@ class Experiment:
 
     def check(self, filename="sample.dot", visual=True):
         """
-        Check the ESDM-PAV experiment definition validity and display the
+        Check the workflow experiment definition validity and display the
         graph of the experiment structure
 
         Parameters
@@ -516,14 +522,17 @@ class Experiment:
             return subgraphs_list
 
         def _check_experiment_validity():
-            import json
             
-            import PyOphidia.client as _client
-            pyophidia_client = _client.Client(
+            try:
+                from client import Client
+            except ImportError:
+                from .client import Client
+
+            client = Client(
                 local_mode=True,
             )
 
-            experiment_validity = pyophidia_client.wisvalid(
+            experiment_validity = client.wisvalid(
                 json.dumps(self.workflow_to_json())
             )
             if experiment_validity[1] == "experiment is valid":
