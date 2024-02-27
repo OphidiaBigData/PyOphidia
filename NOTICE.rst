@@ -42,6 +42,8 @@ Acknowledgement:
 
 This software has been in part supported by:
 
+- the Horizon Europe Programme through the following projects: interTwin (Grant no. 101058386).
+
 - the EuroHPC JA through the following projects: eFlows4HPC (Grant no. 955558). The JU receives support from the European Union’s Horizon 2020 research and innovation programme and Spain, Germany, France, Italy, Poland, Switzerland, and Norway. In Italy, it has been preliminarily approved for complimentary funding by Ministero dello Sviluppo Economico (MiSE) (ref. project prop. 2659).
 
 - the Horizon 2020 Framework Programme through the following projects: INDIGO-DataCloud (Grant no. 653549), EUBra-BIGSEA (Grant no. 690116), EOSC-Hub (Grant no. 777536), ESiWACE2 (Grant no. 823988),
