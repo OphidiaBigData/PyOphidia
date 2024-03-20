@@ -7,7 +7,7 @@ It aims at providing a user-friendly and programmatic interface for large-scale 
 
 PyOphidia provides features for handling scientific data in the form of datacubes, managing workflow execution, enabling parallel processing on HPC/Cloud systems and supporting integration with well-known modules from the Python scientific ecosystem.
 
-It runs on Python 2.7, 3.7, 3.8, 3.9, 3.10 and 3.11 it is pure-Python code and has some (optional) dependencies on Xarray, Pandas and Numpy. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v1.11) is compatible with Ophidia v1.8.
+It runs on Python 2.7, 3.7, 3.8, 3.9, 3.10 and 3.11 it is pure-Python code and has some (optional) dependencies on Xarray, Pandas and Numpy. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v1.12) is compatible with Ophidia v1.8.
 
 It provides 2 main modules:
 

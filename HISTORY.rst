@@ -1,4 +1,12 @@
 
+v1.12.0 - 2024-02-27
+--------------------
+
+Added:
+~~~~~~
+
+- Initial support for translation from CWL to Ophidia JSON workflows  `#43 <https://github.com/OphidiaBigData/PyOphidia/pull/43>`_
+
 v1.11.0 - 2023-08-01
 --------------------
 
