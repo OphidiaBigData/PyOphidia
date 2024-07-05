@@ -19,6 +19,7 @@
 from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
+import ast
 import sys
 import os
 import json
@@ -905,10 +906,9 @@ class Client:
             try:
                 # Remove comment blocks in strings
                 checked_workflow = re.sub(r"(?m)^ *#.*\n?", "", workflow)
-                w = json.loads(checked_workflow)
+                w = ast.literal_eval(checked_workflow)
             except ValueError:
                 return False, "Workflow is not a valid JSON"
-                
         elif isinstance(workflow, dict):
             w = workflow
         else:
