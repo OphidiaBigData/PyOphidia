@@ -905,16 +905,23 @@ class Client:
             return False
         w = None
 
-        # Remove comment blocks
-        checked_workflow = re.sub(re.compile(r"/\*.*?\*/|//.*?\n", re.DOTALL), "\n", workflow)
-
-        if isinstance(checked_workflow, str):
+        if isinstance(workflow, str):
             try:
+                # Remove comment blocks
+                checked_workflow = re.sub(r"(?m)^ *#.*\n?", "", workflow)
+                pattern = r"(\".*?\"|\'.*?\')|(/\*.*?\*/|//[^\r\n]*$)"
+                regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
+                def _replacer(match):
+                    if match.group(2) is not None:
+                        return ""
+                    else:
+                        return match.group(1)
+                checked_workflow = regex.sub(_replacer, checked_workflow)
                 w = json.loads(checked_workflow)
             except ValueError:
                 return False, "Workflow is not a valid JSON"
-        elif isinstance(checked_workflow, dict):
-            w = checked_workflow
+        elif isinstance(workflow, dict):
+            w = workflow
         else:
             return False, "Workflow is not a valid dictionary"
         if "name" not in w or not w["name"]:

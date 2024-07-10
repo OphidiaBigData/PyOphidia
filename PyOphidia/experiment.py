@@ -460,6 +460,39 @@ class Experiment:
         experiment = start_experiment(data)
         return experiment
 
+    def validate(self):
+        """
+        Check the workflow experiment definition validity
+
+        Returns
+        -------
+        True in case of valid workflow, False otherwise
+
+        Example
+        -------
+        e1 = Experiment(name="Experiment 1", author="sample author",
+                       abstract="sample abstract")
+        t1 = e1.newTask(operator="oph_reduce", arguments={'operation': 'avg'},
+                         dependencies={})
+        e1.validate()
+        """
+        try:
+            from client import Client
+        except ImportError:
+            from .client import Client
+
+        client = Client(
+            local_mode=True,
+        )
+
+        experiment_validity = client.wisvalid(
+            json.dumps(self.workflow_to_json())
+        )
+        if experiment_validity[1] == "experiment is valid":
+            return True
+        else:
+            return False
+
     def check(self, filename="sample.dot", visual=True):
         """
         Check the workflow experiment definition validity and display the
@@ -521,26 +554,7 @@ class Experiment:
                 cluster_counter += 1
             return subgraphs_list
 
-        def _check_experiment_validity():
-            
-            try:
-                from client import Client
-            except ImportError:
-                from .client import Client
-
-            client = Client(
-                local_mode=True,
-            )
-
-            experiment_validity = client.wisvalid(
-                json.dumps(self.workflow_to_json())
-            )
-            if experiment_validity[1] == "experiment is valid":
-                return True
-            else:
-                return False
-
-        experiment_validity = _check_experiment_validity()
+        experiment_validity = self.validate()
         self.__param_check(
             [
                 {"name": "filename", "value": filename, "type": str},
