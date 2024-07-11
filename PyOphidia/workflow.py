@@ -532,7 +532,7 @@ class Workflow:
 
         for task in data:
 
-            op_name = task["operator"]
+            op_name = task.operator
 
             class_type = None
             if op_name in exportOperators:
@@ -547,13 +547,13 @@ class Workflow:
                 class_type = "skip"
 
             if class_type is not None and class_type != "skip":
-                op_id = task["name"].replace(" ", "_")
-                op_input = task["extra"]["INPUT"]
-                op_output = task["extra"]["OUTPUT"]
-                op_status = task["extra"]["EXIT STATUS"]
-                op_begin = task["extra"]["BEGIN TIME"]
-                op_end = task["extra"]["END TIME"]
-                op_args = "" #task["arguments"]
+                op_id = task.name.replace(" ", "_")
+                op_input = task.extra["INPUT"]
+                op_output = task.extra["OUTPUT"]
+                op_status = task.extra["EXIT STATUS"]
+                op_begin = task.extra["BEGIN TIME"]
+                op_end = task.extra["END TIME"]
+                op_args = task.arguments
 
                 activity_extra = {'prov:type': 'ophidia:operator','ophidia:status':op_status,'ophidia:arguments':','.join(op_args)}
 
@@ -616,6 +616,6 @@ class Workflow:
             figure = prov_to_dot(prov_doc)
             figure.write_png(output_file+'.png')
 
-            
         prov_doc_output = prov_doc.serialize(format = output_format)
         return prov_doc_output
+

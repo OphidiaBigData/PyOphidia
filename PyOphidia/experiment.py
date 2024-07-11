@@ -460,7 +460,7 @@ class Experiment:
         experiment = start_experiment(data)
         return experiment
 
-    def validate(self):
+    def isvalid(self):
         """
         Check the workflow experiment definition validity
 
@@ -474,7 +474,7 @@ class Experiment:
                        abstract="sample abstract")
         t1 = e1.newTask(operator="oph_reduce", arguments={'operation': 'avg'},
                          dependencies={})
-        e1.validate()
+        e1.isvalid()
         """
         try:
             from client import Client
