@@ -4,6 +4,7 @@ from __future__ import absolute_import
 import sys
 import os
 import json
+import re
 import copy
 from inspect import currentframe
 
@@ -391,6 +392,27 @@ class Experiment:
         return copied_experiment.tasks[-1]
 
     @staticmethod
+    def json_open(filename):
+        if not os.path.isfile(filename):
+            raise IOError("File does not exist")
+        else:
+            try:
+                with open(filename, "r") as f:
+                    workflow = f.read()
+                # Remove comment blocks
+                checked_workflow = re.sub(r"(?m)^ *#.*\n?", "", workflow)
+                pattern = r"(\".*?(?<!\\)\"|\'.*?(?<!\\)\')|(/\*.*?\*/|//[^\r\n]*$)"
+                regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
+                def _replacer(match):
+                    if match.group(2) is not None:
+                        return ""
+                    else:
+                        return match.group(1)
+                return regex.sub(_replacer, checked_workflow)
+            except ValueError:
+                raise ValueError("File cannot be opened")
+
+    @staticmethod
     def load(file):
         """
         Load a workflow experiment from the JSON document
@@ -418,17 +440,6 @@ class Experiment:
         e1 = Experiment.load("json_file.json")
         """
 
-        def file_check(filename):
-
-            if not os.path.isfile(filename):
-                raise IOError("File does not exist")
-            else:
-                try:
-                    with open(filename, "r") as f:
-                        return json.loads(f.read())
-                except json.decoder.JSONDecodeError:
-                    raise ValueError("File is not a valid JSON")
-
         def check_experiment_name(data):
             if "name" not in data.keys():
                 raise AttributeError("experiment doesn't have a key")
@@ -455,10 +466,42 @@ class Experiment:
                 experiment.addTask(new_task)
             return experiment
 
-        data = file_check(file)
+        json_string = Experiment.json_open(file)
+        try:
+            data = json.loads(json_string)
+        except json.decoder.JSONDecodeError:
+            raise ValueError("File is not a valid JSON")
         check_experiment_name(data)
         experiment = start_experiment(data)
         return experiment
+
+    @staticmethod
+    def __validate(json_string):
+        try:
+            from client import Client
+        except ImportError:
+            from .client import Client
+
+        client = Client(
+            local_mode=True,
+        )
+        experiment_validity = client.wisvalid(json_string)
+        return experiment_validity[0]
+
+    @staticmethod
+    def validate(file):
+        """
+        Check the workflow experiment definition validity
+
+        Returns
+        -------
+        True in case of valid workflow, False otherwise
+
+        Example
+        -------
+        Experiment.validate("json_file.json")
+        """
+        return Experiment.__validate(Experiment.json_open(file))
 
     def isvalid(self):
         """
@@ -476,22 +519,7 @@ class Experiment:
                          dependencies={})
         e1.isvalid()
         """
-        try:
-            from client import Client
-        except ImportError:
-            from .client import Client
-
-        client = Client(
-            local_mode=True,
-        )
-
-        experiment_validity = client.wisvalid(
-            json.dumps(self.workflow_to_json())
-        )
-        if experiment_validity[1] == "experiment is valid":
-            return True
-        else:
-            return False
+        return Experiment.__validate(self.workflow_to_json())
 
     def check(self, filename="sample.dot", visual=True):
         """
@@ -595,7 +623,6 @@ class Experiment:
         if notebook_check is True:
             # TODO change the image dimensions
             from IPython.display import display
-
             display(dot)
         else:
             dot.render(filename, view=True)
