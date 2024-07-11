@@ -909,7 +909,7 @@ class Client:
             try:
                 # Remove comment blocks
                 checked_workflow = re.sub(r"(?m)^ *#.*\n?", "", workflow)
-                pattern = r"(\".*?\"|\'.*?\')|(/\*.*?\*/|//[^\r\n]*$)"
+                pattern = r"(\".*?(?<!\\)\"|\'.*?(?<!\\)\')|(/\*.*?\*/|//[^\r\n]*$)"
                 regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
                 def _replacer(match):
                     if match.group(2) is not None:
