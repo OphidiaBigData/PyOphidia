@@ -83,11 +83,11 @@ class Workflow:
         Exception
             Raises an Exception in case of connection error
 
-
         Example
         -------
         Workflow.setclient(client)
         """
+
         cls.client = client
 
         if client is None or cls.client.last_return_value != 0:
@@ -129,13 +129,11 @@ class Workflow:
         checkpoint : str, optional
             name of the checkpoint which the execution has to start from
 
-
         Raises
         ------
         AttributeError
-            Raises AttributeError in case of failure to connect to the PAV
+            Raises AttributeError in case of connection error
             runtime
-
 
         Example
         -------
@@ -204,6 +202,7 @@ class Workflow:
          w1.submit()
          w1.monitor(frequency=10, iterative=True, visual_mode=True)
         """
+
         import graphviz
 
         def _trim_text(text):
@@ -515,15 +514,32 @@ class Workflow:
         return json.dumps(self.workflow_to_json())
     
     def build_provenance(self, output_file, output_format="json", visual_mode=True):
-        
+        """
+        Build the provenance file associated with the workflow, provided that it has been completed
+
+        Parameters
+        ----------
+        output_file : str
+            name (without any extension) of the file to be created
+        output_format : str, optional
+            format of the file to be created, extension to be append to the name
+        visual_mode: bool
+            True for receiving the workflow status as an image or False to
+            receive updates only in text
+
+        Example
+        -------
+        w1.build_provenance("test")
+        """
+
         prov_doc = ProvDocument()
         prov_doc.add_namespace('ophidia', 'http://ophidia.cmcc.it/')
         prov_doc.add_namespace('prov', 'http://www.w3.org/ns/prov#')
         prov_doc.add_namespace('nc', 'https://www.unidata.ucar.edu/software/netcdf/')
         
         # Global dictionaries of operator names
-        dataOperators = ["oph_aggregate", "oph_aggregate2", "oph_apply", "oph_drilldown", "oph_duplicate","oph_merge", "oph_permute", "oph_reduce", "oph_reduce2", "oph_rollup", "oph_subset", "oph_subset2"]
-        specialOperators = ["oph_intercube", "oph_mergecubes", "oph_mergecubes2","oph_script", "oph_concatnc","oph_metadata","oph_delete"]
+        dataOperators = ["oph_aggregate", "oph_aggregate2", "oph_apply", "oph_drilldown", "oph_duplicate","oph_merge", "oph_permute", "oph_reduce", "oph_reduce2", "oph_rollup", "oph_subset"]
+        specialOperators = ["oph_intercube", "oph_intercube2", "oph_mergecubes", "oph_mergecubes2","oph_script", "oph_concatnc", "oph_concatnc2","oph_metadata","oph_delete"]
         importOperators = ["oph_importnc", "oph_importnc2", "oph_importfits", "oph_randcube", "oph_randcube2"]
         exportOperators = ["oph_exportnc", "oph_exportnc2", "oph_explorecube"]
         skippedOperators = ["oph_createcontainer", "for", "endfor"]

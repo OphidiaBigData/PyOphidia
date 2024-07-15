@@ -397,18 +397,16 @@ class Experiment:
             raise IOError("File does not exist")
         else:
             try:
+                from client import Client
+            except ImportError:
+                from .client import Client
+            client = Client(
+                local_mode=True,
+            )
+            try:
                 with open(filename, "r") as f:
                     workflow = f.read()
-                # Remove comment blocks
-                checked_workflow = re.sub(r"(?m)^ *#.*\n?", "", workflow)
-                pattern = r"(\".*?(?<!\\)\"|\'.*?(?<!\\)\')|(/\*.*?\*/|//[^\r\n]*$)"
-                regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
-                def _replacer(match):
-                    if match.group(2) is not None:
-                        return ""
-                    else:
-                        return match.group(1)
-                return regex.sub(_replacer, checked_workflow)
+                return client.remove_comments(workflow)
             except ValueError:
                 raise ValueError("File cannot be opened")
 
@@ -466,7 +464,7 @@ class Experiment:
                 experiment.addTask(new_task)
             return experiment
 
-        json_string = Experiment.json_open(file)
+        json_string = __class__.json_open(file)
         try:
             data = json.loads(json_string)
         except json.decoder.JSONDecodeError:
@@ -501,7 +499,7 @@ class Experiment:
         -------
         Experiment.validate("json_file.json")
         """
-        return Experiment.__validate(Experiment.json_open(file))
+        return __class__.__validate(__class__.json_open(file))
 
     def isvalid(self):
         """
@@ -519,7 +517,7 @@ class Experiment:
                          dependencies={})
         e1.isvalid()
         """
-        return Experiment.__validate(self.workflow_to_json())
+        return self.__validate(self.workflow_to_json())
 
     def check(self, filename="sample.dot", visual=True):
         """

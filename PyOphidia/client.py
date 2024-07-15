@@ -750,6 +750,18 @@ class Client:
             return None
         return self
 
+    @staticmethod
+    def remove_comments(workflow):
+        checked_workflow = re.sub(r"(?m)^ *#.*\n?", "", workflow)
+        pattern = r"(\".*?(?<!\\)\"|\'.*?(?<!\\)\')|(/\*.*?\*/|//[^\r\n]*$)"
+        regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
+        def _replacer(match):
+            if match.group(2) is not None:
+                return " "
+            else:
+                return match.group(1)
+        return regex.sub(_replacer, checked_workflow)
+
     def wsubmit(self, workflow, *params):
         """wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of
            parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
@@ -781,8 +793,7 @@ class Client:
                     buffer = re.sub(r"(\$" + str(index) + r")([^0-9]|$)", str(param) + r"\g<2>", buffer)
                     params_list += " " + str(param)
                 buffer = re.sub(r"(\$\{?(\d*)\}?)", "", buffer)
-                # Remove comment blocks
-                buffer = re.sub(re.compile(r"/\*.*?\*/|//.*?\n", re.DOTALL), "\n", buffer)
+                buffer = self.remove_comments(buffer)
                 request = json.loads(buffer)
 
             except Exception as e:
@@ -796,8 +807,7 @@ class Client:
                     buffer = re.sub(r"(\$" + str(index) + r")([^0-9]|$)", str(param) + r"\g<2>", buffer)
                     params_list += " " + str(param)
                 buffer = re.sub(r"(\$\{?(\d*)\}?)", "", buffer)
-                # Remove comment blocks
-                buffer = re.sub(re.compile(r"/\*.*?\*/|//.*?\n", re.DOTALL), "\n", buffer)
+                buffer = self.remove_comments(buffer)
                 request = json.loads(buffer)
 
             except Exception as e:
@@ -907,17 +917,7 @@ class Client:
 
         if isinstance(workflow, str):
             try:
-                # Remove comment blocks
-                checked_workflow = re.sub(r"(?m)^ *#.*\n?", "", workflow)
-                pattern = r"(\".*?(?<!\\)\"|\'.*?(?<!\\)\')|(/\*.*?\*/|//[^\r\n]*$)"
-                regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
-                def _replacer(match):
-                    if match.group(2) is not None:
-                        return ""
-                    else:
-                        return match.group(1)
-                checked_workflow = regex.sub(_replacer, checked_workflow)
-                w = json.loads(checked_workflow)
+                w = json.loads(self.remove_comments(workflow))
             except ValueError:
                 return False, "Workflow is not a valid JSON"
         elif isinstance(workflow, dict):
