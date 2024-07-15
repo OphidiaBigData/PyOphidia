@@ -8,7 +8,7 @@ Requirements
 Before using the tool run the following commands:
 
 ``` {.sourceCode .bash}
-pip install git+https://github.com/OphidiaBigData/esdm-pav-client
+pip install pyophidia
 pip install cwltool
 pip install cwlref-runner
 ```

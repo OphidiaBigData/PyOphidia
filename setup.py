@@ -58,18 +58,21 @@ setup(
         #'Private :: Do Not Upload',
     ],
     extras_require={
-        "convert": [
-        'numpy>=1.19',
-        'pandas>=1.2',
-        'xarray'
-    ]},
+        'convert': [
+            'numpy>=1.19',
+            'pandas>=1.2',
+            'xarray',
+            'cwltool'
+        ]
+    },
     install_requires=[
+        'graphviz>=0.14',
         'click',
-        'graphviz>=0.14'
+        'prov>=1.5'
     ],
     entry_points  = {
         'console_scripts': [
-            'esdm-pav-client = esdm_pav_client.utils.client:run',
+            'client = pyophidia.utils.wclient:run',
         ],
     },
     zip_safe=False

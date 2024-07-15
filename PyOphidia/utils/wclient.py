@@ -5,8 +5,7 @@ import os
 previous_dir = os.path.dirname(os.getcwd())
 sys.path.insert(0, os.path.dirname(previous_dir))
 sys.path.insert(0, "..")
-from esdm_pav_client import Workflow
-from esdm_pav_client import Experiment
+from PyOphidia import Workflow, Experiment
 
 
 def verbose_check_display(verbose, text):
@@ -29,14 +28,14 @@ def print_help():
 @click.option(
     "-S",
     "--server",
-    help="ESDM-PAV Runtime address (used in case of remote submission)",
+    help="Ophidia Server address (used in case of remote submission)",
     default="127.0.0.1",
     metavar="<IP address>",
 )
 @click.option(
     "-P",
     "--port",
-    help="ESDM-PAV Runtime port (used in case of remote submission)",
+    help="Ophidia Server port (used in case of remote submission)",
     default="11732",
     metavar="<port number>",
 )
@@ -69,7 +68,7 @@ def print_help():
 @click.option(
     "-w",
     "--workflow",
-    help="Will run the experiment workflow from the provided PAV document (JSON file)",
+    help="Run the experiment workflow from the provided document (JSON file)",
     type=str,
     metavar="<JSON document>",
 )
@@ -82,8 +81,8 @@ def print_help():
 )
 @click.argument("workflow_args", nargs=-1, type=click.UNPROCESSED)
 def run(verbose, server, port, monitor, sync_mode, cancel, workflow, workflow_args, id, checkpoint):
-    """Command Line Interface to run an ESDM-PAV experiment\n
-    Example: esdm-pav-client -w experiment.json 1 2"""
+    """Command Line Interface to run an experiment\n
+    Example: wclient -w experiment.json 1 2"""
 
     def modify_args(workflow, server, port):
         if workflow.startswith("="):
@@ -106,7 +105,7 @@ def run(verbose, server, port, monitor, sync_mode, cancel, workflow, workflow_ar
     if workflow:
         workflow, server, port = modify_args(workflow, server, port)
         args = extract_other_args(workflow_args)
-        verbose_check_display(verbose, "Reading the PAV experiment document")
+        verbose_check_display(verbose, "Reading the experiment document")
         e1 = Experiment.load(workflow)
         w1 = Workflow(e1)
         if not sync_mode:

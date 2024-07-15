@@ -30,11 +30,11 @@ class Experiment:
     Parameters
     ----------
     name: str
-        PAV experiment name
+        experiment name
     author: str, optional
-        PAV experiment author
+        experiment author
     abstract: str, optional
-        PAV experiment description
+        experiment description
     on_error: str, optional
         behaviour in case of error
     on_exit: str, optional
@@ -119,7 +119,7 @@ class Experiment:
 
     def addTask(self, task):
         """
-        Adds a task to the workflow experiment
+        Add a task to the experiment
 
         Parameters
         ----------
@@ -151,8 +151,7 @@ class Experiment:
 
     def getTask(self, taskname):
         """
-        Retrieve from the workflow experiment the
-        PyOphidia.task.Task object with the given task name
+        Retrieve the Task object from the workflow experiment with the given task name
 
         Parameters
         ----------
@@ -180,12 +179,12 @@ class Experiment:
 
     def save(self, experimentname):
         """
-        Save the workflow experiment as a JSON document
+        Save the experiment as a JSON document
 
         Parameters
         ----------
         experimentname : str
-            The path to the PAV document file where the experiment is being
+            The path to the file where the experiment is being
             saved
 
         Example
@@ -213,8 +212,7 @@ class Experiment:
 
     def newTask(self, operator, arguments={}, dependencies={}, name=None, **kwargs):
         """
-        Adds a new Task in the workflow experiment without the need
-        of creating a PyOphidia.task.Task object
+        Add a new Task in the experiment without the need of creating a Task object
 
         Attributes
         ----------
@@ -282,7 +280,7 @@ class Experiment:
 
     def newSubexperiment(self, experiment, params, dependency={}):
         """
-        Embeds an workflow experiment into another experiment
+        Embed an experiment into another experiment
 
         Parameters
         ----------
@@ -413,12 +411,12 @@ class Experiment:
     @staticmethod
     def load(file):
         """
-        Load a workflow experiment from the JSON document
+        Load an experiment from the JSON document
 
         Parameters
         ----------
         file : str
-            The path/name of the PAV document file to be loaded
+            The path/name of the file to be loaded
 
         Returns
         -------
@@ -430,7 +428,7 @@ class Experiment:
         IOError
             Raises IOError if the file does not exist
         JSONDecodeError
-            Raises JSONDecodeError if the file does not containt a valid JSON
+            Raises JSONDecodeError if the file does not contain a valid JSON
             structure
 
         Example
@@ -519,15 +517,17 @@ class Experiment:
         """
         return self.__validate(self.workflow_to_json())
 
-    def check(self, filename="sample.dot", visual=True):
+    def check(self, filename="sample.dot", display=True):
         """
-        Check the workflow experiment definition validity and display the
-        graph of the experiment structure
+        Check the experiment definition validity and display the graph of the experiment structure
 
         Parameters
         ----------
         filename  : str, optional
             The name of the file that will contain the diagram
+        display: bool
+            True for receiving the workflow status as an image or False to
+            receive updates only in text
 
         Returns
         -------
@@ -584,10 +584,10 @@ class Experiment:
         self.__param_check(
             [
                 {"name": "filename", "value": filename, "type": str},
-                {"name": "visual", "value": visual, "type": bool},
+                {"name": "display", "value": display, "type": bool},
             ]
         )
-        if visual is False:
+        if display is False:
             return experiment_validity
         diamond_commands = ["if", "endif", "else"]
         hexagonal_commands = ["for", "endfor"]

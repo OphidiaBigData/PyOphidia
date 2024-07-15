@@ -97,7 +97,7 @@ class Workflow:
 
     def cancel(self):
         """
-        Cancel the running PAV experiment
+        Cancel the running workflow
 
         Returns
         -------
@@ -120,7 +120,7 @@ class Workflow:
 
     def submit(self, *args, checkpoint="all"):
         """
-        Submit the PAV experiment on the Ophidia server
+        Submit the experiment on the Ophidia Server
 
         Parameters
         ----------
@@ -167,9 +167,9 @@ class Workflow:
         self.experiment_object.exec_mode = exec_mode
         return self.workflow_id
 
-    def monitor(self, frequency=10, iterative=True, visual_mode=True):
+    def monitor(self, frequency=10, iterative=True, display=True):
         """
-        Monitors the progress of the PAV experiment execution
+        Monitor the progress of the workflow execution
 
         Parameters
         ----------
@@ -178,7 +178,7 @@ class Workflow:
         iterative: bool
             True for receiving updates periodically, based on the frequency, or
             False to receive updates only once
-        visual_mode: bool
+        display: bool
             True for receiving the workflow status as an image or False to
             receive updates only in text
 
@@ -200,7 +200,7 @@ class Workflow:
                           dependencies={})
          w1 = Workflow(e1)
          w1.submit()
-         w1.monitor(frequency=10, iterative=True, visual_mode=True)
+         w1.monitor(frequency=10, iterative=True, display=True)
         """
 
         import graphviz
@@ -406,7 +406,7 @@ class Workflow:
             params=[
                 {"name": "frequency", "value": frequency, "type": int},
                 {"name": "iterative", "value": iterative, "type": bool},
-                {"name": "visual_mode", "value": visual_mode, "type": bool},
+                {"name": "display", "value": display, "type": bool},
             ]
         )
         status_color_dictionary = {
@@ -441,7 +441,7 @@ class Workflow:
                     print(_get_linenumber(), "Unable to build status graph:", e)
                     print(workflow_status)
 
-                if visual_mode is True:
+                if display is True:
                     _draw(self.runtime_task_graph, status_color_dictionary)
                 else:
                     print(workflow_status)
@@ -460,7 +460,7 @@ class Workflow:
                 print(_get_linenumber(), "Unable to build status graph:", e)
                 return workflow_status
 
-            if visual_mode is True:
+            if display is True:
                 _draw(self.runtime_task_graph, status_color_dictionary)
                 return workflow_status
             else:
@@ -513,7 +513,7 @@ class Workflow:
     def __repr__(self):
         return json.dumps(self.workflow_to_json())
     
-    def build_provenance(self, output_file, output_format="json", visual_mode=True):
+    def build_provenance(self, output_file, output_format="json", display=True):
         """
         Build the provenance file associated with the workflow, provided that it has been completed
 
@@ -523,7 +523,7 @@ class Workflow:
             name (without any extension) of the file to be created
         output_format : str, optional
             format of the file to be created, extension to be append to the name
-        visual_mode: bool
+        display: bool
             True for receiving the workflow status as an image or False to
             receive updates only in text
 
@@ -628,7 +628,7 @@ class Workflow:
         
         prov_doc.serialize(output_file+"."+output_format, format = output_format)
         
-        if visual_mode:
+        if display:
             figure = prov_to_dot(prov_doc)
             figure.write_png(output_file+'.png')
 

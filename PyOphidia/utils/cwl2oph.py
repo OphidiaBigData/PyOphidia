@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
 import sys, getopt, os
-from esdm_pav_client import Workflow, Experiment, Task
-from PyOphidia import cube,client
+from PyOphidia import Workflow, Experiment, Task
 import argparse
 
 print("Parse arguments", file=sys.stderr)

@@ -3,7 +3,7 @@
 import sys, os
 import argparse
 import cwltool, cwltool.factory
-from esdm_pav_client import Workflow, Experiment
+from PyOphidia import Workflow, Experiment
 
 parser = argparse.ArgumentParser()
 parser.add_argument('name', type=str, help='Workflow file name')
