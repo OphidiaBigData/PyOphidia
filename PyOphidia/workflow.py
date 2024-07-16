@@ -538,8 +538,9 @@ class Workflow:
         prov_doc.add_namespace('nc', 'https://www.unidata.ucar.edu/software/netcdf/')
         
         # Global dictionaries of operator names
+        multiInputsOperators = ["oph_mergecubes", "oph_mergecubes2","oph_intercube", "oph_intercube2", "oph_importncs"] # N input, 1 output
         dataOperators = ["oph_aggregate", "oph_aggregate2", "oph_apply", "oph_drilldown", "oph_duplicate","oph_merge", "oph_permute", "oph_reduce", "oph_reduce2", "oph_rollup", "oph_subset"]
-        specialOperators = ["oph_intercube", "oph_intercube2", "oph_mergecubes", "oph_mergecubes2","oph_script", "oph_concatnc", "oph_concatnc2","oph_metadata","oph_delete"]
+        specialOperators = ["oph_script", "oph_concatnc", "oph_concatnc2", "oph_metadata", "oph_delete"]
         importOperators = ["oph_importnc", "oph_importnc2", "oph_importfits", "oph_randcube", "oph_randcube2"]
         exportOperators = ["oph_exportnc", "oph_exportnc2", "oph_explorecube"]
         skippedOperators = ["oph_createcontainer", "for", "endfor"]
@@ -561,6 +562,8 @@ class Workflow:
                 class_type = "special"
             elif op_name in skippedOperators:
                 class_type = "skip"
+            elif op_name in multiInputsOperators:
+                class_type = "multiInput"
 
             if class_type is not None and class_type != "skip":
                 op_id = task.name.replace(" ", "_")
@@ -573,65 +576,58 @@ class Workflow:
 
                 activity_extra = {'prov:type': 'ophidia:operator','ophidia:status':op_status,'ophidia:arguments':','.join(op_args)}
 
-                if class_type == "export":
-                    ei = prov_doc.entity('ophidia:'+op_input, {'prov:type': 'ophidia:datacube'})
-                    a = prov_doc.activity('ophidia:'+op_id, op_begin, op_end, activity_extra)
-                    eo = prov_doc.entity('nc:'+op_output, {'prov:type': 'nc:file'})
-                    prov_doc.wasDerivedFrom(eo, ei)
+                if class_type == "multiInput":
+                    
+                    inputs = op_input.split("|")
+                    a = prov_doc.activity('ophidia:' + op_id, op_begin, op_end, activity_extra)
+                    eo = prov_doc.entity('ophidia:' + op_output, {'prov:type': 'ophidia:datacube'})
                     prov_doc.wasGeneratedBy(eo, a)
-                    prov_doc.used(a,ei)
-
-                if class_type == "datacube":
-                    ei = prov_doc.entity('ophidia:'+op_input, {'prov:type': 'ophidia:datacube'})
-                    a = prov_doc.activity('ophidia:'+op_id, op_begin, op_end, activity_extra)
-                    eo = prov_doc.entity('ophidia:'+op_output, {'prov:type': 'ophidia:datacube'})
-                    prov_doc.wasDerivedFrom(eo, ei)
-                    prov_doc.wasGeneratedBy(eo, a)
-                    prov_doc.used(a,ei)
-
-                if class_type == "import":
-                    if "randcube" in op_name:
-                        e = prov_doc.entity('ophidia:'+op_output, {'prov:type': 'ophidia:datacube'})
-                        a = prov_doc.activity('ophidia:'+op_id, op_begin, op_end, activity_extra)
-                        prov_doc.wasGeneratedBy(e, a)
-                    else:
-                        eo = prov_doc.entity('ophidia:'+op_output, {'prov:type': 'ophidia:datacube'})
-                        a = prov_doc.activity('ophidia:'+op_id, op_begin, op_end, activity_extra)
-                        ei = prov_doc.entity('nc:'+op_input, {'prov:type': 'nc:file'})
+                    
+                    for i in range(0,len(inputs)):
+                        if "oph_importncs" in op_name:    
+                            ei = prov_doc.entity('nc:' + inputs[i], {'prov:type': 'nc:file'})
+                        else:
+                            ei = prov_doc.entity('ophidia:' + inputs[i], {'prov:type': 'ophidia:datacube'})
+                        
                         prov_doc.wasDerivedFrom(eo, ei)
-                        prov_doc.wasGeneratedBy(eo, a)
                         prov_doc.used(a,ei)
-
-                if class_type == "special":
-                    if "intercube" in op_name:
-                        ei1 = prov_doc.entity('ophidia:'+op_input.split("|")[0], {'prov:type': 'ophidia:datacube'})
-                        ei2 = prov_doc.entity('ophidia:'+op_input.split("|")[1], {'prov:type': 'ophidia:datacube'})
-                        eo = prov_doc.entity('ophidia:'+op_output, {'prov:type': 'ophidia:datacube'})
-                        a = prov_doc.activity('ophidia:'+op_id, op_begin, op_end, activity_extra)
-                        prov_doc.used(a,ei1)
-                        prov_doc.used(a,ei2)
+                        
+                else:
+                    
+                    inputs = op_input.split("|")
+                    outputs = op_output.split("|")
+                    
+                    a = prov_doc.activity('ophidia:'+op_id, op_begin, op_end, activity_extra)
+                    
+                    for k in range(len(inputs)):
+                        
+                        if class_type == "export":
+                            ei = prov_doc.entity('ophidia:' + inputs[k], {'prov:type': 'ophidia:datacube'})
+                            eo = prov_doc.entity('nc:' + outputs[k], {'prov:type': 'nc:file'})
+                        
+                        if class_type == "datacube":
+                            ei = prov_doc.entity('ophidia:' + inputs[k], {'prov:type': 'ophidia:datacube'})
+                            eo = prov_doc.entity('ophidia:' + outputs[k], {'prov:type': 'ophidia:datacube'})
+                        
+                        if class_type == "import":
+                            if "randcube" in op_name:
+                                ei = None
+                                eo = prov_doc.entity('ophidia:' + outputs[k], {'prov:type': 'ophidia:datacube'})
+                            else:
+                                ei = prov_doc.entity('nc:' + inputs[k], {'prov:type': 'nc:file'})
+                                eo = prov_doc.entity('ophidia:' + outputs[k], {'prov:type': 'ophidia:datacube'})
+                        
                         prov_doc.wasGeneratedBy(eo, a)
-                        prov_doc.wasDerivedFrom(eo, ei1)
-                        prov_doc.wasDerivedFrom(eo, ei2)
-
-                    if "mergecubes" in op_name:
-                        inputs = op_input.split("|")
-
-                        a = prov_doc.activity('ophidia:'+op_id, op_begin, op_end, activity_extra)
-                        eo = prov_doc.entity('ophidia:'+op_output, {'prov:type': 'ophidia:datacube'})
-                        prov_doc.wasGeneratedBy(eo, a)
-
-                        for i in range(0,len(inputs)):
-                            ei = prov_doc.entity('ophidia:'+inputs[i], {'prov:type': 'ophidia:datacube'})
-                            prov_doc.used(a,ei)
+                        
+                        if ei is not None:
                             prov_doc.wasDerivedFrom(eo, ei)
+                            prov_doc.used(a,ei)
         
-        prov_doc.serialize(output_file+"."+output_format, format = output_format)
+        prov_doc.serialize(output_file + "." + output_format, format = output_format)
         
         if display:
             figure = prov_to_dot(prov_doc)
-            figure.write_png(output_file+'.png')
+            figure.write_png(output_file + '.png')
 
         prov_doc_output = prov_doc.serialize(format = output_format)
         return prov_doc_output
-
