@@ -540,7 +540,7 @@ class Workflow:
         # Global dictionaries of operator names
         multiInputsOperators = ["oph_mergecubes", "oph_mergecubes2","oph_intercube", "oph_intercube2", "oph_importncs","oph_concatnc","oph_concatnc2"] # N input, 1 output
         dataOperators = ["oph_aggregate", "oph_aggregate2", "oph_apply", "oph_drilldown", "oph_duplicate","oph_merge", "oph_permute", "oph_reduce", "oph_reduce2", "oph_rollup", "oph_subset"]
-        specialOperators = ["oph_script", "oph_concatnc", "oph_concatnc2", "oph_metadata", "oph_delete"]
+        specialOperators = ["oph_script", "oph_metadata", "oph_delete"]
         importOperators = ["oph_importnc", "oph_importnc2", "oph_importfits", "oph_randcube", "oph_randcube2"]
         exportOperators = ["oph_exportnc", "oph_exportnc2", "oph_explorecube"]
         skippedOperators = ["oph_createcontainer", "for", "endfor"]
