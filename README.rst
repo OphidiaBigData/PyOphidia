@@ -63,8 +63,8 @@ To install the latest developement version run the following commands:
 Examples
 --------
 
-Import PyOphidia
-^^^^^^^^^^^^^^^^
+Import Client
+^^^^^^^^^^^^^
 Import *client* module from *PyOphidia* package:
 
 .. code-block:: python
@@ -86,13 +86,11 @@ In case of authentication token is used:
 
    ophclient = client.Client(token="token",server="127.0.0.1",port="11732")
 
-
 If *OPH_USER*, *OPH_PASSWD* (or *OPH_TOKEN*), *OPH_SERVER_HOST* and *OPH_SERVER_PORT* variables have been set in the environment (see the documentation_ for more details), a client can be also created reading directly the values from the environment without the need to specify any parameter.
 
 .. code-block:: python
 
    ophclient = client.Client(read_env=True)
-
 
 Client attributes
 ^^^^^^^^^^^^^^^^^
@@ -141,13 +139,20 @@ Execute the request *oph_list level=2*:
 
    ophclient.submit("oph_list level=2", display=True)
 
+Import Cube
+^^^^^^^^^^^
+Import *cube* module from *PyOphidia* package:
+
+.. code-block:: python
+
+   from PyOphidia import cube
+
 Set a Client for the Cube class
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Instantiate a new Client common to all Cube instances:
 
 .. code-block:: python
 
-   from PyOphidia import cube
    cube.Cube.setclient(username="oph-user",password="oph-passwd",server="127.0.0.1",port="11732")
 
 Cube attributes
@@ -279,13 +284,20 @@ Class methods:
 - *load(file) -> Experiment*: load an experiment from the JSON document
 - *validate(file) -> bool*: check the workflow experiment definition validity
 
+Import Experiment
+^^^^^^^^^^^^^^^^^
+Import *Experiment* module from *PyOphidia* package:
+
+.. code-block:: python
+
+   from PyOphidia import Experiment
+
 Create an experiment
 ^^^^^^^^^^^^^^^^^^^^
 Create a simple experiment consisting of a single task (an Ophidia operator):
 
 .. code-block:: python
 
-	from PyOphidia import Experiment
 	e1 = Experiment(name="Sample experiment", author="sample author",
 		          abstract='Sample workflow')
 	t1 = e1.newTask(name="Sample task", type="ophidia", operator="oph_list", 
@@ -383,14 +395,21 @@ Class methods:
 
 - *setclient(cls, client)*: associate an instance of Client to any instance of Workflow
 
+Import Workflow
+^^^^^^^^^^^^^^^
+Import *Workflow* module from *PyOphidia* package:
+
+.. code-block:: python
+
+   from PyOphidia import Workflow
+
 Submit an experiment for execution
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Submit the experiment created for execution to Ophidia Server
 
 .. code-block:: python
 
-	from PyOphidia import Workflow, Experiment
-	w1 = Workflow(e1)
+	w1 = Workflow(Experiment.load("example.json"))
 	w1.submit("2")
 
 Monitor a running workflow
@@ -428,21 +447,28 @@ Docstrings are available for the Workflow, Experiment and Task classes. To get a
 
 Run an experiment with the CLI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+To configure the tool, append the reference to folder PyOphidia/utils to PATH, by running the following commands from the main folder of PyOphidia:
+
+.. code-block:: bash
+
+	cd PyOphidia/utils
+	export PATH=$PATH:$PWD
+
 To submit the execution of an experiment document to Ophidia Server:
 
-.. code-block:: python
+.. code-block:: bash
 
 	$ wclient -w example.json 2
 
 To submit an experiment and monitor its execution to Ophidia Server:
 
-.. code-block:: python
+.. code-block:: bash
 
 	$ wclient -w example.json 2 -m
 
 To cancel a running workflow:
 
-.. code-block:: python
+.. code-block:: bash
 
 	$ wclient -c -i <workflow_id>
 
@@ -486,6 +512,51 @@ The following code show a full experiment composed of CDO tasks, the commands to
 
 Additional examples can be found under the `examples` folder.
 
+CWL support
+-----------
+
+This tool translates a workflow description written using CWL specification_ into Ophidia workflow specification.
+
+Requirements
+^^^^^^^^^^^^
+
+Before using the tool run the following commands:
+
+.. code-block:: bash
+
+	pip install cwltool
+	pip install cwlref-runner
+
+Install from source
+^^^^^^^^^^^^^^^^^^^
+
+To configure the tool, append the reference to folder PyOphidia/utils to PATH, by running the following commands from the main folder of PyOphidia:
+
+.. code-block:: bash
+
+	cd PyOphidia/utils
+	export PATH=$PATH:$PWD
+
+Usage
+^^^^^
+
+The following example shows how a CWL-compliant workflow "oph_wf.cwl" can be submitted to Ophidia platform; the list "args" will se passed to CWT tool to set the workflow parameters. Internally, the workflow is translated into an Ophidia-compliant workflow.
+
+.. code-block:: bash
+
+	cd examples
+	run.py oph_wf.cwl --args "--inputcontainer container"
+
+The following example shows how the same CWL-compliant workflow can simply be translated into an Ophidia-compliant workflow, without submitting it. The output JSON file is saved into the folder "examples/utils".
+
+.. code-block:: bash
+
+	cd examples/utils
+	./oph_wf.cwl --inputcontainer container
+
+
 .. _GPLv3: http://www.gnu.org/licenses/gpl-3.0.txt
 .. _Ophidia: http://ophidia.cmcc.it
 .. _documentation: http://ophidia.cmcc.it/documentation/users/terminal/term_advanced.html#oph-terminal-environment
+.. _specification: http://www.commonwl.org/specification
+

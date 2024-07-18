@@ -72,7 +72,7 @@ setup(
     ],
     entry_points  = {
         'console_scripts': [
-            'client = pyophidia.utils.wclient:run',
+            'wclient = pyophidia.utils.wclient:run',
         ],
     },
     zip_safe=False
