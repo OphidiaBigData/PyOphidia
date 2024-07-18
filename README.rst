@@ -544,7 +544,7 @@ The following example shows how a CWL-compliant workflow "oph_wf.cwl" can be sub
 
 .. code-block:: bash
 
-	cd examples
+	cd examples/utils
 	run.py oph_wf.cwl --args "--inputcontainer container"
 
 The following example shows how the same CWL-compliant workflow can simply be translated into an Ophidia-compliant workflow, without submitting it. The output JSON file is saved into the folder "examples/utils".

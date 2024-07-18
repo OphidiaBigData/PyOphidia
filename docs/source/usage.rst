@@ -431,6 +431,13 @@ Docstrings are available for the Workflow, Experiment and Task classes. To get a
 
 Run an experiment with the CLI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+To configure the tool, append the reference to folder PyOphidia/utils to PATH, by running the following commands from the main folder of PyOphidia:
+
+.. code-block:: bash
+
+	cd PyOphidia/utils
+	export PATH=$PATH:$PWD
+
 To submit the execution of an experiment document to Ophidia Server:
 
 .. code-block:: python
