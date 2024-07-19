@@ -752,7 +752,7 @@ class Client:
 
     @staticmethod
     def remove_comments(workflow):
-        checked_workflow = re.sub(r"(?m)^ *#.*\n?", "", workflow)
+        checked_workflow = re.sub(r"(?m)^ *#.*\n?|#[^\r\n]*$", "", workflow)
         pattern = r"(\".*?(?<!\\)\"|\'.*?(?<!\\)\')|(/\*.*?\*/|//[^\r\n]*$)"
         regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
         def _replacer(match):
