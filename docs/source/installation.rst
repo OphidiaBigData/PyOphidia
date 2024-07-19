@@ -32,3 +32,22 @@ To install the latest developement version run the following commands:
    $ cd PyOphidia
    $ python setup.py install
 
+CWL support
+-----------
+This tool translates a workflow description written using CWL specification_ into Ophidia workflow specification.
+Before using the tool run the following commands:
+
+.. code-block:: console
+
+   $ pip install cwltool
+   $ pip install cwlref-runner
+
+To configure the tool, append the reference to folder PyOphidia/utils to PATH, by running the following commands from the main folder of PyOphidia:
+
+.. code-block:: console
+
+   $ cd PyOphidia/utils
+   $ export PATH=$PATH:$PWD
+
+.. _specification: http://www.commonwl.org/specification
+

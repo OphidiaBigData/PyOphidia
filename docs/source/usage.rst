@@ -433,26 +433,26 @@ Run an experiment with the CLI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 To configure the tool, append the reference to folder PyOphidia/utils to PATH, by running the following commands from the main folder of PyOphidia:
 
-.. code-block:: bash
+.. code-block:: console
 
-	cd PyOphidia/utils
-	export PATH=$PATH:$PWD
+	$ cd PyOphidia/utils
+	$ export PATH=$PATH:$PWD
 
 To submit the execution of an experiment document to Ophidia Server:
 
-.. code-block:: python
+.. code-block:: console
 
 	$ wclient -w example.json 2
 
 To submit an experiment and monitor its execution to Ophidia Server:
 
-.. code-block:: python
+.. code-block:: console
 
 	$ wclient -w example.json 2 -m
 
 To cancel a running workflow:
 
-.. code-block:: python
+.. code-block:: console
 
 	$ wclient -c -i <workflow_id>
 
@@ -493,6 +493,22 @@ The following code show a full experiment composed of CDO tasks, the commands to
 
 	w1 = Workflow(e1)
 	w1.submit()
+
+CWL support
+-----------
+The following example shows how a CWL-compliant workflow "oph_wf.cwl" can be submitted to Ophidia platform; the list "args" will se passed to CWT tool to set the workflow parameters. Internally, the workflow is translated into an Ophidia-compliant workflow.
+
+.. code-block:: console
+
+	$ cd examples/utils
+	$ run.py oph_wf.cwl --args "--inputcontainer container"
+
+The following example shows how the same CWL-compliant workflow can simply be translated into an Ophidia-compliant workflow, without submitting it. The output JSON file is saved into the folder "examples/utils".
+
+.. code-block:: console
+
+	$ cd examples/utils
+	$ ./oph_wf.cwl --inputcontainer container
 
 .. _documentation: https://ophidia.cmcc.it/documentation/users/terminal/term_advanced.html#oph-terminal-environment
 
