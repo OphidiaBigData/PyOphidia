@@ -177,15 +177,16 @@ class Experiment:
         elif len(tasks) == 0:
             return None
 
-    def save(self, experimentname):
+    def save(self, experimentname, format="json"):
         """
         Save the experiment as a JSON document
 
         Parameters
         ----------
         experimentname : str
-            The path to the file where the experiment is being
-            saved
+            The path to the file where the experiment is being saved
+        format : str
+            The format of the file to be created, extension to be append to the name
 
         Example
         -------
@@ -204,11 +205,14 @@ class Experiment:
             raise AttributeError("experimentname must be string")
         if len(experimentname) == 0:
             raise AttributeError("experimentname must contain more than 1 characters")
-        data = self.workflow_to_json()
-        if not experimentname.endswith(".json"):
-            experimentname += ".json"
+        if not experimentname.endswith("." + format):
+            experimentname += "." + format
         with open(os.path.join(os.getcwd(), experimentname), "w") as fp:
-            json.dump(data, fp, indent=4)
+            if format == "json":
+                data = self.workflow_to_json()
+                json.dump(data, fp, indent=4)
+            else:
+                raise AttributeError("format not allowed")
 
     def newTask(self, operator, arguments={}, dependencies={}, name=None, **kwargs):
         """

@@ -165,7 +165,7 @@ Check the validity of the workflow stored in *example.json*:
 
 .. code-block:: python
 
-   with open("example.json") as json_file:
+   with open("example.json", "r") as json_file:
        ophclient.wisvalid(json_file.read())
 
 Import Cube
