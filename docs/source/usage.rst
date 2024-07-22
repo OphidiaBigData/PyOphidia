@@ -42,7 +42,7 @@ Methods
 - *wisvalid(workflow) -> bool*: Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False and the related validation/error message.
 - *pretty_print(response, response_i) -> self*: Prints the last_response JSON string attribute as a formatted response.
 
-*To display the command output set "display=True"* 
+*To display the command output set "display = True"* 
 
 Import the class
 ^^^^^^^^^^^^^^^^
@@ -61,19 +61,19 @@ It will also try to resume the last session the user was connected to, as well a
 
 .. code-block:: python
 
-   ophclient = client.Client(username="oph-user",password="oph-passwd",server="127.0.0.1",port="11732")
+   ophclient = client.Client(username = "oph-user", password = "oph-passwd", server = "127.0.0.1", port = "11732")
 
 In case of authentication token is used:
 
 .. code-block:: python
 
-   ophclient = client.Client(token="token",server="127.0.0.1",port="11732")
+   ophclient = client.Client(token = "token",server = "127.0.0.1",port = "11732")
 
 If *OPH_USER*, *OPH_PASSWD* (or *OPH_TOKEN*), *OPH_SERVER_HOST* and *OPH_SERVER_PORT* variables have been set in the environment (see the documentation_ for more details), a client can be also created reading directly the values from the environment without the need to specify any parameter. 
 
 .. code-block:: python
 
-   ophclient = client.Client(read_env=True)
+   ophclient = client.Client(read_env = True)
 
 Submit a request
 ^^^^^^^^^^^^^^^^
@@ -82,7 +82,7 @@ Execute the request *oph_list level=2*:
 
 .. code-block:: python
 
-   ophclient.submit("oph_list level=2", display=True)
+   ophclient.submit("oph_list level=2", display = True)
 
 Submit a workflow
 ^^^^^^^^^^^^^^^^^
@@ -157,7 +157,7 @@ Instantiate a new Client common to all Cube instances:
 
 .. code-block:: python
 
-   cube.Cube.setclient(username="oph-user",password="oph-passwd",server="127.0.0.1",port="11732")
+   cube.Cube.setclient(username = "oph-user", password = "oph-passwd", server = "127.0.0.1", port = "11732")
 
 Create a new container
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -166,7 +166,7 @@ Create a new container to contain our cubes called *test*, with 3 *double* dimen
 
 .. code-block:: python
 
-   cube.Cube.createcontainer(container='test',dim='lat|lon|time',dim_type='double|double|double',hierarchy='oph_base|oph_base|oph_time')
+   cube.Cube.createcontainer(container = 'test',dim = 'lat|lon|time',dim_type='double|double|double',hierarchy='oph_base|oph_base|oph_time')
 
 Import a new Cube
 ^^^^^^^^^^^^^^^^^
@@ -175,7 +175,7 @@ Import the variable *T2M* from the NetCDF file */path/to/file.nc* into a new cub
 
 .. code-block:: python
 
-   mycube = cube.Cube(container='test',exp_dim='lat|lon',imp_dim='time',measure='T2M',src_path='/path/to/file.nc',exp_concept_level='c|c',imp_concept_level='d')
+   mycube = cube.Cube(container = 'test',exp_dim = 'lat|lon',imp_dim='time',measure='T2M',src_path='/path/to/file.nc',exp_concept_level='c|c', imp_concept_level = 'd')
 
 Create a Cube object with an existing cube identifier
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -184,7 +184,7 @@ Instantiate a new Cube using the PID of an existing cube:
 
 .. code-block:: python
 
-   mycube2 = cube.Cube(pid='http://127.0.0.1/1/2')
+   mycube2 = cube.Cube(pid = 'http://127.0.0.1/1/2')
 
 Show the structure and info of a Cube
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -195,7 +195,7 @@ To shows metadata information about a data cube, its size and the dimensions rel
 
    mycube2.info()
 
-*For the operators such as "cubeschema", "cubesize", "cubeelements", "explore", "hierarchy", "info", "list", "loggingbk", "operators", "search", "showgrid", "man", "metadata", "primitives", "provenance", "search", "showgrid", "tasks" and other operators that provide verbose output, the display parameter by default is "True". For the rest of operators, to display the result, "dispay=True" should be set.*
+*For the operators such as "cubeschema", "cubesize", "cubeelements", "explore", "hierarchy", "info", "list", "loggingbk", "operators", "search", "showgrid", "man", "metadata", "primitives", "provenance", "search", "showgrid", "tasks" and other operators that provide verbose output, the display parameter by default is "True". For the rest of operators, to display the result, "dispay = True" should be set.*
 
 Subset a Cube
 ^^^^^^^^^^^^^
@@ -204,7 +204,7 @@ To perform a subsetting operation along dimensions of a data cube (dimension val
 
 .. code-block:: python
 
-   mycube3 = mycube2.subset(subset_dims='lat|lon',subset_filter='1:10|20:30',subset_type='coord')
+   mycube3 = mycube2.subset(subset_dims = 'lat|lon',subset_filter='1:10|20:30',subset_type = 'coord')
 
 Explore a Cube
 ^^^^^^^^^^^^^^
@@ -213,7 +213,7 @@ To explore a data cube filtering the data along its dimensions:
 
 .. code-block:: python
 
-   mycube2.explore(subset_dims='lat|lon',subset_filter='1:10|20:30',subset_type='coord')
+   mycube2.explore(subset_dims = 'lat|lon',subset_filter='1:10|20:30',subset_type = 'coord')
 
 Export a Cube to NetCDF file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -222,7 +222,7 @@ To export data into a single NetCDF file:
 
 .. code-block:: python
 
-   mycube3.exportnc2(output_path='/home/user')
+   mycube3.exportnc2(output_path = '/home/user')
 
 Export to a Python array
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -231,7 +231,7 @@ To export data in a python-friendly format:
 
 .. code-block:: python
 
-   data = mycube3.export_array(show_time='yes')
+   data = mycube3.export_array(show_time = 'yes')
 
 Export a datacube to a Xarray dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -260,9 +260,9 @@ To run a Python script through Ophidia load or define the Python function in the
 
 	def myScript(arg1):
 		import subprocess
-		return subprocess.call('ls -la ' + arg1, shell=True)
+		return subprocess.call('ls -la ' + arg1, shell = True)
 
-	cube.Cube.script(python_code=True,script=myScript,args="/home/ophidia",display=True)
+	cube.Cube.script(python_code = True, script = myScript, args = "/home/ophidia", display = True)
 
 Experiment
 ----------
@@ -308,10 +308,10 @@ Create a simple experiment consisting of a single task (an Ophidia operator):
 
 .. code-block:: python
 
-	e1 = Experiment(name="Sample experiment", author="sample author",
-		          abstract='Sample workflow')
-	t1 = e1.newTask(name="Sample task", type="ophidia", operator="oph_list", 
-		          on_error="skip", arguments={"level": "2"})
+	e1 = Experiment(name = "Sample experiment", author = "sample author",
+		          abstract = 'Sample workflow')
+	t1 = e1.newTask(name = "Sample task", type = "ophidia", operator = "oph_list", 
+		          on_error = "skip", arguments = {"level": "2"})
 
 Task dependency management
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -319,9 +319,9 @@ Dependency can be specified to enforce an order in the execution of the tasks. S
 
 .. code-block:: python
 
-	t2 = e1.newTask(name="Sample task 2", type="ophidia", operator='oph_createcontainer', 
-	                arguments={'container': "test", 'dim': 'lat|lon|time'},
-	                dependencies={t1: None}) 
+	t2 = e1.newTask(name = "Sample task 2", type = "ophidia", operator = 'oph_createcontainer', 
+	                arguments = {'container': "test", 'dim': 'lat|lon|time'},
+	                dependencies = {t1: None}) 
 
 Dynamic replacement of argument values in tasks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -329,9 +329,9 @@ Arguments value can be dynamically replaced in an experiment upon submission tim
 
 .. code-block:: python
 
-	t2 = e1.newTask(name="Sample task 2", type="ophidia", operator='oph_createcontainer', 
-	                arguments={'container': "$1", 'dim': 'lat|lon|time'},
-	                dependencies={t1: None})
+	t2 = e1.newTask(name = "Sample task 2", type = "ophidia", operator = 'oph_createcontainer', 
+	                arguments = {'container': "$1", 'dim': 'lat|lon|time'},
+	                dependencies = {t1: None})
 
 Implement a loop in the experiment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -339,13 +339,13 @@ A loop starts with the for operator and ends with endfor operator. The parallel 
 
 .. code-block:: python
 
-	t1 = e1.newTask(name="Start loop", type="control", operator="for", 
-		          arguments={"key": "index", "values": "1|2", "parallel": "yes"})
-	t2 = e1.newTask(name="Import", type="ophidia", operator="oph_importnc", 
-		          arguments={"measure": "tasmax", "imp_dim": "time", "input": "tasmax_@{index}.nc"}, 
-		          dependencies={"t1": ""})
-	t3 = e1.newTask(name="End loop", type="control", operator="endfor", 
-		          dependencies={"t2": "cube"})
+	t1 = e1.newTask(name = "Start loop", type = "control", operator = "for", 
+		          arguments = {"key": "index", "values": "1|2", "parallel": "yes"})
+	t2 = e1.newTask(name = "Import", type = "ophidia", operator = "oph_importnc", 
+		          arguments = {"measure": "tasmax", "imp_dim": "time", "input": "tasmax_@{index}.nc"}, 
+		          dependencies = {"t1": ""})
+	t3 = e1.newTask(name = "End loop", type = "control", operator = "endfor", 
+		          dependencies = {"t2": "cube"})
 
 Implement a selection block in the experiment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -353,13 +353,13 @@ The flow control constructs ("if", "elseif", "else" and "endif") can be used to 
 
 .. code-block:: python
 
-	t1 = e1.newTask(name="If block", type="control", operator='if', 
-		          arguments={'condition': '$1'})
-	t2 = e1.newTask(name="Import data", type="ophidia", operator='oph_importnc',
-		          arguments={'measure': 'tasmax', 'imp_dim': 'time', 'input': 'tasmax.nc'},
-		          dependencies={t1:''})
-	t3 = e1.newTask(name="Endif block", type="control", operator='endif', arguments={},
-		          dependencies={t2:''})
+	t1 = e1.newTask(name = "If block", type = "control", operator = 'if', 
+		          arguments = {'condition': '$1'})
+	t2 = e1.newTask(name = "Import data", type = "ophidia", operator = 'oph_importnc',
+		          arguments = {'measure': 'tasmax', 'imp_dim': 'time', 'input': 'tasmax.nc'},
+		          dependencies = {t1:''})
+	t3 = e1.newTask(name = "Endif block", type = "control", operator = 'endif', arguments = {},
+		          dependencies = {t2:''})
 
 Error management of experiments 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -367,8 +367,8 @@ Different behaviours can be specified for the experiment in case of an error dur
 
 .. code-block:: python
 
-	e1 = Experiment(name="Sample experiment", author="sample author",
-		          abstract='Sample workflow', on_error="abort")
+	e1 = Experiment(name = "Sample experiment", author = "sample author",
+		          abstract = 'Sample workflow', on_error = "abort")
 
 Save an experiment
 ^^^^^^^^^^^^^^^^^^
@@ -439,11 +439,11 @@ Submit the experiment created for execution to Ophidia Server
 
 Monitor a running workflow
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-Monitor a workflow running on the Ophidia platform. The visual mode argument shows a graphical view of the experiment execution status
+Monitor a workflow running on the Ophidia platform. The *display* argument shows a graphical view of the experiment execution status
 
 .. code-block:: python
 
-	w1.monitor(visual_mode=True)
+	w1.monitor(display = True)
 
 Cancel a workflow execution
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -505,29 +505,29 @@ The following code show a full experiment composed of CDO tasks, the commands to
 
 	from PyOphidia import Workflow, Experiment, Task
 	 
-	e1 = Experiment(name="CDO-based experiment example",
-		      author="ESiWACE2",
-		      abstract="Sample experiment with CDO")
-	t1 = e1.newTask(name="Regrid",
-		      type="cdo",
-		      operator='-remapbil,r90x45',
-		      arguments={'input': '/path/to/infile.nc', 
+	e1 = Experiment(name = "CDO-based experiment example",
+		      author = "ESiWACE2",
+		      abstract = "Sample experiment with CDO")
+	t1 = e1.newTask(name = "Regrid",
+		      type = "cdo",
+		      operator = '-remapbil,r90x45',
+		      arguments = {'input': '/path/to/infile.nc', 
 	                     'output': '/path/to/outfile.nc'})
-	t2 = e1.newTask(name="Max",
-		      type="cdo",
-		      operator='-timmax',
-		      arguments={'output': '/path/to/outfile_max.nc'},
-		      dependencies={t1:'input'})
-	t3 = e1.newTask(name="Min",
-		      type="cdo",
-		      operator='-timmin',
-		      arguments={'output': '/path/to/outfile_min.nc'},
-		      dependencies={t1:'input'})
-	t4 = e1.newTask(name="Avg",
-		      type="cdo",
-		      operator='-timavg',
-		      arguments={'output': '/path/to/outfile_avg.nc'},
-		      dependencies={t1:'input'})
+	t2 = e1.newTask(name = "Max",
+		      type = "cdo",
+		      operator = '-timmax',
+		      arguments = {'output': '/path/to/outfile_max.nc'},
+		      dependencies = {t1:'input'})
+	t3 = e1.newTask(name = "Min",
+		      type = "cdo",
+		      operator = '-timmin',
+		      arguments = {'output': '/path/to/outfile_min.nc'},
+		      dependencies = {t1:'input'})
+	t4 = e1.newTask(name = "Avg",
+		      type = "cdo",
+		      operator = '-timavg',
+		      arguments = {'output': '/path/to/outfile_avg.nc'},
+		      dependencies = {t1:'input'})
 
 	e1.save("example.json")
 	e1.check()
