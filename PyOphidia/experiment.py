@@ -587,7 +587,7 @@ class Experiment:
                 cluster_counter += 1
             return subgraphs_list
 
-        experiment_validity = self.validate()
+        experiment_validity = self.isvalid()
         self.__param_check(
             [
                 {"name": "filename", "value": filename, "type": str},
