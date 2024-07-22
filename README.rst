@@ -284,7 +284,7 @@ To run a Python script through Ophidia load or define the Python function in the
 		import subprocess
 		return subprocess.call('ls -la ' + arg1, shell = True)
 
-	cube.Cube.script(python_code = True,script = myScript,args = "/home/ophidia",display = True)
+	cube.Cube.script(python_code = True, script = myScript, args = "/home/ophidia", display = True)
 
 Experiment attributes
 ^^^^^^^^^^^^^^^^^^^^^
