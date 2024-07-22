@@ -526,7 +526,7 @@ class Experiment:
 
     def check(self, filename="sample.dot", display=True):
         """
-        Check the experiment definition validity and display the graph of the experiment structure
+        Check the experiment definition validity, display the graph of the experiment structure and store the graph a file
 
         Parameters
         ----------

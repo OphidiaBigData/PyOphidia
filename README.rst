@@ -139,6 +139,35 @@ Execute the request *oph_list level=2*:
 
    ophclient.submit("oph_list level=2", display=True)
 
+Submit a workflow
+^^^^^^^^^^^^^^^^^
+Execute the workflow stored as string *json_string*:
+
+.. code-block:: python
+
+   ophclient.wsubmit(json_string)
+
+Execute the workflow stored in file *example.json*:
+
+.. code-block:: python
+
+   ophclient.wsubmit("example.json")
+
+Check a workflow
+^^^^^^^^^^^^^^^^
+Check the validity of the workflow stored as string *json_string*:
+
+.. code-block:: python
+
+   ophclient.wisvalid(json_string)
+
+Check the validity of the workflow stored in *example.json*:
+
+.. code-block:: python
+
+   with open("example.json") as json_file:
+       ophclient.wisvalid(json_file.read())
+
 Import Cube
 ^^^^^^^^^^^
 Import *cube* module from *PyOphidia* package:
@@ -277,7 +306,7 @@ Instance methods:
 - *newTask(operator, arguments, dependencies, name, ...) -> Task*: add a new Task in the experiment without the need of creating a Task object
 - *newSubexperiment(self, experiment, params, dependency) -> Task*: embed an experiment into another experiment
 - *isvalid() -> bool*: check the workflow experiment definition validity
-- *check(filename, display) -> bool*: check the experiment definition validity and display the graph of the experiment structure
+- *check(filename, display) -> bool*: check the experiment definition validity, display the graph of the experiment structure and store the graph in the file *filename*
 
 Class methods:
 
@@ -362,7 +391,7 @@ Different behaviours can be specified for the experiment in case of an error dur
 
 Save an experiment
 ^^^^^^^^^^^^^^^^^^
-Save the experiment as JSON document
+Save the experiment as JSON document *example.json*
 
 .. code-block:: python
 
@@ -375,6 +404,18 @@ Validate the experiment document before the submission
 .. code-block:: python
 
 	e1.check()
+
+Alternatively
+
+.. code-block:: python
+
+	e1.isvalid()
+
+Validate the experiment document stored in *example.json*
+
+.. code-block:: python
+
+	Experiment.validate("example.json")
 
 Workflow attributes
 ^^^^^^^^^^^^^^^^^^^

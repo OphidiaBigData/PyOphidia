@@ -752,14 +752,18 @@ class Client:
 
     @staticmethod
     def remove_comments(workflow):
-        checked_workflow = re.sub(r"(?m)^ *#.*\n?|#[^\r\n]*$", "", workflow)
-        pattern = r"(\".*?(?<!\\)\"|\'.*?(?<!\\)\')|(/\*.*?\*/|//[^\r\n]*$)"
-        regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
         def _replacer(match):
             if match.group(2) is not None:
                 return " "
             else:
                 return match.group(1)
+        # Remove python-like comments
+        pattern = r"(\".*?(?<!#)\"|\'.*?(?<!#)\')|((?m)^ *#.*\n?|#[^\r\n]*$)"
+        regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
+        checked_workflow = regex.sub(_replacer, workflow)
+        # Remove C-like comments
+        pattern = r"(\".*?(?<!\\)\"|\'.*?(?<!\\)\')|(/\*.*?\*/|//[^\r\n]*$)"
+        regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
         return regex.sub(_replacer, checked_workflow)
 
     def wsubmit(self, workflow, *params):
