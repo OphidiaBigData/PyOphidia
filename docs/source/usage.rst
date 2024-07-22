@@ -67,7 +67,7 @@ In case of authentication token is used:
 
 .. code-block:: python
 
-   ophclient = client.Client(token = "token",server = "127.0.0.1",port = "11732")
+   ophclient = client.Client(token = "token", server = "127.0.0.1", port = "11732")
 
 If *OPH_USER*, *OPH_PASSWD* (or *OPH_TOKEN*), *OPH_SERVER_HOST* and *OPH_SERVER_PORT* variables have been set in the environment (see the documentation_ for more details), a client can be also created reading directly the values from the environment without the need to specify any parameter. 
 
@@ -204,7 +204,7 @@ To perform a subsetting operation along dimensions of a data cube (dimension val
 
 .. code-block:: python
 
-   mycube3 = mycube2.subset(subset_dims = 'lat|lon',subset_filter='1:10|20:30',subset_type = 'coord')
+   mycube3 = mycube2.subset(subset_dims = 'lat|lon',subset_filter='1:10|20:30', subset_type = 'coord')
 
 Explore a Cube
 ^^^^^^^^^^^^^^
@@ -213,7 +213,7 @@ To explore a data cube filtering the data along its dimensions:
 
 .. code-block:: python
 
-   mycube2.explore(subset_dims = 'lat|lon',subset_filter='1:10|20:30',subset_type = 'coord')
+   mycube2.explore(subset_dims = 'lat|lon',subset_filter='1:10|20:30', subset_type = 'coord')
 
 Export a Cube to NetCDF file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -499,41 +499,93 @@ To cancel a running workflow:
 
 A full experiment example
 ^^^^^^^^^^^^^^^^^^^^^^^^^
-The following code show a full experiment composed of CDO tasks, the commands to save the related JSON file and for its submission
+The following code shows a full experiment composed of CDO tasks, the commands to save the related JSON file and for its submission
 
 .. code-block:: python
 
-	from PyOphidia import Workflow, Experiment, Task
+	from PyOphidia import Workflow, Experiment
 	 
 	e1 = Experiment(name = "CDO-based experiment example",
-		      author = "ESiWACE2",
-		      abstract = "Sample experiment with CDO")
+	                author = "CMCC",
+	                abstract = "Sample experiment with CDO")
 	t1 = e1.newTask(name = "Regrid",
-		      type = "cdo",
-		      operator = '-remapbil,r90x45',
-		      arguments = {'input': '/path/to/infile.nc', 
-	                     'output': '/path/to/outfile.nc'})
+	                type = "cdo",
+	                operator = '-remapbil,r90x45',
+	                arguments = {'input': '/path/to/infile.nc', 
+	                             'output': '/path/to/outfile.nc'})
 	t2 = e1.newTask(name = "Max",
-		      type = "cdo",
-		      operator = '-timmax',
-		      arguments = {'output': '/path/to/outfile_max.nc'},
-		      dependencies = {t1:'input'})
+		            type = "cdo",
+		            operator = '-timmax',
+		            arguments = {'output': '/path/to/outfile_max.nc'},
+		            dependencies = {t1:'input'})
 	t3 = e1.newTask(name = "Min",
-		      type = "cdo",
-		      operator = '-timmin',
-		      arguments = {'output': '/path/to/outfile_min.nc'},
-		      dependencies = {t1:'input'})
+		            type = "cdo",
+		            operator = '-timmin',
+		            arguments = {'output': '/path/to/outfile_min.nc'},
+		            dependencies = {t1:'input'})
 	t4 = e1.newTask(name = "Avg",
-		      type = "cdo",
-		      operator = '-timavg',
-		      arguments = {'output': '/path/to/outfile_avg.nc'},
-		      dependencies = {t1:'input'})
+		            type = "cdo",
+		            operator = '-timavg',
+		            arguments = {'output': '/path/to/outfile_avg.nc'},
+		            dependencies = {t1:'input'})
 
-	e1.save("example.json")
+	e1.save("example1.json")
 	e1.check()
 
 	w1 = Workflow(e1)
 	w1.submit()
+
+The following code shows an experiment with a *parallel for* operator and a number of Ophidia operators. The workflow is submitted asynchronously and monitored at a rate of 1 check/second until completion.
+
+.. code-block:: python
+
+	from PyOphidia import Workflow, Experiment
+
+	e2 = Experiment(name = "Example of parallel branches",
+	                author = "CMCC",
+	                abstract = "Parallel execution example",
+	                exec_mode = "async")
+	t1 = e2.newTask(name = "Start loop",
+		           type = "control",
+		           operator = 'for',
+		            arguments = {"key": "index", "values": "$1", "parallel": "yes"})
+	t2 = e2.newTask(name = "Regrid",
+		           type = "cdo",
+		           operator = '-remapbil,r90x45',
+		           arguments = {'input': 'tasmax_input_@{index}.nc', 'output': 'tasmax_regridded_@{index}.nc', 'force': 'yes'},
+		           dependencies = {t1:''})
+	t3 = e2.newTask(name = "Import",
+		           type = "ophidia",
+		           operator = 'oph_importnc2',
+		           arguments = {'measure': 'tasmax', 'imp_dim': 'time'},
+		           dependencies = {t2:'input'})
+	t4 = e2.newTask(name = "Reduce",
+		           type = "ophidia",
+		           operator = 'oph_reduce', 
+		           arguments = {'operation': 'avg'},
+		           dependencies = {t3:'cube'})
+	t5 = e2.newTask(name = "End loop",
+		           type = "control",
+		           operator = 'endfor',
+		           arguments = {},
+		           dependencies = {t4:'cube'})
+	t6 = e2.newTask(name = "Merge",
+		           type = "ophidia",
+		           operator = 'oph_mergecubes2', 
+		           arguments = {"dim": "new_dim"}, 
+		           dependencies = {t5:'cubes'})
+	t7 = e2.newTask(name = "Export",
+		           type = "ophidia",
+		           operator = 'oph_exportnc', 
+		           arguments = {'output': 'tasmax_output.nc'},
+		           dependencies = {t6:'cube'})	 
+
+	e2.save("example2.json")
+	e2.check()
+
+	w2 = Workflow(e2)
+	w2.submit("2000|2001|2002|2003|2004|2005")
+	w2.monitor(frequency = 1, iterative = True, display = True)
 
 CWL support
 -----------

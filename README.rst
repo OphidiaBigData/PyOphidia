@@ -78,7 +78,7 @@ It will also try to resume the last session the user was connected to, as well a
 
 .. code-block:: python
 
-   ophclient = client.Client(username = "oph-user", password = "oph-passwd",server = "127.0.0.1", port = "11732")
+   ophclient = client.Client(username = "oph-user", password = "oph-passwd", server = "127.0.0.1", port = "11732")
 
 In case of authentication token is used:
 
@@ -515,7 +515,7 @@ To cancel a running workflow:
 
 A full experiment example
 ^^^^^^^^^^^^^^^^^^^^^^^^^
-The following code show a full experiment composed of CDO tasks, the commands to save the related JSON file and for its submission
+The following code shows a full experiment composed of CDO tasks, the commands to save the related JSON file and for its submission
 
 .. code-block:: python
 
@@ -550,6 +550,58 @@ The following code show a full experiment composed of CDO tasks, the commands to
 
 	w1 = Workflow(e1)
 	w1.submit()
+
+The following code shows an experiment with a *parallel for* operator and a number of Ophidia operators. The workflow is submitted asynchronously and monitored at a rate of 1 check/second until completion.
+
+.. code-block:: python
+
+	from PyOphidia import Workflow, Experiment
+
+	e2 = Experiment(name = "Example of parallel branches",
+	                author = "CMCC",
+	                abstract = "Parallel execution example",
+	                exec_mode = "async")
+	t1 = e2.newTask(name = "Start loop",
+		           type = "control",
+		           operator = 'for',
+		            arguments = {"key": "index", "values": "$1", "parallel": "yes"})
+	t2 = e2.newTask(name = "Regrid",
+		           type = "cdo",
+		           operator = '-remapbil,r90x45',
+		           arguments = {'input': 'tasmax_input_@{index}.nc', 'output': 'tasmax_regridded_@{index}.nc', 'force': 'yes'},
+		           dependencies = {t1:''})
+	t3 = e2.newTask(name = "Import",
+		           type = "ophidia",
+		           operator = 'oph_importnc2',
+		           arguments = {'measure': 'tasmax', 'imp_dim': 'time'},
+		           dependencies = {t2:'input'})
+	t4 = e2.newTask(name = "Reduce",
+		           type = "ophidia",
+		           operator = 'oph_reduce', 
+		           arguments = {'operation': 'avg'},
+		           dependencies = {t3:'cube'})
+	t5 = e2.newTask(name = "End loop",
+		           type = "control",
+		           operator = 'endfor',
+		           arguments = {},
+		           dependencies = {t4:'cube'})
+	t6 = e2.newTask(name = "Merge",
+		           type = "ophidia",
+		           operator = 'oph_mergecubes2', 
+		           arguments = {"dim": "new_dim"}, 
+		           dependencies = {t5:'cubes'})
+	t7 = e2.newTask(name = "Export",
+		           type = "ophidia",
+		           operator = 'oph_exportnc', 
+		           arguments = {'output': 'tasmax_output.nc'},
+		           dependencies = {t6:'cube'})	 
+
+	e2.save("example2.json")
+	e2.check()
+
+	w2 = Workflow(e2)
+	w2.submit("2000|2001|2002|2003|2004|2005")
+	w2.monitor(frequency = 1, iterative = True, display = True)
 
 Additional examples can be found under the `examples` folder.
 
