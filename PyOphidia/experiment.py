@@ -333,7 +333,7 @@ class Experiment:
                 greatest_id = 1
                 for task in self.tasks:
                     if "_{subexperiment_" in task.name:
-                        task_id = int(re.findall("_\{subexperiment_(.*)\}", task.name)[0])
+                        task_id = int(re.findall(r"_{subexperiment_(.*)}", task.name)[0])
                         if task_id >= greatest_id:
                             greatest_id = task_id + 1
                 return greatest_id

@@ -259,8 +259,8 @@ To run a Python script through Ophidia load or define the Python function in the
 .. code-block:: python
 
 	def myScript(arg1):
-		import subprocess
-		return subprocess.call('ls -la ' + arg1, shell = True)
+	    import subprocess
+	    return subprocess.call('ls -la ' + arg1, shell = True)
 
 	cube.Cube.script(python_code = True, script = myScript, args = "/home/ophidia", display = True)
 
@@ -309,9 +309,9 @@ Create a simple experiment consisting of a single task (an Ophidia operator):
 .. code-block:: python
 
 	e1 = Experiment(name = "Sample experiment", author = "sample author",
-		          abstract = 'Sample workflow')
+	                abstract = 'Sample workflow')
 	t1 = e1.newTask(name = "Sample task", type = "ophidia", operator = "oph_list", 
-		          on_error = "skip", arguments = {"level": "2"})
+	                on_error = "skip", arguments = {"level": "2"})
 
 Task dependency management
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -340,12 +340,12 @@ A loop starts with the for operator and ends with endfor operator. The parallel 
 .. code-block:: python
 
 	t1 = e1.newTask(name = "Start loop", type = "control", operator = "for", 
-		          arguments = {"key": "index", "values": "1|2", "parallel": "yes"})
+	                arguments = {"key": "index", "values": "1|2", "parallel": "yes"})
 	t2 = e1.newTask(name = "Import", type = "ophidia", operator = "oph_importnc", 
-		          arguments = {"measure": "tasmax", "imp_dim": "time", "input": "tasmax_@{index}.nc"}, 
-		          dependencies = {"t1": ""})
+	                arguments = {"measure": "tasmax", "imp_dim": "time", "input": "tasmax_@{index}.nc"}, 
+	                dependencies = {"t1": ""})
 	t3 = e1.newTask(name = "End loop", type = "control", operator = "endfor", 
-		          dependencies = {"t2": "cube"})
+	                dependencies = {"t2": "cube"})
 
 Implement a selection block in the experiment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -354,12 +354,12 @@ The flow control constructs ("if", "elseif", "else" and "endif") can be used to 
 .. code-block:: python
 
 	t1 = e1.newTask(name = "If block", type = "control", operator = 'if', 
-		          arguments = {'condition': '$1'})
+	                arguments = {'condition': '$1'})
 	t2 = e1.newTask(name = "Import data", type = "ophidia", operator = 'oph_importnc',
-		          arguments = {'measure': 'tasmax', 'imp_dim': 'time', 'input': 'tasmax.nc'},
-		          dependencies = {t1:''})
+	                arguments = {'measure': 'tasmax', 'imp_dim': 'time', 'input': 'tasmax.nc'},
+	                dependencies = {t1:''})
 	t3 = e1.newTask(name = "Endif block", type = "control", operator = 'endif', arguments = {},
-		          dependencies = {t2:''})
+	                dependencies = {t2:''})
 
 Error management of experiments 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -368,7 +368,7 @@ Different behaviours can be specified for the experiment in case of an error dur
 .. code-block:: python
 
 	e1 = Experiment(name = "Sample experiment", author = "sample author",
-		          abstract = 'Sample workflow', on_error = "abort")
+	                abstract = 'Sample workflow', on_error = "abort")
 
 Save an experiment
 ^^^^^^^^^^^^^^^^^^
@@ -514,20 +514,20 @@ The following code shows a full experiment composed of CDO tasks, the commands t
 	                arguments = {'input': '/path/to/infile.nc', 
 	                             'output': '/path/to/outfile.nc'})
 	t2 = e1.newTask(name = "Max",
-		            type = "cdo",
-		            operator = '-timmax',
-		            arguments = {'output': '/path/to/outfile_max.nc'},
-		            dependencies = {t1:'input'})
+	                type = "cdo",
+	                operator = '-timmax',
+	                arguments = {'output': '/path/to/outfile_max.nc'},
+	                dependencies = {t1:'input'})
 	t3 = e1.newTask(name = "Min",
-		            type = "cdo",
-		            operator = '-timmin',
-		            arguments = {'output': '/path/to/outfile_min.nc'},
-		            dependencies = {t1:'input'})
+	                type = "cdo",
+	                operator = '-timmin',
+	                arguments = {'output': '/path/to/outfile_min.nc'},
+	                dependencies = {t1:'input'})
 	t4 = e1.newTask(name = "Avg",
-		            type = "cdo",
-		            operator = '-timavg',
-		            arguments = {'output': '/path/to/outfile_avg.nc'},
-		            dependencies = {t1:'input'})
+	                type = "cdo",
+	                operator = '-timavg',
+	                arguments = {'output': '/path/to/outfile_avg.nc'},
+	                dependencies = {t1:'input'})
 
 	e1.save("example1.json")
 	e1.check()
@@ -546,39 +546,39 @@ The following code shows an experiment with a *parallel for* operator and a numb
 	                abstract = "Parallel execution example",
 	                exec_mode = "async")
 	t1 = e2.newTask(name = "Start loop",
-		           type = "control",
-		           operator = 'for',
-		            arguments = {"key": "index", "values": "$1", "parallel": "yes"})
+	                type = "control",
+	                operator = 'for',
+	                arguments = {"key": "index", "values": "$1", "parallel": "yes"})
 	t2 = e2.newTask(name = "Regrid",
-		           type = "cdo",
-		           operator = '-remapbil,r90x45',
-		           arguments = {'input': 'tasmax_input_@{index}.nc', 'output': 'tasmax_regridded_@{index}.nc', 'force': 'yes'},
-		           dependencies = {t1:''})
+	                type = "cdo",
+	                operator = '-remapbil,r90x45',
+	                arguments = {'input': 'tasmax_input_@{index}.nc', 'output': 'tasmax_regridded_@{index}.nc', 'force': 'yes'},
+	                dependencies = {t1:''})
 	t3 = e2.newTask(name = "Import",
-		           type = "ophidia",
-		           operator = 'oph_importnc2',
-		           arguments = {'measure': 'tasmax', 'imp_dim': 'time'},
-		           dependencies = {t2:'input'})
+	                type = "ophidia",
+	                operator = 'oph_importnc2',
+	                arguments = {'measure': 'tasmax', 'imp_dim': 'time'},
+	                dependencies = {t2:'input'})
 	t4 = e2.newTask(name = "Reduce",
-		           type = "ophidia",
-		           operator = 'oph_reduce', 
-		           arguments = {'operation': 'avg'},
-		           dependencies = {t3:'cube'})
+	                type = "ophidia",
+	                operator = 'oph_reduce', 
+	                arguments = {'operation': 'avg'},
+	                dependencies = {t3:'cube'})
 	t5 = e2.newTask(name = "End loop",
-		           type = "control",
-		           operator = 'endfor',
-		           arguments = {},
-		           dependencies = {t4:'cube'})
+	                type = "control",
+	                operator = 'endfor',
+	                arguments = {},
+	                dependencies = {t4:'cube'})
 	t6 = e2.newTask(name = "Merge",
-		           type = "ophidia",
-		           operator = 'oph_mergecubes2', 
-		           arguments = {"dim": "new_dim"}, 
-		           dependencies = {t5:'cubes'})
+	                type = "ophidia",
+	                operator = 'oph_mergecubes2', 
+	                arguments = {"dim": "new_dim"}, 
+	                dependencies = {t5:'cubes'})
 	t7 = e2.newTask(name = "Export",
-		           type = "ophidia",
-		           operator = 'oph_exportnc', 
-		           arguments = {'output': 'tasmax_output.nc'},
-		           dependencies = {t6:'cube'})	 
+	                type = "ophidia",
+	                operator = 'oph_exportnc', 
+	                arguments = {'output': 'tasmax_output.nc'},
+	                dependencies = {t6:'cube'})	 
 
 	e2.save("example2.json")
 	e2.check()
