@@ -68,6 +68,7 @@ setup(
     install_requires=[
         'graphviz>=0.14',
         'click',
+        'pydot>=1.4',
         'prov>=1.5'
     ],
     entry_points  = {
