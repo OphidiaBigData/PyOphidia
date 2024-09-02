@@ -68,8 +68,8 @@ class Experiment:
                 raise AttributeError("Unknown experiment argument: {0}".format(k))
             self.active_attributes.append(k)
         self.name = name
-        self.author = author
-        self.abstract = abstract
+        self.author = author if author is not None else ""
+        self.abstract = abstract if abstract is not None else ""
         self.exec_mode = "sync"
         self.tasks = []
         self.__dict__.update(kwargs)
@@ -397,20 +397,20 @@ class Experiment:
     def json_open(filename):
         if not os.path.isfile(filename):
             raise IOError("File does not exist")
-        else:
-            try:
-                from client import Client
-            except ImportError:
-                from .client import Client
-            client = Client(
-                local_mode=True,
-            )
-            try:
-                with open(filename, "r") as f:
-                    workflow = f.read()
-                return client.remove_comments(workflow)
-            except ValueError:
-                raise ValueError("File cannot be opened")
+
+        try:
+            from client import Client
+        except ImportError:
+            from .client import Client
+        client = Client(
+            local_mode=True,
+        )
+        try:
+            with open(filename, "r") as f:
+                workflow = f.read()
+            return client.remove_comments(workflow)
+        except ValueError:
+            raise ValueError("File cannot be opened")
 
     @staticmethod
     def load(file):
@@ -482,6 +482,62 @@ class Experiment:
         check_experiment_name(data)
         experiment = start_experiment(data)
         return experiment
+
+    @staticmethod
+    def load_cwl(file, args=""):
+        """
+        Load an experiment from the CWL document
+
+        Parameters
+        ----------
+        file : str
+            The path/name of the file to be loaded
+
+        Returns
+        -------
+        experiment : <class 'PyOphidia.experiment.Experiment'>
+            Returns the experiment object as it was loaded from the file
+
+        Raises
+        ------
+        IOError
+            Raises IOError if the file does not exist
+
+        Example
+        -------
+        e1 = Experiment.load("json_file.cwl")
+        """
+
+        if not os.path.isfile(file):
+            raise IOError("File does not exist")
+        
+        import os, cwltool, cwltool.factory
+
+        cwl_args = {}
+        param = None
+        if args:
+            for i in args.split():
+                if param is None:
+                    param = i
+                else:
+                    cwl_args[param[2:]] = i;
+                    param = None
+        
+        fac = cwltool.factory.Factory()
+        fac.runtime_context.rm_tmpdir = False
+        cwl_tool = fac.make("./" + file)
+        result = cwl_tool(**cwl_args)
+        
+        print(result)
+        
+        json_request = result["outputexperiment"]["location"][7:]
+        with open(outputfile) as f:
+            print(f.read())
+
+        os.remove(json_request)
+        os.rmdir(json_request.rsplit('/', 1)[0])
+        
+        return Experiment.load(json_request)
 
     @staticmethod
     def __validate(json_string):
