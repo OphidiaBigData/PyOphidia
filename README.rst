@@ -312,6 +312,7 @@ Instance methods:
 Class methods:
 
 - *load(file) -> Experiment*: load an experiment from the JSON document
+- *load_cwd(file, args) -> Experiment*: load an experiment from the CWL document (see CWL support)
 - *validate(file) -> bool*: check the workflow experiment definition validity
 
 Import Experiment
@@ -473,6 +474,8 @@ Cancel the executuon of a workflow.
 Load an experiment
 ^^^^^^^^^^^^^^^^^^
 Load an experiment from the JSON document
+
+.. code-block:: python
 
 	e1 = Experiment.load("example.json")
 
@@ -648,6 +651,11 @@ The following example shows how the same CWL-compliant workflow can simply be tr
 	cd examples/utils
 	./oph_wf.cwl --inputcontainer container
 
+It also is possibile to load a CWL-compliant workflow as an Experiment object as follows.
+
+.. code-block:: python
+
+	e1 = Experiment.load_cwl("example.cwl")
 
 .. _GPLv3: http://www.gnu.org/licenses/gpl-3.0.txt
 .. _Ophidia: http://ophidia.cmcc.it

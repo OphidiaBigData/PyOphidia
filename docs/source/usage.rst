@@ -589,7 +589,7 @@ The following code shows an experiment with a *parallel for* operator and a numb
 
 CWL support
 -----------
-The following example shows how a CWL-compliant workflow "oph_wf.cwl" can be submitted to Ophidia platform; the list "args" will se passed to CWT tool to set the workflow parameters. Internally, the workflow is translated into an Ophidia-compliant workflow.
+Provided that CWL support is corrected installed (see the installation), the following example shows how a CWL-compliant workflow "oph_wf.cwl" can be submitted to Ophidia platform; the list "args" will se passed to CWT tool to set the workflow parameters. Internally, the workflow is translated into an Ophidia-compliant workflow.
 
 .. code-block:: console
 
@@ -602,6 +602,12 @@ The following example shows how the same CWL-compliant workflow can simply be tr
 
 	$ cd examples/utils
 	$ ./oph_wf.cwl --inputcontainer container
+
+It also is possibile to load a CWL-compliant workflow as an Experiment object as follows.
+
+.. code-block:: python
+
+	e1 = Experiment.load_cwl("example.cwl")
 
 .. _documentation: https://ophidia.cmcc.it/documentation/users/terminal/term_advanced.html#oph-terminal-environment
 
