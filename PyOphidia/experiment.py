@@ -510,8 +510,8 @@ class Experiment:
 
         if not os.path.isfile(file):
             raise IOError("File does not exist")
-        
-        import os, cwltool, cwltool.factory
+
+        import cwltool, cwltool.factory
 
         cwl_args = {}
         param = None
@@ -522,22 +522,20 @@ class Experiment:
                 else:
                     cwl_args[param[2:]] = i;
                     param = None
-        
+
         fac = cwltool.factory.Factory()
         fac.runtime_context.rm_tmpdir = False
-        cwl_tool = fac.make("./" + file)
+        cwl_tool = fac.make(file)
         result = cwl_tool(**cwl_args)
-        
-        print(result)
-        
+
         json_request = result["outputexperiment"]["location"][7:]
-        with open(outputfile) as f:
-            print(f.read())
+
+        experiment = Experiment.load(json_request)
 
         os.remove(json_request)
         os.rmdir(json_request.rsplit('/', 1)[0])
-        
-        return Experiment.load(json_request)
+
+        return experiment
 
     @staticmethod
     def __validate(json_string):
