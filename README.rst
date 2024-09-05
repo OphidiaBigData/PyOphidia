@@ -468,6 +468,7 @@ Retrieve provenance information
 Generate provenance information compliant with the W3C PROV family of standards. By default, a JSON file is produced, but a serialization support is also available for XML and RDF (through the *output_format* argument). The *display* argument produces a graphical representation of the workflow provenance.
 
 .. code-block:: python
+
 	w1.build_provenance("prov_example", output_format="json", display=True)
 
 Cancel a workflow execution
