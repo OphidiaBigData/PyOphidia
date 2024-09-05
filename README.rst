@@ -463,6 +463,13 @@ Monitor a workflow running on the Ophidia platform. The *display* argument shows
 
 	w1.monitor(display = True)
 
+Retrieve provenance information
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+Generate provenance information compliant with the W3C PROV family of standards. By default, a JSON file is produced, but a serialization support is also available for XML and RDF (through the *output_format* argument). The *display* argument produces a graphical representation of the workflow provenance.
+
+.. code-block:: python
+	w1.build_provenance("prov_example", output_format="json", display=True)
+
 Cancel a workflow execution
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Cancel the executuon of a workflow.
@@ -606,6 +613,7 @@ The following code shows an experiment with a *parallel for* operator and a numb
 	w2 = Workflow(e2)
 	w2.submit("2000|2001|2002|2003|2004|2005")
 	w2.monitor(frequency = 1, iterative = True, display = True)
+	w2.build_provenance("prov_example2", output_format="json", display=True)
 
 Additional examples can be found under the `examples` folder.
 
