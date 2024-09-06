@@ -3,6 +3,17 @@ Installation
 
 .. _installation:
 
+Dependencies
+------------
+
+Most of *PyOphidia* features are provided without installing any additional Python library, anyway the graphical support (e.g., associated with the class *Workflow*),the CLI, provenance and CWL supports need of additional libraries:
+
+-   [graphviz](https://graphviz.readthedocs.io/en/stable/): an interface to facilitates the creation and rendering of graph descriptions in the DOT language of Graphviz
+-   [click](https://click.palletsprojects.com): a package for creating beautiful command line interfaces in a composable way
+-   [pydot](https://github.com/pydot/pydot): an interface for Graphviz's Dot
+-   [prov](https://prov.readthedocs.io/en/latest/): a library for W3C Provenance Data Model supporting PROV-O (RDF), PROV-XML, PROV-JSON import/export
+-   [cwltool](https://cwltool.readthedocs.io/en/latest/): a tool to provide validation and execution of CWL files
+
 Install with pip
 ----------------
 

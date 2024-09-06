@@ -14,6 +14,15 @@ def get_linenumber():
     cf = currentframe()
     return __file__, cf.f_back.f_lineno
 
+def _dependency_check(dependency):
+    if dependency == "cwltool":
+        try:
+            import cwltool, cwltool.factory
+        except ModuleNotFoundError:
+            raise RuntimeError("cwltool is not installed")
+    else:
+        raise AttributeError("Dependency must be cwltool")
+
 class Experiment:
     """
     Creates or loads a workflow experiment.
@@ -510,6 +519,8 @@ class Experiment:
 
         if not os.path.isfile(file):
             raise IOError("File does not exist")
+
+        _dependency_check("cwltool")
 
         import cwltool, cwltool.factory
 

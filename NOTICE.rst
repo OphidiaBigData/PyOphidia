@@ -36,6 +36,14 @@ https://pandas.pydata.org/docs/getting_started/overview.html#license
 Apache License 2.0
 https://github.com/pydata/xarray/blob/main/LICENSE
 
+- Prov
+The MIT License (MIT)
+https://github.com/trungdong/prov/blob/master/LICENSE
+
+- CWLTool
+Apache License 2.0
+https://github.com/common-workflow-language/cwltool/blob/main/LICENSE.txt
+
 =====================================================================
 
 Acknowledgement:

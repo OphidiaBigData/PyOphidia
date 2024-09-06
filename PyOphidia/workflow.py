@@ -362,7 +362,7 @@ class Workflow:
                     fontsize="10pt",
                 )
                 if len(task.extra.keys()) == 0:
-                    dot.attr("node", fillcolor="red", style="filled")
+                    dot.attr("node", fillcolor="lightgrey", style="filled")
                 if 'EXIT STATUS' in task.extra and status_color_dictionary:
                     dot.attr(
                         "node",
@@ -412,7 +412,7 @@ class Workflow:
         status_color_dictionary = {
             "(?i).*RUNNING$": "orange",
             "(?i).*UNSELECTED": "grey",
-            "(?i).*UNKNOWN": "grey",
+            "(?i).*UNKNOWN": "lightgrey",
             "(?i).*PENDING": "pink",
             "(?i).*WAITING": "cyan",
             "(?i).*COMPLETED": "palegreen1",
