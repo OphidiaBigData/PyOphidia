@@ -7,7 +7,7 @@ It aims at providing a user-friendly and programmatic interface for large-scale 
 
 PyOphidia provides features for handling scientific data in the form of datacubes, managing workflow execution, enabling parallel processing on HPC/Cloud systems and supporting integration with well-known modules from the Python scientific ecosystem.
 
-It runs on Python 2.7, 3.7, 3.8, 3.9, 3.10 and 3.11 and has some (optional) dependencies on Xarray, Pandas and Numpy. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v1.12) is compatible with Ophidia v1.8.
+It runs on Python 2.7, 3.7, 3.8, 3.9, 3.10 and 3.11 and has some (optional) dependencies on Graphviz, Click, PyDot, Prov, Xarray, Numpy and Pandas. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v1.12) is compatible with Ophidia v1.8.0.
 
 It provides 4 main modules:
 
@@ -30,6 +30,9 @@ Most of PyOphidia features are provided without installing any additional Python
 -   [click](https://click.palletsprojects.com): a package for creating beautiful command line interfaces in a composable way
 -   [pydot](https://github.com/pydot/pydot): an interface for Graphviz's Dot
 -   [prov](https://prov.readthedocs.io/en/latest/): a library for W3C Provenance Data Model supporting PROV-O (RDF), PROV-XML, PROV-JSON import/export
+-   [xarray](https://docs.xarray.dev/en/stable/index.html): a library to handle multi-dimensional arrays in a simple and efficient way
+-   [numpy](https://numpy.org/): a package for scientific computing
+-   [pandas](https://pandas.pydata.org/): a data analysis and manipulation tool
 -   [cwltool](https://cwltool.readthedocs.io/en/latest/): a tool to provide validation and execution of CWL files
 
 Installation

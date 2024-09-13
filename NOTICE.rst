@@ -24,6 +24,26 @@ https://github.com/OphidiaBigData/PyOphidia
 
 Besides Python Standard Library, PyOphidia optionally depends on the following libraries:
 
+- Graphviz
+Eclipse Public License - v 1.0
+https://gitlab.com/graphviz/graphviz/-/blob/main/LICENSE
+
+- Click
+BSD 3-Clause License
+https://github.com/pallets/click/blob/main/LICENSE.txt
+
+- PyDot
+The MIT License (MIT)
+https://github.com/pydot/pydot/blob/main/LICENSES/MIT.txt
+
+- Prov
+The MIT License (MIT)
+https://github.com/trungdong/prov/blob/master/LICENSE
+
+- Xarray
+Apache License 2.0
+https://github.com/pydata/xarray/blob/main/LICENSE
+
 - NumPy
 BSD License
 https://numpy.org/doc/stable/license.html
@@ -31,14 +51,6 @@ https://numpy.org/doc/stable/license.html
 - Pandas
 BSD 3-Clause License
 https://pandas.pydata.org/docs/getting_started/overview.html#license
-
-- Xarray
-Apache License 2.0
-https://github.com/pydata/xarray/blob/main/LICENSE
-
-- Prov
-The MIT License (MIT)
-https://github.com/trungdong/prov/blob/master/LICENSE
 
 - CWLTool
 Apache License 2.0

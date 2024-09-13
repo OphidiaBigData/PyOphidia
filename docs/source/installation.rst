@@ -12,6 +12,9 @@ Most of *PyOphidia* features are provided without installing any additional Pyth
 -   [click](https://click.palletsprojects.com): a package for creating beautiful command line interfaces in a composable way
 -   [pydot](https://github.com/pydot/pydot): an interface for Graphviz's Dot
 -   [prov](https://prov.readthedocs.io/en/latest/): a library for W3C Provenance Data Model supporting PROV-O (RDF), PROV-XML, PROV-JSON import/export
+-   [xarray](https://docs.xarray.dev/en/stable/index.html): a library to handle multi-dimensional arrays in a simple and efficient way
+-   [numpy](https://numpy.org/): a package for scientific computing
+-   [pandas](https://pandas.pydata.org/): a data analysis and manipulation tool
 -   [cwltool](https://cwltool.readthedocs.io/en/latest/): a tool to provide validation and execution of CWL files
 
 Install with pip
