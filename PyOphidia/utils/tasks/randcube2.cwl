@@ -39,6 +39,11 @@ inputs:
     inputBinding:
       prefix: --dim
       separate: true
+  concept_level:
+    type: string?
+    inputBinding:
+      prefix: --concept_level
+      separate: true
   dim_size:
     type: string
     inputBinding:

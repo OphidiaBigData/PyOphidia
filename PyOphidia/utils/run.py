@@ -16,7 +16,7 @@ if args.args:
         if param is None:
             param = i
         else:
-            cwl_args[param[2:]] = i;
+            cwl_args[param[2:]] = int(i) if i.isdigit() else i;
             param = None
 
 fac = cwltool.factory.Factory()

@@ -15,6 +15,11 @@ inputs:
     inputBinding:
       prefix: --name
       separate: true
+  cube:
+    type: string?
+    inputBinding:
+      prefix: --cube
+      separate: true
   subset_dims:
     type: string?
     inputBinding:

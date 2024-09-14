@@ -15,6 +15,11 @@ inputs:
     inputBinding:
       prefix: --name
       separate: true
+  cube:
+    type: string?
+    inputBinding:
+      prefix: --cube
+      separate: true
   query:
     type: string?
     inputBinding:

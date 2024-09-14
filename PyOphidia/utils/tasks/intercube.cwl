@@ -20,6 +20,16 @@ inputs:
     inputBinding:
       prefix: --name
       separate: true
+  cube:
+    type: string?
+    inputBinding:
+      prefix: --cube
+      separate: true
+  cube2:
+    type: string?
+    inputBinding:
+      prefix: --cube2
+      separate: true
   operation:
     type: string?
     inputBinding:

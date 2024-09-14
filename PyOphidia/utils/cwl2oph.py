@@ -8,19 +8,24 @@ print("Parse arguments", file=sys.stderr)
 parser = argparse.ArgumentParser()
 parser.add_argument('operator', type=str, help='Ophidia operator')
 # GENERAL TASK PARAMETERS
-parser.add_argument('--description', type=str, help='Task description (optional)', default='-')
+parser.add_argument('--cube', type=str, help='Input cube', default='')
+parser.add_argument('--cube2', type=str, help='Input cube', default='')
+parser.add_argument('--description', type=str, help='Task description', default='-')
 parser.add_argument('--dependencies', type=str, help='Task on which it depends')
 parser.add_argument('--experiment', type=str, help='JSON Experiment')
 parser.add_argument('--experiment1', type=str, help='JSON Experiment')
 parser.add_argument('--experiment2', type=str, help='JSON Experiment')
-parser.add_argument('--input', type=str, default='')
+parser.add_argument('--input', type=str, help='Input', default='')
 parser.add_argument('--name', type=str, help='Task name', required=True)
-parser.add_argument('--ncores', type=int, default=1)
-parser.add_argument('--nthreads', type=int, default=1)
-parser.add_argument('--on_error', type=str, default='abort')
-parser.add_argument('--output', type=str, default='')
-# SPECIFIC TASK PARAMETERS 
-parser.add_argument('--concept_level', type=str, default='A')
+parser.add_argument('--ncores', type=int, help='Number of cores', default=1)
+parser.add_argument('--nthreads', type=int, help='Number of threads', default=1)
+parser.add_argument('--on_error', type=str, help='Behaivior in case of errors', default='abort')
+parser.add_argument('--output', type=str, help='Output', default='')
+# SPECIFIC TASK PARAMETERS
+parser.add_argument('--args', type=str, default='')
+parser.add_argument('--command', type=str, default=':')
+parser.add_argument('--concept_level', type=str, default='c')
+parser.add_argument('--concept_level_reduce', type=str, default='A')
 parser.add_argument('--container', type=str, default='-')
 parser.add_argument('--dim', type=str, default='-')
 parser.add_argument('--dim_size', type=str)
@@ -46,15 +51,12 @@ parser.add_argument('--operation', type=str, default='sub')
 parser.add_argument('--output_name', type=str, default='default')
 parser.add_argument('--output_path', type=str, default='default')
 parser.add_argument('--query', type=str, default='measure')
+parser.add_argument('--script', type=str, default=':')
 parser.add_argument('--space', type=str, default='no')
 parser.add_argument('--src_path', type=str)
 parser.add_argument('--subset_dims', type=str, default='none')
 parser.add_argument('--subset_filter', type=str, default='all')
 parser.add_argument('--subset_type', type=str, default='index')
-# SCRIPT-SPECIFIC
-parser.add_argument('--args', type=str, default='')
-parser.add_argument('--command', type=str, default=':')
-parser.add_argument('--script', type=str, default=':')
 args = parser.parse_args()
 
 print("Process task '" + args.name + "'", file=sys.stderr)
@@ -99,15 +101,26 @@ on_error = args.on_error if args.on_error else 'abort'
 # DESCRIPTION argument
 description = args.description if args.description else '-'
 
+# CUBE argument
+arg_cube = "cube"
+arg_cube2 = "cube2"
+if args.cube and len(args.cube) > 0:
+    arg_cube = ""
+if args.cube2 and len(args.cube2) > 0:
+    arg_cube2 = ""
+
 # OPERATORS
 if args.operator == 'oph_apply':
+    arguments={'query': args.query,
+              'measure_type': args.measure_type,
+              'ncores': str(args.ncores),
+              'nthreads': str(args.nthreads),
+              'description': description}
+    if args.cube and len(args.cube) > 0:
+        arguments["cube"] = args.cube
     e1.newTask(name=args.name, type="ophidia", operator=args.operator, on_error=on_error,
-               arguments={'query': args.query,
-                          'measure_type': args.measure_type,
-                          'ncores': str(args.ncores),
-                          'nthreads': str(args.nthreads),
-                          'description': description},
-               dependencies={t1: "cube"} if t1 else {})
+               arguments=arguments,
+               dependencies={t1: arg_cube} if t1 else {})
 elif args.operator == 'oph_createcontainer':
     e1.newTask(name=args.name, type="ophidia", operator=args.operator, on_error=on_error,
                arguments={'container': args.container,
@@ -117,12 +130,15 @@ elif args.operator == 'oph_createcontainer':
                           'description': description},
                dependencies={t1: ""} if t1 else {})
 elif args.operator == 'oph_delete':
+    arguments={'force': args.force,
+              'ncores': str(args.ncores),
+              'nthreads': str(args.nthreads),
+              'description': description}
+    if args.cube and len(args.cube) > 0:
+        arguments["cube"] = args.cube
     e1.newTask(name=args.name, type="ophidia", operator=args.operator, on_error=on_error,
-               arguments={'force': args.force,
-                          'ncores': str(args.ncores),
-                          'nthreads': str(args.nthreads),
-                          'description': description},
-               dependencies={t1: "cube"} if t1 else {})
+               arguments=arguments,
+               dependencies={t1: arg_cube} if t1 else {})
 elif args.operator == 'oph_deletecontainer':
     e1.newTask(name=args.name, type="ophidia", operator=args.operator, on_error=on_error,
                arguments={'container': args.container,
@@ -130,26 +146,32 @@ elif args.operator == 'oph_deletecontainer':
                           'description': description},
                dependencies={t1: ""} if t1 else {})
 elif args.operator == 'oph_exportnc':
+    arguments={'force': args.force,
+              'export_metadata': args.export_metadata,
+              'output': args.output,
+              'output_path': args.output_path,
+              'output_name': args.output_name,
+              'ncores': str(args.ncores),
+              'description': description}
+    if args.cube and len(args.cube) > 0:
+        arguments["cube"] = args.cube
     e1.newTask(name=args.name, type="ophidia", operator=args.operator, on_error=on_error,
-               arguments={'force': args.force,
-                          'export_metadata': args.export_metadata,
-                          'output': args.output,
-                          'output_path': args.output_path,
-                          'output_name': args.output_name,
-                          'ncores': str(args.ncores),
-                          'description': description},
-               dependencies={t1: "cube"} if t1 else {})
+               arguments=arguments,
+               dependencies={t1: arg_cube} if t1 else {})
 elif args.operator == 'oph_exportnc2':
+    arguments={'force': args.force,
+              'export_metadata': args.export_metadata,
+              'output': args.output,
+              'output_path': args.output_path,
+              'output_name': args.output_name,
+              'ncores': str(args.ncores),
+              'nthreads': str(args.nthreads),
+              'description': description}
+    if args.cube and len(args.cube) > 0:
+        arguments["cube"] = args.cube
     e1.newTask(name=args.name, type="ophidia", operator=args.operator, on_error=on_error,
-               arguments={'force': args.force,
-                          'export_metadata': args.export_metadata,
-                          'output': args.output,
-                          'output_path': args.output_path,
-                          'output_name': args.output_name,
-                          'ncores': str(args.ncores),
-                          'nthreads': str(args.nthreads),
-                          'description': description},
-               dependencies={t1: "cube"} if t1 else {})
+               arguments=arguments,
+               dependencies={t1: arg_cube} if t1 else {})
 elif args.operator == 'oph_importnc':
     if not args.measure or not args.src_path:
         parser.error("Import operator requires measure and input path parameters")
@@ -162,7 +184,7 @@ elif args.operator == 'oph_importnc':
                           'imp_dim': args.imp_dim, 
                           'imp_concept_level': args.imp_concept_level,
                           'hierarchy': args.hierarchy,
-                          'host_partition': str(args.host_partition),
+                          'host_partition': args.host_partition,
                           'ioserver': str(args.ioserver),
                           'ncores': str(args.ncores),
                           'description': description, 
@@ -180,7 +202,7 @@ elif args.operator == 'oph_importnc2':
                           'imp_dim': args.imp_dim, 
                           'imp_concept_level': args.imp_concept_level,
                           'hierarchy': args.hierarchy,
-                          'host_partition': str(args.host_partition),
+                          'host_partition': args.host_partition,
                           'ncores': str(args.ncores),
                           'nthreads': str(args.nthreads),
                           'description': description, 
@@ -193,11 +215,16 @@ elif args.operator == 'oph_intercube':
         if e1.getTask(task.name) is None:
             e1.addTask(task)
             print("Add task '" + task.name + "'", file=sys.stderr)
+    arguments={'operation': args.operation,
+              'ncores': str(args.ncores),
+              'description': description}
+    if args.cube and len(args.cube) > 0:
+        arguments["cube"] = args.cube
+    if args.cube2 and len(args.cube2) > 0:
+        arguments["cube2"] = args.cube2
     e1.newTask(name=args.name, type="ophidia", operator=args.operator, on_error=on_error,
-               arguments={'operation': args.operation,
-                          'ncores': str(args.ncores),
-                          'description': description},
-               dependencies={t1: "cube", t2: "cube2"} if t1 and t2 else {})
+               arguments=arguments,
+               dependencies={t1: arg_cube, t2: arg_cube2} if t1 and t2 else {})
 elif args.operator == 'oph_randcube':
     if not args.container:
         parser.error("Randcube operator requires container parameter")
@@ -206,11 +233,12 @@ elif args.operator == 'oph_randcube':
                           'measure_type': args.measure_type,
                           'exp_ndim': str(args.exp_ndim),
                           'dim': args.dim,
+                          'concept_level': args.concept_level,
                           'dim_size': args.dim_size,
                           'measure': args.measure,
                           'nfrag': str(args.nfrag),
                           'ntuple': str(args.ntuple),
-                          'host_partition': str(args.host_partition),
+                          'host_partition': args.host_partition,
                           'ioserver': str(args.ioserver),
                           'ncores': str(args.ncores),
                           'description': description},
@@ -223,34 +251,41 @@ elif args.operator == 'oph_randcube2':
                           'measure_type': args.measure_type,
                           'exp_ndim': str(args.exp_ndim),
                           'dim': args.dim,
+                          'concept_level': args.concept_level,
                           'dim_size': args.dim_size,
                           'measure': args.measure,
                           'nfrag': str(args.nfrag),
                           'ntuple': str(args.ntuple),
-                          'host_partition': str(args.host_partition),
+                          'host_partition': args.host_partition,
                           'ncores': str(args.ncores),
                           'nthreads': str(args.nthreads),
                           'description': description},
                 dependencies={t1: ""} if t1 else {})
 elif args.operator == 'oph_reduce':
+    arguments={'operation': args.operation,
+              'group_size': args.group_size,
+              'ncores': str(args.ncores),
+              'nthreads': str(args.nthreads),
+              'description': description}
+    if args.cube and len(args.cube) > 0:
+        arguments["cube"] = args.cube
     e1.newTask(name=args.name, type="ophidia", operator=args.operator, on_error=on_error,
-               arguments={'operation': args.operation,
-                          'group_size': args.group_size,
-                          'ncores': str(args.ncores),
-                          'nthreads': str(args.nthreads),
-                          'description': description},
-               dependencies={t1: "cube"} if t1 else {})
+               arguments=arguments,
+               dependencies={t1: arg_cube} if t1 else {})
 elif args.operator == 'oph_reduce2':
     if not args.operation:
         parser.error("Reduce2 operator requires operation parameters")
+    arguments={'operation': args.operation,
+              'dim': args.dim,
+              'concept_level': args.concept_level_reduce,
+              'ncores': str(args.ncores),
+              'nthreads': str(args.nthreads),
+              'description': description}
+    if args.cube and len(args.cube) > 0:
+        arguments["cube"] = args.cube
     e1.newTask(name=args.name, type="ophidia", operator=args.operator, on_error=on_error,
-               arguments={'operation': args.operation,
-                          'dim': args.dim,
-                          'concept_level': args.concept_level,
-                          'ncores': str(args.ncores),
-                          'nthreads': str(args.nthreads),
-                          'description': description},
-               dependencies={t1: "cube"} if t1 else {})
+               arguments=arguments,
+               dependencies={t1: arg_cube} if t1 else {})
 elif args.operator == 'oph_script':
     e1.newTask(name=args.name, type="ophidia", operator=args.operator, on_error=on_error,
                arguments={'command': args.script,
@@ -259,14 +294,17 @@ elif args.operator == 'oph_script':
                           'description': description},
                dependencies={t1: ""} if t1 else {})
 elif args.operator == 'oph_subset':
+    arguments={'subset_dims': args.subset_dims,
+              'subset_filter': args.subset_filter,
+              'subset_type': args.subset_type,
+              'ncores': str(args.ncores),
+              'nthreads': str(args.nthreads),
+              'description': description}
+    if args.cube and len(args.cube) > 0:
+        arguments["cube"] = args.cube
     e1.newTask(name=args.name, type="ophidia", operator=args.operator, on_error=on_error,
-               arguments={'subset_dims': args.subset_dims,
-                          'subset_filter': args.subset_filter,
-                          'subset_type': args.subset_type,
-                          'ncores': str(args.ncores),
-                          'nthreads': str(args.nthreads),
-                          'description': description},
-               dependencies={t1: "cube"} if t1 else {})
+               arguments=arguments,
+               dependencies={t1: arg_cube} if t1 else {})
 else:
     # TODO: this part should be completed in order to set up a task 'oph_generic' used to run possible non-Ophidia tasks
     if args.command != ':':

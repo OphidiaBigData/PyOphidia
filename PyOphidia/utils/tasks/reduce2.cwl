@@ -15,6 +15,11 @@ inputs:
     inputBinding:
       prefix: --name
       separate: true
+  cube:
+    type: string?
+    inputBinding:
+      prefix: --cube
+      separate: true
   operation:
     type: string
     inputBinding:
@@ -28,7 +33,7 @@ inputs:
   concept_level:
     type: string?
     inputBinding:
-      prefix: --concept_level
+      prefix: --concept_level_reduce
       separate: true
   ncores:
     type: int?
