@@ -25,7 +25,7 @@ steps:
       name:
         default: "Download file"
       command:
-        default: "curl -k -s -o target_file.nc"
+        default: "curl -k -s -o /usr/local/ophidia/target_file.nc"
       args: inputfile
       description:
         default: "Download file"
@@ -37,7 +37,7 @@ steps:
       name:
         default: "Import cube"
       src_path:
-        default: "target_file.nc"
+        default: "/usr/local/ophidia/target_file.nc"
       measure: inputmeasure
       imp_dim:
         default: "time"
@@ -99,6 +99,8 @@ steps:
       experiment: Subset/experiment
       name:
         default: "Export cube"
+      output_path:
+        default: "/usr/local/ophidia/"
       description: 
         default: "Export cube"
     out: [experiment]
