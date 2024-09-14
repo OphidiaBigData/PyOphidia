@@ -2,8 +2,8 @@
 
 cwlVersion: v1.0
 class: CommandLineTool
-label: oph_importnc2
-baseCommand: [cwl2oph.py, oph_importnc2]
+label: oph_importnc
+baseCommand: [cwl2oph.py, oph_importnc]
 inputs:
   experiment:
     type: File?
@@ -75,15 +75,15 @@ inputs:
     inputBinding:
       prefix: --host_partition
       separate: true
+  ioserver:
+    type: string?
+    inputBinding:
+      prefix: --ioserver
+      separate: true
   ncores:
     type: int?
     inputBinding:
       prefix: --ncores
-      separate: true
-  nthreads:
-    type: int?
-    inputBinding:
-      prefix: --nthreads
       separate: true
   description:
     type: string?

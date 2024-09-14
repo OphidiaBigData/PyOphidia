@@ -2,28 +2,43 @@
 
 cwlVersion: v1.0
 class: CommandLineTool
-label: oph_intercube
-baseCommand: [cwl2oph.py, oph_intercube]
+label: oph_exportnc2
+baseCommand: [cwl2oph.py, oph_exportnc2]
 inputs:
-  experiment1:
-    type: File
+  experiment:
+    type: File?
     inputBinding:
-      prefix: --experiment1
-      separate: true
-  experiment2:
-    type: File
-    inputBinding:
-      prefix: --experiment2
+      prefix: --experiment
       separate: true
   name:
     type: string
     inputBinding:
       prefix: --name
       separate: true
-  operation:
+  output:
     type: string?
     inputBinding:
-      prefix: --operation
+      prefix: --output
+      separate: true
+  output_path:
+    type: string?
+    inputBinding:
+      prefix: --output_path
+      separate: true
+  output_name:
+    type: string?
+    inputBinding:
+      prefix: --output_name
+      separate: true
+  force:
+    type: string?
+    inputBinding:
+      prefix: --force
+      separate: true
+  export_metadata:
+    type: string?
+    inputBinding:
+      prefix: --export_metadata
       separate: true
   ncores:
     type: int?
@@ -46,6 +61,6 @@ inputs:
       prefix: --dependencies
       separate: true
 outputs:
-  experiment:
+  experiment: 
     type: stdout
 

@@ -2,33 +2,28 @@
 
 cwlVersion: v1.0
 class: CommandLineTool
-label: oph_intercube
-baseCommand: [cwl2oph.py, oph_intercube]
+label: oph_deletecontainer
+baseCommand: [cwl2oph.py, oph_deletecontainer]
 inputs:
-  experiment1:
-    type: File
+  experiment:
+    type: File?
     inputBinding:
-      prefix: --experiment1
-      separate: true
-  experiment2:
-    type: File
-    inputBinding:
-      prefix: --experiment2
+      prefix: --experiment
       separate: true
   name:
     type: string
     inputBinding:
       prefix: --name
       separate: true
-  operation:
+  container:
+    type: string
+    inputBinding:
+      prefix: --container
+      separate: true
+  force:
     type: string?
     inputBinding:
-      prefix: --operation
-      separate: true
-  ncores:
-    type: int?
-    inputBinding:
-      prefix: --ncores
+      prefix: --force
       separate: true
   description:
     type: string?
@@ -46,6 +41,6 @@ inputs:
       prefix: --dependencies
       separate: true
 outputs:
-  experiment:
+  experiment: 
     type: stdout
 

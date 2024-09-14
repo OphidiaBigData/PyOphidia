@@ -7,5 +7,9 @@ lib/
 *.pyc
 *.pyo
 *.svg
+*.png
+*.json
 PKG-INFO
 *~
+.ipynb_checkpoints/
+

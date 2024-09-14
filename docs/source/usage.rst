@@ -616,7 +616,7 @@ It also is possibile to load a CWL-compliant workflow as an Experiment object as
 
 .. code-block:: python
 
-	e1 = Experiment.load_cwl("example.cwl")
+	e1 = Experiment.load_cwl("oph_wf.cwl", "--inputcontainer container")
 
 .. _documentation: https://ophidia.cmcc.it/documentation/users/terminal/term_advanced.html#oph-terminal-environment
 

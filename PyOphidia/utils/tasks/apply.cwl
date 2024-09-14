@@ -2,33 +2,38 @@
 
 cwlVersion: v1.0
 class: CommandLineTool
-label: oph_intercube
-baseCommand: [cwl2oph.py, oph_intercube]
+label: oph_apply
+baseCommand: [cwl2oph.py, oph_apply]
 inputs:
-  experiment1:
+  experiment:
     type: File
     inputBinding:
-      prefix: --experiment1
-      separate: true
-  experiment2:
-    type: File
-    inputBinding:
-      prefix: --experiment2
+      prefix: --experiment
       separate: true
   name:
     type: string
     inputBinding:
       prefix: --name
       separate: true
-  operation:
+  query:
     type: string?
     inputBinding:
-      prefix: --operation
+      prefix: --query
+      separate: true
+  measure_type:
+    type: string?
+    inputBinding:
+      prefix: --measure_type
       separate: true
   ncores:
     type: int?
     inputBinding:
       prefix: --ncores
+      separate: true
+  nthreads:
+    type: int?
+    inputBinding:
+      prefix: --nthreads
       separate: true
   description:
     type: string?

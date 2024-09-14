@@ -2,8 +2,8 @@
 
 cwlVersion: v1.0
 class: CommandLineTool
-label: oph_importnc2
-baseCommand: [cwl2oph.py, oph_importnc2]
+label: oph_randcube
+baseCommand: [cwl2oph.py, oph_randcube]
 inputs:
   experiment:
     type: File?
@@ -16,54 +16,43 @@ inputs:
       prefix: --name
       separate: true
   container:
-    type: string?
-    inputBinding:
-      prefix: --container
-      separate: true
-  src_path:
     type: string
     inputBinding:
-      prefix: --src_path
-      separate: true
+      prefix: --container
   measure:
     type: string
     inputBinding:
       prefix: --measure
       separate: true
-  import_metadata:
-    type: string?
+  measure_type:
+    type: string
     inputBinding:
-      prefix: --import_metadata
+      prefix: --measure_type
       separate: true
-  exp_dim:
-    type: string?
+  exp_ndim:
+    type: int
     inputBinding:
-      prefix: --exp_dim
+      prefix: --exp_ndim
       separate: true
-  exp_concept_level:
-    type: string?
+  dim:
+    type: string
     inputBinding:
-      prefix: --exp_concept_level
+      prefix: --dim
       separate: true
-  imp_dim:
-    type: string?
+  dim_size:
+    type: string
     inputBinding:
-      prefix: --imp_dim
-      separate: true
-  imp_concept_level:
-    type: string?
-    inputBinding:
-      prefix: --imp_concept_level
-      separate: true
-  hierarchy:
-    type: string?
-    inputBinding:
-      prefix: --hierarchy
+      prefix: --dim_size
       separate: true
   nfrag:
-    type: int?
+    type: int
     inputBinding:
       prefix: --nfrag
+      separate: true
+  ntuple:
+    type: int
+    inputBinding:
+      prefix: --ntuple
       separate: true
   nhost:
     type: int?
