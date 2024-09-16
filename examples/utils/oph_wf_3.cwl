@@ -23,7 +23,7 @@ steps:
       name:
         default: "Download file"
       command:
-        default: "curl -s -o target_file.nc"
+        default: "curl -k -s -o target_file.nc"
       args: inputfile
       description:
         default: "Download file"

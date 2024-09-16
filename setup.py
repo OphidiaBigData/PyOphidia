@@ -18,7 +18,7 @@
 
 import os
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def read(*paths):
@@ -58,9 +58,23 @@ setup(
         #'Private :: Do Not Upload',
     ],
     extras_require={
-        "convert": [
-        'numpy>=1.19',
-        'pandas>=1.2',
-        'xarray'
-    ]},
+        'convert': [
+            'numpy>=1.19',
+            'pandas>=1.2',
+            'xarray',
+            'cwltool'
+        ]
+    },
+    install_requires=[
+        'graphviz>=0.14',
+        'click',
+        'pydot>=1.4',
+        'prov>=1.5'
+    ],
+    entry_points  = {
+        'console_scripts': [
+            'wclient = pyophidia.utils.wclient:run',
+        ],
+    },
+    zip_safe=False
 )

@@ -2,11 +2,11 @@
 
 cwlVersion: v1.0
 class: CommandLineTool
-label: oph_reduce2
-baseCommand: [cwl2oph.py, oph_reduce2]
+label: oph_exportnc2
+baseCommand: [cwl2oph.py, oph_exportnc2]
 inputs:
   experiment:
-    type: File
+    type: File?
     inputBinding:
       prefix: --experiment
       separate: true
@@ -20,30 +20,35 @@ inputs:
     inputBinding:
       prefix: --cube
       separate: true
-  operation:
-    type: string
-    inputBinding:
-      prefix: --operation
-      separate: true
-  dim:
+  output:
     type: string?
     inputBinding:
-      prefix: --dim
+      prefix: --output
       separate: true
-  concept_level:
+  output_path:
     type: string?
     inputBinding:
-      prefix: --concept_level_reduce
+      prefix: --output_path
+      separate: true
+  output_name:
+    type: string?
+    inputBinding:
+      prefix: --output_name
+      separate: true
+  force:
+    type: string?
+    inputBinding:
+      prefix: --force
+      separate: true
+  export_metadata:
+    type: string?
+    inputBinding:
+      prefix: --export_metadata
       separate: true
   ncores:
     type: int?
     inputBinding:
       prefix: --ncores
-      separate: true
-  nthreads:
-    type: int?
-    inputBinding:
-      prefix: --nthreads
       separate: true
   description:
     type: string?
@@ -61,6 +66,6 @@ inputs:
       prefix: --dependencies
       separate: true
 outputs:
-  experiment:
+  experiment: 
     type: stdout
 

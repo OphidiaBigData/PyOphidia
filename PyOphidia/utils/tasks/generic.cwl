@@ -35,6 +35,21 @@ inputs:
     inputBinding:
       prefix: --space
       separate: true
+  output:
+    type: string?
+    inputBinding:
+      prefix: --output
+      separate: true
+  output_path:
+    type: string?
+    inputBinding:
+      prefix: --output_path
+      separate: true
+  output_name:
+    type: string?
+    inputBinding:
+      prefix: --output_name
+      separate: true
   description:
     type: string?
     inputBinding:

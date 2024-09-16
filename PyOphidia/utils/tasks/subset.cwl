@@ -2,8 +2,8 @@
 
 cwlVersion: v1.0
 class: CommandLineTool
-label: oph_reduce2
-baseCommand: [cwl2oph.py, oph_reduce2]
+label: oph_subset
+baseCommand: [cwl2oph.py, oph_subset]
 inputs:
   experiment:
     type: File
@@ -20,20 +20,20 @@ inputs:
     inputBinding:
       prefix: --cube
       separate: true
-  operation:
-    type: string
-    inputBinding:
-      prefix: --operation
-      separate: true
-  dim:
+  subset_dims:
     type: string?
     inputBinding:
-      prefix: --dim
+      prefix: --subset_dims
       separate: true
-  concept_level:
+  subset_filter:
     type: string?
     inputBinding:
-      prefix: --concept_level_reduce
+      prefix: --subset_filter
+      separate: true
+  subset_type:
+    type: string?
+    inputBinding:
+      prefix: --subset_type
       separate: true
   ncores:
     type: int?

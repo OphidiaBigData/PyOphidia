@@ -3,11 +3,11 @@
 # -- Project information
 
 project = 'PyOphidia'
-copyright = '2023, CMCC'
+copyright = '2024, CMCC'
 author = 'CMCC'
 
-release = '1.10'
-version = '1.10.1'
+release = '2.0'
+version = '2.0.0'
 
 # -- General configuration
 

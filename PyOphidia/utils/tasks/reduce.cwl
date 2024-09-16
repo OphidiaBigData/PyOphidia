@@ -15,10 +15,30 @@ inputs:
     inputBinding:
       prefix: --name
       separate: true
+  cube:
+    type: string?
+    inputBinding:
+      prefix: --cube
+      separate: true
   operation:
     type: string
     inputBinding:
       prefix: --operation
+      separate: true
+  group_size:
+    type: string?
+    inputBinding:
+      prefix: --group_size
+      separate: true
+  ncores:
+    type: int?
+    inputBinding:
+      prefix: --ncores
+      separate: true
+  nthreads:
+    type: int?
+    inputBinding:
+      prefix: --nthreads
       separate: true
   description:
     type: string?

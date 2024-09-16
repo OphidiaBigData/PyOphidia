@@ -2,11 +2,11 @@
 
 cwlVersion: v1.0
 class: CommandLineTool
-label: oph_reduce2
-baseCommand: [cwl2oph.py, oph_reduce2]
+label: oph_deletecontainer
+baseCommand: [cwl2oph.py, oph_deletecontainer]
 inputs:
   experiment:
-    type: File
+    type: File?
     inputBinding:
       prefix: --experiment
       separate: true
@@ -15,35 +15,15 @@ inputs:
     inputBinding:
       prefix: --name
       separate: true
-  cube:
-    type: string?
-    inputBinding:
-      prefix: --cube
-      separate: true
-  operation:
+  container:
     type: string
     inputBinding:
-      prefix: --operation
+      prefix: --container
       separate: true
-  dim:
+  force:
     type: string?
     inputBinding:
-      prefix: --dim
-      separate: true
-  concept_level:
-    type: string?
-    inputBinding:
-      prefix: --concept_level_reduce
-      separate: true
-  ncores:
-    type: int?
-    inputBinding:
-      prefix: --ncores
-      separate: true
-  nthreads:
-    type: int?
-    inputBinding:
-      prefix: --nthreads
+      prefix: --force
       separate: true
   description:
     type: string?
@@ -61,6 +41,6 @@ inputs:
       prefix: --dependencies
       separate: true
 outputs:
-  experiment:
+  experiment: 
     type: stdout
 

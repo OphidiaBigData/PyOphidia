@@ -2,11 +2,11 @@
 
 cwlVersion: v1.0
 class: CommandLineTool
-label: oph_reduce2
-baseCommand: [cwl2oph.py, oph_reduce2]
+label: oph_randcube
+baseCommand: [cwl2oph.py, oph_randcube]
 inputs:
   experiment:
-    type: File
+    type: File?
     inputBinding:
       prefix: --experiment
       separate: true
@@ -15,25 +15,59 @@ inputs:
     inputBinding:
       prefix: --name
       separate: true
-  cube:
-    type: string?
-    inputBinding:
-      prefix: --cube
-      separate: true
-  operation:
+  container:
     type: string
     inputBinding:
-      prefix: --operation
+      prefix: --container
+  measure:
+    type: string
+    inputBinding:
+      prefix: --measure
+      separate: true
+  measure_type:
+    type: string
+    inputBinding:
+      prefix: --measure_type
+      separate: true
+  exp_ndim:
+    type: int
+    inputBinding:
+      prefix: --exp_ndim
       separate: true
   dim:
-    type: string?
+    type: string
     inputBinding:
       prefix: --dim
       separate: true
   concept_level:
     type: string?
     inputBinding:
-      prefix: --concept_level_reduce
+      prefix: --concept_level
+      separate: true
+  dim_size:
+    type: string
+    inputBinding:
+      prefix: --dim_size
+      separate: true
+  nfrag:
+    type: int
+    inputBinding:
+      prefix: --nfrag
+      separate: true
+  ntuple:
+    type: int
+    inputBinding:
+      prefix: --ntuple
+      separate: true
+  nhost:
+    type: int?
+    inputBinding:
+      prefix: --nhost
+      separate: true
+  host_partition:
+    type: string?
+    inputBinding:
+      prefix: --host_partition
       separate: true
   ncores:
     type: int?

@@ -39,6 +39,11 @@ inputs:
     inputBinding:
       prefix: --dim
       separate: true
+  concept_level:
+    type: string?
+    inputBinding:
+      prefix: --concept_level
+      separate: true
   dim_size:
     type: string
     inputBinding:
@@ -58,6 +63,16 @@ inputs:
     type: int?
     inputBinding:
       prefix: --nhost
+      separate: true
+  host_partition:
+    type: string?
+    inputBinding:
+      prefix: --host_partition
+      separate: true
+  ioserver:
+    type: string?
+    inputBinding:
+      prefix: --ioserver
       separate: true
   ncores:
     type: int?
