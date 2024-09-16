@@ -24,6 +24,7 @@ import os
 import json
 import re
 from inspect import currentframe
+
 sys.path.append(os.path.dirname(__file__))
 
 try:
@@ -31,7 +32,6 @@ try:
 except ImportError:
     from .ophsubmit import submit as ophsubmit
 import shutil
-
 
 
 def get_linenumber():
@@ -757,13 +757,14 @@ class Client:
                 return " "
             else:
                 return match.group(1)
+
         # Remove python-like comments
         pattern = r"(\".*?(?<!#)\"|\'.*?(?<!#)\')|((?m)^ *#.*\n?|#[^\r\n]*$)"
-        regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
+        regex = re.compile(pattern, re.MULTILINE | re.DOTALL)
         checked_workflow = regex.sub(_replacer, workflow)
         # Remove C-like comments
         pattern = r"(\".*?(?<!\\)\"|\'.*?(?<!\\)\')|(/\*.*?\*/|//[^\r\n]*$)"
-        regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
+        regex = re.compile(pattern, re.MULTILINE | re.DOTALL)
         return regex.sub(_replacer, checked_workflow)
 
     def wsubmit(self, workflow, *params):

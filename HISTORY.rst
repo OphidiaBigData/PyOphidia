@@ -1,4 +1,22 @@
 
+v1.13.0 - 2024-09-23
+--------------------
+
+Added:
+~~~~~~
+
+- Some examples and notebooks
+- Provenance support  `#46 <https://github.com/OphidiaBigData/PyOphidia/pull/46>`_
+- CWL support  `#46 <https://github.com/OphidiaBigData/PyOphidia/pull/46>`_
+- Support for comments starting with '#'  `#44 <https://github.com/OphidiaBigData/PyOphidia/issues/44>`_
+
+Fixed:
+~~~~~~
+
+- Warning related to the argument of a call of re.findall
+- Workflow validation issues `#44 <https://github.com/OphidiaBigData/PyOphidia/issues/44>`_
+
+
 v1.12.0 - 2024-02-27
 --------------------
 
@@ -6,6 +24,7 @@ Added:
 ~~~~~~
 
 - Initial support for translation from CWL to Ophidia JSON workflows  `#43 <https://github.com/OphidiaBigData/PyOphidia/pull/43>`_
+
 
 v1.11.0 - 2023-08-01
 --------------------
@@ -21,6 +40,7 @@ Added:
 - Readthedocs documentation  `#42 <https://github.com/OphidiaBigData/PyOphidia/pull/42>`_
 - examples folder
 - 'local_mode' argument to client class
+
 
 v1.10.1 - 2023-02-23
 --------------------
