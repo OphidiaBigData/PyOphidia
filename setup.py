@@ -18,7 +18,7 @@
 
 import os
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 
 def read(*paths):

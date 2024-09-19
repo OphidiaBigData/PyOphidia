@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #
 #     PyOphidia - Python bindings for Ophidia
 #     Copyright (C) 2015-2024 CMCC Foundation
@@ -15,8 +16,6 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-#!/usr/bin/env python
 
 import click
 import sys
