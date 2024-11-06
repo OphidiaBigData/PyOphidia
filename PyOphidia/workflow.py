@@ -358,10 +358,17 @@ class Workflow:
             task_dict = _extract_info(status_response)
             if task_dict is None:
                 raise RuntimeError("Unable to extract information from JSON response")
+            task_list = []
             for task in tasks:
                 if task.name in task_dict:
                     task.extra = task_dict[task.name]
-            return tasks
+                task_list.append(task.name)
+            new_tasks = False
+            for task in task_dict:
+                if task not in task_list:
+                    new_tasks = True
+                    break
+            return tasks, new_tasks
 
         def _draw(
             tasks,
@@ -441,20 +448,20 @@ class Workflow:
         }
         if Workflow.client is None:
             raise AttributeError("Workflow.client is None")
+
         self.client.submit("oph_resume id={0};".format(self.workflow_id))
         status_response = json.loads(self.client.last_response)
-        self.client.submit(
-            "oph_resume document_type=request;level=3;id={0};".format(self.workflow_id)
-        )
+        workflow_status = _check_workflow_status(status_response)
+
+        self.client.submit("oph_resume document_type=request;level=3;id={0};".format(self.workflow_id))
         json_response = json.loads(self.client.last_response)
         tasks = _modify_task(json_response)
         self.runtime_task_graph = _sort_tasks(tasks)
-        workflow_status = _check_workflow_status(status_response)
 
         if iterative is True:
             while True:
                 try:
-                    self.runtime_task_graph = _add_runtimeinfo_task(status_response, self.runtime_task_graph)
+                    self.runtime_task_graph, new_tasks = _add_runtimeinfo_task(status_response, self.runtime_task_graph)
                 except Exception as e:
                     print(_get_linenumber(), "Unable to build status graph:", e)
                     print(workflow_status)
@@ -463,26 +470,32 @@ class Workflow:
                     _draw(self.runtime_task_graph, status_color_dictionary)
                 else:
                     print(workflow_status)
-                if not re.match("(?i).*RUNNING", workflow_status) and (
-                    not re.match("(?i).*PENDING", workflow_status)
-                ):
+                if not re.match("(?i).*RUNNING", workflow_status) and (not re.match("(?i).*PENDING", workflow_status)):
                     return workflow_status
+
+                if new_tasks is True:
+                    self.client.submit("oph_resume document_type=request;level=3;id={0};".format(self.workflow_id))
+                    json_response = json.loads(self.client.last_response)
+                    tasks = _modify_task(json_response)
+                    self.runtime_task_graph = _sort_tasks(tasks)
+
                 time.sleep(frequency)
+
                 self.client.submit("oph_resume id={0};".format(self.workflow_id))
                 status_response = json.loads(self.client.last_response)
                 workflow_status = _check_workflow_status(status_response)
         else:
             try:
-                self.runtime_task_graph = _add_runtimeinfo_task(status_response, self.runtime_task_graph)
+                self.runtime_task_graph, new_tasks = _add_runtimeinfo_task(status_response, self.runtime_task_graph)
             except Exception as e:
                 print(_get_linenumber(), "Unable to build status graph:", e)
                 return workflow_status
 
             if display is True:
                 _draw(self.runtime_task_graph, status_color_dictionary)
-                return workflow_status
             else:
-                return workflow_status
+                print(workflow_status)
+            return workflow_status
 
     def __param_check(self, params=[]):
         for param in params:
