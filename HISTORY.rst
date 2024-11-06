@@ -1,6 +1,6 @@
 
-v1.13.0 - 2024-09-23
---------------------
+v2.0.0 - 2024-11-06
+-------------------
 
 Added:
 ~~~~~~
@@ -15,6 +15,11 @@ Fixed:
 
 - Warning related to the argument of a call of re.findall
 - Workflow validation issues `#44 <https://github.com/OphidiaBigData/PyOphidia/issues/44>`_
+
+Changed:
+~~~~~~~~
+
+- Update JSON Request if new tasks are detected while monitoring a workflow
 
 
 v1.12.0 - 2024-02-27
