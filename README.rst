@@ -27,15 +27,15 @@ Dependencies
 
 Most of PyOphidia features are provided without the need for any additional Python library, anyway some fetures such as the conversion to other data structures (i.e., *Xarray*, *Pandas*), graphical support (e.g., associated with the class *Workflow*), the CLIs, provenance and CWL supports need of additional libraries:
 
--   `graphviz <https://graphviz.readthedocs.io/en/stable/>`: an interface to facilitates the creation and rendering of graph descriptions in the DOT language of Graphviz
--   `click <https://click.palletsprojects.com>`: a package for creating beautiful command line interfaces in a composable way
--   `pydot <https://github.com/pydot/pydot>`: an interface for Graphviz's DOT language
--   `prov <https://prov.readthedocs.io/en/latest/>`: a library for W3C Provenance Data Model supporting PROV-O (RDF), PROV-XML, PROV-JSON import/export
--   `xarray <https://docs.xarray.dev/en/stable/index.html>`: a library to handle multi-dimensional arrays in a simple and efficient way
--   `numpy <https://numpy.org/>`: a package for scientific computing
--   `pandas <https://pandas.pydata.org/>`: a data analysis and manipulation tool
--   `cwltool and cwlref-runner <https://cwltool.readthedocs.io/en/latest/>`: tools to provide validation and execution of CWL files
--   `ipython <https://ipython.org>`: architecture for interactive computing
+-   `graphviz <https://graphviz.readthedocs.io/en/stable/>`_: an interface to facilitates the creation and rendering of graph descriptions in the DOT language of Graphviz
+-   `click <https://click.palletsprojects.com>`_: a package for creating beautiful command line interfaces in a composable way
+-   `pydot <https://github.com/pydot/pydot>`_: an interface for Graphviz's DOT language
+-   `prov <https://prov.readthedocs.io/en/latest/>`_: a library for W3C Provenance Data Model supporting PROV-O (RDF), PROV-XML, PROV-JSON import/export
+-   `xarray <https://docs.xarray.dev/en/stable/index.html>`_: a library to handle multi-dimensional arrays in a simple and efficient way
+-   `numpy <https://numpy.org/>`_: a package for scientific computing
+-   `pandas <https://pandas.pydata.org/>`_: a data analysis and manipulation tool
+-   `cwltool and cwlref-runner <https://cwltool.readthedocs.io/en/latest/>`_: tools to provide validation and execution of CWL files
+-   `ipython <https://ipython.org>`_: architecture for interactive computing
 
 Installation
 ------------
