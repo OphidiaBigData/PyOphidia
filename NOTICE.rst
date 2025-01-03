@@ -52,9 +52,17 @@ https://numpy.org/doc/stable/license.html
 BSD 3-Clause License
 https://pandas.pydata.org/docs/getting_started/overview.html#license
 
-- CWLTool
+- CWLTool and cwlref-runner
 Apache License 2.0
 https://github.com/common-workflow-language/cwltool/blob/main/LICENSE.txt
+
+- IPython
+BSD 3-Clause License
+https://github.com/ipython/ipython/blob/main/LICENSE
+
+- Pytest
+The MIT License (MIT)
+https://docs.pytest.org/en/stable/license.html
 
 =====================================================================
 

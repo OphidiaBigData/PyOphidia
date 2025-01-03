@@ -25,16 +25,17 @@ https://pyophidia.readthedocs.io/en/latest/
 Dependencies
 ------------
 
-Most of PyOphidia features are provided without the need for any additional Python library, anyway some fetures such as the: conversion to other data structures (i.e., *Xarray*, *Pandas*), graphical support (e.g., associated with the class *Workflow*), the CLIs, provenance and CWL supports need of additional libraries:
+Most of PyOphidia features are provided without the need for any additional Python library, anyway some fetures such as the conversion to other data structures (i.e., *Xarray*, *Pandas*), graphical support (e.g., associated with the class *Workflow*), the CLIs, provenance and CWL supports need of additional libraries:
 
 -   [graphviz](https://graphviz.readthedocs.io/en/stable/): an interface to facilitates the creation and rendering of graph descriptions in the DOT language of Graphviz
 -   [click](https://click.palletsprojects.com): a package for creating beautiful command line interfaces in a composable way
--   [pydot](https://github.com/pydot/pydot): an interface for Graphviz's Dot
+-   [pydot](https://github.com/pydot/pydot): an interface for Graphviz's DOT language
 -   [prov](https://prov.readthedocs.io/en/latest/): a library for W3C Provenance Data Model supporting PROV-O (RDF), PROV-XML, PROV-JSON import/export
 -   [xarray](https://docs.xarray.dev/en/stable/index.html): a library to handle multi-dimensional arrays in a simple and efficient way
 -   [numpy](https://numpy.org/): a package for scientific computing
 -   [pandas](https://pandas.pydata.org/): a data analysis and manipulation tool
--   [cwltool](https://cwltool.readthedocs.io/en/latest/): a tool to provide validation and execution of CWL files
+-   [cwltool and cwlref-runner](https://cwltool.readthedocs.io/en/latest/): tools to provide validation and execution of CWL files
+-   [ipython](https://ipython.org): architecture for interactive computing
 
 Installation
 ------------
@@ -180,7 +181,7 @@ Import *cube* module from *PyOphidia* package:
 
 .. code-block:: python
 
-   from PyOphidia import cube
+   from PyOphidia import cube, client
 
 Set a Client for the Cube class
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -188,7 +189,7 @@ Instantiate a new Client common to all Cube instances:
 
 .. code-block:: python
 
-   cube.Cube.setclient(username = "oph-user", password = "oph-passwd", server = "127.0.0.1", port = "11732")
+   cube.Cube.setclient(client.Client(read_env = True))
 
 Cube attributes
 ^^^^^^^^^^^^^^^

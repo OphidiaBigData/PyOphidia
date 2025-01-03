@@ -60,15 +60,20 @@ setup(
             'numpy>=1.19',
             'pandas>=1.2',
             'xarray'
-        ],
-        'cwl': ['cwltool'],
+            ],
+        'cwl': [
+            'cwltool',
+            'cwlref-runner '
+            ],
         'prov': [
             'prov>=1.5',
             'pydot>=1.4'
-        ]
+            ],
+        'dev': ['pytest']
     },
     install_requires=[
         'graphviz>=0.14',
+        'ipython',
         'click'
     ],
     entry_points  = {
