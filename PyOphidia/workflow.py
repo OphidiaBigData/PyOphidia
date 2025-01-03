@@ -38,9 +38,15 @@ def _dependency_check(dependency):
             from prov.model import ProvDocument
             from prov.dot import prov_to_dot
         except ModuleNotFoundError:
-            raise RuntimeError("prov and pydot are not installed")
+            raise RuntimeError("prov and/or pydot are not installed")
+    elif dependency == "graphviz":
+        try:
+            import graphviz
+            from IPython.display import display, clear_output
+        except ModuleNotFoundError:
+            raise RuntimeError("graphviz and/or ipython are not installed")
     else:
-        raise AttributeError("Dependency must be prov")
+        raise AttributeError("Dependency must be prov or graphviz")
 
 class Workflow:
     """
@@ -229,7 +235,9 @@ class Workflow:
          w1.monitor(frequency=10, iterative=True, display=True)
         """
 
-        import graphviz
+        if display is True:
+            _dependency_check("graphviz")
+            import graphviz
 
         def _trim_text(text):
             return text[:7] + "..." if len(text) > 10 else text

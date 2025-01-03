@@ -63,17 +63,19 @@ setup(
             ],
         'cwl': [
             'cwltool',
-            'cwlref-runner '
+            'cwlref-runner'
             ],
         'prov': [
             'prov>=1.5',
             'pydot>=1.4'
             ],
+        'display': [
+            'graphviz>=0.14',
+            'ipython'
+        ],
         'dev': ['pytest']
     },
     install_requires=[
-        'graphviz>=0.14',
-        'ipython',
         'click'
     ],
     entry_points  = {

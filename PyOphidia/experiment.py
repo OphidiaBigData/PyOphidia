@@ -38,8 +38,14 @@ def _dependency_check(dependency):
             import cwltool, cwltool.factory
         except ModuleNotFoundError:
             raise RuntimeError("cwltool is not installed")
+    elif dependency == "graphviz":
+        try:
+            import graphviz
+            from IPython.display import display
+        except ModuleNotFoundError:
+            raise RuntimeError("graphviz and/or ipython are not installed")
     else:
-        raise AttributeError("Dependency must be cwltool")
+        raise AttributeError("Dependency must be cwltool or graphviz")
 
 class Experiment:
     """
@@ -634,7 +640,10 @@ class Experiment:
                          dependencies={})
         e1.check("myfile.dot")
         """
-        import graphviz
+
+        if display is True:
+            _dependency_check("graphviz")
+            import graphviz
 
         def _trim_text(text):
             return text[:7] + "..." if len(text) > 10 else text
@@ -682,6 +691,7 @@ class Experiment:
         )
         if display is False:
             return experiment_validity
+        
         diamond_commands = ["if", "endif", "else"]
         hexagonal_commands = ["for", "endfor"]
         dot = graphviz.Digraph(comment=self.name)
