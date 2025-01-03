@@ -10,7 +10,7 @@ If CWL support is installed the notebook `cwlWorkflowExample.ipynb`_ under the `
 
 More examples and links to other material can be found in the documentation: `https://pyophidia.readthedocs.io/en/latest/index.html`_.
 
-.. basicExample.ipynb: basicExample.ipynb
-.. workflowExample.ipynb: workflowExample.ipynb
-.. cwlWorkflowExample.ipynb: utils/cwlWorkflowExample.ipynb
-.. https://pyophidia.readthedocs.io/en/latest/index.html: https://pyophidia.readthedocs.io/en/latest/index.html
+.. _basicExample.ipynb: basicExample.ipynb
+.. _workflowExample.ipynb: workflowExample.ipynb
+.. _cwlWorkflowExample.ipynb: utils/cwlWorkflowExample.ipynb
+.. _https://pyophidia.readthedocs.io/en/latest/index.html: https://pyophidia.readthedocs.io/en/latest/index.html
