@@ -7,14 +7,15 @@ It aims at providing a user-friendly and programmatic interface for large-scale 
 
 PyOphidia provides features for handling scientific data in the form of datacubes, managing workflow execution, enabling parallel processing on HPC/Cloud systems and supporting integration with well-known modules from the Python scientific ecosystem.
 
-It runs on Python 2.7, 3.7, 3.8, 3.9, 3.10 and 3.11 and has some (optional) dependencies on Graphviz, Click, PyDot, Prov, Xarray, Numpy and Pandas. It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v2.0.0) is compatible with Ophidia v1.9.0.
+It runs on Python 3.8, 3.9, 3.10, 3.11 and 3.12 and has some optional dependencies (listed below). It requires a running Ophidia instance for client-server interactions. The latest PyOphidia version (v2.0.0) is compatible with Ophidia v1.9.0.
 
-It provides 4 main modules:
+It provides 3 main modules:
 
 - a *low level* class to submit any type of requests (simple tasks and workflows), using SSL and SOAP (*Client* Python class);
 - an *high level* cube-oriented class to interact directly with cubes, with several methods wrapping the operators (*Cube* Python class);
-- an API for creating and submitting workflows (*Workflow*, *Experiment* and *Task* Python classes);
-- a CLI for workflow submission called *wclient*.
+- an API for creating, submitting and monitoring workflows (*Workflow*, *Experiment* and *Task* Python classes);
+
+Moreover, some CLIs are provided to submit workflows both in Ophidia native Json format and in CWL (*wclient*).
 
 Documentation
 -------------
@@ -24,7 +25,7 @@ https://pyophidia.readthedocs.io/en/latest/
 Dependencies
 ------------
 
-Most of PyOphidia features are provided without installing any additional Python library, anyway the graphical support (e.g., associated with the class *Workflow*),the CLI, provenance and CWL supports need of additional libraries:
+Most of PyOphidia features are provided without the need for any additional Python library, anyway some fetures such as the: conversion to other data structures (i.e., *Xarray*, *Pandas*), graphical support (e.g., associated with the class *Workflow*), the CLIs, provenance and CWL supports need of additional libraries:
 
 -   [graphviz](https://graphviz.readthedocs.io/en/stable/): an interface to facilitates the creation and rendering of graph descriptions in the DOT language of Graphviz
 -   [click](https://click.palletsprojects.com): a package for creating beautiful command line interfaces in a composable way
@@ -279,6 +280,14 @@ To exports data in a python-friendly format:
 
    data = mycube3.export_array(show_time = 'yes')
 
+Export to Xarray dataset
+^^^^^^^^^^^^^^^^^^^^^^^^
+To exports data from Ophidia into an Xarray dataset structure:
+
+.. code-block:: python
+
+   dataset = myCube3.to_dataset()
+
 Run a Python script with Ophidia
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 To run a Python script through Ophidia load or define the Python function in the script where PyOphidia is used (works starting with Python 3+), e.g.:
@@ -316,7 +325,7 @@ Instance methods:
 Class methods:
 
 - *load(file) -> Experiment*: load an experiment from the JSON document
-- *load_cwd(file, args) -> Experiment*: load an experiment from the CWL document (see CWL support)
+- *load_cwl(file, args) -> Experiment*: load an experiment from the CWL document (see CWL support)
 - *validate(file) -> bool*: check the workflow experiment definition validity
 
 Import Experiment
@@ -388,7 +397,11 @@ The flow control constructs ("if", "elseif", "else" and "endif") can be used to 
 
 Error management of experiments 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Different behaviours can be specified for the experiment in case of an error during its execution via the 'on_error' argument. If set to "abort", an error in a task will cause the entire workflow to end; in case of "skip" only the failed task is skipped; with "continue" the failed task and all its dependencies are skipped; while with "repeat" the task execution will be repeated. 
+Different behaviours can be specified for the experiment in case of an error during its execution via the 'on_error' argument: 
+
+- if set to "abort", an error in a task will cause the entire workflow to end; 
+- in case of "skip" only the failed task is skipped; with "continue" the failed task and all its dependencies are skipped; 
+- while with "repeat" the task execution will be repeated. 
 
 .. code-block:: python
 
@@ -411,7 +424,7 @@ Validate the experiment document before the submission
 
 	e1.check()
 
-Alternatively
+Alternatively to return only *True* of *False*
 
 .. code-block:: python
 
