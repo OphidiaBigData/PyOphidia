@@ -25,14 +25,22 @@ import json
 import time
 import re
 from inspect import currentframe
-from prov.model import ProvDocument
-from prov.dot import prov_to_dot
 
 sys.path.append(os.path.dirname(__file__))
 
 def _get_linenumber():
     cf = currentframe()
     return __file__, cf.f_back.f_lineno
+
+def _dependency_check(dependency):
+    if dependency == "prov":
+        try:
+            from prov.model import ProvDocument
+            from prov.dot import prov_to_dot
+        except ModuleNotFoundError:
+            raise RuntimeError("prov and pydot are not installed")
+    else:
+        raise AttributeError("Dependency must be prov")
 
 class Workflow:
     """
@@ -562,6 +570,10 @@ class Workflow:
         -------
         w1.build_provenance("test")
         """
+
+        _dependency_check("prov")
+        from prov.model import ProvDocument
+        from prov.dot import prov_to_dot
 
         prov_doc = ProvDocument()
         prov_doc.add_namespace('ophidia', 'http://ophidia.cmcc.it/')

@@ -45,14 +45,12 @@ setup(
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Scientific/Engineering',
         #'Private :: Do Not Upload',
@@ -61,15 +59,17 @@ setup(
         'convert': [
             'numpy>=1.19',
             'pandas>=1.2',
-            'xarray',
-            'cwltool'
+            'xarray'
+        ],
+        'cwl': ['cwltool'],
+        'prov': [
+            'prov>=1.5',
+            'pydot>=1.4'
         ]
     },
     install_requires=[
         'graphviz>=0.14',
-        'click',
-        'pydot>=1.4',
-        'prov>=1.5'
+        'click'
     ],
     entry_points  = {
         'console_scripts': [
