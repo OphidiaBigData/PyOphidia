@@ -37,13 +37,13 @@ def _dependency_check(dependency):
         try:
             import cwltool, cwltool.factory
         except ModuleNotFoundError:
-            raise RuntimeError("cwltool is not installed")
+            raise ImportError("cwltool is not installed")
     elif dependency == "graphviz":
         try:
             import graphviz
             from IPython.display import display
         except ModuleNotFoundError:
-            raise RuntimeError("graphviz and/or ipython are not installed")
+            raise ImportError("graphviz and/or ipython are not installed")
     else:
         raise AttributeError("Dependency must be cwltool or graphviz")
 

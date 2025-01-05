@@ -38,17 +38,17 @@ def _dependency_check(dependency):
         try:
             import pandas
         except ModuleNotFoundError:
-            raise RuntimeError("pandas is not installed")
+            raise ImportError("pandas is not installed")
     elif dependency == "xarray":
         try:
             import xarray
         except ModuleNotFoundError:
-            raise RuntimeError("xarray is not installed")
+            raise ImportError("xarray is not installed")
     elif dependency == "numpy":
         try:
             import numpy
         except ModuleNotFoundError:
-            raise RuntimeError("numpy is not installed")
+            raise ImportError("numpy is not installed")
     else:
         raise AttributeError("Dependency must be xarray, numpy or pandas")
 
