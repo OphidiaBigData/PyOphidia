@@ -12,8 +12,8 @@ It runs on Python 3.8, 3.9, 3.10, 3.11 and 3.12 and has some optional dependenci
 It provides 3 main modules:
 
 - a *low level* class to submit any type of requests (simple tasks and workflows), using SSL and SOAP (*Client* Python class);
-- an *high level* cube-oriented class to interact directly with cubes, with several methods wrapping the operators (*Cube* Python class);
-- an API for creating, submitting and monitoring workflows (*Workflow*, *Experiment* and *Task* Python classes);
+- an *high level* cube-oriented class to interact directly with cubes, with several methods wrapping the data analytics operators (*Cube* Python class);
+- an API for creating, submitting and monitoring workflows (*Workflow*, *Experiment* and *Task* Python classes). In particular, *Experiment* objects are used to define workflows composed of *Task* objects. The *Workflow* module provides the capabilities for handling the execution of workflow experiments;
 
 Moreover, some CLIs are provided to submit workflows both in Ophidia native Json format and in CWL (*wclient*).
 
@@ -37,18 +37,49 @@ Most of PyOphidia features are provided without the need for any additional Pyth
 -   `cwltool and cwlref-runner <https://cwltool.readthedocs.io/en/latest/>`_: tools to provide validation and execution of CWL files
 -   `ipython <https://ipython.org>`_: architecture for interactive computing
 
+The installation section details which dependencies are needed to enable optional features and how to install them.
+
 Installation
 ------------
 
-To install *PyOphidia* package run the following command:
+Install from Pypi
+^^^^^^^^^^^^^^^^^
+To install the base *PyOphidia* package run the following command:
 
 .. code-block:: bash
 
    pip install pyophidia
 
-Install with conda
-------------------
+The base installation includes most of the PyOphidia capabilities with a few exceptions. The following features can be optionally enabled and the related dependencies can be automatically installed:
 
+- Conversion of the native Ophidia data structure into well-known structures (i.e., Pandas dataframe, Xarray dataset). *Numpy*, *Pandas* and *Xarray* libraries are installed
+
+.. code-block:: bash
+
+   pip install pyophidia[convert]
+
+- Visual representation of Ophidia workflows defined in the *Experiment* module and executed with the *Workflow* one. *Graphviz* and *IPython* libraries are installed
+
+.. code-block:: bash
+
+   pip install pyophidia[display]
+
+- Generation of provenance documents with the W3C PROV standard from *Workflow* module. *Prov* and *Pydot* libraries are installed
+
+.. code-block:: bash
+
+   pip install pyophidia[prov]
+
+- Support for Ophidia workflows in CWL. *CWL* and *cwlref-runner* are installed
+
+.. code-block:: bash
+
+   pip install pyophidia[cwl]
+
+Multiple features can be enabled together by specifying the different options, e.g., :code:`pip install pyophidia[convert,display,prov,cwl]`.
+
+Install with conda
+^^^^^^^^^^^^^^^^^^
 To install *PyOphidia* with conda run the following command:
 
 .. code-block:: bash
@@ -56,22 +87,27 @@ To install *PyOphidia* with conda run the following command:
    conda install -c conda-forge pyophidia
 
 Installation from sources
--------------------------
-
-To install the latest developement version run the following commands:
+^^^^^^^^^^^^^^^^^^^^^^^^^
+To install the latest developement version run the following command:
 
 .. code-block:: bash
 
-   git clone https://github.com/OphidiaBigData/PyOphidia
-   cd PyOphidia
-   python setup.py install
+   pip install git+https://github.com/OphidiaBigData/PyOphidia.git
 
+Optional features can be enabled similarly to what explained above wit the following command:
 
-Examples
---------
+.. code-block:: bash
+
+   pip install git+https://github.com/OphidiaBigData/PyOphidia.git#egg=pyophidia[convert,display,prov,cwl]
+
+Usage examples
+--------------
+
+Client module
+^^^^^^^^^^^^^
 
 Import Client
-^^^^^^^^^^^^^
+"""""""""""""
 Import *client* module from *PyOphidia* package:
 
 .. code-block:: python
@@ -79,7 +115,7 @@ Import *client* module from *PyOphidia* package:
    from PyOphidia import client
 
 Instantiate a client
-^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""
 Create a new *Client()* using the login parameters *username*, *password*, *host* and *port*.
 It will also try to resume the last session the user was connected to, as well as the last working directory and the last produced cube.
 
@@ -100,7 +136,7 @@ If *OPH_USER*, *OPH_PASSWD* (or *OPH_TOKEN*), *OPH_SERVER_HOST* and *OPH_SERVER_
    ophclient = client.Client(read_env = True)
 
 Client attributes
-^^^^^^^^^^^^^^^^^
+"""""""""""""""""
 - *username*: Ophidia username
 - *password*: Ophidia password
 - *server*: Ophidia server address
@@ -123,7 +159,7 @@ Client attributes
 - *project*: Project to be used for the resource manager (if required)
 
 Client methods
-^^^^^^^^^^^^^^
+""""""""""""""
 - *submit(query, display) -> self*: Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the Ophidia server according to all login parameters of the Client and its state.
 - *get_progress(id) -> dict* : Get progress of a workflow, either by specifying the id or from the last submitted one.
 - *deserialize_response() -> dict*: Return the last_response JSON string attribute as a Python dictionary.
@@ -139,7 +175,7 @@ Client methods
 *To display the command output set "display = True"*
 
 Submit a request
-^^^^^^^^^^^^^^^^
+""""""""""""""""
 Execute the request *oph_list level=2*:
 
 .. code-block:: python
@@ -147,7 +183,7 @@ Execute the request *oph_list level=2*:
    ophclient.submit("oph_list level=2", display = True)
 
 Submit a workflow
-^^^^^^^^^^^^^^^^^
+"""""""""""""""""
 Execute the workflow stored as string *json_string*:
 
 .. code-block:: python
@@ -161,7 +197,7 @@ Execute the workflow stored in file *example.json*:
    ophclient.wsubmit("example.json")
 
 Check a workflow
-^^^^^^^^^^^^^^^^
+""""""""""""""""
 Check the validity of the workflow stored as string *json_string*:
 
 .. code-block:: python
@@ -175,16 +211,19 @@ Check the validity of the workflow stored in *example.json*:
    with open("example.json", "r") as json_file:
        ophclient.wisvalid(json_file.read())
 
-Import Cube
+Cube module
 ^^^^^^^^^^^
+
+Import Cube
+"""""""""""
 Import *cube* module from *PyOphidia* package:
 
 .. code-block:: python
 
    from PyOphidia import cube, client
 
-Set a Client for the Cube class
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Set a Client for the Cube module
+""""""""""""""""""""""""""""""""
 Instantiate a new Client common to all Cube instances:
 
 .. code-block:: python
@@ -192,7 +231,7 @@ Instantiate a new Client common to all Cube instances:
    cube.Cube.setclient(client.Client(read_env = True))
 
 Cube attributes
-^^^^^^^^^^^^^^^
+"""""""""""""""
 Instance attributes:
 
 - *pid*: Cube PID
@@ -216,7 +255,7 @@ Class attributes:
 - *client*: instance of class Client through which it is possible to submit all requests
 
 Create a new container
-^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""
 Create a new container to contain our cubes called *test*, with 3 *double* dimensions (*lat*, *lon* and *time*):
 
 .. code-block:: python
@@ -224,7 +263,7 @@ Create a new container to contain our cubes called *test*, with 3 *double* dimen
    cube.Cube.createcontainer(container = 'test', dim = 'lat|lon|time',dim_type='double|double|double',hierarchy='oph_base|oph_base|oph_time')
 
 Import a new cube
-^^^^^^^^^^^^^^^^^
+"""""""""""""""""
 Import the variable *T2M* from the NetCDF file */path/to/file.nc* into a new cube inside the *test* container. Use *lat* and *lon* as explicit dimensions and *time* as implicit dimension expressed in days:
 
 .. code-block:: python
@@ -232,7 +271,7 @@ Import the variable *T2M* from the NetCDF file */path/to/file.nc* into a new cub
    mycube = cube.Cube(container = 'test', exp_dim = 'lat|lon',imp_dim='time',measure='T2M',src_path='/path/to/file.nc',exp_concept_level='c|c', imp_concept_level = 'd')
 
 Create a Cube object from an existing cube identifier
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""""""""""""""""""""""
 Instantiate a new Cube using the PID of an existing cube:
 
 .. code-block:: python
@@ -240,7 +279,7 @@ Instantiate a new Cube using the PID of an existing cube:
    mycube2 = cube.Cube(pid = 'http://127.0.0.1/1/2')
 
 Show a Cube structure and info
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""
 To shows metadata information about a data cube, its size and the dimensions related to it:
 
 .. code-block:: python
@@ -250,7 +289,7 @@ To shows metadata information about a data cube, its size and the dimensions rel
 *For the operators such as "cubeschema", "cubesize", "cubeelements", "explore", "hierarchy", "info", "list", "loggingbk", "operators", "search", "showgrid", "man", "metadata", "primitives", "provenance", "search", "showgrid", "tasks" and other operators that provide verbose output, the display parameter by default is "True". For the rest of operators, to display the result, "dispay = True" should be set.*
 
 Subset a Cube
-^^^^^^^^^^^^^
+"""""""""""""
 To perform a subsetting operation along dimensions of a data cube (dimension values are used as input filters):
 
 .. code-block:: python
@@ -258,7 +297,7 @@ To perform a subsetting operation along dimensions of a data cube (dimension val
    mycube3 = mycube2.subset(subset_dims = 'lat|lon',subset_filter='1:10|20:30', subset_type = 'coord')
 
 Explore Cube
-^^^^^^^^^^^^
+""""""""""""
 To explore a data cube filtering the data along its dimensions:
 
 .. code-block:: python
@@ -266,7 +305,7 @@ To explore a data cube filtering the data along its dimensions:
    mycube2.explore(subset_dims = 'lat|lon',subset_filter='1:10|20:30', subset_type = 'coord')
 
 Export to NetCDF file
-^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""
 To export data into a single NetCDF file:
 
 .. code-block:: python
@@ -274,7 +313,7 @@ To export data into a single NetCDF file:
    mycube3.exportnc2(output_path = '/home/user')
 
 Export to Python array
-^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""
 To exports data in a python-friendly format:
 
 .. code-block:: python
@@ -282,15 +321,15 @@ To exports data in a python-friendly format:
    data = mycube3.export_array(show_time = 'yes')
 
 Export to Xarray dataset
-^^^^^^^^^^^^^^^^^^^^^^^^
-To exports data from Ophidia into an Xarray dataset structure:
+""""""""""""""""""""""""
+To exports data from Ophidia into an Xarray dataset structure (this feature is available if the optional dependencies are installed):
 
 .. code-block:: python
 
    dataset = myCube3.to_dataset()
 
 Run a Python script with Ophidia
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""""
 To run a Python script through Ophidia load or define the Python function in the script where PyOphidia is used (works starting with Python 3+), e.g.:
 
 .. code-block:: python
@@ -301,8 +340,11 @@ To run a Python script through Ophidia load or define the Python function in the
 
 	cube.Cube.script(python_code = True, script = myScript, args = "/home/ophidia", display = True)
 
+Experiment module
+^^^^^^^^^^^^^^^^^
+
 Experiment attributes
-^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""
 - *exec_mode*: Execution mode, 'sync' for synchronous mode (default), 'async' for asynchronous mode
 - *on_error*: Error mode, behavior in case of error
 - *on_exit*: Exit mode, behaviour in case of completion
@@ -312,7 +354,7 @@ Experiment attributes
 - *host_partition*: Name of host partition being used
 
 Experiment methods
-^^^^^^^^^^^^^^^^^^
+""""""""""""""""""
 Instance methods:
 
 - *addTask(task)*: add a task to the workflow experiment.
@@ -330,7 +372,7 @@ Class methods:
 - *validate(file) -> bool*: check the workflow experiment definition validity
 
 Import Experiment
-^^^^^^^^^^^^^^^^^
+"""""""""""""""""
 Import *Experiment* module from *PyOphidia* package:
 
 .. code-block:: python
@@ -338,7 +380,7 @@ Import *Experiment* module from *PyOphidia* package:
    from PyOphidia import Experiment
 
 Create an experiment
-^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""
 Create a simple experiment consisting of a single task (an Ophidia operator):
 
 .. code-block:: python
@@ -349,7 +391,7 @@ Create a simple experiment consisting of a single task (an Ophidia operator):
 	                on_error = "skip", arguments = {"level": "2"})
 
 Task dependency management
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""
 Dependency can be specified to enforce an order in the execution of the tasks. Starting from the previous example, a dependent task is added (e.g., an Ophidia operator):
 
 .. code-block:: python
@@ -359,7 +401,7 @@ Dependency can be specified to enforce an order in the execution of the tasks. S
 	                dependencies = {t1: None}) 
 
 Dynamic replacement of argument values in tasks
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""""""""""""""""
 Arguments value can be dynamically replaced in an experiment upon submission time. Considering the previous example, the container argument value can be made dynamic:
 
 .. code-block:: python
@@ -369,7 +411,7 @@ Arguments value can be dynamically replaced in an experiment upon submission tim
 	                dependencies = {t1: None})
 
 Implement a loop in the experiment
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""""""
 A loop starts with the for operator and ends with endfor operator. The parallel argument allows the activation of the parallel execution mode. All the tasks with a dependency on the Start Loop task are performed within the loop:
 
 .. code-block:: python
@@ -383,7 +425,7 @@ A loop starts with the for operator and ends with endfor operator. The parallel 
 	                dependencies = {"t2": "cube"})
 
 Implement a selection block in the experiment
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""""""""""""""
 The flow control constructs ("if", "elseif", "else" and "endif") can be used to declare a selection statement:
 
 .. code-block:: python
@@ -397,7 +439,7 @@ The flow control constructs ("if", "elseif", "else" and "endif") can be used to 
 	              dependencies = {t2:''})
 
 Error management of experiments 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""
 Different behaviours can be specified for the experiment in case of an error during its execution via the 'on_error' argument: 
 
 - if set to "abort", an error in a task will cause the entire workflow to end; 
@@ -410,7 +452,7 @@ Different behaviours can be specified for the experiment in case of an error dur
 	                abstract = 'Sample workflow', on_error = "abort")
 
 Save an experiment
-^^^^^^^^^^^^^^^^^^
+""""""""""""""""""
 Save the experiment as JSON document *example.json*
 
 .. code-block:: python
@@ -418,7 +460,7 @@ Save the experiment as JSON document *example.json*
 	e1.save("example.json")
 
 Validate an experiment
-^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""
 Validate the experiment document before the submission
 
 .. code-block:: python
@@ -437,14 +479,17 @@ Validate the experiment document stored in *example.json*
 
 	Experiment.validate("example.json")
 
+Workflow module
+^^^^^^^^^^^^^^^
+
 Workflow attributes
-^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""
 - *client*: instance of class Client through which it is possible to submit all requests
 - *experiment_name*: name of the experiment associated with the workflow
 - *runtime_task_graph* : last response received from the server (JSON string)
 
 Workflow methods
-^^^^^^^^^^^^^^^^
+""""""""""""""""
 Instance methods:
 
 - *submit(args, checkpoint) -> int*: submit the workflow
@@ -457,7 +502,7 @@ Class methods:
 - *setclient(cls, client)*: associate an instance of Client to any instance of Workflow
 
 Import Workflow
-^^^^^^^^^^^^^^^
+"""""""""""""""
 Import *Workflow* module from *PyOphidia* package:
 
 .. code-block:: python
@@ -465,7 +510,7 @@ Import *Workflow* module from *PyOphidia* package:
    from PyOphidia import Workflow
 
 Submit an experiment for execution
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""""""
 Submit the experiment created for execution to Ophidia Server
 
 .. code-block:: python
@@ -474,23 +519,23 @@ Submit the experiment created for execution to Ophidia Server
 	w1.submit("2")
 
 Monitor a running workflow
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-Monitor a workflow running on the Ophidia platform. The *display* argument shows a graphical view of the experiment execution status
+""""""""""""""""""""""""""
+Monitor a workflow running on the Ophidia platform. The *display* argument shows a graphical view of the experiment execution status (if the optional dependencies are installed).
 
 .. code-block:: python
 
 	w1.monitor(display = True)
 
 Retrieve provenance information
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-Generate provenance information compliant with the W3C PROV family of standards. By default, a JSON file is produced, but a serialization support is also available for XML and RDF (through the *output_format* argument). The *display* argument produces a graphical representation of the workflow provenance.
+"""""""""""""""""""""""""""""""
+Generate provenance information compliant with the W3C PROV family of standards. By default, a JSON file is produced, but a serialization support is also available for XML and RDF (through the *output_format* argument). The *display* argument produces a graphical representation of the workflow provenance. Note that this feature requires some optional dependencies.
 
 .. code-block:: python
 
 	w1.build_provenance("prov_example", output_format="json", display=True)
 
 Cancel a workflow execution
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""
 Cancel the executuon of a workflow.
 
 .. code-block:: python
@@ -498,7 +543,7 @@ Cancel the executuon of a workflow.
 	w1.cancel()
 
 Load an experiment
-^^^^^^^^^^^^^^^^^^
+""""""""""""""""""
 Load an experiment from the JSON document
 
 .. code-block:: python
@@ -506,7 +551,7 @@ Load an experiment from the JSON document
 	e1 = Experiment.load("example.json")
 
 Additional information on the methods
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""""""
 Docstrings are available for the Workflow, Experiment and Task classes. To get additional information run:
 
 .. code-block:: python
@@ -516,8 +561,8 @@ Docstrings are available for the Workflow, Experiment and Task classes. To get a
 	help(Experiment)
 	help(Task)
 
-Run an experiment with the CLI
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Run a workflow experiment with the CLI
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 To configure the tool, append the reference to folder PyOphidia/utils to PATH, by running the following commands from the main folder of PyOphidia:
 
 .. code-block:: bash
