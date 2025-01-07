@@ -22,3 +22,6 @@ from .experiment import Experiment
 from .workflow import Workflow
 from .task import Task
 
+from importlib.metadata import version
+
+__version__ = version("PyOphidia")

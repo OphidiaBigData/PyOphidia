@@ -1,7 +1,68 @@
-[project]
-name = "pyophidia"
-authors = [{name = "CMCC", email = "ophidia-info@cmcc.it"}]
-dynamic = ["version", "description"]
-
 [build-system]
-requires = ["setuptools == 68.2.2"]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "PyOphidia"
+authors = [
+    {name = "Ophidia Developers - CMCC", email = "ophidia-info@cmcc.it"}
+]
+version = "2.0.0"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering",
+]
+description = "Python bindings for the Ophidia Data Analytics Platform"
+readme = "README.rst"
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+
+dependencies = [
+    "click"
+]
+
+[project.urls]
+homepage = "http://ophidia.cmcc.it"
+documentation = "https://pyophidia.readthedocs.io/en/latest/index.html"
+
+[project.optional-dependencies]
+convert = [
+    "numpy>=1.19",
+    "pandas>=1.2",
+    "xarray"
+]
+cwl = [
+    "cwltool",
+    "cwlref-runner"
+]
+prov = [
+    "prov>=1.5",
+    "pydot>=1.4"
+]
+display = [
+    "graphviz>=0.14",
+    "ipython"
+]
+dev = ["pytest"]
+
+[project.scripts]
+wclient = "pyophidia.utils.wclient:run"
+
+[tool.setuptools]
+packages = ["PyOphidia", "PyOphidia.utils"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"PyOphidia" = ["utils/tasks/*.cwl"]
