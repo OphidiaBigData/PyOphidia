@@ -24,4 +24,4 @@ from .task import Task
 
 from importlib.metadata import version
 
-__version__ = version("PyOphidia")
+__version__ = version("pyophidia")

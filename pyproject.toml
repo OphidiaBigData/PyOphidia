@@ -3,9 +3,9 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "PyOphidia"
+name = "pyophidia"
 authors = [
-    {name = "Ophidia Developers - CMCC", email = "ophidia-info@cmcc.it"}
+    {name = "Ophidia Developers", email = "ophidia-info@cmcc.it"}
 ]
 version = "2.0.0"
 classifiers = [
@@ -61,8 +61,8 @@ dev = ["pytest"]
 wclient = "pyophidia.utils.wclient:run"
 
 [tool.setuptools]
-packages = ["PyOphidia", "PyOphidia.utils"]
+packages = ["pyophidia", "pyophidia.utils"]
 include-package-data = true
 
 [tool.setuptools.package-data]
-"PyOphidia" = ["utils/tasks/*.cwl"]
+"pyophidia" = ["utils/tasks/*.cwl"]
