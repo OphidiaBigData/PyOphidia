@@ -28,13 +28,13 @@ from inspect import currentframe
 sys.path.append(os.path.dirname(__file__))
 
 try:
-    from ophsubmit import submit as ophsubmit
+    from ophsubmit import _submit as ophsubmit
 except ImportError:
-    from .ophsubmit import submit as ophsubmit
+    from .ophsubmit import _submit as ophsubmit
 import shutil
 
 
-def get_linenumber():
+def _get_linenumber():
     cf = currentframe()
     return __file__, cf.f_back.f_lineno
 
@@ -172,7 +172,7 @@ class Client:
                         self.resume_cwd()
                         self.resume_cube()
             except Exception as e:
-                print(get_linenumber(), "Something went wrong in resuming last session, cwd or cube:", e)
+                print(_get_linenumber(), "Something went wrong in resuming last session, cwd or cube:", e)
             else:
                 if self.api_mode:
                     if self.cdd:
@@ -320,7 +320,7 @@ class Client:
                     self.pretty_print(response_i, response)
 
         except Exception as e:
-            print(get_linenumber(), "Something went wrong in submitting the request:", e)
+            print(_get_linenumber(), "Something went wrong in submitting the request:", e)
             return None
         return self
 
@@ -364,7 +364,7 @@ class Client:
                         break
 
         except Exception as e:
-            print(get_linenumber(), "Something went wrong:", e)
+            print(_get_linenumber(), "Something went wrong:", e)
             return None
 
         return {"submission date": submission_date, "progress rate": progress_rate}
@@ -564,7 +564,7 @@ class Client:
                         print("\n}\n")
 
                 except Exception as e:
-                    print(get_linenumber(), "Error in parsing json response:", e)
+                    print(_get_linenumber(), "Error in parsing json response:", e)
 
             print("Execution time: " + str(self.last_exec_time) + " seconds")
 
@@ -602,7 +602,7 @@ class Client:
 
                     break
         except Exception as e:
-            print(get_linenumber(), "Something went wrong in retrieving base data path:", e)
+            print(_get_linenumber(), "Something went wrong in retrieving base data path:", e)
             return None
         return self
 
@@ -638,7 +638,7 @@ class Client:
 
                     break
         except Exception as e:
-            print(get_linenumber(), "Something went wrong in resuming last session:", e)
+            print(_get_linenumber(), "Something went wrong in resuming last session:", e)
             return None
         return self
 
@@ -674,7 +674,7 @@ class Client:
 
                     break
         except Exception as e:
-            print(get_linenumber(), "Something went wrong in resuming last cdd:", e)
+            print(_get_linenumber(), "Something went wrong in resuming last cdd:", e)
             return None
         return self
 
@@ -710,7 +710,7 @@ class Client:
 
                     break
         except Exception as e:
-            print(get_linenumber(), "Something went wrong in resuming last cwd:", e)
+            print(_get_linenumber(), "Something went wrong in resuming last cwd:", e)
             return None
         return self
 
@@ -746,7 +746,7 @@ class Client:
 
                     break
         except Exception as e:
-            print(get_linenumber(), "Something went wrong in resuming last cube:", e)
+            print(_get_linenumber(), "Something went wrong in resuming last cube:", e)
             return None
         return self
 
@@ -802,7 +802,7 @@ class Client:
                 request = json.loads(buffer)
 
             except Exception as e:
-                print(get_linenumber(), "Something went wrong in reading and/or parsing the file:", e)
+                print(_get_linenumber(), "Something went wrong in reading and/or parsing the file:", e)
                 return None
         else:
             try:
@@ -816,7 +816,7 @@ class Client:
                 request = json.loads(buffer)
 
             except Exception as e:
-                print(get_linenumber(), "Something went wrong in parsing the string:", e)
+                print(_get_linenumber(), "Something went wrong in parsing the string:", e)
                 return None
 
         if self.session and "sessionid" not in request:
@@ -904,7 +904,7 @@ class Client:
                 self.pretty_print(response_i, response)
 
         except Exception as e:
-            print(get_linenumber(), "Something went wrong in submitting the request:", e)
+            print(_get_linenumber(), "Something went wrong in submitting the request:", e)
             return None
         return self
 

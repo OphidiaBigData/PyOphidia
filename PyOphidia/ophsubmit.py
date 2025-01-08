@@ -28,55 +28,54 @@ else:
     import http.client as httplib
 
 
-def get_linenumber():
+def _get_linenumber():
     cf = currentframe()
     return __file__, cf.f_back.f_lineno
 
+def _submit(username, password, server, port, query):
+    #Constant definitions
+    SOAP_MESSAGE_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
+    <SOAP-ENV:Envelope
+    xmlns:ns0 = "urn:oph"
+    xmlns:ns1 = "http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+    <SOAP-ENV:Header/>
+    <ns1:Body>
+    <ns0:ophExecuteMain>
+    <ophExecuteMainRequest>%s</ophExecuteMainRequest>
+    </ns0:ophExecuteMain>
+    </ns1:Body>
+    </SOAP-ENV:Envelope>
+    """
 
-SOAP_MESSAGE_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
-<SOAP-ENV:Envelope
-xmlns:ns0 = "urn:oph"
-xmlns:ns1 = "http://schemas.xmlsoap.org/soap/envelope/"
-xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
-xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
-<SOAP-ENV:Header/>
-<ns1:Body>
-<ns0:ophExecuteMain>
-<ophExecuteMainRequest>%s</ophExecuteMainRequest>
-</ns0:ophExecuteMain>
-</ns1:Body>
-</SOAP-ENV:Envelope>
-"""
+    OPH_SERVER_OK = 0
+    OPH_SERVER_UNKNOWN = 1
+    OPH_SERVER_NULL_POINTER = 2
+    OPH_SERVER_ERROR = 3
+    OPH_SERVER_IO_ERROR = 4
+    OPH_SERVER_AUTH_ERROR = 5
+    OPH_SERVER_SYSTEM_ERROR = 6
+    OPH_SERVER_WRONG_PARAMETER_ERROR = 7
+    OPH_SERVER_NO_RESPONSE = 8
 
-OPH_SERVER_OK = 0
-OPH_SERVER_UNKNOWN = 1
-OPH_SERVER_NULL_POINTER = 2
-OPH_SERVER_ERROR = 3
-OPH_SERVER_IO_ERROR = 4
-OPH_SERVER_AUTH_ERROR = 5
-OPH_SERVER_SYSTEM_ERROR = 6
-OPH_SERVER_WRONG_PARAMETER_ERROR = 7
-OPH_SERVER_NO_RESPONSE = 8
+    OPH_WORKFLOW_DELIMITER = "?"
 
-OPH_WORKFLOW_DELIMITER = "?"
+    WRAPPING_WORKFLOW1 = '{\n  "name":"NAME",\n  "author":"AUTHOR",\n  "abstract":"Workflow generated automatically to wrap a command",\n  "command":"COMMAND",'
+    WRAPPING_WORKFLOW2 = '\n  "sessionid":"'
+    WRAPPING_WORKFLOW2_1 = '",'
+    WRAPPING_WORKFLOW3 = '\n  "exec_mode":"'
+    WRAPPING_WORKFLOW3_1 = '",'
+    WRAPPING_WORKFLOW4 = '\n  "callback_url":"'
+    WRAPPING_WORKFLOW4_1 = '",'
+    WRAPPING_WORKFLOW5 = '\n  "project":"'
+    WRAPPING_WORKFLOW5_1 = '",'
+    WRAPPING_WORKFLOW6 = '\n  "tasks": [\n    {\n      "name":"Task 0",\n      "operator":"'
+    WRAPPING_WORKFLOW6_1 = '",\n      "arguments": ['
+    WRAPPING_WORKFLOW7 = '"%s"'
+    WRAPPING_WORKFLOW8 = ',"%s"'
+    WRAPPING_WORKFLOW9 = "]\n    }\n  ]\n}"
 
-WRAPPING_WORKFLOW1 = '{\n  "name":"NAME",\n  "author":"AUTHOR",\n  "abstract":"Workflow generated automatically to wrap a command",\n  "command":"COMMAND",'
-WRAPPING_WORKFLOW2 = '\n  "sessionid":"'
-WRAPPING_WORKFLOW2_1 = '",'
-WRAPPING_WORKFLOW3 = '\n  "exec_mode":"'
-WRAPPING_WORKFLOW3_1 = '",'
-WRAPPING_WORKFLOW4 = '\n  "callback_url":"'
-WRAPPING_WORKFLOW4_1 = '",'
-WRAPPING_WORKFLOW5 = '\n  "project":"'
-WRAPPING_WORKFLOW5_1 = '",'
-WRAPPING_WORKFLOW6 = '\n  "tasks": [\n    {\n      "name":"Task 0",\n      "operator":"'
-WRAPPING_WORKFLOW6_1 = '",\n      "arguments": ['
-WRAPPING_WORKFLOW7 = '"%s"'
-WRAPPING_WORKFLOW8 = ',"%s"'
-WRAPPING_WORKFLOW9 = "]\n    }\n  ]\n}"
-
-
-def submit(username, password, server, port, query):
     try:
         if sys.version_info < (2, 7, 9):
             client = httplib.HTTPS(str(server) + ":" + str(port))
@@ -90,7 +89,7 @@ def submit(username, password, server, port, query):
         client.putheader("User-Agent", "Ophidia Python client")
         client.putheader("Content-type", 'text/xml; charset="UTF-8"')
     except Exception as e:
-        print(get_linenumber(), "Something went wrong in connection setup:", e)
+        print(_get_linenumber(), "Something went wrong in connection setup:", e)
         return (None, None, None, 1, e)
     request = str(query)
     if not request.lstrip(" \n\t").startswith("{"):
@@ -190,7 +189,7 @@ def submit(username, password, server, port, query):
             reply = _res.read()
 
         if statuscode != 200:
-            print(get_linenumber(), "Something went wrong in submitting the request:", statuscode, statusmessage)
+            print(_get_linenumber(), "Something went wrong in submitting the request:", statuscode, statusmessage)
             return (None, None, None, 1, statusmessage)
 
         xmltree = ET.fromstring(reply)
@@ -203,7 +202,7 @@ def submit(username, password, server, port, query):
         if len(response.findall("response")) > 0 and response.findall("response")[0].text is not None:
             res_response = response.findall("response")[0].text
     except Exception as e:
-        print(get_linenumber(), "Something went wrong in submitting the request:", e)
+        print(_get_linenumber(), "Something went wrong in submitting the request:", e)
         return (None, None, None, 1, e)
     if res_error is None:
         return (None, None, None, 1, "Invalid response")
