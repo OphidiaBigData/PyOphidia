@@ -61,7 +61,7 @@ dev = ["pytest"]
 wclient = "pyophidia.utils.wclient:run"
 
 [tool.setuptools]
-packages = ["pyophidia", "pyophidia.utils"]
+packages = ["pyophidia", "pyophidia.utils", "pyophidia.utils.tasks"]
 include-package-data = true
 
 [tool.setuptools.package-data]
