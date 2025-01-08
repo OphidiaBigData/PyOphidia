@@ -112,7 +112,7 @@ Import *client* module from *PyOphidia* package:
 
 .. code-block:: python
 
-   from PyOphidia import client
+   from pyophidia import Client
 
 Instantiate a client
 """"""""""""""""""""
@@ -121,19 +121,19 @@ It will also try to resume the last session the user was connected to, as well a
 
 .. code-block:: python
 
-   ophclient = client.Client(username = "oph-user", password = "oph-passwd", server = "127.0.0.1", port = "11732")
+   ophclient = Client(username = "oph-user", password = "oph-passwd", server = "127.0.0.1", port = "11732")
 
 In case of authentication token is used:
 
 .. code-block:: python
 
-   ophclient = client.Client(token = "token",server = "127.0.0.1",port = "11732")
+   ophclient = Client(token = "token",server = "127.0.0.1",port = "11732")
 
 If *OPH_USER*, *OPH_PASSWD* (or *OPH_TOKEN*), *OPH_SERVER_HOST* and *OPH_SERVER_PORT* variables have been set in the environment (see the documentation_ for more details), a client can be also created reading directly the values from the environment without the need to specify any parameter.
 
 .. code-block:: python
 
-   ophclient = client.Client(read_env = True)
+   ophclient = Client(read_env = True)
 
 Client attributes
 """""""""""""""""
@@ -220,7 +220,7 @@ Import *cube* module from *PyOphidia* package:
 
 .. code-block:: python
 
-   from PyOphidia import cube, client
+   from pyophidia import Cube, Client
 
 Set a Client for the Cube module
 """"""""""""""""""""""""""""""""
@@ -228,7 +228,7 @@ Instantiate a new Client common to all Cube instances:
 
 .. code-block:: python
 
-   cube.Cube.setclient(client.Client(read_env = True))
+   Cube.setclient(Client(read_env = True))
 
 Cube attributes
 """""""""""""""
@@ -260,7 +260,7 @@ Create a new container to contain our cubes called *test*, with 3 *double* dimen
 
 .. code-block:: python
 
-   cube.Cube.createcontainer(container = 'test', dim = 'lat|lon|time',dim_type='double|double|double',hierarchy='oph_base|oph_base|oph_time')
+   Cube.createcontainer(container = 'test', dim = 'lat|lon|time',dim_type='double|double|double',hierarchy='oph_base|oph_base|oph_time')
 
 Import a new cube
 """""""""""""""""
@@ -268,7 +268,7 @@ Import the variable *T2M* from the NetCDF file */path/to/file.nc* into a new cub
 
 .. code-block:: python
 
-   mycube = cube.Cube(container = 'test', exp_dim = 'lat|lon',imp_dim='time',measure='T2M',src_path='/path/to/file.nc',exp_concept_level='c|c', imp_concept_level = 'd')
+   mycube = Cube(container = 'test', exp_dim = 'lat|lon',imp_dim='time',measure='T2M',src_path='/path/to/file.nc',exp_concept_level='c|c', imp_concept_level = 'd')
 
 Create a Cube object from an existing cube identifier
 """""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -276,7 +276,7 @@ Instantiate a new Cube using the PID of an existing cube:
 
 .. code-block:: python
 
-   mycube2 = cube.Cube(pid = 'http://127.0.0.1/1/2')
+   mycube2 = Cube(pid = 'http://127.0.0.1/1/2')
 
 Show a Cube structure and info
 """"""""""""""""""""""""""""""
@@ -338,7 +338,7 @@ To run a Python script through Ophidia load or define the Python function in the
 	    import subprocess
 	    return subprocess.call('ls -la ' + arg1, shell = True)
 
-	cube.Cube.script(python_code = True, script = myScript, args = "/home/ophidia", display = True)
+	Cube.script(python_code = True, script = myScript, args = "/home/ophidia", display = True)
 
 Experiment module
 ^^^^^^^^^^^^^^^^^
@@ -377,7 +377,7 @@ Import *Experiment* module from *PyOphidia* package:
 
 .. code-block:: python
 
-   from PyOphidia import Experiment
+   from pyophidia import Experiment
 
 Create an experiment
 """"""""""""""""""""
@@ -507,7 +507,7 @@ Import *Workflow* module from *PyOphidia* package:
 
 .. code-block:: python
 
-   from PyOphidia import Workflow
+   from pyophidia import Workflow
 
 Submit an experiment for execution
 """"""""""""""""""""""""""""""""""
@@ -552,14 +552,12 @@ Load an experiment from the JSON document
 
 Additional information on the methods
 """""""""""""""""""""""""""""""""""""
-Docstrings are available for the Workflow, Experiment and Task classes. To get additional information run:
+Docstrings are available for the Client, Cuve, Workflow, Experiment and Task classes. To get additional information run for example:
 
 .. code-block:: python
 
-	from PyOphidia import Workflow, Experiment, Task
-	help(Workflow)
-	help(Experiment)
-	help(Task)
+	from pyophidia import Client
+	help(Client)
 
 Run a workflow experiment with the CLI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -594,7 +592,7 @@ The following code shows a full experiment composed of CDO tasks, the commands t
 
 .. code-block:: python
 
-	from PyOphidia import Workflow, Experiment, Task
+	from pyophidia import Workflow, Experiment, Task
 	 
 	e1 = Experiment(name = "CDO-based experiment example",
 	                author = "ESiWACE2",
@@ -630,7 +628,7 @@ The following code shows an experiment with a *parallel for* operator and a numb
 
 .. code-block:: python
 
-	from PyOphidia import Workflow, Experiment
+	from pyophidia import Workflow, Experiment
 
 	e2 = Experiment(name = "Example of parallel branches",
 	                author = "CMCC",
