@@ -24,7 +24,7 @@ import os
 previous_dir = os.path.dirname(os.getcwd())
 sys.path.insert(0, os.path.dirname(previous_dir))
 sys.path.insert(0, "..")
-from pyophidia import Workflow, Experiment
+from pyophidia import Workflow, Experiment, Client
 
 
 def verbose_check_display(verbose, text):
@@ -44,20 +44,6 @@ def print_help():
     )
 )
 @click.option("-v", "--verbose", is_flag=True, help="Will print verbose messages")
-@click.option(
-    "-S",
-    "--server",
-    help="Ophidia Server address (used in case of remote submission)",
-    default="127.0.0.1",
-    metavar="<IP address>",
-)
-@click.option(
-    "-P",
-    "--port",
-    help="Ophidia Server port (used in case of remote submission)",
-    default="11732",
-    metavar="<port number>",
-)
 @click.option(
     "-m",
     "--monitor",
@@ -99,18 +85,14 @@ def print_help():
     metavar="<checkpoint name>",
 )
 @click.argument("workflow_args", nargs=-1, type=click.UNPROCESSED)
-def run(verbose, server, port, monitor, sync_mode, cancel, workflow, workflow_args, id, checkpoint):
+def run(verbose, monitor, sync_mode, cancel, workflow, workflow_args, id, checkpoint):
     """Command Line Interface to run an experiment\n
     Example: wclient -w experiment.json 1 2"""
 
-    def modify_args(workflow, server, port):
+    def modify_args(workflow):
         if workflow.startswith("="):
             workflow = workflow[1:]
-        if server.startswith("="):
-            server = server[1:]
-        if port.startswith("="):
-            port = port[1:]
-        return workflow, server, port
+        return workflow
 
     def extract_other_args(wf_args):
         args = []
@@ -122,7 +104,16 @@ def run(verbose, server, port, monitor, sync_mode, cancel, workflow, workflow_ar
         return args
 
     if workflow:
-        workflow, server, port = modify_args(workflow, server, port)
+        try:
+            ophclient = Client(read_env = True)
+        except:
+            verbose_check_display(
+                verbose,
+                "Unable to connect to Ophidia server",
+            )
+            return 1
+        Workflow.setclient(ophclient)
+        workflow = modify_args(workflow)
         args = extract_other_args(workflow_args)
         verbose_check_display(verbose, "Reading the experiment document")
         e1 = Experiment.load(workflow)
@@ -133,7 +124,7 @@ def run(verbose, server, port, monitor, sync_mode, cancel, workflow, workflow_ar
                 verbose,
                 "Submitting the experiment workflow in synchronous mode",
             )
-            w1.submit(server=server, port=port, *args)
+            w1.submit(*args)
             verbose_check_display(
                 True,
                 "Submitted! Workflow id = {0}".format((str(w1.workflow_id))),
@@ -145,7 +136,7 @@ def run(verbose, server, port, monitor, sync_mode, cancel, workflow, workflow_ar
                 verbose,
                 "Submitting the experiment workflow in asynchronous mode",
             )
-            w1.submit(server=server, port=port, *args)
+            w1.submit(*args)
             verbose_check_display(
                 True,
                 "Submitted! Workflow id = {0}".format((str(w1.workflow_id))),
@@ -199,7 +190,7 @@ def run(verbose, server, port, monitor, sync_mode, cancel, workflow, workflow_ar
                 verbose,
                 "Submitting the experiment workflow in synchronous mode",
             )
-            w1.submit(server=server, port=port, *args, checkpoint=checkpoint)
+            w1.submit(*args, checkpoint=checkpoint)
             verbose_check_display(
                 True,
                 "Submitted! Workflow id = {0}".format((str(w1.workflow_id))),
@@ -211,7 +202,7 @@ def run(verbose, server, port, monitor, sync_mode, cancel, workflow, workflow_ar
                 verbose,
                 "Submitting the experiment workflow in asynchronous mode",
             )
-            w1.submit(server=server, port=port, *args, checkpoint=checkpoint)
+            w1.submit(*args, checkpoint=checkpoint)
             verbose_check_display(
                 True,
                 "Submitted! Workflow id = {0}".format((str(w1.workflow_id))),

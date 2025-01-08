@@ -19,7 +19,7 @@
 
 import os, argparse
 import cwltool, cwltool.factory
-from PyOphidia import Workflow, Experiment, client
+from pyophidia import Workflow, Experiment, Client
 
 parser = argparse.ArgumentParser()
 parser.add_argument('name', type = str, help = 'Workflow file name')
@@ -54,7 +54,7 @@ if not e1.check():
 os.remove(json_request)
 os.rmdir(json_request.rsplit('/', 1)[0])
 
-ophclient = client.Client(read_env = True)
+ophclient = Client(read_env = True)
 Workflow.setclient(ophclient)
 
 w1 = Workflow(e1)
