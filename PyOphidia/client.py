@@ -24,6 +24,7 @@ import os
 import json
 import re
 import base64
+import shutil
 import xml.etree.ElementTree as ET
 from inspect import currentframe
 
