@@ -18,9 +18,9 @@
 
 from .client import Client
 from .cube import Cube
-from .experiment import Experiment
+from .workflow import Experiment
 from .workflow import Workflow
-from .task import Task
+from .workflow import Task
 
 from importlib.metadata import version
 
