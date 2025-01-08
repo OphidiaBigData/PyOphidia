@@ -603,7 +603,7 @@ Provided that CWL support is corrected installed (see the installation), the fol
 .. code-block:: console
 
 	$ cd examples/utils
-	$ run.py oph_wf.cwl --args "--inputcontainer container"
+	$ wclient -w oph_wf.cwl -t cwl "--inputcontainer container"
 
 The following example shows how the same CWL-compliant workflow can simply be translated into an Ophidia-compliant workflow, without submitting it. The output JSON file is saved into the folder "examples/utils".
 

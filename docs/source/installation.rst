@@ -56,12 +56,5 @@ Before using the tool run the following commands:
    $ pip install cwltool
    $ pip install cwlref-runner
 
-To configure the tool, append the reference to folder PyOphidia/utils to PATH, by running the following commands from the main folder of PyOphidia:
-
-.. code-block:: console
-
-   $ cd PyOphidia/utils
-   $ export PATH=$PATH:$PWD
-
 .. _specification: http://www.commonwl.org/specification
 
