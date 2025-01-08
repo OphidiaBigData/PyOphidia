@@ -11,9 +11,9 @@ It runs on Python 3.8, 3.9, 3.10, 3.11 and 3.12 and has some optional dependenci
 
 It provides 3 main modules:
 
-- a *low level* class to submit any type of requests (simple tasks and workflows), using SSL and SOAP (*Client* Python class);
-- an *high level* cube-oriented class to interact directly with cubes, with several methods wrapping the data analytics operators (*Cube* Python class);
-- an API for creating, submitting and monitoring workflows (*Workflow*, *Experiment* and *Task* Python classes). In particular, *Experiment* objects are used to define workflows composed of *Task* objects. The *Workflow* module provides the capabilities for handling the execution of workflow experiments;
+- `client.py`: a *low level* class to submit any type of requests (simple tasks and workflows), using SSL and SOAP (*Client* Python class);
+- `cube.py`: an *high level* cube-oriented class to interact directly with cubes, with several methods wrapping the data analytics operators (*Cube* Python class);
+- `workflow.py`: an API for creating, submitting and monitoring workflows (*Workflow*, *Experiment* and *Task* Python classes). In particular, *Experiment* objects are used to define workflows composed of *Task* objects. The *Workflow* module provides the capabilities for handling the execution of workflow experiments;
 
 Moreover, some CLIs are provided to submit workflows both in Ophidia native Json format and in CWL (*wclient*).
 
@@ -70,7 +70,7 @@ The base installation includes most of the PyOphidia capabilities with a few exc
 
    pip install pyophidia[prov]
 
-- Support for Ophidia workflows in CWL. *CWL* and *cwlref-runner* are installed
+- Support for Ophidia workflows in CWL standard. *CWL* and *cwlref-runner* are installed
 
 .. code-block:: bash
 
@@ -85,6 +85,7 @@ To install *PyOphidia* with conda run the following command:
 .. code-block:: bash
 
    conda install -c conda-forge pyophidia
+
 
 Installation from sources
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -368,7 +369,7 @@ Instance methods:
 Class methods:
 
 - *load(file) -> Experiment*: load an experiment from the JSON document
-- *load_cwl(file, args) -> Experiment*: load an experiment from the CWL document (see CWL support)
+- *load_cwl(file, args) -> Experiment*: load an experiment from the CWL document (if CWL support is enabled)
 - *validate(file) -> bool*: check the workflow experiment definition validity
 
 Import Experiment
@@ -479,6 +480,28 @@ Validate the experiment document stored in *example.json*
 
 	Experiment.validate("example.json")
 
+Load a workflow experiment
+""""""""""""""""""""""""""
+
+A workflow experiment can be loaded from its definition in json format.
+
+.. code-block:: python
+
+	Experiment.load("example.json")
+
+
+Load a workflow experiment in CWL format
+""""""""""""""""""""""""""""""""""""""""
+
+An Ophidia-based workflow can also be loaded from its definition in CWL. The module uses a tool for translating the workflow description written using CWL specification_ into Ophidia workflow specification. To use such feature the related dependencies must be installed (see installation section).
+
+The following example shows how a CWL-compliant workflow "oph_wf.cwl" can be loaded as an Experiment; the list will se passed to CWT tool to set the workflow parameters. Internally, the workflow is translated into an Ophidia-compliant workflow.
+
+.. code-block:: python
+
+	e1 = Experiment.load_cwl("oph_wf.cwl", "--inputcontainer container")
+
+
 Workflow module
 ^^^^^^^^^^^^^^^
 
@@ -559,173 +582,6 @@ Docstrings are available for the Client, Cuve, Workflow, Experiment and Task cla
 	from pyophidia import Client
 	help(Client)
 
-Run a workflow experiment with the CLI
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To configure the tool, append the reference to folder PyOphidia/utils to PATH, by running the following commands from the main folder of PyOphidia:
-
-.. code-block:: bash
-
-	cd PyOphidia/utils
-	export PATH=$PATH:$PWD
-
-To submit the execution of an experiment document to Ophidia Server:
-
-.. code-block:: bash
-
-	$ wclient -w example.json 2
-
-To submit an experiment and monitor its execution to Ophidia Server:
-
-.. code-block:: bash
-
-	$ wclient -w example.json 2 -m
-
-To cancel a running workflow:
-
-.. code-block:: bash
-
-	$ wclient -c -i <workflow_id>
-
-A full experiment example
-^^^^^^^^^^^^^^^^^^^^^^^^^
-The following code shows a full experiment composed of CDO tasks, the commands to save the related JSON file and for its submission
-
-.. code-block:: python
-
-	from pyophidia import Workflow, Experiment, Task
-	 
-	e1 = Experiment(name = "CDO-based experiment example",
-	                author = "ESiWACE2",
-	                abstract = "Sample experiment with CDO")
-	t1 = e1.newTask(name ="Regrid",
-	                type = "cdo",
-	                operator = '-remapbil,r90x45',
-	                arguments = {'input': '/path/to/infile.nc', 
-	                             'output': '/path/to/outfile.nc'})
-	t2 = e1.newTask(name = "Max",
-	                type = "cdo",
-	                operator = '-timmax',
-	                arguments = {'output': '/path/to/outfile_max.nc'},
-	                dependencies = {t1:'input'})
-	t3 = e1.newTask(name = "Min",
-	                type = "cdo",
-	                operator = '-timmin',
-	                arguments = {'output': '/path/to/outfile_min.nc'},
-	                dependencies = {t1:'input'})
-	t4 = e1.newTask(name = "Avg",
-	                type = "cdo",
-	                operator = '-timavg',
-	                arguments = {'output': '/path/to/outfile_avg.nc'},
-	                dependencies = {t1:'input'})
-
-	e1.save("example.json")
-	e1.check()
-
-	w1 = Workflow(e1)
-	w1.submit()
-
-The following code shows an experiment with a *parallel for* operator and a number of Ophidia operators. The workflow is submitted asynchronously and monitored at a rate of 1 check/second until completion.
-
-.. code-block:: python
-
-	from pyophidia import Workflow, Experiment
-
-	e2 = Experiment(name = "Example of parallel branches",
-	                author = "CMCC",
-	                abstract = "Parallel execution example",
-	                exec_mode = "async")
-	t1 = e2.newTask(name = "Start loop",
-	                type = "control",
-	                operator = 'for',
-	                arguments = {"key": "index", "values": "$1", "parallel": "yes"})
-	t2 = e2.newTask(name = "Regrid",
-	                type = "cdo",
-	                operator = '-remapbil,r90x45',
-	                arguments = {'input': 'tasmax_input_@{index}.nc', 'output': 'tasmax_regridded_@{index}.nc', 'force': 'yes'},
-	                dependencies = {t1:''})
-	t3 = e2.newTask(name = "Import",
-	                type = "ophidia",
-	                operator = 'oph_importnc2',
-	                arguments = {'measure': 'tasmax', 'imp_dim': 'time'},
-	                dependencies = {t2:'input'})
-	t4 = e2.newTask(name = "Reduce",
-	                type = "ophidia",
-	                operator = 'oph_reduce', 
-	                arguments = {'operation': 'avg'},
-	                dependencies = {t3:'cube'})
-	t5 = e2.newTask(name = "End loop",
-	                type = "control",
-	                operator = 'endfor',
-	                arguments = {},
-	                dependencies = {t4:'cube'})
-	t6 = e2.newTask(name = "Merge",
-	                type = "ophidia",
-	                operator = 'oph_mergecubes2', 
-	                arguments = {"dim": "new_dim"}, 
-	                dependencies = {t5:'cubes'})
-	t7 = e2.newTask(name = "Export",
-	                type = "ophidia",
-	                operator = 'oph_exportnc', 
-	                arguments = {'output': 'tasmax_output.nc'},
-	                dependencies = {t6:'cube'})	 
-
-	e2.save("example2.json")
-	e2.check()
-
-	w2 = Workflow(e2)
-	w2.submit("2000|2001|2002|2003|2004|2005")
-	w2.monitor(frequency = 1, iterative = True, display = True)
-	w2.build_provenance("prov_example2", output_format="json", display=True)
-
-Additional examples can be found under the `examples` folder.
-
-CWL support
------------
-
-This tool translates a workflow description written using CWL specification_ into Ophidia workflow specification.
-
-Requirements
-^^^^^^^^^^^^
-
-Before using the tool run the following commands:
-
-.. code-block:: bash
-
-	pip install cwltool
-	pip install cwlref-runner
-
-Install from source
-^^^^^^^^^^^^^^^^^^^
-
-To configure the tool, append the reference to folder PyOphidia/utils to PATH, by running the following commands from the main folder of PyOphidia:
-
-.. code-block:: bash
-
-	cd PyOphidia/utils
-	export PATH=$PATH:$PWD
-
-Usage
-^^^^^
-
-The following example shows how a CWL-compliant workflow "oph_wf.cwl" can be submitted to Ophidia platform; the list "args" will se passed to CWT tool to set the workflow parameters. Internally, the workflow is translated into an Ophidia-compliant workflow.
-
-.. code-block:: bash
-
-	cd examples/utils
-	run.py oph_wf.cwl --args "--inputcontainer container"
-
-The following example shows how the same CWL-compliant workflow can simply be translated into an Ophidia-compliant workflow, without submitting it. The output JSON file is saved into the folder "examples/utils".
-
-.. code-block:: bash
-
-	cd examples/utils
-	./oph_wf.cwl --inputcontainer container
-
-It also is possibile to load a CWL-compliant workflow as an Experiment object as follows.
-
-.. code-block:: python
-
-	e1 = Experiment.load_cwl("oph_wf.cwl", "--inputcontainer container")
 
 .. _GPLv3: http://www.gnu.org/licenses/gpl-3.0.txt
 .. _Ophidia: http://ophidia.cmcc.it
