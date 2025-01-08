@@ -3,7 +3,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 label: oph_reduce
-baseCommand: [cwl2oph.py, oph_reduce]
+baseCommand: [cwl2oph, oph_reduce]
 inputs:
   experiment:
     type: File

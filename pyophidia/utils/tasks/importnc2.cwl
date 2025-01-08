@@ -3,7 +3,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 label: oph_importnc2
-baseCommand: [cwl2oph.py, oph_importnc2]
+baseCommand: [cwl2oph, oph_importnc2]
 inputs:
   experiment:
     type: File?

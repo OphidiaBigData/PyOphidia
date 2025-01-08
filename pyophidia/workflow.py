@@ -586,11 +586,6 @@ class Experiment:
                 raise AttributeError("experiment doesn't have a key")
 
         def start_experiment(data):
-            try:
-                from task import Task
-            except ImportError:
-                from .task import Task
-
             experiment = Experiment(name=data["name"])
             del data["name"]
             attrs = {k: data[k] for k in data if k != "name" and k != "tasks"}
@@ -835,6 +830,7 @@ class Experiment:
             display(dot)
         else:
             dot.render(filename, view=True)
+        return experiment_validity
 
 
 class Workflow:

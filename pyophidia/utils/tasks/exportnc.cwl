@@ -3,7 +3,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 label: oph_exportnc
-baseCommand: [cwl2oph.py, oph_exportnc]
+baseCommand: [cwl2oph, oph_exportnc]
 inputs:
   experiment:
     type: File?

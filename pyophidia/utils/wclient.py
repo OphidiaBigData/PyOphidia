@@ -17,9 +17,8 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import sys, os
 import click
-import sys
-import os
 
 previous_dir = os.path.dirname(os.getcwd())
 sys.path.insert(0, os.path.dirname(previous_dir))
@@ -62,7 +61,12 @@ def print_help():
     help="Cancel the experiment execution. It only works in asynchronous mode",
     is_flag=True,
 )
-# @click.argument("workflow", type=click.UNPROCESSED)
+@click.option(
+    "-d",
+    "--display",
+    help="Display output in graphics mode",
+    is_flag=True,
+)
 @click.option(
     "-i",
     "--id",
@@ -73,9 +77,9 @@ def print_help():
 @click.option(
     "-w",
     "--workflow",
-    help="Run the experiment workflow from the provided document (JSON file)",
+    help="Run the experiment workflow from the provided document",
     type=str,
-    metavar="<JSON document>",
+    metavar="<workflow document>",
 )
 @click.option(
     "-p",
@@ -84,8 +88,15 @@ def print_help():
     type=str,
     metavar="<checkpoint name>",
 )
+@click.option(
+    "-t",
+    "--type",
+    help="The type of the document describing the experiment workflow: json (default) or cwl",
+    type=str,
+    metavar="<document type>",
+)
 @click.argument("workflow_args", nargs=-1, type=click.UNPROCESSED)
-def run(verbose, monitor, sync_mode, cancel, workflow, workflow_args, id, checkpoint):
+def run(verbose, monitor, sync_mode, cancel, workflow, workflow_args, id, checkpoint, type, display):
     """Command Line Interface to run an experiment\n
     Example: wclient -w experiment.json 1 2"""
 
@@ -108,15 +119,53 @@ def run(verbose, monitor, sync_mode, cancel, workflow, workflow_args, id, checkp
             ophclient = Client(read_env = True)
         except:
             verbose_check_display(
-                verbose,
+                True,
                 "Unable to connect to Ophidia server",
             )
             return 1
         Workflow.setclient(ophclient)
+
         workflow = modify_args(workflow)
-        args = extract_other_args(workflow_args)
+        workflow_type = modify_args(type) if type is not None else None
+        if workflow_type == "cwl":
+            try:
+                import cwltool, cwltool.factory
+
+                cwl_args = {}
+                param = None
+                if len(workflow_args) > 0:
+                    for i in workflow_args[0].split():
+                        if param is None:
+                            param = i
+                        else:
+                            cwl_args[param[2:]] = int(i) if i.isdigit() else i;
+                            param = None
+
+                fac = cwltool.factory.Factory()
+                fac.runtime_context.rm_tmpdir = False
+                cwl_tool = fac.make("./" + workflow)
+                result = cwl_tool(**cwl_args)
+                workflow = result["outputexperiment"]["location"][7:]
+                args = []
+            except:
+                verbose_check_display(
+                    True,
+                    "Unable to run cwltool",
+                )
+                return 1
+        else:
+            args = extract_other_args(workflow_args)
+
         verbose_check_display(verbose, "Reading the experiment document")
+
         e1 = Experiment.load(workflow)
+        if not e1.check(display = display):
+            raise Exception("Experiment is not valid")
+
+        if workflow_type == "cwl":
+            os.remove(workflow)
+            os.rmdir(workflow.rsplit('/', 1)[0])
+
         w1 = Workflow(e1)
         if not sync_mode:
             e1.exec_mode = "sync"
@@ -130,7 +179,7 @@ def run(verbose, monitor, sync_mode, cancel, workflow, workflow_args, id, checkp
                 "Submitted! Workflow id = {0}".format((str(w1.workflow_id))),
             )
             if monitor:
-                w1.monitor(frequency=5, iterative=True, visual_mode=True)
+                w1.monitor(frequency = 5, iterative = True, display = display)
         else:
             verbose_check_display(
                 verbose,
@@ -141,13 +190,13 @@ def run(verbose, monitor, sync_mode, cancel, workflow, workflow_args, id, checkp
                 True,
                 "Submitted! Workflow id = {0}".format((str(w1.workflow_id))),
             )
-            w1.monitor(frequency=5, iterative=True, visual_mode=True)
+            w1.monitor(frequency = 5, iterative = True, display = display)
         return 0
     elif cancel:
         if not id:
             verbose = True
             verbose_check_display(
-                verbose,
+                True,
                 "Id of the experiment workflow to be cancelled is required",
             )
             return 1
@@ -163,7 +212,7 @@ def run(verbose, monitor, sync_mode, cancel, workflow, workflow_args, id, checkp
         if not id:
             verbose = True
             verbose_check_display(
-                verbose,
+                True,
                 "Id of the experiment workflow to be monitored is required",
             )
             return 1
@@ -173,13 +222,13 @@ def run(verbose, monitor, sync_mode, cancel, workflow, workflow_args, id, checkp
                 "Will monitor the experiment workflow execution: {0}".format(str(id)),
             )
             w1 = Workflow(id)
-            w1.monitor(frequency=5, iterative=True, visual_mode=True)
+            w1.monitor(frequency = 5, iterative = True, display = display)
             return 0
     elif checkpoint:
         if not id:
             verbose = True
             verbose_check_display(
-                verbose,
+                True,
                 "Id of the experiment workflow to be restarted from checkpoint is required",
             )
             return 1
@@ -190,13 +239,13 @@ def run(verbose, monitor, sync_mode, cancel, workflow, workflow_args, id, checkp
                 verbose,
                 "Submitting the experiment workflow in synchronous mode",
             )
-            w1.submit(*args, checkpoint=checkpoint)
+            w1.submit(*args, checkpoint = checkpoint)
             verbose_check_display(
                 True,
                 "Submitted! Workflow id = {0}".format((str(w1.workflow_id))),
             )
             if monitor:
-                w1.monitor(frequency=5, iterative=True, visual_mode=True)
+                w1.monitor(frequency = 5, iterative = True, display = display)
         else:
             verbose_check_display(
                 verbose,
@@ -207,7 +256,7 @@ def run(verbose, monitor, sync_mode, cancel, workflow, workflow_args, id, checkp
                 True,
                 "Submitted! Workflow id = {0}".format((str(w1.workflow_id))),
             )
-            w1.monitor(frequency=5, iterative=True, visual_mode=True)
+            w1.monitor(frequency = 5, iterative = True, display = display)
         return 0
     else:
         print_help()

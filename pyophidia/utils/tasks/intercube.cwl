@@ -3,7 +3,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 label: oph_intercube
-baseCommand: [cwl2oph.py, oph_intercube]
+baseCommand: [cwl2oph, oph_intercube]
 inputs:
   experiment1:
     type: File

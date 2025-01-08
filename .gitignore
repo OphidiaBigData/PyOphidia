@@ -9,6 +9,8 @@ lib/
 *.svg
 *.png
 *.json
+*.dot
+*.dot.pdf
 PKG-INFO
 *~
 .ipynb_checkpoints/

@@ -3,7 +3,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 label: oph_deletecontainer
-baseCommand: [cwl2oph.py, oph_deletecontainer]
+baseCommand: [cwl2oph, oph_deletecontainer]
 inputs:
   experiment:
     type: File?

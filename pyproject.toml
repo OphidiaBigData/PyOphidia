@@ -59,6 +59,7 @@ dev = ["pytest"]
 
 [project.scripts]
 wclient = "pyophidia.utils.wclient:run"
+cwl2oph = "pyophidia.utils.cwl2oph:run"
 
 [tool.setuptools]
 packages = ["pyophidia", "pyophidia.utils", "pyophidia.utils.tasks"]

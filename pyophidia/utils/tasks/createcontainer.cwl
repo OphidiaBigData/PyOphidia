@@ -3,7 +3,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 label: oph_createcontainer
-baseCommand: [cwl2oph.py, oph_createcontainer]
+baseCommand: [cwl2oph, oph_createcontainer]
 inputs:
   experiment:
     type: File?

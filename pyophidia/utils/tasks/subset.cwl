@@ -3,7 +3,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 label: oph_subset
-baseCommand: [cwl2oph.py, oph_subset]
+baseCommand: [cwl2oph, oph_subset]
 inputs:
   experiment:
     type: File

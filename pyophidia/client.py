@@ -24,7 +24,6 @@ import os
 import json
 import re
 import base64
-import shutil
 import xml.etree.ElementTree as ET
 from inspect import currentframe
 
@@ -630,6 +629,8 @@ class Client:
             terminal_size = namedtuple("terminal_size", ["columns", "lines"])
             sz = terminal_size(120, 10000)
         else:
+            import shutil
+
             sz = shutil.get_terminal_size(fallback=(120, 10000))
 
         VERTICAL_CHAR = "|"

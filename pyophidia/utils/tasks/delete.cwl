@@ -3,7 +3,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 label: oph_delete
-baseCommand: [cwl2oph.py, oph_delete]
+baseCommand: [cwl2oph, oph_delete]
 inputs:
   experiment:
     type: File?

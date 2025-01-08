@@ -3,7 +3,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 label: oph_generic
-baseCommand: [cwl2oph.py, oph_generic]
+baseCommand: [cwl2oph, oph_generic]
 inputs:
   experiment:
     type: File?

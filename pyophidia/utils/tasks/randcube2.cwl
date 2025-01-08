@@ -3,7 +3,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 label: oph_randcube
-baseCommand: [cwl2oph.py, oph_randcube]
+baseCommand: [cwl2oph, oph_randcube]
 inputs:
   experiment:
     type: File?
