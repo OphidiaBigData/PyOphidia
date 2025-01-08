@@ -344,7 +344,7 @@ class Cube:
     ):
         """setclient(client) -> None : Instantiate the Client, common for all Cube objects, for submitting requests
         :param client: PyOhidia client object
-        :type client: <class 'PyOphidia.client.Client'>
+        :type client: <class 'pyophidia.client.Client'>
         :returns: None
         :rtype: None
         """
@@ -6679,7 +6679,7 @@ if __name__ == '__main__':
             int: a function that uses the response from
                 the oph_explorecube and adds coordinates to the dataarray object
             :param cube: the cube object
-            :type cube:  <class 'PyOphidia.cube.Cube'>
+            :type cube:  <class 'pyophidia.cube.Cube'>
             :param ds: the xarray dataset object
             :type ds:  <class 'xarray.core.dataset.Dataset'>
             :param response: response from pyophidia query
@@ -6727,7 +6727,7 @@ if __name__ == '__main__':
             function that uses the response from
                 the oph_explorecube and adds the measure to the dataarray object
             :param cube: the cube object
-            :type cube:  <class 'PyOphidia.cube.Cube'>
+            :type cube:  <class 'pyophidia.cube.Cube'>
             :param ds: the xarray dataset object
             :type ds:  <class 'xarray.core.dataset.Dataset'>
             :param response: response from pyophidia query
@@ -6859,7 +6859,7 @@ if __name__ == '__main__':
             xarray.core.dataset.Dataset: a function that initiates the
                 xarray.dataset object with the meta information
             :param cube: the cube object
-            :type cube:  <class 'PyOphidia.cube.Cube'>
+            :type cube:  <class 'pyophidia.cube.Cube'>
             :param meta_info: meta information dict
             :type meta_info:  <class 'list'>
             :returns: xarray.core.dataset.Dataset|None
@@ -7030,7 +7030,7 @@ if __name__ == '__main__':
                 from the oph_explorecube and converts dimensions to pandas
                 multiIndex format
             :param cube: the cube object
-            :type cube:  <class 'PyOphidia.cube.Cube'>
+            :type cube:  <class 'pyophidia.cube.Cube'>
             :param response: response from pyophidia query
             :type response:  <class 'dict'>
             :returns: pandas.core.indexes.multi.MultiIndex|None
@@ -7071,7 +7071,7 @@ if __name__ == '__main__':
             pandas.core.frame.DataFrame: a function that uses the response from
                 the oph_explorecube and creates the pandas.Dataframe
             :param cube: the cube object
-            :type cube:  <class 'PyOphidia.cube.Cube'>
+            :type cube:  <class 'pyophidia.cube.Cube'>
             :param indexes: indexes in pandas multiindex format
             :type indexes: <class 'pandas.core.indexes.multi.MultiIndex'>
             :param response: response from pyophidia query

@@ -106,7 +106,7 @@ class Task:
 
         Parameters
         ----------
-        task : <class 'PyOphidia.task.Task'>
+        task : <class 'pyophidia.workflow.Task'>
             task the current one depends on
         argument : str, optional
             argument to be set with the output of the task 'task'
@@ -274,7 +274,7 @@ class Experiment:
 
         Parameters
         ----------
-        task : <class 'PyOphidia.task.Task'>
+        task : <class 'pyophidia.workflow.Task'>
             Task to be added to the experiment
 
         Raises
@@ -311,7 +311,7 @@ class Experiment:
 
         Returns
         -------
-        task : <class 'PyOphidia.task.Task'>
+        task : <class 'pyophidia.workflow.Task'>
             Returns the first task found
         None : Nonetype
             If no task was found then returns None
@@ -390,7 +390,7 @@ class Experiment:
 
         Returns
         -------
-        t : <class 'PyOphidia.task.Task'>
+        t : <class 'pyophidia.workflow.Task'>
             Returns the task that was created and added to the experiment
 
         Raises
@@ -434,7 +434,7 @@ class Experiment:
 
         Parameters
         ----------
-        experiment : <class 'PyOphidia.experiment.experiment'>
+        experiment : <class 'pyophidia.workflow.Experiment'>
             The experiment that will be embeded into our main experiment
         params : dict of keywords
             a dict of keywords that will be used to replace placeholders in
@@ -565,7 +565,7 @@ class Experiment:
 
         Returns
         -------
-        experiment : <class 'PyOphidia.experiment.Experiment'>
+        experiment : <class 'pyophidia.workflow.Experiment'>
             Returns the experiment object as it was loaded from the file
 
         Raises
@@ -631,7 +631,7 @@ class Experiment:
 
         Returns
         -------
-        experiment : <class 'PyOphidia.experiment.Experiment'>
+        experiment : <class 'pyophidia.workflow.Experiment'>
             Returns the experiment object as it was loaded from the file
 
         Raises
@@ -842,7 +842,7 @@ class Workflow:
 
     Parameters
     ----------
-    experiment: int or <class 'PyOphidia.experiment.Experiment'>
+    experiment: int or <class 'pyophidia.workflow.Experiment'>
         Id of a running experiment or Experiment object
 
     Raises
@@ -884,7 +884,7 @@ class Workflow:
         
         Parameters
         ----------
-        client : <class 'PyOphidia.client.Client'>
+        client : <class 'pyophidia.client.Client'>
             PyOhidia client object
 
         Returns
