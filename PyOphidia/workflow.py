@@ -341,8 +341,8 @@ class Experiment:
 
         Example
         -------
-        from PyOphidia import experiment
-        e1 = experiment(name="sample name", author="sample author",
+        from pyophidia import Experiment
+        e1 = Experiment(name="sample name", author="sample author",
                         abstract="sample abstract")
         e1.save("sample_experiment")
 
@@ -406,11 +406,6 @@ class Experiment:
         t1 = e1.newTask(operator="oph_reduce", arguments={'operation': 'avg'},
                           dependencies={})
         """
-        try:
-            from task import Task
-        except ImportError:
-            from .task import Task
-
         self.__param_check(
             [
                 {"name": "operator", "value": operator, "type": str},
@@ -461,19 +456,14 @@ class Experiment:
 
         Example
         -------
-        e1 = experiment(name="Experiment 1", author="sample author 1",
+        e1 = Experiment(name="Experiment 1", author="sample author 1",
                         abstract="sample abstract 1")
-        e2 = experiment(name="Experiment 2", author="sample author 2",
+        e2 = Experiment(name="Experiment 2", author="sample author 2",
                         abstract="sample abstract 2")
         t1 = e2.newTask(operator='oph_reduce', arguments={'operation': 'avg'})
         task_array = e1.newSubexperiment(experiment=e2, params={},
                         dependency={})
         """
-        try:
-            from task import Task
-        except ImportError:
-            from .task import Task
-
         def validate_experiment(e1, e2):
             if not isinstance(e2, Experiment) or e1.name == e2.name:
                 raise AttributeError("Wrong experiment or same experiments")
@@ -656,7 +646,7 @@ class Experiment:
 
         Example
         -------
-        e1 = Experiment.load("json_file.cwl")
+        e1 = Experiment.load_cwl("cwl_file.cwl")
         """
 
         if not os.path.isfile(file):
@@ -871,10 +861,6 @@ class Workflow:
     runtime_task_graph = None
 
     def __init__(self, experiment):
-        try:
-            from experiment import Experiment
-        except ImportError:
-            from .experiment import Experiment
         if isinstance(experiment, int):
             self.workflow_id = experiment
             self.experiment_object = None
@@ -1137,11 +1123,6 @@ class Workflow:
             return sorted_tasks
 
         def _modify_task(json_response):
-            try:
-                from task import Task
-            except ImportError:
-                from .task import Task
-
             new_tasks = []
             for res in json_response["response"]:
                 if res["objkey"] == "resume":
@@ -1165,11 +1146,6 @@ class Workflow:
             return new_tasks
 
         def _add_runtimeinfo_task(status_response, tasks):
-            try:
-                from task import Task
-            except ImportError:
-                from .task import Task
-
             task_dict = _extract_info(status_response)
             if task_dict is None:
                 raise RuntimeError("Unable to extract information from JSON response")

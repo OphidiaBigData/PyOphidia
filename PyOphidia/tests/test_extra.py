@@ -18,24 +18,24 @@
 
 import pytest
 
-from PyOphidia import cube
+from pyophidia import Cube, Client
 
-cube.Cube.setclient()
+Cube.setclient(Client(read_env = True))
 try:
-    cube.Cube.createcontainer(container="mytest")
+    Cube.createcontainer(container="mytest")
 except RuntimeError:
     pass
-random_cube_1 = cube.Cube.randcube(container="mytest", dim="lat|lon|k|l|time",
+random_cube_1 = Cube.randcube(container="mytest", dim="lat|lon|k|l|time",
                                    dim_size="4|2|2|2|1", exp_ndim=4,
                                    host_partition="main", measure="tos",
                                    measure_type="double", nfrag=8, ntuple=4,
                                    nhost=1)
-random_cube_2 = cube.Cube.randcube(container="mytest", dim="lat|lon|time",
+random_cube_2 = Cube.randcube(container="mytest", dim="lat|lon|time",
                                    dim_size="4|2|1", exp_ndim=2,
                                    host_partition="main", measure="tos",
                                    measure_type="double", nfrag=4, ntuple=2,
                                    nhost=1)
-random_cube_3 = cube.Cube(
+random_cube_3 = Cube(
     src_path='/public/data/ecas_training/tasmax_day_CMCC'
              '-CESM_rcp85_r1i1p1_20960101-21001231.nc',
     measure='tasmax',
