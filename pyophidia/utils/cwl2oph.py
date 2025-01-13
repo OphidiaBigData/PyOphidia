@@ -18,7 +18,7 @@
 #
 
 import sys, getopt, os
-from PyOphidia import Workflow, Experiment, Task
+from pyophidia import Workflow, Experiment, Task
 import argparse
 
 print("Parse arguments", file=sys.stderr)

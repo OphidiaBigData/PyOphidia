@@ -80,7 +80,7 @@ class Task:
 
         Parameters
         ----------
-        task : <class 'PyOphidia.task.Task'>
+        task : <class 'pyophidia.Task'>
             task the current one depends on
         argument : str, optional
             argument to be set with the output of the task 'task'

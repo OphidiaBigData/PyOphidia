@@ -24,7 +24,7 @@ import os
 previous_dir = os.path.dirname(os.getcwd())
 sys.path.insert(0, os.path.dirname(previous_dir))
 sys.path.insert(0, "..")
-from PyOphidia import Workflow, Experiment
+from pyophidia import Workflow, Experiment
 
 
 def verbose_check_display(verbose, text):

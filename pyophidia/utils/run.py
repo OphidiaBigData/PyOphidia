@@ -19,7 +19,7 @@
 
 import os, argparse
 import cwltool, cwltool.factory
-from PyOphidia import Workflow, Experiment, client
+from pyophidia import Workflow, Experiment, client
 
 parser = argparse.ArgumentParser()
 parser.add_argument('name', type = str, help = 'Workflow file name')

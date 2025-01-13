@@ -57,7 +57,7 @@ class Workflow:
 
     Parameters
     ----------
-    experiment: int or <class 'PyOphidia.experiment.Experiment'>
+    experiment: int or <class 'pyophidia.Experiment'>
         Id of a running experiment or Experiment object
 
     Raises
@@ -103,7 +103,7 @@ class Workflow:
         
         Parameters
         ----------
-        client : <class 'PyOphidia.client.Client'>
+        client : <class 'pyophidia.Client'>
             PyOhidia client object
 
         Returns

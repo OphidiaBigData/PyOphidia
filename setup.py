@@ -36,7 +36,7 @@ setup(
     license='GPLv3+',
     author='Ophidia Developers',
     author_email='ophidia-info@cmcc.it',
-    packages=['PyOphidia'],
+    packages=['pyophidia'],
     include_package_data=True,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
