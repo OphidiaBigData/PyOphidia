@@ -566,8 +566,14 @@ class Experiment:
 
         experiment = Experiment.load(json_request)
 
-        os.remove(json_request)
-        os.rmdir(json_request.rsplit('/', 1)[0])
+        try:
+            os.remove(json_request)
+        except:
+        	print("JSON file cannot be removed")
+        try:
+            os.rmdir(json_request.rsplit('/', 1)[0])
+        except:
+        	print("Temporary folder cannot be removed")
 
         return experiment
 
