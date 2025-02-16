@@ -169,7 +169,8 @@ Client methods
 - *resume_cdd(display) -> self*: Resume the last cdd (current working data directory) the user was located into.
 - *resume_cube(display) -> self*: Resume the last cube produced by the user.
 - *wsubmit(workflow, \*params) -> self*: Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
-- *wisvalid(workflow) -> bool*: Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False and the related validation/error message.
+- *wisvalid(workflow, \*params) -> bool*: Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
+- *wisvalid2(workflow, \*params) -> bool, str*: Return the output of *wisvalid(workflow, \*params)* and the related validation/error message.
 - *pretty_print(response, response_i) -> self*: Prints the last_response JSON string attribute as a formatted response.
 
 *To display the command output set "display = True"*
@@ -362,14 +363,14 @@ Instance methods:
 - *save(experimentname)*: save the experiment as a JSON document
 - *newTask(operator, arguments, dependencies, name, ...) -> Task*: add a new Task in the experiment without the need of creating a Task object
 - *newSubexperiment(self, experiment, params, dependency) -> Task*: embed an experiment into another experiment
-- *isvalid() -> bool*: check the workflow experiment definition validity
-- *check(filename, display) -> bool*: check the experiment definition validity, display the graph of the experiment structure and store the graph in the file *filename*
+- *isvalid(\*params) -> bool*: check the workflow experiment definition validity
+- *check(filename, display, \*params) -> bool*: check the experiment definition validity, display the graph of the experiment structure and store the graph in the file *filename*
 
 Class methods:
 
 - *load(file) -> Experiment*: load an experiment from the JSON document
 - *load_cwl(file, args) -> Experiment*: load an experiment from the CWL document (see CWL support)
-- *validate(file) -> bool*: check the workflow experiment definition validity
+- *validate(file, \*params) -> bool, str*: check the workflow experiment definition validity: a flag True/False and the related validation/error message.
 
 Import Experiment
 """""""""""""""""

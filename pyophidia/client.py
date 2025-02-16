@@ -77,7 +77,8 @@ class Client:
         wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series
             of parameters that will replace $1, $2 etc. in the workflow.
             The workflow will be validated against the Ophidia Workflow JSON Schema.
-        wisvalid(workflow) -> bool : Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
+        wisvalid(workflow,*params) -> bool : Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
+        wisvalid2(workflow,*params) -> bool,str : Return a pair of values: the former is the output of wisvalid(workflow,*params); the latter is a text message describing it.
         pretty_print(response, response_i) -> self : Prints the last_response JSON string attribute as a formatted response
     """
 
@@ -767,6 +768,21 @@ class Client:
         regex = re.compile(pattern, re.MULTILINE | re.DOTALL)
         return regex.sub(_replacer, checked_workflow)
 
+    @staticmethod
+    def set_params(buffer, *params):
+        params_list = ""
+        try:
+            for index, param in enumerate(params, start=1):
+                buffer = buffer.replace("${" + str(index) + "}", str(param))
+                buffer = re.sub(r"(\$" + str(index) + r")([^0-9]|$)", str(param) + r"\g<2>", buffer)
+                params_list += " " + str(param)
+            buffer = re.sub(r"(\$\{?(\d*)\}?)", "", buffer)
+            buffer = __class__.remove_comments(buffer)
+            return json.loads(buffer), params_list
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong in parsing the string:", e)
+            return None, None
+
     def wsubmit(self, workflow, *params):
         """wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of
            parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
@@ -785,39 +801,20 @@ class Client:
             raise RuntimeError("workflow is not present")
         if self.username is None or self.password is None or self.server is None or self.port is None:
             raise RuntimeError("one or more login parameters are None")
-        request = None
 
-        params_list = ""
+        buffer = workflow
         if os.path.isfile(workflow):
             try:
                 file = open(workflow, "r")
                 buffer = file.read()
                 file.close()
-                for index, param in enumerate(params, start=1):
-                    buffer = buffer.replace("${" + str(index) + "}", str(param))
-                    buffer = re.sub(r"(\$" + str(index) + r")([^0-9]|$)", str(param) + r"\g<2>", buffer)
-                    params_list += " " + str(param)
-                buffer = re.sub(r"(\$\{?(\d*)\}?)", "", buffer)
-                buffer = self.remove_comments(buffer)
-                request = json.loads(buffer)
-
             except Exception as e:
-                print(get_linenumber(), "Something went wrong in reading and/or parsing the file:", e)
+                print(get_linenumber(), "Something went wrong in reading the file:", e)
                 return None
-        else:
-            try:
-                buffer = workflow
-                for index, param in enumerate(params, start=1):
-                    buffer = buffer.replace("${" + str(index) + "}", str(param))
-                    buffer = re.sub(r"(\$" + str(index) + r")([^0-9]|$)", str(param) + r"\g<2>", buffer)
-                    params_list += " " + str(param)
-                buffer = re.sub(r"(\$\{?(\d*)\}?)", "", buffer)
-                buffer = self.remove_comments(buffer)
-                request = json.loads(buffer)
 
-            except Exception as e:
-                print(get_linenumber(), "Something went wrong in parsing the string:", e)
-                return None
+        request, params_list = self.set_params(buffer, *params)
+        if request is None:
+            return None
 
         if self.session and "sessionid" not in request:
             request["sessionid"] = self.session
@@ -839,7 +836,7 @@ class Client:
             request["direct_output"] = "no"
         self.last_request = json.dumps(request)
         try:
-            err, err_msg = self.wisvalid(self.last_request)
+            err, err_msg = self.wisvalid2(self.last_request, *params)
             if not err:
                 print("The workflow is not valid: " + str(err_msg))
                 return None
@@ -908,8 +905,8 @@ class Client:
             return None
         return self
 
-    def wisvalid(self, workflow):
-        """wisvalid(workflow) -> bool : Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
+    def wisvalid2(self, workflow, *params):
+        """wisvalid2(workflow,*params) -> bool,str : Return a pair of values: the former is the output of wisvalid(workflow,*params); the latter is a text message describing it.
         :param workflow: a JSON string or a Python dict containing an Ophidia workflow
         :type workflow: str or dict
         :returns: True or False and validation message
@@ -917,12 +914,14 @@ class Client:
         """
 
         if workflow is None:
-            return False
+            return False, "Unknown workflow"
         w = None
 
         if isinstance(workflow, str):
             try:
-                w = json.loads(self.remove_comments(workflow))
+                w, params_list = self.set_params(workflow, *params)
+                if w is None:
+                    return False, "Workflow is not a valid JSON"
             except ValueError:
                 return False, "Workflow is not a valid JSON"
         elif isinstance(workflow, dict):
@@ -937,8 +936,8 @@ class Client:
                     return False, "Mandatory global argument 'on_error' is not correct"
             except KeyError:
                 return False, "Mandatory global argument 'on_error' is missing"
-        if "ncores" in w and not w["ncores"].isdigit():
-            return False, "Mandatory global argument 'ncores' is missing or is not correct"
+        if "ncores" in w and (not w["ncores"].isdigit() or int(w["ncores"]) < 1):
+            return False, "Global argument 'ncores' is not correct"
         if "exec_mode" in w and w["exec_mode"] != "sync" and w["exec_mode"] != "async":
             return False, "Mandatory global argument 'exec_mode' is missing or is not correct"
         if "tasks" not in w or not w["tasks"]:
@@ -1056,6 +1055,16 @@ class Client:
                 return False, "Workflow is not a DAG"
         #   else return success (graph has no cycles)
         return True, "Workflow is valid"
+
+    def wisvalid(self, workflow, *params):
+        """wisvalid(workflow,*params) -> bool : Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
+        :param workflow: a JSON string or a Python dict containing an Ophidia workflow
+        :type workflow: str or dict
+        :returns: True or False and validation message
+        :rtype: bool
+        """
+        err, err_msg = self.wisvalid2(workflow, *params)
+        return err
 
     def last_workflowid(self):
         """last_workflowid(workflow) -> bool : Return the workflow identifier associated with the last command submitted.

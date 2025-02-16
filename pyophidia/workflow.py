@@ -250,9 +250,9 @@ class Workflow:
         def _check_workflow_validity():
 
             self.__runtime_connect()
-            workflow_validity = self.client.wisvalid(json.dumps(self.workflow_to_json()))
-            if not workflow_validity[1] == "Workflow is valid":
-                raise AttributeError("Workflow is not valid")
+            workflow_validity = self.client.wisvalid2(json.dumps(self.workflow_to_json()))
+            if workflow_validity[0] is False:
+                raise AttributeError(workflow_validity[1])
 
         def _find_subgraphs(tasks):
             list_of_operators = [t.operator for t in tasks]
