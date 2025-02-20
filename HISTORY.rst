@@ -1,5 +1,5 @@
 
-v2.0.0 - 2025-02-16
+v2.0.0 - 2025-02-20
 -------------------
 
 Added:
@@ -20,6 +20,7 @@ Fixed:
 Changed:
 ~~~~~~~~
 
+- Workflow validation procedure
 - Update JSON Request if new tasks are detected while monitoring a workflow
 
 

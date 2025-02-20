@@ -933,13 +933,27 @@ class Client:
         if "on_error" in w:
             try:
                 if w["on_error"] != "skip" and w["on_error"] != "continue" and w["on_error"] != "break" and w["on_error"] != "abort" and w["on_error"][:7] != "repeat ":
-                    return False, "Mandatory global argument 'on_error' is not correct"
+                    return False, "Global argument 'on_error' is not correct"
             except KeyError:
-                return False, "Mandatory global argument 'on_error' is missing"
-        if "ncores" in w and (not w["ncores"].isdigit() or int(w["ncores"]) < 1):
+                return False, "Global argument 'on_error' is missing"
+        if "on_exit" in w and w["on_exit"] != "nop" and w["on_exit"] != "oph_delete" and w["on_exit"] != "oph_deletecontainer":
+            return False, "Global argument 'on_exit' is not correct"
+        if "run" in w and w["run"] != "yes" and w["run"] != "no":
+            return False, "Global argument 'run' is not correct"
+        if "save" in w and w["save"] != "yes" and w["save"] != "no":
+            return False, "Global argument 'save' is not correct"
+        if "nhost" in w and (not w["nhost"].isdigit() or int(w["nhost"]) < 0):
+            return False, "Global argument 'nhost' is not correct"
+        if "ncores" in w and (not w["ncores"].isdigit() or int(w["ncores"]) <= 0):
             return False, "Global argument 'ncores' is not correct"
+        if "nthreads" in w and (not w["nthreads"].isdigit() or int(w["nthreads"]) <= 0):
+            return False, "Global argument 'nthreads' is not correct"
         if "exec_mode" in w and w["exec_mode"] != "sync" and w["exec_mode"] != "async":
-            return False, "Mandatory global argument 'exec_mode' is missing or is not correct"
+            return False, "Global argument 'exec_mode' is not correct"
+        if "direct_output" in w and w["direct_output"] != "yes" and w["direct_output"] != "no":
+            return False, "Global argument 'direct_output' is not correct"
+        if "output_format" in w and w["output_format"] != "classic" and w["output_format"] != "compact" and w["output_format"] != "extended" and w["output_format"] != "extended_compact":
+            return False, "Global argument 'output_format' is not correct"
         if "tasks" not in w or not w["tasks"]:
             return False, "Workflow task section is missing"
         pattern = re.compile("^[A-Za-z0-9_]+=")
@@ -955,6 +969,18 @@ class Client:
                 for argument in task["arguments"]:
                     if not pattern.match(argument):
                         return False, "Task argument '" + str(argument) + "' is not valid in task: " + task_name
+                    variable_value = argument.split("=")
+                    try:
+                        if variable_value[0] == "ncores" and (not variable_value[1].isdigit() or int(variable_value[1]) <= 0):
+                            return False, "Global argument 'ncores' is not correct"
+                    except IndexError:
+                        return False, "Task argument 'ncores' is not correct in task: " + task_name
+                    try:
+                        if variable_value[0] == "nthreads" and (not variable_value[1].isdigit() or int(variable_value[1]) <= 0):
+                            return False, "Global argument 'nthreads' is not correct"
+                    except IndexError:
+                        return False, "Task argument 'nthreads' is not correct in task: " + task_name
+
             if "dependencies" in task and task["dependencies"]:
                 for dependency in task["dependencies"]:
                     if "task" not in dependency or not dependency["task"]:
@@ -965,9 +991,15 @@ class Client:
             if "on_error" in task:
                 try:
                     if task["on_error"] != "skip" and task["on_error"] != "continue" and task["on_error"] != "break" and task["on_error"] != "abort" and task["on_error"][:7] != "repeat ":
-                        return False, "Task 'on_error' is not correct in task: " + task_name
+                        return False, "Task argument 'on_error' is not correct in task: " + task_name
                 except KeyError:
-                    return False, "Task 'on_error' is not correct in task: " + task_name
+                    return False, "Task argument 'on_error' is not correct in task: " + task_name
+            if "on_exit" in task and task["on_exit"] != "nop" and task["on_exit"] != "oph_delete" and task["on_exit"] != "oph_deletecontainer":
+                return False, "Task argument 'on_exit' is not correct in task: " + task_name
+            if "run" in task and task["run"] != "yes" and task["run"] != "no":
+                return False, "Task argument 'run' is not correct in task: " + task_name
+            if "save" in task and task["save"] != "yes" and task["save"] != "no":
+                return False, "Task argument 'save' is not correct in task: " + task_name
 
         for index, task in enumerate(w["tasks"]):
             if "dependencies" in task and task["dependencies"]:

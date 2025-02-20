@@ -25,9 +25,11 @@ from inspect import currentframe
 
 sys.path.append(os.path.dirname(__file__))
 
+
 def _get_linenumber():
     cf = currentframe()
     return __file__, cf.f_back.f_lineno
+
 
 class Task:
     """

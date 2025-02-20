@@ -22,8 +22,8 @@ import cwltool, cwltool.factory
 from pyophidia import Workflow, Experiment, client
 
 parser = argparse.ArgumentParser()
-parser.add_argument('name', type = str, help = 'Workflow file name')
-parser.add_argument('--args', type = str, help = 'Workflow arguments')
+parser.add_argument("name", type=str, help="Workflow file name")
+parser.add_argument("--args", type=str, help="Workflow arguments")
 args = parser.parse_args()
 
 cwl_args = {}
@@ -33,7 +33,7 @@ if args.args:
         if param is None:
             param = i
         else:
-            cwl_args[param[2:]] = int(i) if i.isdigit() else i;
+            cwl_args[param[2:]] = int(i) if i.isdigit() else i
             param = None
 
 fac = cwltool.factory.Factory()
@@ -44,7 +44,7 @@ result = cwl_tool(**cwl_args)
 print(result)
 
 json_request = result["outputexperiment"]["location"][7:]
-#with open(json_request) as f:
+# with open(json_request) as f:
 #    print(f.read())
 
 e1 = Experiment.load(json_request)
@@ -54,15 +54,14 @@ if not e1.check():
 try:
     os.remove(json_request)
 except:
-	print("JSON file cannot be removed")
+    print("JSON file cannot be removed")
 try:
-    os.rmdir(json_request.rsplit('/', 1)[0])
+    os.rmdir(json_request.rsplit("/", 1)[0])
 except:
-	print("Temporary folder cannot be removed")
+    print("Temporary folder cannot be removed")
 
-ophclient = client.Client(read_env = True)
+ophclient = client.Client(read_env=True)
 Workflow.setclient(ophclient)
 
 w1 = Workflow(e1)
 w1.submit()
-

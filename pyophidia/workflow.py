@@ -28,9 +28,11 @@ from inspect import currentframe
 
 sys.path.append(os.path.dirname(__file__))
 
+
 def _get_linenumber():
     cf = currentframe()
     return __file__, cf.f_back.f_lineno
+
 
 def _dependency_check(dependency):
     if dependency == "prov":
@@ -47,6 +49,7 @@ def _dependency_check(dependency):
             raise ImportError("graphviz and/or ipython are not installed")
     else:
         raise AttributeError("Dependency must be prov or graphviz")
+
 
 class Workflow:
     """
@@ -91,7 +94,7 @@ class Workflow:
         """
         for k in dict(self.__dict__):
             self.__delattr__(k)
-            
+
     @classmethod
     def setclient(
         cls,
@@ -99,8 +102,8 @@ class Workflow:
     ):
         """
         Instantiate the Client, common for all Workflow objects, for submitting requests
-        
-        
+
+
         Parameters
         ----------
         client : <class 'pyophidia.Client'>
@@ -146,9 +149,7 @@ class Workflow:
         """
         if Workflow.client is None or self.workflow_id is None:
             raise AttributeError("Cancel requires workflow_id or Workflow.client is None")
-        self.client.submit(
-            query="oph_cancel id={0};exec_mode=async;".format(self.workflow_id)
-        )
+        self.client.submit(query="oph_cancel id={0};exec_mode=async;".format(self.workflow_id))
 
     def submit(self, *args, checkpoint="all"):
         """
@@ -177,7 +178,7 @@ class Workflow:
         exec_mode = self.experiment_object.exec_mode
         self.experiment_object.exec_mode = "async"
         self.experiment_object.output_format = "extended_compact"
-        
+
         if checkpoint == "all":
 
             if self.workflow_id is not None:
@@ -256,22 +257,10 @@ class Workflow:
 
         def _find_subgraphs(tasks):
             list_of_operators = [t.operator for t in tasks]
-            subgraphs_list = [
-                {"start_index": start_index, "operator": "if"}
-                for start_index in [i for i, t in enumerate(list_of_operators) if t == "if"]
-            ]
-            subgraphs_list += [
-                {"start_index": start_index, "operator": "for"}
-                for start_index in [i for i, t in enumerate(list_of_operators) if t == "for"]
-            ]
+            subgraphs_list = [{"start_index": start_index, "operator": "if"} for start_index in [i for i, t in enumerate(list_of_operators) if t == "if"]]
+            subgraphs_list += [{"start_index": start_index, "operator": "for"} for start_index in [i for i, t in enumerate(list_of_operators) if t == "for"]]
             subgraphs_list = sorted(subgraphs_list, key=lambda i: i["start_index"])
-            closing_indexes = sorted(
-                [
-                    i
-                    for i, t in enumerate(list_of_operators)
-                    if re.match("(?i).*endfor", t) or re.match("(?i).*endif", t)
-                ]
-            )[::-1]
+            closing_indexes = sorted([i for i, t in enumerate(list_of_operators) if re.match("(?i).*endfor", t) or re.match("(?i).*endif", t)])[::-1]
             for i in range(0, len(subgraphs_list)):
                 subgraphs_list[i]["end_index"] = closing_indexes[i]
 
@@ -282,11 +271,7 @@ class Workflow:
                     new_dot.attr("node")
                     new_dot.node(
                         tasks[i].name,
-                        _trim_text(tasks[i].name)
-                        + "\n"
-                        + _trim_text(tasks[i].type)
-                        + "\n"
-                        + _trim_text(tasks[i].operator),
+                        _trim_text(tasks[i].name) + "\n" + _trim_text(tasks[i].type) + "\n" + _trim_text(tasks[i].operator),
                     )
                 subgraph["dot"] = new_dot
                 cluster_counter += 1
@@ -308,7 +293,7 @@ class Workflow:
                         for k in exec_keys:
                             index.append(int(res["objcontent"][0]["rowkeys"].index(k)))
                         for task in res["objcontent"][0]["rowvalues"]:
-                            task_dict[task[index[0]]] = dict((exec_keys[i], task[index[i]]) for i in range(1,len(exec_keys)))
+                            task_dict[task[index[0]]] = dict((exec_keys[i], task[index[i]]) for i in range(1, len(exec_keys)))
                         return task_dict
                     else:
                         return None
@@ -323,15 +308,9 @@ class Workflow:
             sorted_tasks = []
             for i in range(0, len(tasks)):
                 if re.findall(r".*?(\([0-9].*\))", tasks[i].name):
-                    clean_name = tasks[i].name.replace(
-                        re.findall(r".*?(\([0-9].*\))", tasks[i].name)[0], ""
-                    )
+                    clean_name = tasks[i].name.replace(re.findall(r".*?(\([0-9].*\))", tasks[i].name)[0], "")
                     for task in tasks[i:]:
-                        if (
-                            clean_name in task.name
-                            and task.name not in [t.name for t in sorted_tasks]
-                            and re.findall(r".*?(\([0-9].*\))", task.name)
-                        ):
+                        if clean_name in task.name and task.name not in [t.name for t in sorted_tasks] and re.findall(r".*?(\([0-9].*\))", task.name):
                             sorted_tasks.append(task)
                 else:
                     sorted_tasks.append(tasks[i])
@@ -404,10 +383,10 @@ class Workflow:
                 )
                 if len(task.extra.keys()) == 0:
                     dot.attr("node", fillcolor="lightgrey", style="filled")
-                if 'EXIT STATUS' in task.extra and status_color_dictionary:
+                if "EXIT STATUS" in task.extra and status_color_dictionary:
                     dot.attr(
                         "node",
-                        fillcolor=_find_matches(status_color_dictionary, task.extra['EXIT STATUS']),
+                        fillcolor=_find_matches(status_color_dictionary, task.extra["EXIT STATUS"]),
                         style="filled",
                     )
                 dot.attr("edge", penwidth="1")
@@ -417,11 +396,7 @@ class Workflow:
                     dot.attr("node", shape="hexagon")
                 dot.node(
                     task.name,
-                    _trim_text(task.name)
-                    + "\n"
-                    + _trim_text(task.type)
-                    + "\n"
-                    + _trim_text(task.operator),
+                    _trim_text(task.name) + "\n" + _trim_text(task.type) + "\n" + _trim_text(task.operator),
                 )
                 dot.attr("edge", style="solid")
                 for d in task.dependencies:
@@ -548,18 +523,14 @@ class Workflow:
                 "runtime_task_graph",
             ]
 
-            new_workflow = {
-                k: dict(self.experiment_object.__dict__)[k]
-                for k in dict(self.experiment_object.__dict__).keys()
-                if k not in non_workflow_fields
-            }
+            new_workflow = {k: dict(self.experiment_object.__dict__)[k] for k in dict(self.experiment_object.__dict__).keys() if k not in non_workflow_fields}
             if "tasks" in new_workflow.keys():
                 new_workflow["tasks"] = [t.__dict__ for t in new_workflow["tasks"]]
             return new_workflow
 
     def __repr__(self):
         return json.dumps(self.workflow_to_json())
-    
+
     def build_provenance(self, output_file, output_format="json", display=True):
         """
         Build the provenance file associated with the workflow, provided that it has been completed
@@ -584,13 +555,13 @@ class Workflow:
         from prov.dot import prov_to_dot
 
         prov_doc = ProvDocument()
-        prov_doc.add_namespace('ophidia', 'http://ophidia.cmcc.it/')
-        prov_doc.add_namespace('prov', 'http://www.w3.org/ns/prov#')
-        prov_doc.add_namespace('nc', 'https://www.unidata.ucar.edu/software/netcdf/')
-        
+        prov_doc.add_namespace("ophidia", "http://ophidia.cmcc.it/")
+        prov_doc.add_namespace("prov", "http://www.w3.org/ns/prov#")
+        prov_doc.add_namespace("nc", "https://www.unidata.ucar.edu/software/netcdf/")
+
         # Global dictionaries of operator names
-        multiInputsOperators = ["oph_mergecubes", "oph_mergecubes2","oph_intercube", "oph_intercube2", "oph_importncs","oph_concatnc","oph_concatnc2"] # N input, 1 output
-        dataOperators = ["oph_aggregate", "oph_aggregate2", "oph_apply", "oph_drilldown", "oph_duplicate","oph_merge", "oph_permute", "oph_reduce", "oph_reduce2", "oph_rollup", "oph_subset"]
+        multiInputsOperators = ["oph_mergecubes", "oph_mergecubes2", "oph_intercube", "oph_intercube2", "oph_importncs", "oph_concatnc", "oph_concatnc2"]  # N input, 1 output
+        dataOperators = ["oph_aggregate", "oph_aggregate2", "oph_apply", "oph_drilldown", "oph_duplicate", "oph_merge", "oph_permute", "oph_reduce", "oph_reduce2", "oph_rollup", "oph_subset"]
         specialOperators = ["oph_script", "oph_metadata", "oph_delete"]
         importOperators = ["oph_importnc", "oph_importnc2", "oph_importfits", "oph_randcube", "oph_randcube2"]
         exportOperators = ["oph_exportnc", "oph_exportnc2", "oph_explorecube"]
@@ -625,71 +596,71 @@ class Workflow:
                 op_end = task.extra["END TIME"]
                 op_args = task.arguments
 
-                activity_extra = {'prov:type': 'ophidia:operator','ophidia:status':op_status,'ophidia:arguments':','.join(op_args)}
+                activity_extra = {"prov:type": "ophidia:operator", "ophidia:status": op_status, "ophidia:arguments": ",".join(op_args)}
 
                 if class_type == "multiInput":
-                    
+
                     inputs = op_input.split("|")
-                    a = prov_doc.activity('ophidia:'+op_id, op_begin, op_end, activity_extra)
-                    eo = prov_doc.entity('ophidia:'+op_output, {'prov:type': 'ophidia:datacube'})
+                    a = prov_doc.activity("ophidia:" + op_id, op_begin, op_end, activity_extra)
+                    eo = prov_doc.entity("ophidia:" + op_output, {"prov:type": "ophidia:datacube"})
                     prov_doc.wasGeneratedBy(eo, a)
-                    
+
                     if "oph_concatnc" in op_name:
-                        ei1 = prov_doc.entity('nc:'+inputs[0], {'prov:type': 'nc:file'})
-                        ei2 = prov_doc.entity('ophidia:'+inputs[1], {'prov:type': 'ophidia:datacube'})
+                        ei1 = prov_doc.entity("nc:" + inputs[0], {"prov:type": "nc:file"})
+                        ei2 = prov_doc.entity("ophidia:" + inputs[1], {"prov:type": "ophidia:datacube"})
                         prov_doc.wasDerivedFrom(eo, ei1)
-                        prov_doc.used(a,ei1)
+                        prov_doc.used(a, ei1)
                         prov_doc.wasDerivedFrom(eo, ei2)
-                        prov_doc.used(a,ei2)
+                        prov_doc.used(a, ei2)
                     else:
-                        for i in range(0,len(inputs)):
-                            if "oph_importncs" in op_name:    
-                                ei = prov_doc.entity('nc:'+inputs[i], {'prov:type': 'nc:file'})
+                        for i in range(0, len(inputs)):
+                            if "oph_importncs" in op_name:
+                                ei = prov_doc.entity("nc:" + inputs[i], {"prov:type": "nc:file"})
                             else:
-                                ei = prov_doc.entity('ophidia:'+inputs[i], {'prov:type': 'ophidia:datacube'})
+                                ei = prov_doc.entity("ophidia:" + inputs[i], {"prov:type": "ophidia:datacube"})
 
                             prov_doc.wasDerivedFrom(eo, ei)
-                            prov_doc.used(a,ei)
-                        
+                            prov_doc.used(a, ei)
+
                 else:
-                    
+
                     inputs = op_input.split("|")
                     outputs = op_output.split("|")
-                    
-                    a = prov_doc.activity('ophidia:'+op_id, op_begin, op_end, activity_extra)
-                    
+
+                    a = prov_doc.activity("ophidia:" + op_id, op_begin, op_end, activity_extra)
+
                     for k in range(len(inputs)):
-                        
+
                         if class_type == "special":
                             continue
-                        
+
                         if class_type == "export":
-                            ei = prov_doc.entity('ophidia:'+inputs[k], {'prov:type': 'ophidia:datacube'})
-                            eo = prov_doc.entity('nc:'+outputs[k], {'prov:type': 'nc:file'})
-                        
+                            ei = prov_doc.entity("ophidia:" + inputs[k], {"prov:type": "ophidia:datacube"})
+                            eo = prov_doc.entity("nc:" + outputs[k], {"prov:type": "nc:file"})
+
                         if class_type == "datacube":
-                            ei = prov_doc.entity('ophidia:'+inputs[k], {'prov:type': 'ophidia:datacube'})
-                            eo = prov_doc.entity('ophidia:'+outputs[k], {'prov:type': 'ophidia:datacube'})
-                        
+                            ei = prov_doc.entity("ophidia:" + inputs[k], {"prov:type": "ophidia:datacube"})
+                            eo = prov_doc.entity("ophidia:" + outputs[k], {"prov:type": "ophidia:datacube"})
+
                         if class_type == "import":
                             if "randcube" in op_name:
                                 ei = None
-                                eo = prov_doc.entity('ophidia:'+outputs[k], {'prov:type': 'ophidia:datacube'})
+                                eo = prov_doc.entity("ophidia:" + outputs[k], {"prov:type": "ophidia:datacube"})
                             else:
-                                ei = prov_doc.entity('nc:'+inputs[k], {'prov:type': 'nc:file'})
-                                eo = prov_doc.entity('ophidia:'+outputs[k], {'prov:type': 'ophidia:datacube'})
-                                
+                                ei = prov_doc.entity("nc:" + inputs[k], {"prov:type": "nc:file"})
+                                eo = prov_doc.entity("ophidia:" + outputs[k], {"prov:type": "ophidia:datacube"})
+
                         prov_doc.wasGeneratedBy(eo, a)
-                        
+
                         if ei is not None:
                             prov_doc.wasDerivedFrom(eo, ei)
-                            prov_doc.used(a,ei)
-        
-        prov_doc.serialize(output_file + "." + output_format, format = output_format)
-        
+                            prov_doc.used(a, ei)
+
+        prov_doc.serialize(output_file + "." + output_format, format=output_format)
+
         if display:
             figure = prov_to_dot(prov_doc)
-            figure.write_png(output_file + '.png')
+            figure.write_png(output_file + ".png")
 
-        prov_doc_output = prov_doc.serialize(format = output_format)
+        prov_doc_output = prov_doc.serialize(format=output_format)
         return prov_doc_output

@@ -28,9 +28,11 @@ from inspect import currentframe
 
 sys.path.append(os.path.dirname(__file__))
 
+
 def get_linenumber():
     cf = currentframe()
     return __file__, cf.f_back.f_lineno
+
 
 def _dependency_check(dependency):
     if dependency == "cwltool":
@@ -46,6 +48,7 @@ def _dependency_check(dependency):
             raise ImportError("graphviz and/or ipython are not installed")
     else:
         raise AttributeError("Dependency must be cwltool or graphviz")
+
 
 class Experiment:
     """
@@ -131,11 +134,7 @@ class Experiment:
 
     def workflow_to_json(self):
         non_experiment_fields = ["task_name_counter"]
-        new_experiment = {
-            k: dict(self.__dict__)[k]
-            for k in dict(self.__dict__).keys()
-            if k not in non_experiment_fields
-        }
+        new_experiment = {k: dict(self.__dict__)[k] for k in dict(self.__dict__).keys() if k not in non_experiment_fields}
         if "tasks" in new_experiment.keys():
             new_experiment["tasks"] = [t.__dict__ for t in new_experiment["tasks"]]
         return new_experiment
@@ -493,9 +492,7 @@ class Experiment:
                     name=d["name"],
                     arguments={a.split("=")[0]: a.split("=", 1)[1] for a in d["arguments"]},
                 )
-                new_task.__dict__.update(
-                    {k: d[k] for k in d if k != "name" and k != "operator" and k != "arguments"}
-                )
+                new_task.__dict__.update({k: d[k] for k in d if k != "name" and k != "operator" and k != "arguments"})
                 experiment.addTask(new_task)
             return experiment
 
@@ -554,7 +551,7 @@ class Experiment:
                 if param is None:
                     param = i
                 else:
-                    cwl_args[param[2:]] = int(i) if i.isdigit() else i;
+                    cwl_args[param[2:]] = int(i) if i.isdigit() else i
                     param = None
 
         fac = cwltool.factory.Factory()
@@ -569,11 +566,11 @@ class Experiment:
         try:
             os.remove(json_request)
         except:
-        	print("JSON file cannot be removed")
+            print("JSON file cannot be removed")
         try:
-            os.rmdir(json_request.rsplit('/', 1)[0])
+            os.rmdir(json_request.rsplit("/", 1)[0])
         except:
-        	print("Temporary folder cannot be removed")
+            print("Temporary folder cannot be removed")
 
         return experiment
 
@@ -656,18 +653,10 @@ class Experiment:
 
         def _find_subgraphs(tasks):
             list_of_operators = [t.operator for t in tasks]
-            subgraphs_list = [
-                {"start_index": start_index, "operator": "if"}
-                for start_index in [i for i, t in enumerate(list_of_operators) if t == "if"]
-            ]
-            subgraphs_list += [
-                {"start_index": start_index, "operator": "for"}
-                for start_index in [i for i, t in enumerate(list_of_operators) if t == "for"]
-            ]
+            subgraphs_list = [{"start_index": start_index, "operator": "if"} for start_index in [i for i, t in enumerate(list_of_operators) if t == "if"]]
+            subgraphs_list += [{"start_index": start_index, "operator": "for"} for start_index in [i for i, t in enumerate(list_of_operators) if t == "for"]]
             subgraphs_list = sorted(subgraphs_list, key=lambda i: i["start_index"])
-            closing_indexes = sorted(
-                [i for i, t in enumerate(list_of_operators) if t == "endfor" or t == "endif"]
-            )[::-1]
+            closing_indexes = sorted([i for i, t in enumerate(list_of_operators) if t == "endfor" or t == "endif"])[::-1]
             for i in range(0, len(subgraphs_list)):
                 subgraphs_list[i]["end_index"] = closing_indexes[i]
 
@@ -678,11 +667,7 @@ class Experiment:
                     new_dot.attr("node")
                     new_dot.node(
                         tasks[i].name,
-                        _trim_text(tasks[i].name)
-                        + "\n"
-                        + _trim_text(tasks[i].type)
-                        + "\n"
-                        + _trim_text(tasks[i].operator),
+                        _trim_text(tasks[i].name) + "\n" + _trim_text(tasks[i].type) + "\n" + _trim_text(tasks[i].operator),
                     )
                 subgraph["dot"] = new_dot
                 cluster_counter += 1
@@ -697,7 +682,7 @@ class Experiment:
         )
         if display is False:
             return experiment_validity
-        
+
         diamond_commands = ["if", "endif", "else"]
         hexagonal_commands = ["for", "endfor"]
         dot = graphviz.Digraph(comment=self.name)
@@ -710,11 +695,7 @@ class Experiment:
                 dot.attr("node", shape="hexagon")
             dot.node(
                 task.name,
-                _trim_text(task.name)
-                + "\n"
-                + _trim_text(task.type)
-                + "\n"
-                + _trim_text(task.operator),
+                _trim_text(task.name) + "\n" + _trim_text(task.type) + "\n" + _trim_text(task.operator),
             )
             dot.attr("edge", style="solid")
             for d in task.dependencies:
@@ -730,6 +711,7 @@ class Experiment:
         if notebook_check is True:
             # TODO change the image dimensions
             from IPython.display import display
+
             display(dot)
         else:
             dot.render(filename, view=True)
