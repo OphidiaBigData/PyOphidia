@@ -784,7 +784,7 @@ class Client:
             return None, None
 
     @staticmethod
-    def check_fm_task(task, current_source, level=0):
+    def check_fm_task(task, current_source):
         if "check_fm" in task:
             # Skip if the task has already been analyzed
             return True, task
@@ -802,17 +802,17 @@ class Client:
             possible_dest = ["oph_endif"]
         for next in task["dependents"]:
             ftask = next
-            if next["operator"] in possible_dest:
-                if next["operator"] not in final_tasks:
-                    result, ftask = __class__.check_fm_task(next, next, level + 1)
+            if ftask["operator"] in possible_dest:
+                if ftask["operator"] not in final_tasks:
+                    result, ftask = __class__.check_fm_task(ftask, ftask)
                     if result is False:
                         return False, None
                 continue
             while ftask["operator"] in init_tasks:
-                result, ftask = __class__.check_fm_task(ftask, ftask, level + 1)
+                result, ftask = __class__.check_fm_task(ftask, ftask)
                 if result is False:
                     return False, None
-            result = __class__.check_fm_task(ftask, current_source, level + 1)
+            result, ftask = __class__.check_fm_task(ftask, current_source)
             if result is False:
                 return False, None
         return True, ftask
