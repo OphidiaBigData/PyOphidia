@@ -783,6 +783,40 @@ class Client:
             print(get_linenumber(), "Something went wrong in parsing the string:", e)
             return None, None
 
+    @staticmethod
+    def check_fm_task(task, current_source, level=0):
+        if "check_fm" in task:
+            # Skip if the task has already been analyzed
+            return True, task
+        task["check_fm"] = True
+        if "dependents" not in task:
+            return False, None
+        init_tasks = ["oph_for", "oph_if"]
+        final_tasks = ["oph_endfor", "oph_endif"]
+        source = current_source["operator"]
+        if source in ["oph_for"]:
+            possible_dest = ["oph_endfor"]
+        elif source in ["oph_if", "oph_elseif"]:
+            possible_dest = ["oph_elseif", "oph_else", "oph_endif"]
+        elif source in ["oph_else"]:
+            possible_dest = ["oph_endif"]
+        for next in task["dependents"]:
+            ftask = next
+            if next["operator"] in possible_dest:
+                if next["operator"] not in final_tasks:
+                    result, ftask = __class__.check_fm_task(next, next, level + 1)
+                    if result is False:
+                        return False, None
+                continue
+            while ftask["operator"] in init_tasks:
+                result, ftask = __class__.check_fm_task(ftask, ftask, level + 1)
+                if result is False:
+                    return False, None
+            result = __class__.check_fm_task(ftask, current_source, level + 1)
+            if result is False:
+                return False, None
+        return True, ftask
+
     def wsubmit(self, workflow, *params):
         """wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of
            parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
@@ -1011,7 +1045,9 @@ class Client:
                             dependency["task_index"] = index2
                             if "dependents_indexes" not in task2 or not task2["dependents_indexes"]:
                                 task2["dependents_indexes"] = []
+                                task2["dependents"] = []
                             task2["dependents_indexes"].append(index)
+                            task2["dependents"].append(task)
                             break
                     else:
                         return False, "Task dependency points to not existing task: " + str(dependency["task"])
@@ -1086,6 +1122,15 @@ class Client:
                 #   return error (graph has at least one cycle)
                 return False, "Workflow is not a DAG"
         #   else return success (graph has no cycles)
+
+        # Check for flow management operators
+        fm_tasks = ["oph_for", "oph_if"]
+        for task in w["tasks"]:
+            if task["operator"] in fm_tasks:
+                result = self.check_fm_task(task, task)
+                if result is False:
+                    return False, "Task '" + task["name"] + "' is not correclty associated"
+
         return True, "Workflow is valid"
 
     def wisvalid(self, workflow, *params):
