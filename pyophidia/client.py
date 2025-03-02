@@ -790,31 +790,36 @@ class Client:
             return True, task
         task["check_fm"] = True
         if "dependents" not in task:
-            return False, None
+            return False, task
         init_tasks = ["oph_for", "oph_if"]
         final_tasks = ["oph_endfor", "oph_endif"]
         source = current_source["operator"]
         if source in ["oph_for"]:
-            possible_dest = ["oph_endfor"]
+            allowed_dest = ["oph_endfor"]
+            disallowed_tasks = ["oph_elseif", "oph_else", "oph_endif"]
         elif source in ["oph_if", "oph_elseif"]:
-            possible_dest = ["oph_elseif", "oph_else", "oph_endif"]
+            allowed_dest = ["oph_elseif", "oph_else", "oph_endif"]
+            disallowed_tasks = ["oph_endfor"]
         elif source in ["oph_else"]:
-            possible_dest = ["oph_endif"]
+            allowed_dest = ["oph_endif"]
+            disallowed_tasks = ["oph_endfor", "oph_elseif", "oph_else"]
         for next in task["dependents"]:
             ftask = next
-            if ftask["operator"] in possible_dest:
+            if ftask["operator"] in disallowed_tasks:
+                return False, ftask
+            if ftask["operator"] in allowed_dest:
                 if ftask["operator"] not in final_tasks:
                     result, ftask = __class__.check_fm_task(ftask, ftask)
                     if result is False:
-                        return False, None
+                        return False, ftask
                 continue
             while ftask["operator"] in init_tasks:
                 result, ftask = __class__.check_fm_task(ftask, ftask)
                 if result is False:
-                    return False, None
+                    return False, ftask
             result, ftask = __class__.check_fm_task(ftask, current_source)
             if result is False:
-                return False, None
+                return False, ftask
         return True, ftask
 
     def wsubmit(self, workflow, *params):
@@ -1127,9 +1132,9 @@ class Client:
         fm_tasks = ["oph_for", "oph_if"]
         for task in w["tasks"]:
             if task["operator"] in fm_tasks:
-                result = self.check_fm_task(task, task)
+                result, ftask = self.check_fm_task(task, task)
                 if result is False:
-                    return False, "Task '" + task["name"] + "' is not correclty associated"
+                    return False, "Task '" + task["name"] + "' is not correclty associated" + ((" (see also task '" + ftask["name"] + "')") if ftask is not None else "")
 
         return True, "Workflow is valid"
 
