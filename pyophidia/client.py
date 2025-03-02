@@ -785,13 +785,15 @@ class Client:
 
     @staticmethod
     def check_fm_task(task, current_source):
-        if "check_fm" in task:
+        if "is_checked" in task:
             # Skip if the task has already been analyzed
+            # print("Task " + task["name"] + " is skipped")
             return True, task
-        task["check_fm"] = True
         if "dependents" not in task:
             return False, task
         init_tasks = ["oph_for", "oph_if"]
+        if task["name"] in init_tasks:
+            task["is_checked"] = True
         final_tasks = ["oph_endfor", "oph_endif"]
         source = current_source["operator"]
         if source in ["oph_for"]:
@@ -803,8 +805,10 @@ class Client:
         elif source in ["oph_else"]:
             allowed_dest = ["oph_endif"]
             disallowed_tasks = ["oph_endfor", "oph_elseif", "oph_else"]
+        # print("Task " + task["name"] + " (" + task["operator"] + ") from task " + current_source["name"] + " (" + source + ")")
         for next in task["dependents"]:
             ftask = next
+            # print("\tConsider " + ftask["name"] + " (" + ftask["operator"] + ") as next of " + task["operator"])
             if ftask["operator"] in disallowed_tasks:
                 return False, ftask
             if ftask["operator"] in allowed_dest:
