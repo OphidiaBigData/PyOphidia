@@ -25,6 +25,7 @@ sys.path.insert(0, os.path.dirname(previous_dir))
 sys.path.insert(0, "..")
 from pyophidia import Workflow, Experiment, Task
 
+
 def run():
     print("Parse arguments", file=sys.stderr)
     parser = argparse.ArgumentParser()
@@ -350,6 +351,7 @@ def run():
         )
     print("Add task '" + args.name + "'", file=sys.stderr)
     print(repr(e1))
+
 
 if __name__ == "__main__":
     run()
