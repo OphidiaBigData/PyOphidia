@@ -15,4 +15,6 @@ PKG-INFO
 *~
 .ipynb_checkpoints/
 .DS_Store
+sample.dot
+sample.dot.pdf
 

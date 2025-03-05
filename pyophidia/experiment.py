@@ -57,6 +57,7 @@ def _dependency_check(dependency):
         raise AttributeError("Dependency must be prov, cwl or graphviz")
 
 
+
 class Experiment:
     """
     Creates or loads a workflow experiment.
@@ -491,14 +492,6 @@ class Experiment:
 
         json_string = __class__.json_open(file)
         try:
-            from client import Client
-        except ImportError:
-            from .client import Client
-        client = Client(
-            local_mode=True,
-        )
-        json_string = client.remove_comments(json_string)
-        try:
             data = json.loads(json_string)
         except json.decoder.JSONDecodeError:
             raise ValueError("File is not a valid JSON")
@@ -568,7 +561,7 @@ class Experiment:
         return experiment
 
     @staticmethod
-    def __validate(json_string):
+    def __validate(json_string, *params):
         try:
             from client import Client
         except ImportError:
@@ -576,11 +569,10 @@ class Experiment:
         client = Client(
             local_mode=True,
         )
-        experiment_validity = client.wisvalid(json_string)
-        return experiment_validity[0]
+        return client.wisvalid(json_string, *params)
 
     @staticmethod
-    def validate(file):
+    def validate(file, *params):
         """
         Check the workflow experiment definition validity
 
@@ -592,9 +584,9 @@ class Experiment:
         -------
         Experiment.validate("json_file.json")
         """
-        return __class__.__validate(__class__.json_open(file))
+        return __class__.__validate(__class__.json_open(file), *params)
 
-    def isvalid(self):
+    def isvalid(self, *params):
         """
         Check the workflow experiment definition validity
 
@@ -610,9 +602,10 @@ class Experiment:
                          dependencies={})
         e1.isvalid()
         """
-        return self.__validate(self.workflow_to_json())
+        experiment_validity = self.__validate(self.workflow_to_json(), *params)
+        return experiment_validity[0]
 
-    def check(self, filename="sample.dot", display=True):
+    def check(self, filename="sample.dot", display=True, *params):
         """
         Check the experiment definition validity, display the graph of the experiment structure and store the graph a file
 
@@ -666,7 +659,7 @@ class Experiment:
                 cluster_counter += 1
             return subgraphs_list
 
-        experiment_validity = self.isvalid()
+        experiment_validity = self.isvalid(*params)
         self.__param_check(
             [
                 {"name": "filename", "value": filename, "type": str},

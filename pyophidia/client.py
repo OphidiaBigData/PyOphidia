@@ -310,7 +310,8 @@ class Client:
         wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series
             of parameters that will replace $1, $2 etc. in the workflow.
             The workflow will be validated against the Ophidia Workflow JSON Schema.
-        wisvalid(workflow) -> bool : Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
+        wisvalid(workflow,*params) -> bool,str : Return a pair of values: the former is True if the workflow (a JSON string or a Python dict)
+            is valid against the Ophidia Workflow JSON Schema; the latter is a text message describing it.
         pretty_print(response, response_i) -> self : Prints the last_response JSON string attribute as a formatted response
     """
 
@@ -1002,6 +1003,64 @@ class Client:
         regex = re.compile(pattern, re.MULTILINE | re.DOTALL)
         return regex.sub(_replacer, checked_workflow)
 
+    @staticmethod
+    def set_params(buffer, *params):
+        params_list = ""
+        try:
+            for index, param in enumerate(params, start=1):
+                buffer = buffer.replace("${" + str(index) + "}", str(param))
+                buffer = re.sub(r"(\$" + str(index) + r")([^0-9]|$)", str(param) + r"\g<2>", buffer)
+                params_list += " " + str(param)
+            buffer = re.sub(r"(\$\{?(\d*)\}?)", "", buffer)
+            buffer = __class__.remove_comments(buffer)
+            return json.loads(buffer), params_list
+        except Exception as e:
+            print(get_linenumber(), "Something went wrong in parsing the string:", e)
+            return None, None
+
+    @staticmethod
+    def check_fm_task(task, current_source):
+        if "is_checked" in task:
+            # Skip if the task has already been analyzed
+            # print("Task " + task["name"] + " is skipped")
+            return True, task
+        if "dependents" not in task:
+            return False, task
+        init_tasks = ["oph_for", "oph_if"]
+        if task["name"] in init_tasks:
+            task["is_checked"] = True
+        final_tasks = ["oph_endfor", "oph_endif"]
+        source = current_source["operator"]
+        if source in ["oph_for"]:
+            allowed_dest = ["oph_endfor"]
+            disallowed_tasks = ["oph_elseif", "oph_else", "oph_endif"]
+        elif source in ["oph_if", "oph_elseif"]:
+            allowed_dest = ["oph_elseif", "oph_else", "oph_endif"]
+            disallowed_tasks = ["oph_endfor"]
+        elif source in ["oph_else"]:
+            allowed_dest = ["oph_endif"]
+            disallowed_tasks = ["oph_endfor", "oph_elseif", "oph_else"]
+        # print("Task " + task["name"] + " (" + task["operator"] + ") from task " + current_source["name"] + " (" + source + ")")
+        for next in task["dependents"]:
+            ftask = next
+            # print("\tConsider " + ftask["name"] + " (" + ftask["operator"] + ") as next of " + task["operator"])
+            if ftask["operator"] in disallowed_tasks:
+                return False, ftask
+            if ftask["operator"] in allowed_dest:
+                if ftask["operator"] not in final_tasks:
+                    result, ftask = __class__.check_fm_task(ftask, ftask)
+                    if result is False:
+                        return False, ftask
+                continue
+            while ftask["operator"] in init_tasks:
+                result, ftask = __class__.check_fm_task(ftask, ftask)
+                if result is False:
+                    return False, ftask
+            result, ftask = __class__.check_fm_task(ftask, current_source)
+            if result is False:
+                return False, ftask
+        return True, ftask
+
     def wsubmit(self, workflow, *params):
         """wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of
            parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
@@ -1020,39 +1079,20 @@ class Client:
             raise RuntimeError("workflow is not present")
         if self.username is None or self.password is None or self.server is None or self.port is None:
             raise RuntimeError("one or more login parameters are None")
-        request = None
 
-        params_list = ""
+        buffer = workflow
         if os.path.isfile(workflow):
             try:
                 file = open(workflow, "r")
                 buffer = file.read()
                 file.close()
-                for index, param in enumerate(params, start=1):
-                    buffer = buffer.replace("${" + str(index) + "}", str(param))
-                    buffer = re.sub(r"(\$" + str(index) + r")([^0-9]|$)", str(param) + r"\g<2>", buffer)
-                    params_list += " " + str(param)
-                buffer = re.sub(r"(\$\{?(\d*)\}?)", "", buffer)
-                buffer = self.remove_comments(buffer)
-                request = json.loads(buffer)
-
             except Exception as e:
-                print(_get_linenumber(), "Something went wrong in reading and/or parsing the file:", e)
+                print(_get_linenumber(), "Something went wrong in reading the file:", e)
                 return None
-        else:
-            try:
-                buffer = workflow
-                for index, param in enumerate(params, start=1):
-                    buffer = buffer.replace("${" + str(index) + "}", str(param))
-                    buffer = re.sub(r"(\$" + str(index) + r")([^0-9]|$)", str(param) + r"\g<2>", buffer)
-                    params_list += " " + str(param)
-                buffer = re.sub(r"(\$\{?(\d*)\}?)", "", buffer)
-                buffer = self.remove_comments(buffer)
-                request = json.loads(buffer)
 
-            except Exception as e:
-                print(_get_linenumber(), "Something went wrong in parsing the string:", e)
-                return None
+        request, params_list = self.set_params(buffer, *params)
+        if request is None:
+            return None
 
         if self.session and "sessionid" not in request:
             request["sessionid"] = self.session
@@ -1074,7 +1114,7 @@ class Client:
             request["direct_output"] = "no"
         self.last_request = json.dumps(request)
         try:
-            err, err_msg = self.wisvalid(self.last_request)
+            err, err_msg = self.wisvalid(self.last_request, *params)
             if not err:
                 print("The workflow is not valid: " + str(err_msg))
                 return None
@@ -1143,8 +1183,9 @@ class Client:
             return None
         return self
 
-    def wisvalid(self, workflow):
-        """wisvalid(workflow) -> bool : Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
+    def wisvalid(self, workflow, *params):
+        """wisvalid(workflow,*params) -> bool,str : Return a pair of values: the former is True if the workflow (a JSON string or a Python dict)
+           is valid against the Ophidia Workflow JSON Schema; the latter is a validation/error message.
         :param workflow: a JSON string or a Python dict containing an Ophidia workflow
         :type workflow: str or dict
         :returns: True or False and validation message
@@ -1152,12 +1193,14 @@ class Client:
         """
 
         if workflow is None:
-            return False
+            return False, "Unknown workflow"
         w = None
 
         if isinstance(workflow, str):
             try:
-                w = json.loads(self.remove_comments(workflow))
+                w, params_list = self.set_params(workflow, *params)
+                if w is None:
+                    return False, "Workflow is not a valid JSON"
             except ValueError:
                 return False, "Workflow is not a valid JSON"
         elif isinstance(workflow, dict):
@@ -1169,13 +1212,27 @@ class Client:
         if "on_error" in w:
             try:
                 if w["on_error"] != "skip" and w["on_error"] != "continue" and w["on_error"] != "break" and w["on_error"] != "abort" and w["on_error"][:7] != "repeat ":
-                    return False, "Mandatory global argument 'on_error' is not correct"
+                    return False, "Global argument 'on_error' is not correct"
             except KeyError:
-                return False, "Mandatory global argument 'on_error' is missing"
-        if "ncores" in w and not w["ncores"].isdigit():
-            return False, "Mandatory global argument 'ncores' is missing or is not correct"
+                return False, "Global argument 'on_error' is missing"
+        if "on_exit" in w and w["on_exit"] != "nop" and w["on_exit"] != "oph_delete" and w["on_exit"] != "oph_deletecontainer":
+            return False, "Global argument 'on_exit' is not correct"
+        if "run" in w and w["run"] != "yes" and w["run"] != "no":
+            return False, "Global argument 'run' is not correct"
+        if "save" in w and w["save"] != "yes" and w["save"] != "no":
+            return False, "Global argument 'save' is not correct"
+        if "nhost" in w and (not w["nhost"].isdigit() or int(w["nhost"]) < 0):
+            return False, "Global argument 'nhost' is not correct"
+        if "ncores" in w and (not w["ncores"].isdigit() or int(w["ncores"]) <= 0):
+            return False, "Global argument 'ncores' is not correct"
+        if "nthreads" in w and (not w["nthreads"].isdigit() or int(w["nthreads"]) <= 0):
+            return False, "Global argument 'nthreads' is not correct"
         if "exec_mode" in w and w["exec_mode"] != "sync" and w["exec_mode"] != "async":
-            return False, "Mandatory global argument 'exec_mode' is missing or is not correct"
+            return False, "Global argument 'exec_mode' is not correct"
+        if "direct_output" in w and w["direct_output"] != "yes" and w["direct_output"] != "no":
+            return False, "Global argument 'direct_output' is not correct"
+        if "output_format" in w and w["output_format"] != "classic" and w["output_format"] != "compact" and w["output_format"] != "extended" and w["output_format"] != "extended_compact":
+            return False, "Global argument 'output_format' is not correct"
         if "tasks" not in w or not w["tasks"]:
             return False, "Workflow task section is missing"
         pattern = re.compile("^[A-Za-z0-9_]+=")
@@ -1191,6 +1248,18 @@ class Client:
                 for argument in task["arguments"]:
                     if not pattern.match(argument):
                         return False, "Task argument '" + str(argument) + "' is not valid in task: " + task_name
+                    variable_value = argument.split("=")
+                    try:
+                        if variable_value[0] == "ncores" and (not variable_value[1].isdigit() or int(variable_value[1]) <= 0):
+                            return False, "Global argument 'ncores' is not correct"
+                    except IndexError:
+                        return False, "Task argument 'ncores' is not correct in task: " + task_name
+                    try:
+                        if variable_value[0] == "nthreads" and (not variable_value[1].isdigit() or int(variable_value[1]) <= 0):
+                            return False, "Global argument 'nthreads' is not correct"
+                    except IndexError:
+                        return False, "Task argument 'nthreads' is not correct in task: " + task_name
+
             if "dependencies" in task and task["dependencies"]:
                 for dependency in task["dependencies"]:
                     if "task" not in dependency or not dependency["task"]:
@@ -1201,9 +1270,15 @@ class Client:
             if "on_error" in task:
                 try:
                     if task["on_error"] != "skip" and task["on_error"] != "continue" and task["on_error"] != "break" and task["on_error"] != "abort" and task["on_error"][:7] != "repeat ":
-                        return False, "Task 'on_error' is not correct in task: " + task_name
+                        return False, "Task argument 'on_error' is not correct in task: " + task_name
                 except KeyError:
-                    return False, "Task 'on_error' is not correct in task: " + task_name
+                    return False, "Task argument 'on_error' is not correct in task: " + task_name
+            if "on_exit" in task and task["on_exit"] != "nop" and task["on_exit"] != "oph_delete" and task["on_exit"] != "oph_deletecontainer":
+                return False, "Task argument 'on_exit' is not correct in task: " + task_name
+            if "run" in task and task["run"] != "yes" and task["run"] != "no":
+                return False, "Task argument 'run' is not correct in task: " + task_name
+            if "save" in task and task["save"] != "yes" and task["save"] != "no":
+                return False, "Task argument 'save' is not correct in task: " + task_name
 
         for index, task in enumerate(w["tasks"]):
             if "dependencies" in task and task["dependencies"]:
@@ -1215,7 +1290,9 @@ class Client:
                             dependency["task_index"] = index2
                             if "dependents_indexes" not in task2 or not task2["dependents_indexes"]:
                                 task2["dependents_indexes"] = []
+                                task2["dependents"] = []
                             task2["dependents_indexes"].append(index)
+                            task2["dependents"].append(task)
                             break
                     else:
                         return False, "Task dependency points to not existing task: " + str(dependency["task"])
@@ -1290,6 +1367,15 @@ class Client:
                 #   return error (graph has at least one cycle)
                 return False, "Workflow is not a DAG"
         #   else return success (graph has no cycles)
+
+        # Check for flow management operators
+        fm_tasks = ["oph_for", "oph_if"]
+        for task in w["tasks"]:
+            if task["operator"] in fm_tasks:
+                result, ftask = self.check_fm_task(task, task)
+                if result is False:
+                    return False, "Task '" + task["name"] + "' is not correclty associated" + ((" (see also task '" + ftask["name"] + "')") if ftask is not None else "")
+
         return True, "Workflow is valid"
 
     def last_workflowid(self):

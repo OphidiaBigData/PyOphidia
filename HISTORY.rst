@@ -1,10 +1,11 @@
 
-v2.0.0 - 2024-11-06
+v2.0.0 - 2025-02-20
 -------------------
 
 Added:
 ~~~~~~
 
+- Argument to set workflow parameters for validation methods
 - Some examples and notebooks
 - Provenance support  `#46 <https://github.com/OphidiaBigData/PyOphidia/pull/46>`_
 - CWL support  `#46 <https://github.com/OphidiaBigData/PyOphidia/pull/46>`_
@@ -19,6 +20,7 @@ Fixed:
 Changed:
 ~~~~~~~~
 
+- Workflow validation procedure
 - Update JSON Request if new tasks are detected while monitoring a workflow
 
 
