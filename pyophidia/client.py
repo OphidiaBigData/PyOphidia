@@ -41,7 +41,7 @@ def _get_linenumber():
 
 
 def _ophsubmit(username, password, server, port, query):
-    #Constant definitions
+    # Constant definitions
     SOAP_MESSAGE_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
     <SOAP-ENV:Envelope
     xmlns:ns0 = "urn:oph"
