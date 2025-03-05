@@ -77,8 +77,8 @@ class Client:
         wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series
             of parameters that will replace $1, $2 etc. in the workflow.
             The workflow will be validated against the Ophidia Workflow JSON Schema.
-        wisvalid(workflow,*params) -> bool : Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
-        wisvalid2(workflow,*params) -> bool,str : Return a pair of values: the former is the output of wisvalid(workflow,*params); the latter is a text message describing it.
+        wisvalid(workflow,*params) -> bool,str : Return a pair of values: the former is True if the workflow (a JSON string or a Python dict)
+            is valid against the Ophidia Workflow JSON Schema; the latter is a text message describing it.
         pretty_print(response, response_i) -> self : Prints the last_response JSON string attribute as a formatted response
     """
 
@@ -879,7 +879,7 @@ class Client:
             request["direct_output"] = "no"
         self.last_request = json.dumps(request)
         try:
-            err, err_msg = self.wisvalid2(self.last_request, *params)
+            err, err_msg = self.wisvalid(self.last_request, *params)
             if not err:
                 print("The workflow is not valid: " + str(err_msg))
                 return None
@@ -948,8 +948,9 @@ class Client:
             return None
         return self
 
-    def wisvalid2(self, workflow, *params):
-        """wisvalid2(workflow,*params) -> bool,str : Return a pair of values: the former is the output of wisvalid(workflow,*params); the latter is a text message describing it.
+    def wisvalid(self, workflow, *params):
+        """wisvalid(workflow,*params) -> bool,str : Return a pair of values: the former is True if the workflow (a JSON string or a Python dict)
+           is valid against the Ophidia Workflow JSON Schema; the latter is a validation/error message.
         :param workflow: a JSON string or a Python dict containing an Ophidia workflow
         :type workflow: str or dict
         :returns: True or False and validation message
@@ -1141,16 +1142,6 @@ class Client:
                     return False, "Task '" + task["name"] + "' is not correclty associated" + ((" (see also task '" + ftask["name"] + "')") if ftask is not None else "")
 
         return True, "Workflow is valid"
-
-    def wisvalid(self, workflow, *params):
-        """wisvalid(workflow,*params) -> bool : Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
-        :param workflow: a JSON string or a Python dict containing an Ophidia workflow
-        :type workflow: str or dict
-        :returns: True or False and validation message
-        :rtype: bool
-        """
-        err, err_msg = self.wisvalid2(workflow, *params)
-        return err
 
     def last_workflowid(self):
         """last_workflowid(workflow) -> bool : Return the workflow identifier associated with the last command submitted.

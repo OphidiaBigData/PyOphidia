@@ -169,8 +169,7 @@ Client methods
 - *resume_cdd(display) -> self*: Resume the last cdd (current working data directory) the user was located into.
 - *resume_cube(display) -> self*: Resume the last cube produced by the user.
 - *wsubmit(workflow, \*params) -> self*: Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
-- *wisvalid(workflow, \*params) -> bool*: Return True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema or False.
-- *wisvalid2(workflow, \*params) -> bool, str*: Return the output of *wisvalid(workflow, \*params)* and the related validation/error message.
+- *wisvalid(workflow, \*params) -> bool, str*: Return a pair of values: the former is True if the workflow (a JSON string or a Python dict) is valid against the Ophidia Workflow JSON Schema; the latter is a validation/error message.
 - *pretty_print(response, response_i) -> self*: Prints the last_response JSON string attribute as a formatted response.
 
 *To display the command output set "display = True"*

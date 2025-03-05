@@ -498,14 +498,6 @@ class Experiment:
 
         json_string = __class__.json_open(file)
         try:
-            from client import Client
-        except ImportError:
-            from .client import Client
-        client = Client(
-            local_mode=True,
-        )
-        json_string = client.remove_comments(json_string)
-        try:
             data = json.loads(json_string)
         except json.decoder.JSONDecodeError:
             raise ValueError("File is not a valid JSON")
@@ -583,7 +575,7 @@ class Experiment:
         client = Client(
             local_mode=True,
         )
-        return client.wisvalid2(json_string, *params)
+        return client.wisvalid(json_string, *params)
 
     @staticmethod
     def validate(file, *params):
