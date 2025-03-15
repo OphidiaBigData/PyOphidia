@@ -1,2 +1,2 @@
 #!/usr/bin/env python
-python setup.py install
+python -m pip install ".[convert,cwl,prov,display]"

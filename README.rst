@@ -575,7 +575,7 @@ Load an experiment from the JSON document
 
 Additional information on the methods
 """""""""""""""""""""""""""""""""""""
-Docstrings are available for the Client, Cuve, Workflow, Experiment and Task classes. To get additional information run for example:
+Docstrings are available for the Client, Cube, Workflow, Experiment and Task classes. To get additional information run for example:
 
 .. code-block:: python
 

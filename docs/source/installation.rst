@@ -17,44 +17,66 @@ Most of *PyOphidia* features are provided without installing any additional Pyth
 -   [pandas](https://pandas.pydata.org/): a data analysis and manipulation tool
 -   [cwltool](https://cwltool.readthedocs.io/en/latest/): a tool to provide validation and execution of CWL files
 
-Install with pip
-----------------
+Install from Pypi
+-----------------
 
-To install *PyOphidia* package run the following command:
+To install the base *PyOphidia* package run the following command:
 
-.. code-block:: console 
+.. code-block:: bash
 
-   $ pip install pyophidia
+   pip install pyophidia
+
+The base installation includes most of the PyOphidia capabilities with a few exceptions. The following features can be optionally enabled and the related dependencies can be automatically installed:
+
+- Conversion of the native Ophidia data structure into well-known structures (i.e., Pandas dataframe, Xarray dataset). *Numpy*, *Pandas* and *Xarray* libraries are installed
+
+.. code-block:: bash
+
+   pip install pyophidia[convert]
+
+- Visual representation of Ophidia workflows defined in the *Experiment* module and executed with the *Workflow* one. *Graphviz* and *IPython* libraries are installed
+
+.. code-block:: bash
+
+   pip install pyophidia[display]
+
+- Generation of provenance documents with the W3C PROV standard from *Workflow* module. *Prov* and *Pydot* libraries are installed
+
+.. code-block:: bash
+
+   pip install pyophidia[prov]
+
+- Support for Ophidia workflows in CWL standard. *CWL* and *cwlref-runner* are installed
+
+.. code-block:: bash
+
+   pip install pyophidia[cwl]
+
+Multiple features can be enabled together by specifying the different options, e.g., :code:`pip install pyophidia[convert,display,prov,cwl]`.
 
 Install with conda
 ------------------
 
 To install *PyOphidia* with conda run the following command:
 
-.. code-block:: console 
+.. code-block:: bash
 
-   $ conda install -c conda-forge pyophidia 
+   conda install -c conda-forge pyophidia
 
 Install from sources
 --------------------
 
-To install the latest developement version run the following commands:
+To install the latest developement version run the following command:
 
-.. code-block:: console 
+.. code-block:: bash
 
-   $ git clone https://github.com/OphidiaBigData/PyOphidia
-   $ cd PyOphidia
-   $ python setup.py install
+   pip install git+https://github.com/OphidiaBigData/PyOphidia.git
 
-CWL support
------------
-This tool translates a workflow description written using CWL specification_ into Ophidia workflow specification.
-Before using the tool run the following commands:
+Optional features can be enabled similarly to what explained above wit the following command:
 
-.. code-block:: console
+.. code-block:: bash
 
-   $ pip install cwltool
-   $ pip install cwlref-runner
+   pip install git+https://github.com/OphidiaBigData/PyOphidia.git#egg=pyophidia[convert,display,prov,cwl]
 
 .. _specification: http://www.commonwl.org/specification
 

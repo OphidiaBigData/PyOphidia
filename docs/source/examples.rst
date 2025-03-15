@@ -8,13 +8,14 @@ First of all import PyOphidia modules
 
 .. code-block:: python
 
-   from PyOphidia import cube, client
+   from pyophidia import Client, Cube
 
 As a first command we need to connect to the Ophidia server front-end to load the modules variables and start an analytics session. So, we instantiate a new Client common to all Cube instances using setclient method (connection details are inferred from the environment with *read_env=true*).
 
 .. code-block:: python
 
-   cube.Cube.setclient(read_env=True)
+   cli = Client(read_env = True)
+   Cube.setclient(cli)
 
 Let's now load a NetCDF file. We can inspect the file with the *explorenc* Ophidia operator that shows:
 - *Dimension list*: it contains the NetCDF file dimensions and their size;
@@ -23,7 +24,7 @@ Let's now load a NetCDF file. We can inspect the file with the *explorenc* Ophid
 
 .. code-block:: python
 
-   cube.Cube.explorenc(
+   Cube.explorenc(
             src_path="/home/ophidia/notebooks/tasmax_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc"
         )
 
@@ -42,7 +43,7 @@ We can now create a datacube from a CMIP5 NetCDF (.nc) dataset produced by CMCC_
 
 .. code-block:: python
 
-   tasmaxCube = cube.Cube.importnc2(
+   tasmaxCube = Cube.importnc2(
             src_path='/home/ophidia/notebooks/tasmax_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc',
             measure='tasmax',
             imp_dim='time',
@@ -55,7 +56,7 @@ We can now create a datacube from a CMIP5 NetCDF (.nc) dataset produced by CMCC_
 
 .. code-block:: python
 
-   tasmaxCube = cube.Cube.importnc2(
+   tasmaxCube = Cube.importnc2(
             src_path='/home/ophidia/notebooks/tasmax_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc',
             measure='tasmax',
             imp_dim='time',
@@ -75,13 +76,13 @@ In particular, we can use the *list* operator with the level of verbosity parame
 
 .. code-block:: python
 
-   cube.Cube.list(level=2)
+   Cube.list(level=2)
 
 To get the list of arguments and default values the python *help()* command can be used
 
 .. code-block:: python
 
-   help(cube.Cube)
+   help(Cube)
 
 
 Inspect the cube and its dimensions structure using the *info()* method. Note the data fragmentation table
@@ -145,7 +146,7 @@ In the new cube the time dimension is "collapsed" (size: *ALL*)
 
 .. code-block:: python
 
-   cube.Cube.list(level=2)
+   Cube.list(level=2)
 
 Let's export the data into a Python-friendly structure with the *export_array()* method. 
 
@@ -290,7 +291,7 @@ Now, we can import the NetCDF file for the tasmin variable...
 
 .. code-block:: python
 
-   tasminCube = cube.Cube.importnc2(
+   tasminCube = Cube.importnc2(
             src_path='/home/ophidia/notebooks/tasmin_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc',
             measure='tasmin',
             imp_dim='time',
@@ -628,21 +629,21 @@ Our workspace now contains several datacubes from the experiments just run.
 
 .. code-block:: python
 
-   cube.Cube.list(level=2)
+   Cube.list(level=2)
 
 Once done, we can clear the space before moving to other notebooks using the *deletecontainer* method with the container name (e.g ```container='tasmax_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc'```). 
 
 .. code-block:: python
 
-   cube.Cube.deletecontainer(container='tasmax_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc',force='yes')
-   cube.Cube.deletecontainer(container='tasmin_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc',force='yes')
+   Cube.deletecontainer(container='tasmax_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc',force='yes')
+   Cube.deletecontainer(container='tasmin_day_CMCC-CESM_rcp85_r1i1p1_20960101-21001231.nc',force='yes')
 
 
 The virtual file system should now be "clean"
 
 .. code-block:: python
 
-   cube.Cube.list(level=2)
+   Cube.list(level=2)
 
 .. _CMCC: https://www.cmcc.it
 .. _OPH_REDUCE https://ophidia.cmcc.it/documentation/users/operators/OPH_REDUCE.html

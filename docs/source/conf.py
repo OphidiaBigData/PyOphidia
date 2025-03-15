@@ -3,7 +3,7 @@
 # -- Project information
 
 project = 'PyOphidia'
-copyright = '2024, CMCC'
+copyright = '2025, CMCC'
 author = 'CMCC'
 
 release = '2.0'
