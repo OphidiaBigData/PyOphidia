@@ -68,6 +68,8 @@ def test_convert_to_xarray(cube):
     cube.to_dataset()
 
 
-@pytest.mark.parametrize(("cube"), [(random_cube_1), (random_cube_2), (random_cube_3)])
+@pytest.mark.parametrize(
+    ("cube"), [(random_cube_1), (random_cube_2), (random_cube_3)]
+)
 def test_convert_to_dataframe(cube):
     cube.to_dataframe()

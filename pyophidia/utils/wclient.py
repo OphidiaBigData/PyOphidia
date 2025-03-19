@@ -43,7 +43,9 @@ def print_help():
         ignore_unknown_options=True,
     )
 )
-@click.option("-v", "--verbose", is_flag=True, help="Will print verbose messages")
+@click.option(
+    "-v", "--verbose", is_flag=True, help="Will print verbose messages"
+)
 @click.option(
     "-m",
     "--monitor",
@@ -71,7 +73,10 @@ def print_help():
 @click.option(
     "-i",
     "--id",
-    help="Id of a running/completed/failed experiment workflow to cancel/monitor/restart",
+    help=(
+        "Id of a running/completed/failed experiment workflow to"
+        "cancel/monitor/restart"
+    ),
     type=int,
     metavar="<id>",
 )
@@ -92,7 +97,10 @@ def print_help():
 @click.option(
     "-t",
     "--type",
-    help="The type of the document describing the experiment workflow: json (default) or cwl",
+    help=(
+        "The type of the document describing the experiment workflow:"
+        "json (default) or cwl"
+    ),
     type=str,
     metavar="<document type>",
 )
@@ -129,7 +137,7 @@ def run(
     if workflow:
         try:
             ophclient = Client(read_env=True)
-        except:
+        except Exception:
             verbose_check_display(
                 True,
                 "Unable to connect to Ophidia server",
@@ -160,7 +168,7 @@ def run(
                 result = cwl_tool(**cwl_args)
                 workflow = result["outputexperiment"]["location"][7:]
                 args = []
-            except:
+            except Exception:
                 verbose_check_display(
                     True,
                     "Unable to run cwltool",
@@ -216,7 +224,9 @@ def run(
         else:
             verbose_check_display(
                 verbose,
-                "Will cancel the experiment workflow execution: {0}".format(str(id)),
+                "Will cancel the experiment workflow execution: {0}".format(
+                    str(id)
+                ),
             )
             w1 = Workflow(id)
             w1.cancel()
@@ -232,7 +242,9 @@ def run(
         else:
             verbose_check_display(
                 verbose,
-                "Will monitor the experiment workflow execution: {0}".format(str(id)),
+                "Will monitor the experiment workflow execution: {0}".format(
+                    str(id)
+                ),
             )
             w1 = Workflow(id)
             w1.monitor(frequency=5, iterative=True, display=display)
@@ -242,7 +254,8 @@ def run(
             verbose = True
             verbose_check_display(
                 True,
-                "Id of the experiment workflow to be restarted from checkpoint is required",
+                "Id of the experiment workflow to be restarted from checkpoint"
+                "is required",
             )
             return 1
         w1 = Workflow(id)

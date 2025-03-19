@@ -93,21 +93,26 @@ def _calculate_decoded_length(decoded_string, output_type):
 
 
 class Cube:
-    """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,
-            cdd=None, compressed='no', exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='no',
-            check_compliance='no', offset=0, ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none',
-            subset_filter='all', time_filter='yes', subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00',
-            calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0,
-            month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-', policy='rr',
-            description='-', schedule=0, pid=None, check_grid='no', save='yes', display=False) -> obj
-         or Cube(pid=None) -> obj
+    """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto',
+        imp_dim='auto', measure=None, src_path=None, cdd=None, compressed='no',
+        exp_concept_level='c', grid='-', imp_concept_level='c',
+        import_metadata='no', check_compliance='no', offset=0,
+        ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none',
+        subset_filter='all', time_filter='yes', subset_type='index',
+        exec_mode='sync', base_time='1900-01-01 00:00:00',
+        calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0,
+        month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes',
+        units='d', vocabulary='-', policy='rr', description='-', schedule=0,
+        pid=None, check_grid='no', save='yes', display=False) -> obj or
+        Cube(pid=None) -> obj
 
     Attributes:
         pid: cube PID
         creation_date: creation date of the cube
         measure: name of the variable imported into the cube
         measure_type: measure data type
-        level: number of operations between the original imported cube and the actual cube
+        level: number of operations between the original imported cube and the
+            actual cube
         nfragments: total number of fragments
         source_file: parent of the actual cube
         hostxcube: number of hosts associated with the cube
@@ -120,218 +125,320 @@ class Cube:
         dim_info: list of dict with information on each cube dimension
 
     Class Attributes:
-        client: instance of class Client through which it is possible to submit all requests
+        client: instance of class Client through which it is possible to submit
+            all requests
 
     Methods:
-        aggregate(ncores=1, nthreads=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='-',
-                  grid='-', container='-', description='-', check_grid='no', save='yes', display=False)
+        aggregate(ncores=1, nthreads=1, exec_mode='sync', schedule=0,
+            group_size='all', operation=None, missingvalue='-', grid='-',
+            container='-', description='-', check_grid='no', save='yes',
+            display=False)
           -> Cube or None : wrapper of the operator OPH_AGGREGATE
-        aggregate2(ncores=1, nthreads=1, exec_mode='sync', schedule=0, dim='-', concept_level='A', midnight='24', operation=None,
-                   grid='-', missingvalue='-', container='-', description='-', check_grid='no', save='yes', display=False)
+        aggregate2(ncores=1, nthreads=1, exec_mode='sync', schedule=0, dim='-',
+            concept_level='A', midnight='24', operation=None, grid='-',
+            missingvalue='-', container='-', description='-', check_grid='no',
+            save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_AGGREGATE2
-        apply(ncores=1, nthreads=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual',
-              dim_type='manual', check_type='yes', on_reduce='skip', compressed='auto', schedule=0,container='-', description='-',
-              save='yes', display=False)
+        apply(ncores=1, nthreads=1, exec_mode='sync', query='measure',
+            dim_query='null', measure='null', measure_type='manual',
+            dim_type='manual', check_type='yes', on_reduce='skip',
+            compressed='auto', schedule=0,container='-', description='-',
+            save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_APPLY
-        concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0,
-                 description='-', subset_dims='none', subset_filter='all', subset_type='index', time_filter='yes', ncores=1,
-                 exec_mode='sync', schedule=0, save='yes', display=False)
+        concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes',
+            dim_offset='-', dim_continue='no', offset=0, description='-',
+            subset_dims='none', subset_filter='all', subset_type='index',
+            time_filter='yes', ncores=1, exec_mode='sync', schedule=0,
+            save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_CONCATNC
-        concatnc2(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0,
-                  description='-', subset_dims='none', subset_filter='all', subset_type='index', time_filter='yes', ncores=1,
-                  nthreads=1, exec_mode='sync', schedule=0, save='yes', display=False)
-           -> Cube or None : wrapper of the operator OPH_CONCATNC2
-        cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', save='yes', display=True)
+        concatnc2(src_path=None, cdd=None, grid='-', check_exp_dim='yes',
+            dim_offset='-', dim_continue='no', offset=0, description='-',
+            subset_dims='none', subset_filter='all', subset_type='index',
+            time_filter='yes', ncores=1, nthreads=1, exec_mode='sync',
+            schedule=0, save='yes', display=False)
+          -> Cube or None : wrapper of the operator OPH_CONCATNC2
+        cubeelements( schedule=0, algorithm='dim_product', ncores=1,
+            exec_mode='sync', objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
-        cubeschema(objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no',
-                   action='read', concept_level='c', dim_level=1, dim_array='yes', save='yes', display=True)
+        cubeschema(objkey_filter='all', exec_mode='sync', level=0, dim=None,
+            show_index='no', show_time='no', base64='no', action='read',
+            concept_level='c', dim_level=1, dim_array='yes', save='yes',
+            display=True)
           -> dict or None : wrapper of the operator OPH_CUBESCHEMA
-        cubesize(schedule=0, ncores=1, byte_unit='MB', algorithm='euristic', objkey_filter='all', exec_mode='sync',
-                 save='yes', display=True)
+        cubesize(schedule=0, ncores=1, byte_unit='MB', algorithm='euristic',
+            objkey_filter='all', exec_mode='sync', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_CUBESIZE
-        delete(ncores=1, nthreads=1, exec_mode='sync', schedule=0, save='yes', display=False)
-          -> None : wrapper of the operator OPH_DELETE
-        drilldown(ndim=1, container='-', ncores=1, exec_mode='sync', schedule=0, description='-', save='yes', display=False)
+        delete(ncores=1, nthreads=1, exec_mode='sync', schedule=0, save='yes',
+            display=False) -> None : wrapper of the operator OPH_DELETE
+        drilldown(ndim=1, container='-', ncores=1, exec_mode='sync',
+            schedule=0, description='-', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_DRILLDOWN
-        duplicate(container='-', ncores=1, nthreads=1, exec_mode='sync', description='-', save='yes', display=False)
+        duplicate(container='-', ncores=1, nthreads=1, exec_mode='sync',
+            description='-', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_DUPLICATE
-        explore(schedule=0, limit_filter=100, subset_dims=None, subset_filter='all', time_filter='yes', subset_type='index',
-                show_index='no', show_id='no', show_time='no', level=1, output_path='default', output_name='default', cdd=None,
-                base64='no', ncores=1, exec_mode='sync', objkey_filter='all', save='yes', display=True)
+        explore(schedule=0, limit_filter=100, subset_dims=None,
+            subset_filter='all', time_filter='yes', subset_type='index',
+            show_index='no', show_id='no', show_time='no', level=1,
+            output_path='default', output_name='default', cdd=None,
+            base64='no', ncores=1, exec_mode='sync', objkey_filter='all',
+            save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_EXPLORECUBE
-        exportnc(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0,
-                 shuffle='no', deflate=0, exec_mode='sync', ncores=1, save='yes', display=False)
+        exportnc(misc='no', output_path='default', output_name='default',
+            cdd=None, force='no', export_metadata='yes', schedule=0,
+            shuffle='no', deflate=0, exec_mode='sync', ncores=1, save='yes',
+            display=False)
           -> None : wrapper of the operator OPH_EXPORTNC
-        exportnc2(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0,
-                  shuffle='no', deflate=0, exec_mode='sync', ncores=1, save='yes', display=False)
+        exportnc2(misc='no', output_path='default', output_name='default',
+            cdd=None, force='no', export_metadata='yes', schedule=0,
+            shuffle='no', deflate=0, exec_mode='sync', ncores=1, save='yes',
+            display=False)
           -> None : wrapper of the operator OPH_EXPORTNC2
-        export_array(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no')
-          -> dict or None : return data from an Ophidia datacube into a Python structure
+        export_array(show_id='no', show_time='no', subset_dims=None,
+            subset_filter=None, time_filter='no')
+          -> dict or None : return data from an Ophidia datacube into a Python
+            structure
         info(display=True)
-          -> None : call OPH_CUBESIZE and OPH_CUBESCHEMA to fill all Cube attributes
-        intercube(cube2=None, cubes=None, operation='sub', missingvalue="-", container='-', exec_mode='sync', ncores=1,
-                  description='-', save='yes', display=False)
+          -> None : call OPH_CUBESIZE and OPH_CUBESCHEMA to fill all Cube
+            attributes
+        intercube(cube2=None, cubes=None, operation='sub', missingvalue="-",
+            container='-', exec_mode='sync', ncores=1, description='-',
+            save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_INTERCUBE
-        intercube2(cubes=None, operation='avg', missingvalue="-", container='-', exec_mode='sync', ncores=1,
-                  description='-', save='yes', display=False)
+        intercube2(cubes=None, operation='avg', missingvalue="-",
+            container='-', exec_mode='sync', ncores=1, description='-',
+            save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_INTERCUBE2
-        merge(nmerge=0, schedule=0, description='-', container='-', exec_mode='sync', ncores=1, save='yes', display=False)
+        merge(nmerge=0, schedule=0, description='-', container='-',
+            exec_mode='sync', ncores=1, save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_MERGE
-        metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None,
-                 variable_filter=None, metadata_type_filter=None, metadata_value_filter=None, force='no', exec_mode='sync',
-                 objkey_filter='all', save='yes', display=True)
+        metadata(mode='read', metadata_id=0, metadata_key='all',
+            variable='global', metadata_type='text', metadata_value=None,
+            variable_filter=None, metadata_type_filter=None,
+            metadata_value_filter=None, force='no', exec_mode='sync',
+            objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_METADATA
-        permute(dim_pos=None, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', save='yes',
-                display=False)
+        permute(dim_pos=None, container='-', exec_mode='sync', ncores=1,
+            nthreads=1, schedule=0, description='-', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_PERMUTE
-        provenance(branch='all', exec_mode='sync', objkey_filter='all', save='yes', display=True)
+        provenance(branch='all', exec_mode='sync', objkey_filter='all',
+            save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_CUBEIO
-        publish(ncores=1, content='all', exec_mode='sync', show_id= 'no', show_index='no', schedule=0, show_time='no',
-                save='yes', display=True)
+        publish(ncores=1, content='all', exec_mode='sync', show_id= 'no',
+            show_index='no', schedule=0, show_time='no', save='yes',
+            display=True)
           -> dict or None : wrapper of the operator OPH_PUBLISH
-        reduce(operation=None, container=None, exec_mode='sync', missingvalue="-", grid='-', group_size='all', ncores=1,
-               nthreads=1, schedule=0, order=2, description='-', objkey_filter='all', check_grid='no', save='yes', display=False)
+        reduce(operation=None, container=None, exec_mode='sync',
+            missingvalue="-", grid='-', group_size='all', ncores=1, nthreads=1,
+            schedule=0, order=2, description='-', objkey_filter='all',
+            check_grid='no', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_REDUCE
-        reduce2(dim=None, operation=None, concept_level='A', missingvalue="-", container='-', exec_mode='sync', grid='-',
-                midnight='24', order=2, description='-', schedule=0, ncores=1, nthreads=1, check_grid='no', save='yes', display=False)
+        reduce2(dim=None, operation=None, concept_level='A', missingvalue="-",
+            container='-', exec_mode='sync', grid='-', midnight='24', order=2,
+            description='-', schedule=0, ncores=1, nthreads=1, check_grid='no',
+            save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_REDUCE2
-        rollup(ndim=1, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', save='yes', display=False)
+        rollup(ndim=1, container='-', exec_mode='sync', ncores=1, nthreads=1,
+            schedule=0, description='-', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_ROLLUP
-        split(nsplit=2, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', save='yes', display=False)
+        split(nsplit=2, container='-', exec_mode='sync', ncores=1, nthreads=1,
+            schedule=0, description='-', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_SPLIT
-        subset(subset_dims='none', subset_filter='all', container='-', exec_mode='sync', subset_type='index',
-               time_filter='yes', offset=0, grid='-', ncores=1, nthreads=1, schedule=0, description='-', check_grid='no',
-               save='yes', display=False)
+        subset(subset_dims='none', subset_filter='all', container='-',
+            exec_mode='sync', subset_type='index', time_filter='yes', offset=0,
+            grid='-', ncores=1, nthreads=1, schedule=0, description='-',
+            check_grid='no', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_SUBSET
         to_dataset()
-          -> xarray.core.dataset.Dataset or None : return data from an Ophidia datacube into a Xarray Dataset
+          -> xarray.core.dataset.Dataset or None : return data from an Ophidia
+            datacube into a Xarray Dataset
         to_dataframe()
-          -> pandas.core.frame.DataFrame or None : return data from an Ophidia datacube into a Pandas Dataframe
+          -> pandas.core.frame.DataFrame or None : return data from an Ophidia
+            datacube into a Pandas Dataframe
         unpublish( exec_mode='sync', save='yes', display=False)
           -> None : wrapper of the operator OPH_UNPUBLISH
 
     Class Methods:
         setclient(client)
-          -> None : Instantiate the Client, common for all Cube objects, for submitting requests
-        b2drop(action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', save='yes', display=False)
+          -> None : Instantiate the Client, common for all Cube objects, for
+            submitting requests
+        b2drop(action='put', auth_path='-', src_path=None, dst_path='-',
+            cdd=None, exec_mode='sync', save='yes', display=False)
           -> None : wrapper of the operator OPH_B2DROP
         cancel(id=None, type='kill', objkey_filter='all', display=False)
           -> None : wrapper of the operator OPH_CANCEL
-        cluster(action='info', nhost=1, host_partition='all', host_type='io', user_filter='all', exec_mode='sync', display=False)
+        cluster(action='info', nhost=1, host_partition='all', host_type='io',
+            user_filter='all', exec_mode='sync', display=False)
           -> None : wrapper of the operator OPH_CLUSTER
-        containerschema(container=None, cwd=None, exec_mode='sync', objkey_filter='all', save='yes', display=True)
+        containerschema(container=None, cwd=None, exec_mode='sync',
+            objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_CONTAINERSCHEMA
-        createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base',
-                        base_time='1900-01-01 00:00:00', units='d', calendar='standard',
-                        month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', leap_year=0, leap_month=2, vocabulary='CF',
-                        compressed='no', description='-', save='yes', display=False)
+        createcontainer(exec_mode='sync', container=None, cwd=None, dim=None,
+            dim_type="double", hierarchy='oph_base',
+            base_time='1900-01-01 00:00:00', units='d', calendar='standard',
+            month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', leap_year=0,
+            leap_month=2, vocabulary='CF', compressed='no', description='-',
+            save='yes', display=False)
           -> None : wrapper of the operator OPH_CREATECONTAINER
-        deletecontainer(container=None, container_pid='-', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all',
-                        save='yes', display=False)
+        deletecontainer(container=None, container_pid='-', force='no',
+            cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all',
+            save='yes', display=False)
           -> None : wrapper of the operator OPH_DELETECONTAINER
-        explorenc(exec_mode='sync', schedule=0, measure='-', src_path=None, cdd=None, exp_dim='-', imp_dim='-', subset_dims='none',
-                  subset_type='index', subset_filter='all', limit_filter=100, show_index='no', show_id='no', show_time='no',
-                  show_stats='00000000000000', show_fit='no', level=0, imp_num_point=0, offset=50, operation='avg', wavelet='no',
-                  wavelet_ratio=0, wavelet_coeff='no', objkey_filter='all', save='yes', display=True)
+        explorenc(exec_mode='sync', schedule=0, measure='-', src_path=None,
+            cdd=None, exp_dim='-', imp_dim='-', subset_dims='none',
+            subset_type='index', subset_filter='all', limit_filter=100,
+            show_index='no', show_id='no', show_time='no',
+            show_stats='00000000000000', show_fit='no', level=0,
+            imp_num_point=0, offset=50, operation='avg', wavelet='no',
+            wavelet_ratio=0, wavelet_coeff='no', objkey_filter='all',
+            save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_EXPLORENC
-        folder(command=None, cwd=None, path=None, exec_mode='sync', save='yes', display=False)
+        folder(command=None, cwd=None, path=None, exec_mode='sync', save='yes',
+            display=False)
           -> None : wrapper of the operator OPH_FOLDER
-        fs(command='ls', dpath='-', file='-', measure='-', cdd=None, recursive='no', depth=0, realpath='no', subset_dims='none',
-           subset_type='index', subset_filter='all', time_filter='yes', vocabulary='CF', exec_mode='sync', offset=0, save='yes',
-           display=False)
+        fs(command='ls', dpath='-', file='-', measure='-', cdd=None,
+            recursive='no', depth=0, realpath='no', subset_dims='none',
+            subset_type='index', subset_filter='all', time_filter='yes',
+            vocabulary='CF', exec_mode='sync', offset=0, save='yes',
+            display=False)
           -> None : wrapper of the operator OPH_FS
-        wait(type="clock", timeout=1, timeout_type="duration", key="-", value="-", filename="-", measure="-", message="-",
-             subset_dims="none", subset_type="index", subset_filter="all", time_filter="yes", offset=0, run="yes", exec_mode="sync",
-             save="yes", display=False)
+        wait(type="clock", timeout=1, timeout_type="duration", key="-",
+            value="-", filename="-", measure="-", message="-",
+            subset_dims="none", subset_type="index", subset_filter="all",
+            time_filter="yes", offset=0, run="yes", exec_mode="sync",
+            save="yes", display=False)
            -> None : wrapper of the operator OPH_WAIT
         get_config(key='all', objkey_filter='all', display=True)
           -> dict or None : wrapper of the operator OPH_GET_CONFIG
-        hierarchy(hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', save='yes', display=True)
+        hierarchy(hierarchy='all', hierarchy_version='latest',
+            exec_mode='sync', objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_HIERARCHY
-        importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,
-                 cdd=None, compressed='no', exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes',
-                 check_compliance='no', offset=0, ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none',
-                 subset_filter='all', time_filter='yes', subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00',
-                 calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0,
-                 month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-',
-                 policy='rr', schedule=0, check_grid='no', save='yes', display=False)
+        importnc(container='-', cwd=None, exp_dim='auto',
+            host_partition='auto', imp_dim='auto', measure=None, src_path=None,
+            cdd=None, compressed='no', exp_concept_level='c', grid='-',
+            imp_concept_level='c', import_metadata='yes',
+            check_compliance='no', offset=0, ioserver='mysql_table', ncores=1,
+            nfrag=0, nhost=0, subset_dims='none', subset_filter='all',
+            time_filter='yes', subset_type='index', exec_mode='sync',
+            base_time='1900-01-01 00:00:00', calendar='standard',
+            hierarchy='oph_base', leap_month=2, leap_year=0,
+            month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes',
+            units='d', vocabulary='CF', description='-', policy='rr',
+            schedule=0, check_grid='no', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_IMPORTNC
-        importnc2(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,
-                  cdd=None, compressed='no', exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes',
-                  check_compliance='no', offset=0, ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0,
-                  subset_dims='none', subset_filter='all', time_filter='yes', subset_type='index', exec_mode='sync',
-                  base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0,
-                  month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-',
-                  policy='rr', schedule=0, check_grid='no', save='yes', display=False)
+        importnc2(container='-', cwd=None, exp_dim='auto',
+            host_partition='auto', imp_dim='auto', measure=None, src_path=None,
+            cdd=None, compressed='no', exp_concept_level='c', grid='-',
+            imp_concept_level='c', import_metadata='yes',
+            check_compliance='no', offset=0, ioserver='ophidiaio_memory',
+            ncores=1, nthreads=1, nfrag=0, nhost=0, subset_dims='none',
+            subset_filter='all', time_filter='yes', subset_type='index',
+            exec_mode='sync', base_time='1900-01-01 00:00:00',
+            calendar='standard', hierarchy='oph_base', leap_month=2,
+            leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
+            run='yes', units='d', vocabulary='CF', description='-',
+            policy='rr', schedule=0, check_grid='no', save='yes',
+            display=False)
           -> Cube or None : wrapper of the operator OPH_IMPORTNC2
-        importncs(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,
-                  cdd=None, compressed='no', exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes',
-                  check_compliance='no', offset=0, ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0,
-                  subset_dims='none', subset_filter='all', time_filter='yes', subset_type='index', exec_mode='sync',
-                  base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0,
-                  month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-',
-                  policy='rr', schedule=0, check_grid='no', save='yes', display=False)
+        importncs(container='-', cwd=None, exp_dim='auto',
+            host_partition='auto', imp_dim='auto', measure=None, src_path=None,
+            cdd=None, compressed='no', exp_concept_level='c', grid='-',
+            imp_concept_level='c', import_metadata='yes',
+            check_compliance='no', offset=0, ioserver='ophidiaio_memory',
+            ncores=1, nthreads=1, nfrag=0, nhost=0, subset_dims='none',
+            subset_filter='all', time_filter='yes', subset_type='index',
+            exec_mode='sync', base_time='1900-01-01 00:00:00',
+            calendar='standard', hierarchy='oph_base', leap_month=2,
+            leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
+            run='yes', units='d', vocabulary='CF', description='-',
+            policy='rr', schedule=0, check_grid='no', save='yes',
+            display=False)
           -> Cube or None : wrapper of the operator OPH_IMPORTNCS
-        instances(action='read', level=1, host_filter='all', nhost=0, host_partition='all', ioserver_filter='all', host_status='all',
-                  exec_mode='sync', objkey_filter='all', save='yes', display=True)
+        instances(action='read', level=1, host_filter='all', nhost=0,
+            host_partition='all', ioserver_filter='all', host_status='all',
+            exec_mode='sync', objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_INSTANCES
-        list(level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all', dbms_filter='all',
-             measure_filter='all', ntransform='all', src_filter='all', db_filter='all', recursive='no', objkey_filter='all',
-             save='yes', display=True)
+        list(level=1, exec_mode='sync', path='-', cwd=None,
+            container_filter='all', cube='all', host_filter='all',
+            dbms_filter='all', measure_filter='all', ntransform='all',
+            src_filter='all', db_filter='all', recursive='no',
+            objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_LIST
-        loggingbk(session_level=0, job_level=0, mask=000, session_filter='all', session_label_filter='all',
-                  session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', workflowid_filter='all', markerid_filter='all',
-                  parent_job_filter='all', job_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', job_status_filter='all',
-                  submission_string_filter='all', job_start_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
-                  job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', nlines=100, objkey_filter='all', exec_mode='sync',
-                  save='yes', display=True)
+        loggingbk(session_level=0, job_level=0, mask=000, session_filter='all',
+            session_label_filter='all',
+            session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
+            workflowid_filter='all', markerid_filter='all',
+            parent_job_filter='all', job_status_filter='all',
+            job_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
+            submission_string_filter='all', nlines=100,
+            job_start_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
+            job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
+            objkey_filter='all', exec_mode='sync', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_LOGGINGBK
-        log_info(log_type='server', container_id=0, ioserver='mysql', nlines=10, exec_mode='sync', objkey_filter='all',
-                 save='yes', display=True)
+        log_info(log_type='server', container_id=0, ioserver='mysql',
+            nlines=10, exec_mode='sync', objkey_filter='all', save='yes',
+            display=True)
           -> dict or None : wrapper of the operator OPH_LOG_INFO
-        man(function=None, function_type='operator', function_version='latest', exec_mode='sync', save='yes', display=True)
+        man(function=None, function_type='operator', function_version='latest',
+            exec_mode='sync', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_MAN
-        manage_session(action='list', session='this', key='user', value='null', objkey_filter='all', save='yes', display=True)
+        manage_session(action='list', session='this', key='user', value='null',
+            objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
-        mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no', number=1,
-                   order='none', description='-', save='yes', display=False)
+        mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0,
+            container='-', mode='i', hold_values='no', number=1, order='none',
+            description='-', save='yes', display=False)
           -> Cube : wrapper of the operator OPH_MERGECUBES
-        mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, order='none',
-                    description='-', dim='-', save='yes', display=False)
+        mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0,
+            container='-', dim_type='long', number=1, order='none',
+            description='-', dim='-', save='yes', display=False)
           -> Cube or None: wrapper of the operator OPH_MERGECUBES2
-        movecontainer(container=None, cwd=None, exec_mode='sync', save='yes', display=False)
+        movecontainer(container=None, cwd=None, exec_mode='sync', save='yes',
+            display=False)
           -> None : wrapper of the operator OPH_MOVECONTAINER
-        operators(operator_filter=None, limit_filter=0, exec_mode='sync', save='yes', display=True)
+        operators(operator_filter=None, limit_filter=0, exec_mode='sync',
+            save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_OPERATORS_LIST
-        primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None,
-                   exec_mode='sync', objkey_filter='all', save='yes', display=True)
+        primitives(dbms_filter=None, level=1, limit_filter=0,
+            primitive_filter=None, primitive_type=None, return_type=None,
+            exec_mode='sync', objkey_filter='all', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
-        randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='mysql_table', schedule=0,
-                 algorithm='default', policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None,
-                 exp_ndim=None, dim=None, concept_level='c', dim_size=None, compressed='no', grid='-', description='-',
-                 save='yes', display=False)
+        randcube(ncores=1, exec_mode='sync', container=None, cwd=None,
+            host_partition='auto', ioserver='mysql_table', schedule=0,
+            algorithm='default', policy='rr', nhost=0, run='yes', nfrag=1,
+            ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None,
+            concept_level='c', dim_size=None, compressed='no', grid='-',
+            description='-', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_RANDCUBE
-        randcube2(ncores=1, nthreads=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='ophidiaio_memory',
-                  schedule=0, algorithm='default', policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None,
-                  exp_ndim=None, dim=None, concept_level='c', dim_size=None, compressed='no', grid='-', description='-', save='yes',
-                  display=False)
+        randcube2(ncores=1, nthreads=1, exec_mode='sync', container=None,
+            cwd=None, host_partition='auto', ioserver='ophidiaio_memory',
+            schedule=0, algorithm='default', policy='rr', nhost=0, run='yes',
+            nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None,
+            dim=None, concept_level='c', dim_size=None, compressed='no',
+            grid='-', description='-', save='yes', display=False)
           -> Cube or None : wrapper of the operator OPH_RANDCUBE2
-        resume(id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all',
-               user='', execute='no', checkpoint='all', display=True)
+        resume(id=0, id_type='workflow', document_type='response', level=1,
+            save='no', session='this', objkey_filter='all', user='',
+            execute='no', checkpoint='all', display=True)
           -> dict or None : wrapper of the operator OPH_RESUME
-        script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no',
-               python_code=False, save='yes', display=False)
+        script(script=':', args=' ', stdout='stdout', stderr='stderr',
+            ncores=1, exec_mode='sync', list='no', space='no',
+            python_code=False, save='yes', display=False)
           -> None : wrapper of the operator OPH_SCRIPT
-        search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all',
-               objkey_filter='all', cwd=None, recursive='no', save='yes', display=True)
+        search(path='-', metadata_value_filter='all', exec_mode='sync',
+            metadata_key_filter='all', container_filter='all',
+            objkey_filter='all', cwd=None, recursive='no', save='yes',
+            display=True)
           -> dict or None : wrapper of the operator OPH_SEARCH
-        service(status='', level=1, enable='none', disable='none', objkey_filter='all', save='yes', display=False)
+        service(status='', level=1, enable='none', disable='none',
+            objkey_filter='all', save='yes', display=False)
           -> dict or None : wrapper of the operator OPH_SERVICE
-        showgrid(container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync', objkey_filter='all',
-                 save='yes', display=True)
+        showgrid(container=None, grid='all', dim='all', show_index='no',
+            cwd=None, exec_mode='sync', objkey_filter='all', save='yes',
+            display=True)
           -> dict or None : wrapper of the operator OPH_SHOWGRID
-        tasks(cls, cube_filter='all', path='-', operator_filter='all', cwd=None, recursive='no', container='all', objkey_filter='all',
-              exec_mode='sync', save='yes', display=True)
+        tasks(cls, cube_filter='all', path='-', operator_filter='all',
+        cwd=None, recursive='no', container='all', objkey_filter='all',
+            exec_mode='sync', save='yes', display=True)
           -> dict or None : wrapper of the operator OPH_TASKS
     """
 
@@ -342,7 +449,8 @@ class Cube:
         cls,
         client,
     ):
-        """setclient(client) -> None : Instantiate the Client, common for all Cube objects, for submitting requests
+        """setclient(client) -> None : Instantiate the Client, common for all
+            Cube objects, for submitting requests
         :param client: PyOhidia client object
         :type client: <class 'pyophidia.client.Client'>
         :returns: None
@@ -367,24 +475,31 @@ class Cube:
         save="yes",
         display=False,
     ):
-        """b2drop(action='put', auth_path='-', src_path=None, dst_path='-', cdd=None, exec_mode='sync', save='yes', display=False)
-          -> None : wrapper of the operator OPH_B2DROP
+        """b2drop(action='put', auth_path='-', src_path=None, dst_path='-',
+            cdd=None, exec_mode='sync', save='yes', display=False)
+            -> None : wrapper of the operator OPH_B2DROP
 
         :param action: put|get
         :type action: str
-        :param auth_path: absolute path to the netrc file containing the B2DROP credentials
+        :param auth_path: absolute path to the netrc file containing the B2DROP
+            credentials
         :type auth_path: str
-        :param src_path: path to the file to be uploaded/downloaded to/from B2DROP
+        :param src_path: path to the file to be uploaded/downloaded to/from
+            B2DROP
         :type src_path: str
-        :param dst_path: path where the file will be uploaded on B2DROP or downloaded on disk
+        :param dst_path: path where the file will be uploaded on B2DROP or
+            downloaded on disk
         :type dst_path: str
-        :param cdd: absolute path corresponding to the current directory on data repository
+        :param cdd: absolute path corresponding to the current directory on
+            data repository
         :type cdd: str
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: None
         :rtype: None
@@ -430,11 +545,14 @@ class Cube:
         exec_mode="sync",
         display=False,
     ):
-        """cluster(action='info', nhost=1, host_partition='all', host_type='io', user_filter='all', exec_mode='sync', display=False) -> None : wrapper of the operator OPH_CLUSTER
+        """cluster(action='info', nhost=1, host_partition='all',
+            host_type='io', user_filter='all', exec_mode='sync', display=False)
+            -> None : wrapper of the operator OPH_CLUSTER
 
         :param action: info|info_cluster|deploy|undeploy
         :type action: str
-        :param nhost: number of hosts to be reserved as well as number of I/O servers to be started
+        :param nhost: number of hosts to be reserved as well as number of I/O
+            servers to be started
         :type nhost: int
         :param host_partition: name of user-defined partition to be used
         :type host_partition: str
@@ -444,7 +562,8 @@ class Cube:
         :type user_filter: str
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: None
         :rtype: None
@@ -487,7 +606,9 @@ class Cube:
         save="yes",
         display=True,
     ):
-        """containerschema(container=None, cwd=None, exec_mode='sync', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_CONTAINERSCHEMA
+        """containerschema(container=None, cwd=None, exec_mode='sync',
+            objkey_filter='all', save='yes', display=True) -> dict or None :
+            wrapper of the operator OPH_CONTAINERSCHEMA
 
         :param container: container name
         :type container: str
@@ -497,9 +618,11 @@ class Cube:
         :type exec_mode: str
         :param objkey_filter: filter on the output of the operator
         :type objkey_filter: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -560,10 +683,13 @@ class Cube:
         save="yes",
         display=False,
     ):
-        """createcontainer(exec_mode='sync', container=None, cwd=None, dim=None, dim_type="double", hierarchy='oph_base',
-                           base_time='1900-01-01 00:00:00', units='d', calendar='standard',
-                           month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', leap_year=0, leap_month=2, vocabulary='CF',
-                           compressed='no', description='-', save='yes', display=False) -> dict or None : wrapper of the operator OPH_CREATECONTAINER
+        """createcontainer(exec_mode='sync', container=None, cwd=None,
+            dim=None, dim_type="double", hierarchy='oph_base',
+            base_time='1900-01-01 00:00:00', units='d', calendar='standard',
+            month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', leap_year=0,
+            leap_month=2, vocabulary='CF', compressed='no', description='-',
+            save='yes', display=False) -> dict or None : wrapper of the
+            operator OPH_CREATECONTAINER
 
         :param exec_mode: async or sync
         :type exec_mode: str
@@ -573,9 +699,11 @@ class Cube:
         :type cwd: str
         :param dim: pipe (|) separated list of dimension names
         :type dim: str
-        :param dim_type: pipe (|) separated list of dimension types (int|float|long|double)
+        :param dim_type: pipe (|) separated list of dimension types
+            (int|float|long|double)
         :type dim_type: str
-        :param hierarchy: pipe (|) separated list of dimension hierarchies (oph_base|oph_time)
+        :param hierarchy: pipe (|) separated list of dimension hierarchies
+            (oph_base|oph_time)
         :type hierarchy: str
         :param base_time: reference time
         :type base_time: str
@@ -593,11 +721,14 @@ class Cube:
         :type vocabulary: str
         :param compressed: yes or no
         :type compressed: str
-        :param description: additional description to be associated with the output container
+        :param description: additional description to be associated with the
+            output container
         :type description: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: None
         :rtype: None
@@ -671,8 +802,10 @@ class Cube:
         save="yes",
         display=False,
     ):
-        """deletecontainer(container=None, container_pid='-', force='no', cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all', save='yes', display=False)
-             -> None : wrapper of the operator OPH_DELETECONTAINER
+        """deletecontainer(container=None, container_pid='-', force='no',
+            cwd=None, nthreads=1, exec_mode='sync', objkey_filter='all',
+            save='yes', display=False) -> None : wrapper of the operator
+            OPH_DELETECONTAINER
 
         :param container: container name
         :type container: str
@@ -686,9 +819,11 @@ class Cube:
         :type nthreads: int
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: None
         :rtype: None
@@ -697,7 +832,10 @@ class Cube:
 
         try:
             if Cube.client is None or (
-                (container is None or (cwd is None and Cube.client.cwd is None))
+                (
+                    container is None
+                    or (cwd is None and Cube.client.cwd is None)
+                )
                 and container_pid == "-"
             ):
                 raise RuntimeError(
@@ -732,7 +870,8 @@ class Cube:
 
     @classmethod
     def cancel(cls, id=None, type="kill", objkey_filter="all", display=False):
-        """cancel(id=None, type='kill', objkey_filter='all', display=False) -> None : wrapper of the operator OPH_CANCEL
+        """cancel(id=None, type='kill', objkey_filter='all', display=False)
+            -> None : wrapper of the operator OPH_CANCEL
 
         :param id: identifier of the workflow to be stopped
         :type id: int
@@ -740,7 +879,8 @@ class Cube:
         :type type: str
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: None
         :rtype: None
@@ -777,19 +917,24 @@ class Cube:
         objkey_filter="all",
         display=False,
     ):
-        """service(status='', level=1, enable='none', disable='none', objkey_filter='all', display=False) -> dict or None : wrapper of the operator OPH_SERVICE
+        """service(status='', level=1, enable='none', disable='none',
+            objkey_filter='all', display=False) -> dict or None : wrapper of
+            the operator OPH_SERVICE
 
         :param status: up|down
         :type status: str
         :param level: 1|2
         :type level: int
-        :param enable: list of the users to be enabled ('all' to enable all users)
+        :param enable: list of the users to be enabled ('all' to enable all
+            users)
         :type enable: str
-        :param disable: list of the users to be disabled ('all' to disable all users)
+        :param disable: list of the users to be disabled ('all' to disable all
+            users)
         :type disable: str
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -827,13 +972,16 @@ class Cube:
 
     @classmethod
     def get_config(cls, key="all", objkey_filter="all", display=True):
-        """get_config(key='all', objkey_filter='all', display=True) -> dict or None : wrapper of the operator OPH_GET_CONFIG
+        """get_config(key='all', objkey_filter='all', display=True)
+            -> dict or None : wrapper of the operator OPH_GET_CONFIG
 
-        :param key: all|OPH_XML_URL|OPH_SESSION_ID|OPH_EXEC_MODE|OPH_NCORES|OPH_DATACUBE|OPH_CWD|OPH_CDD|OPH_BASE_SRC_PATH
+        :param key: all|OPH_XML_URL|OPH_SESSION_ID|OPH_EXEC_MODE|OPH_NCORES|
+            OPH_DATACUBE|OPH_CWD|OPH_CDD|OPH_BASE_SRC_PATH
         :type key: str
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -874,9 +1022,12 @@ class Cube:
         save="yes",
         display=True,
     ):
-        """manage_session(action='list', session='this', key='user', value='null', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
+        """manage_session(action='list', session='this', key='user',
+            value='null', objkey_filter='all', save='yes', display=True)
+            -> dict or None : wrapper of the operator OPH_MANAGE_SESSION
 
-        :param action: disable|enable|env|grant|list|listusers|new|remove|revoke|setenv
+        :param action: disable|enable|env|grant|list|listusers|new|remove|
+            revoke|setenv
         :type action: str
         :param session: link to intended session
         :type session: str
@@ -886,9 +1037,11 @@ class Cube:
         :type value: str
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -941,8 +1094,11 @@ class Cube:
         save="yes",
         display=True,
     ):
-        """instances(level=1, action='read', level=1, host_filter='all', nhost=0, host_partition='all', ioserver_filter='all',
-                     host_status='all', exec_mode='sync', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_INSTANCES
+        """instances(level=1, action='read', level=1, host_filter='all',
+            nhost=0, host_partition='all', ioserver_filter='all',
+            host_status='all', exec_mode='sync', objkey_filter='all',
+            save='yes', display=True) -> dict or None : wrapper of the operator
+            OPH_INSTANCES
 
         :param action: read|add|remove
         :type action: str
@@ -950,7 +1106,8 @@ class Cube:
         :type level: int
         :param host_filter: optional filter on host name
         :type host_filter: str
-        :param nhost: number of hosts to be grouped in the user-defined partition (add or remove mode)
+        :param nhost: number of hosts to be grouped in the user-defined
+            partition (add or remove mode)
         :type nhost: int
         :param host_partition: optional filter on host partition name
         :type host_partition: str
@@ -962,9 +1119,11 @@ class Cube:
         :type exec_mode: str
         :param objkey_filter: filter the objkey
         :type objkey_filter: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -1022,7 +1181,10 @@ class Cube:
         save="yes",
         display=True,
     ):
-        """log_info(log_type='server', container_id=0, ioserver='mysql', nlines=10, exec_mode='sync', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_LOG_INFO
+        """log_info(log_type='server', container_id=0, ioserver='mysql',
+            nlines=10, exec_mode='sync', objkey_filter='all', save='yes',
+            display=True) -> dict or None : wrapper of the operator
+            OPH_LOG_INFO
 
         :param log_type: server|container|ioserver
         :type log_type: str
@@ -1036,9 +1198,11 @@ class Cube:
         :type objkey_filter: str
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -1100,13 +1264,17 @@ class Cube:
         save="yes",
         display=True,
     ):
-        """loggingbk(session_level=0, job_level=0, mask=000, session_filter='all', session_label_filter='all',
-                     session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', workflowid_filter='all', markerid_filter='all',
-                     parent_job_filter='all', job_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', job_status_filter='all',
-                     submission_string_filter='all', job_start_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
-                     job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00', nlines=100, objkey_filter='all', exec_mode='sync',
-                     save='yes', display=True)
-             -> dict or None : wrapper of the operator OPH_LOGGINGBK
+        """loggingbk(session_level=0, job_level=0, mask=000,
+            session_filter='all', session_label_filter='all',
+            session_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
+            workflowid_filter='all', markerid_filter='all',
+            parent_job_filter='all', job_status_filter='all',
+            job_creation_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
+            submission_string_filter='all', nlines=100,
+            job_start_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
+            job_end_filter='1900-01-01 00:00:00,2100-01-01 00:00:00',
+            objkey_filter='all', exec_mode='sync', save='yes', display=True)
+            -> dict or None : wrapper of the operator OPH_LOGGINGBK
 
         :param session_level: 0|1
         :type session_level: int
@@ -1126,23 +1294,28 @@ class Cube:
         :type markerid_filter: str
         :param parent_job_filter: filter on a particular parent job ID
         :type parent_job_filter: str
-        :param job_creation_filter: filter on job submission date as with session_creation_filter
+        :param job_creation_filter: filter on job submission date as with
+            session_creation_filter
         :type job_creation_filter: str
         :param job_status_filter: filter on job status
         :type job_status_filter: str
         :param submission_string_filter: filter on submission string
         :type submission_string_filter: str
-        :param job_start_filter: filter on job start date as with session_creation_filter
+        :param job_start_filter: filter on job start date as with
+            session_creation_filter
         :type job_start_filter: str
-        :param job_end_filter: filter on job end date as with session_creation_filter
+        :param job_end_filter: filter on job end date as with
+            session_creation_filter
         :type job_end_filter: str
         :param nlines: maximum number of lines to be displayed
         :type nlines: int
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -1166,9 +1339,15 @@ class Cube:
             if session_filter is not None:
                 query += "session_filter=" + str(session_filter) + ";"
             if session_label_filter is not None:
-                query += "session_label_filter=" + str(session_label_filter) + ";"
+                query += (
+                    "session_label_filter=" + str(session_label_filter) + ";"
+                )
             if session_creation_filter is not None:
-                query += "session_creation_filter=" + str(session_creation_filter) + ";"
+                query += (
+                    "session_creation_filter="
+                    + str(session_creation_filter)
+                    + ";"
+                )
             if workflowid_filter is not None:
                 query += "workflowid_filter=" + str(workflowid_filter) + ";"
             if markerid_filter is not None:
@@ -1176,12 +1355,16 @@ class Cube:
             if parent_job_filter is not None:
                 query += "parent_job_filter=" + str(parent_job_filter) + ";"
             if job_creation_filter is not None:
-                query += "job_creation_filter=" + str(job_creation_filter) + ";"
+                query += (
+                    "job_creation_filter=" + str(job_creation_filter) + ";"
+                )
             if job_status_filter is not None:
                 query += "job_status_filter=" + str(job_status_filter) + ";"
             if submission_string_filter is not None:
                 query += (
-                    "submission_string_filter=" + str(submission_string_filter) + ";"
+                    "submission_string_filter="
+                    + str(submission_string_filter)
+                    + ";"
                 )
             if job_start_filter is not None:
                 query += "job_start_filter=" + str(job_start_filter) + ";"
@@ -1216,7 +1399,9 @@ class Cube:
         save="yes",
         display=False,
     ):
-        """folder(command=None, cwd=None, path=None, exec_mode='sync', save='yes', display=False) -> None : wrapper of the operator OPH_FOLDER
+        """folder(command=None, cwd=None, path=None, exec_mode='sync',
+            save='yes', display=False) -> None : wrapper of the operator
+            OPH_FOLDER
 
         :param command: cd|mkdir|mv|rm
         :type command: str
@@ -1226,9 +1411,11 @@ class Cube:
         :type path: str
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: None
         :rtype: None
@@ -1287,9 +1474,11 @@ class Cube:
         save="yes",
         display=False,
     ):
-        """fs(command='ls', dpath='-', file='-', measure='-', cdd=None, recursive='no', depth=0, realpath='no', subset_dims='none',
-              subset_type='index', subset_filter='all', time_filter='yes', vocabulary='CF', exec_mode='sync', offset=0, save='yes',
-              display=False) -> None : wrapper of the operator OPH_FS
+        """fs(command='ls', dpath='-', file='-', measure='-', cdd=None,
+            recursive='no', depth=0, realpath='no', subset_dims='none',
+            subset_type='index', subset_filter='all', time_filter='yes',
+            vocabulary='CF', exec_mode='sync', offset=0, save='yes',
+            display=False) -> None : wrapper of the operator OPH_FS
 
         :param command: ls|cd|mkdir|rm|mv
         :type command: str
@@ -1299,7 +1488,8 @@ class Cube:
         :type file: str
         :param measure: measure filter
         :type measure: str
-        :param cdd: absolute path corresponding to the current directory on data repository
+        :param cdd: absolute path corresponding to the current directory on
+            data repository
         :type cdd: str
         :param recursive: if search is done recursively or not
         :type recursive: str
@@ -1307,11 +1497,14 @@ class Cube:
         :type depth: int
         :param realpath: yes|no
         :type realpath: str
-        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :param subset_dims: pipe (|) separated list of dimensions on which to
+            apply the subsetting
         :type subset_dims: str
         :param subset_type: index|coord
         :type subset_type: str
-        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :param subset_filter: pipe (|) separated list of filters, one per
+            dimension, composed of comma-separated microfilters
+            (e.g. 1,5,10:2:50)
         :type subset_filter: str
         :param time_filter: yes|no
         :type time_filter: str
@@ -1321,9 +1514,11 @@ class Cube:
         :type offset: int
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: None
         :rtype: None
@@ -1399,13 +1594,17 @@ class Cube:
         save="yes",
         display=False,
     ):
-        """wait(type="clock", timeout=1, timeout_type="duration", key="-", value="-", filename="-", measure="-", message="-", subset_dims="none",
-                subset_type="index", subset_filter="all", time_filter="yes", offset=0, run="yes", exec_mode="sync", save="yes", display=False)
-            -> None : wrapper of the operator OPH_WAIT
+        """wait(type="clock", timeout=1, timeout_type="duration", key="-",
+            value="-", filename="-", measure="-", message="-",
+            subset_dims="none", subset_type="index", subset_filter="all",
+            time_filter="yes", offset=0, run="yes", exec_mode="sync",
+            save="yes", display=False) -> None : wrapper of the operator
+            OPH_WAIT
 
         :param type: clock|input|file
         :type type: str
-        :param timeout: it is the duration (in seconds) or the end instant of the waiting interval
+        :param timeout: it is the duration (in seconds) or the end instant of
+            the waiting interval
         :type timeout: int
         :param timeout_type: duration|deadline
         :type timeout_type: str
@@ -1417,13 +1616,17 @@ class Cube:
         :type filename: str
         :param measure: name of the measure related to input file
         :type measure: str
-        :param message: this user-defined message is appended to response in order to notify the waiting reason
+        :param message: this user-defined message is appended to response in
+            order to notify the waiting reason
         :type message: str
-        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :param subset_dims: pipe (|) separated list of dimensions on which to
+            apply the subsetting
         :type subset_dims: str
         :param subset_type: index|coord
         :type subset_type: str
-        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :param subset_filter: pipe (|) separated list of filters, one per
+            dimension, composed of comma-separated microfilters
+            (e.g. 1,5,10:2:50)
         :type subset_filter: str
         :param time_filter: yes|no
         :type time_filter: str
@@ -1433,9 +1636,11 @@ class Cube:
         :type run: str
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: None
         :rtype: None
@@ -1502,9 +1707,10 @@ class Cube:
         save="yes",
         display=True,
     ):
-        """tasks(cls, cube_filter='all', path='-', operator_filter='all', cwd=None, recursive='no', container='all',
-                 objkey_filter='all', exec_mode='sync', save='yes', display=True)
-             -> dict or None : wrapper of the operator OPH_tasks
+        """tasks(cls, cube_filter='all', path='-', operator_filter='all',
+            cwd=None, recursive='no', container='all', objkey_filter='all',
+            exec_mode='sync', save='yes', display=True) -> dict or None :
+            wrapper of the operator OPH_tasks
 
         :param cube_filter: optional filter on cube
         :type cube_filter: str
@@ -1520,9 +1726,11 @@ class Cube:
         :type container: str
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -1578,8 +1786,10 @@ class Cube:
         save="yes",
         display=True,
     ):
-        """showgrid(container=None, grid='all', dim='all', show_index='no', cwd=None, exec_mode='sync', objkey_filter='all',
-                    save='yes', display=True) -> dict or None : wrapper of the operator OPH_SHOWGRID
+        """showgrid(container=None, grid='all', dim='all', show_index='no',
+            cwd=None, exec_mode='sync', objkey_filter='all', save='yes',
+            display=True) -> dict or None : wrapper of the operator
+            OPH_SHOWGRID
 
         :param container: name of the input container
         :type container: str
@@ -1593,9 +1803,11 @@ class Cube:
         :type cwd: str
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -1655,17 +1867,21 @@ class Cube:
         save="yes",
         display=True,
     ):
-        """search(path='-', metadata_value_filter='all', exec_mode='sync', metadata_key_filter='all', container_filter='all',
-                 objkey_filter='all', cwd=None, recursive='no', save='yes', display=True)
-             -> dict or None : wrapper of the operator OPH_SEARCH
+        """search(path='-', metadata_value_filter='all', exec_mode='sync',
+            metadata_key_filter='all', container_filter='all',
+            objkey_filter='all', cwd=None, recursive='no', save='yes',
+            display=True) -> dict or None : wrapper of the operator OPH_SEARCH
 
         :param container_filter: filter on container name
         :type container_filter: str
-        :param metadata_key_filter: name of the key (or the enumeration of keys) identifying requested metadata
+        :param metadata_key_filter: name of the key (or the enumeration of
+            keys) identifying requested metadata
         :type metadata_key_filter: str
-        :param metadata_value_filter: value of the key (or the enumeration of keys) identifying requested metadata
+        :param metadata_value_filter: value of the key (or the enumeration of
+            keys) identifying requested metadata
         :type metadata_value_filter: str
-        :param path: absolute/relative path used as the starting point of the recursive search
+        :param path: absolute/relative path used as the starting point of the
+            recursive search
         :type path: str
         :param cwd: current working directory
         :type cwd: str
@@ -1673,9 +1889,11 @@ class Cube:
         :type recursive: yes|no
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -1684,7 +1902,9 @@ class Cube:
 
         response = None
         try:
-            if Cube.client is None or (cwd is None and Cube.client.cwd is None):
+            if Cube.client is None or (
+                cwd is None and Cube.client.cwd is None
+            ):
                 raise RuntimeError("Cube.client or cwd is None")
 
             query = "oph_search "
@@ -1692,9 +1912,13 @@ class Cube:
             if container_filter is not None:
                 query += "container_filter=" + str(container_filter) + ";"
             if metadata_key_filter is not None:
-                query += "metadata_key_filter=" + str(metadata_key_filter) + ";"
+                query += (
+                    "metadata_key_filter=" + str(metadata_key_filter) + ";"
+                )
             if metadata_value_filter is not None:
-                query += "metadata_value_filter=" + str(metadata_value_filter) + ";"
+                query += (
+                    "metadata_value_filter=" + str(metadata_value_filter) + ";"
+                )
             if path is not None:
                 query += "path=" + str(path) + ";"
             if cwd is not None:
@@ -1729,7 +1953,9 @@ class Cube:
         save="yes",
         display=True,
     ):
-        """hierarchy(hierarchy='all', hierarchy_version='latest', exec_mode='sync', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_HIERARCHY
+        """hierarchy(hierarchy='all', hierarchy_version='latest',
+            exec_mode='sync', objkey_filter='all', save='yes', display=True)
+            -> dict or None : wrapper of the operator OPH_HIERARCHY
 
         :param hierarchy: name of the requested hierarchy
         :type hierarchy: str
@@ -1737,9 +1963,11 @@ class Cube:
         :type hierarchy_version: str
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -1795,9 +2023,12 @@ class Cube:
         save="yes",
         display=True,
     ):
-        """list(level=1, exec_mode='sync', path='-', cwd=None, container_filter='all', cube='all', host_filter='all', dbms_filter='all',
-                measure_filter='all', ntransform='all', src_filter='all', db_filter='all', recursive='no', objkey_filter='all',
-                save='yes', display=True) -> dict or None : wrapper of the operator OPH_LIST
+        """list(level=1, exec_mode='sync', path='-', cwd=None,
+            container_filter='all', cube='all', host_filter='all',
+            dbms_filter='all', measure_filter='all', ntransform='all',
+            src_filter='all', db_filter='all', recursive='no',
+            objkey_filter='all', save='yes', display=True) -> dict or None :
+            wrapper of the operator OPH_LIST
 
         :param level: 0|1|2|3|4|5|6|7|8
         :type level: int
@@ -1825,9 +2056,11 @@ class Cube:
         :type cwd: str
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -1836,7 +2069,9 @@ class Cube:
 
         response = None
         try:
-            if Cube.client is None or (cwd is None and Cube.client.cwd is None):
+            if Cube.client is None or (
+                cwd is None and Cube.client.cwd is None
+            ):
                 raise RuntimeError("Cube.client or cwd is None")
 
             query = "oph_list "
@@ -1911,10 +2146,13 @@ class Cube:
         save="yes",
         display=False,
     ):
-        """randcube(ncores=1, exec_mode='sync', container=None, cwd=None, host_partition='auto', ioserver='mysql_table', schedule=0,
-                    algorithm='default', policy='rr', nhost=0, run='yes', nfrag=1, ntuple=1, measure=None, measure_type=None,
-                    exp_ndim=None, dim=None, concept_level='c', dim_size=None, compressed='no', grid='-', description='-',
-                    save='yes', display=False) -> Cube or None : wrapper of the operator OPH_RANDCUBE
+        """randcube(ncores=1, exec_mode='sync', container=None, cwd=None,
+            host_partition='auto', ioserver='mysql_table', schedule=0,
+            algorithm='default', policy='rr', nhost=0, run='yes', nfrag=1,
+            ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None,
+            concept_level='c', dim_size=None, compressed='no', grid='-',
+            description='-', save='yes', display=False) -> Cube or None :
+            wrapper of the operator OPH_RANDCUBE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -1928,7 +2166,8 @@ class Cube:
         :type host_partition: str
         :param algorithm: default|temperatures
         :type algorithm: str
-        :param policy: rule to select how data are distribuited over hosts (rr|port)
+        :param policy: rule to select how data are distribuited over hosts
+            (rr|port)
         :type policy: str
         :param ioserver: mysql_table|ophdiaio_memory
         :type ioserver: str
@@ -1950,7 +2189,8 @@ class Cube:
         :type exp_ndim: int
         :param dim: pipe (|) separated list of dimension names
         :type dim: str
-        :param concept_level: pipe (|) separated list of dimensions hierarchy levels
+        :param concept_level: pipe (|) separated list of dimensions hierarchy
+            levels
         :type concept_level: str
         :param dim_size: pipe (|) separated list of dimension sizes
         :type dim_size: str
@@ -1958,11 +2198,14 @@ class Cube:
         :type compressed: str
         :param grid: optionally group dimensions in a grid
         :type grid: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the
+            output cube
         :type description: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: obj or None
         :rtype: Cube or None
@@ -1982,7 +2225,8 @@ class Cube:
             or dim_size is None
         ):
             raise RuntimeError(
-                "Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None"
+                "Cube.client, cwd, container, nfrag, ntuple, measure,"
+                "measure_type, exp_ndim, dim or dim_size is None"
             )
         newcube = None
 
@@ -2077,10 +2321,13 @@ class Cube:
         save="yes",
         display=False,
     ):
-        """randcube2(ncores=1, nthreads=1, exec_mode='sync', container=None, cwd=None, host_partition='auto',
-                    ioserver='ophidiaio_memory', schedule=0, algorithm='default', policy='rr', nhost=0, run='yes', nfrag=1,
-                    ntuple=1, measure=None, measure_type=None, exp_ndim=None, dim=None, concept_level='c', dim_size=None,
-                    compressed='no', grid='-', description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_RANDCUBE2
+        """randcube2(ncores=1, nthreads=1, exec_mode='sync', container=None,
+            cwd=None, host_partition='auto', ioserver='ophidiaio_memory',
+            schedule=0, algorithm='default', policy='rr', nhost=0, run='yes',
+            nfrag=1, ntuple=1, measure=None, measure_type=None, exp_ndim=None,
+            dim=None, concept_level='c', dim_size=None, compressed='no',
+            grid='-', description='-', save='yes', display=False)
+            -> Cube or None : wrapper of the operator OPH_RANDCUBE2
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -2096,7 +2343,8 @@ class Cube:
         :type host_partition: str
         :param algorithm: default|temperatures
         :type algorithm: str
-        :param policy: rule to select how data are distribuited over hosts (rr|port)
+        :param policy: rule to select how data are distribuited over hosts
+            (rr|port)
         :type policy: str
         :param ioserver: ophdiaio_memory
         :type ioserver: str
@@ -2118,7 +2366,8 @@ class Cube:
         :type exp_ndim: int
         :param dim: pipe (|) separated list of dimension names
         :type dim: str
-        :param concept_level: pipe (|) separated list of dimensions hierarchy levels
+        :param concept_level: pipe (|) separated list of dimensions hierarchy
+            levels
         :type concept_level: str
         :param dim_size: pipe (|) separated list of dimension sizes
         :type dim_size: str
@@ -2126,11 +2375,14 @@ class Cube:
         :type compressed: str
         :param grid: optionally group dimensions in a grid
         :type grid: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the
+            output cube
         :type description: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: obj or None
         :rtype: Cube or None
@@ -2150,7 +2402,8 @@ class Cube:
             or dim_size is None
         ):
             raise RuntimeError(
-                "Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None"
+                "Cube.client, cwd, container, nfrag, ntuple, measure,"
+                "measure_type, exp_ndim, dim or dim_size is None"
             )
         newcube = None
 
@@ -2248,11 +2501,15 @@ class Cube:
         save="yes",
         display=True,
     ):
-        """explorenc(exec_mode='sync', schedule=0, measure='-', src_path=None, cdd=None, exp_dim='-', imp_dim='-', subset_dims='none',
-                     subset_type='index', subset_filter='all', limit_filter=100, show_index='no', show_id='no', show_time='no',
-                     show_stats='00000000000000', show_fit='no', level=0, imp_num_point=0, offset=50, operation='avg', wavelet='no',
-                     wavelet_ratio=0, wavelet_coeff='no', objkey_filter='all', save='yes', display=True)
-             -> None : wrapper of the operator OPH_EXPLORENC
+        """explorenc(exec_mode='sync', schedule=0, measure='-', src_path=None,
+            cdd=None, exp_dim='-', imp_dim='-', subset_dims='none',
+            subset_type='index', subset_filter='all', limit_filter=100,
+            show_index='no', show_id='no', show_time='no',
+            show_stats='00000000000000', show_fit='no', level=0,
+            imp_num_point=0, offset=50, operation='avg', wavelet='no',
+            wavelet_ratio=0, wavelet_coeff='no', objkey_filter='all',
+            save='yes', display=True) -> None : wrapper of the operator
+            OPH_EXPLORENC
 
         :param exec_mode: async or sync
         :type exec_mode: str
@@ -2262,15 +2519,19 @@ class Cube:
         :type measure: str
         :param src_path: path of file to be imported
         :type src_path: str
-        :param cdd: absolute path corresponding to the current directory on data repository
+        :param cdd: absolute path corresponding to the current directory on
+            data repository
         :type cdd: str
         :param exp_dim: pipe (|) separated list of explicit dimension names
         :type exp_dim: str
         :param imp_dim: pipe (|) separated list of implicit dimension names
         :type imp_dim: str
-        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :param subset_dims: pipe (|) separated list of dimensions on which to
+            apply the subsetting
         :type subset_dims: str
-        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :param subset_filter: pipe (|) separated list of filters, one per
+            dimension, composed of comma-separated microfilters
+            (e.g. 1,5,10:2:50)
         :type subset_filter: str
         :param subset_type: index|coord
         :type subset_type: str
@@ -2282,27 +2543,33 @@ class Cube:
         :type show_id: str
         :param show_time: yes|no
         :type show_time: str
-        :param show_stats: (15-bit) mask to set statistics to be computed for each time serie
+        :param show_stats: (15-bit) mask to set statistics to be computed for
+            each time serie
         :type show_stats: str
         :param show_fit: yes|no
         :type show_fit: str
         :param level: 0|1|2
         :type level: int
-        :param imp_num_point: number of points which measure values must be distribuited along by interpolation
+        :param imp_num_point: number of points which measure values must be
+            distribuited along by interpolation
         :type imp_num_point: int
-        :param offset: relative offset to be used to set reduction interval bounds (percentage)
+        :param offset: relative offset to be used to set reduction interval
+            bounds (percentage)
         :type offset: float
         :param operation: max|min|avg|sum
         :type operation: str
         :param wavelet: yes|no|only
         :type wavelet: str
-        :param wavelet_ratio: fraction of wavelet transform coefficients that are cleared by the filter (percentage)
+        :param wavelet_ratio: fraction of wavelet transform coefficients that
+            are cleared by the filter (percentage)
         :type wavelet_ratio: float
         :param wavelet_coeff: yes|no
         :type wavelet_coeff: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -2421,14 +2688,19 @@ class Cube:
         save="yes",
         display=False,
     ):
-        """importnc(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,
-                    cdd=None, compressed='no', exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes',
-                    check_compliance='no', offset=0, ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none',
-                    subset_filter='all', time_filter='yes', subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00',
-                    calendar='standard', hierarchy='oph_base', leap_month=2, leap_year=0,
-                    month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF', description='-',
-                    policy='rr', schedule=0, check_grid='no', save='yes', display=False)
-             -> Cube or None : wrapper of the operator OPH_IMPORTNC
+        """importnc(container='-', cwd=None, exp_dim='auto',
+            host_partition='auto', imp_dim='auto', measure=None, src_path=None,
+            cdd=None, compressed='no', exp_concept_level='c', grid='-',
+            imp_concept_level='c', import_metadata='yes',
+            check_compliance='no', offset=0, ioserver='mysql_table', ncores=1,
+            nfrag=0, nhost=0, subset_dims='none', subset_filter='all',
+            time_filter='yes', subset_type='index', exec_mode='sync',
+            base_time='1900-01-01 00:00:00', calendar='standard',
+            hierarchy='oph_base', leap_month=2, leap_year=0,
+            month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes',
+            units='d', vocabulary='CF', description='-', policy='rr',
+            schedule=0, check_grid='no', save='yes', display=False)
+            -> Cube or None : wrapper of the operator OPH_IMPORTNC
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -2450,15 +2722,18 @@ class Cube:
         :type measure: str
         :param src_path: path of file to be imported
         :type src_path: str
-        :param cdd: absolute path corresponding to the current directory on data repository
+        :param cdd: absolute path corresponding to the current directory on
+            data repository
         :type cdd: str
         :param compressed: yes|no
         :type compressed: str
-        :param exp_concept_level: pipe (|) separated list of explicit dimensions hierarchy levels
+        :param exp_concept_level: pipe (|) separated list of explicit
+            dimensions hierarchy levels
         :type exp_concept_level: str
         :param grid: optionally group dimensions in a grid
         :type grid: str
-        :param imp_concept_level: pipe (|) separated list of implicit dimensions hierarchy levels
+        :param imp_concept_level: pipe (|) separated list of implicit
+            dimensions hierarchy levels
         :type imp_concept_level: str
         :param import_metadata: yes|no
         :type import_metadata: str
@@ -2472,9 +2747,12 @@ class Cube:
         :type nfrag: int
         :param nhost: number of hosts to use
         :type nhost: int
-        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :param subset_dims: pipe (|) separated list of dimensions on which to
+            apply the subsetting
         :type subset_dims: str
-        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :param subset_filter: pipe (|) separated list of filters, one per
+            dimension, composed of comma-separated microfilters
+            (e.g. 1,5,10:2:50)
         :type subset_filter: str
         :param time_filter: yes|no
         :type time_filter: str
@@ -2482,9 +2760,11 @@ class Cube:
         :type subset_type: str
         :param base_time: reference time
         :type base_time: str
-        :param calendar: calendar used (standard|gregorian|proleptic_gregorian|julian|360_day|no_leap|all_leap|user_defined)
+        :param calendar: calendar used (standard|gregorian|proleptic_gregorian|
+            julian|360_day|no_leap|all_leap|user_defined)
         :type calendar: str
-        :param hierarchy: pipe (|) separated list of dimension hierarchies (oph_base|oph_time)
+        :param hierarchy: pipe (|) separated list of dimension hierarchies
+            (oph_base|oph_time)
         :type hierarchy: str
         :param leap_month: leap month
         :type leap_month: int
@@ -2498,15 +2778,19 @@ class Cube:
         :type units: str
         :param vocabulary: metadata vocabulary
         :type vocabulary: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the
+            output cube
         :type description: str
-        :param policy: rule to select how data are distribuited over hosts (rr|port)
+        :param policy: rule to select how data are distribuited over hosts
+            (rr|port)
         :type policy: str
         :param check_grid: yes|no
         :type check_grid: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: obj or None
         :rtype: Cube or None
@@ -2656,14 +2940,20 @@ class Cube:
         save="yes",
         display=False,
     ):
-        """importnc2(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,
-                     cdd=None, compressed='no', exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes',
-                     check_compliance='no', offset=0, ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0,
-                     subset_dims='none', subset_filter='all', time_filter='yes', subset_type='index', exec_mode='sync',
-                     base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                     leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF',
-                     description='-', policy='rr', schedule=0, check_grid='no', save='yes', display=False)
-          -> Cube or None : wrapper of the operator OPH_IMPORTNC2
+        """importnc2(container='-', cwd=None, exp_dim='auto',
+            host_partition='auto', imp_dim='auto', measure=None, src_path=None,
+            cdd=None, compressed='no', exp_concept_level='c', grid='-',
+            imp_concept_level='c', import_metadata='yes',
+            check_compliance='no', offset=0, ioserver='ophidiaio_memory',
+            ncores=1, nthreads=1, nfrag=0, nhost=0, subset_dims='none',
+            subset_filter='all', time_filter='yes', subset_type='index',
+            exec_mode='sync', base_time='1900-01-01 00:00:00',
+            calendar='standard', hierarchy='oph_base', leap_month=2,
+            leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
+            run='yes', units='d', vocabulary='CF', description='-',
+            policy='rr', schedule=0, check_grid='no', save='yes',
+            display=False) -> Cube or None : wrapper of the operator
+            OPH_IMPORTNC2
 
 
         :param ncores: number of cores to use
@@ -2688,15 +2978,18 @@ class Cube:
         :type measure: str
         :param src_path: path of file to be imported
         :type src_path: str
-        :param cdd: absolute path corresponding to the current directory on data repository
+        :param cdd: absolute path corresponding to the current directory on
+            data repository
         :type cdd: str
         :param compressed: yes|no
         :type compressed: str
-        :param exp_concept_level: pipe (|) separated list of explicit dimensions hierarchy levels
+        :param exp_concept_level: pipe (|) separated list of explicit
+            dimensions hierarchy levels
         :type exp_concept_level: str
         :param grid: optionally group dimensions in a grid
         :type grid: str
-        :param imp_concept_level: pipe (|) separated list of implicit dimensions hierarchy levels
+        :param imp_concept_level: pipe (|) separated list of implicit
+            dimensions hierarchy levels
         :type imp_concept_level: str
         :param import_metadata: yes|no
         :type import_metadata: str
@@ -2710,9 +3003,12 @@ class Cube:
         :type nfrag: int
         :param nhost: number of hosts to use
         :type nhost: int
-        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :param subset_dims: pipe (|) separated list of dimensions on which to
+            apply the subsetting
         :type subset_dims: str
-        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :param subset_filter: pipe (|) separated list of filters, one per
+            dimension, composed of comma-separated microfilters
+            (e.g. 1,5,10:2:50)
         :type subset_filter: str
         :param time_filter: yes|no
         :type time_filter: str
@@ -2720,9 +3016,11 @@ class Cube:
         :type subset_type: str
         :param base_time: reference time
         :type base_time: str
-        :param calendar: calendar used (standard|gregorian|proleptic_gregorian|julian|360_day|no_leap|all_leap|user_defined)
+        :param calendar: calendar used (standard|gregorian|proleptic_gregorian|
+            julian|360_day|no_leap|all_leap|user_defined)
         :type calendar: str
-        :param hierarchy: pipe (|) separated list of dimension hierarchies (oph_base|oph_time)
+        :param hierarchy: pipe (|) separated list of dimension hierarchies
+            (oph_base|oph_time)
         :type hierarchy: str
         :param leap_month: leap month
         :type leap_month: int
@@ -2736,15 +3034,19 @@ class Cube:
         :type units: str
         :param vocabulary: metadata vocabulary
         :type vocabulary: str
-        :param policy: rule to select how data are distribuited over hosts (rr|port)
+        :param policy: rule to select how data are distribuited over hosts
+            (rr|port)
         :type policy: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the
+            output cube
         :type description: str
         :param check_grid: yes|no
         :type check_grid: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: obj or None
         :rtype: Cube or None
@@ -2896,14 +3198,20 @@ class Cube:
         save="yes",
         display=False,
     ):
-        """importncs(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None,
-                     cdd=None, compressed='no', exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='yes',
-                     check_compliance='no', offset=0, ioserver='ophidiaio_memory', ncores=1, nthreads=1, nfrag=0, nhost=0,
-                     subset_dims='none', subset_filter='all', time_filter='yes', subset_type='index', exec_mode='sync',
-                     base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base', leap_month=2,
-                     leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='CF',
-                     description='-', policy='rr', schedule=0, check_grid='no', save='yes', display=False)
-          -> Cube or None : wrapper of the operator OPH_IMPORTNCS
+        """importncs(container='-', cwd=None, exp_dim='auto',
+            host_partition='auto', imp_dim='auto', measure=None, src_path=None,
+            cdd=None, compressed='no', exp_concept_level='c', grid='-',
+            imp_concept_level='c', import_metadata='yes',
+            check_compliance='no', offset=0, ioserver='ophidiaio_memory',
+            ncores=1, nthreads=1, nfrag=0, nhost=0, subset_dims='none',
+            subset_filter='all', time_filter='yes', subset_type='index',
+            exec_mode='sync', base_time='1900-01-01 00:00:00',
+            calendar='standard', hierarchy='oph_base', leap_month=2,
+            leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31',
+            run='yes', units='d', vocabulary='CF', description='-',
+            policy='rr', schedule=0, check_grid='no', save='yes',
+            display=False) -> Cube or None : wrapper of the operator
+            OPH_IMPORTNCS
 
 
         :param ncores: number of cores to use
@@ -2928,15 +3236,18 @@ class Cube:
         :type measure: str
         :param src_path: list of file paths to be imported
         :type src_path: str
-        :param cdd: absolute path corresponding to the current directory on data repository
+        :param cdd: absolute path corresponding to the current directory on
+            data repository
         :type cdd: str
         :param compressed: yes|no
         :type compressed: str
-        :param exp_concept_level: pipe (|) separated list of explicit dimensions hierarchy levels
+        :param exp_concept_level: pipe (|) separated list of explicit
+            dimensions hierarchy levels
         :type exp_concept_level: str
         :param grid: optionally group dimensions in a grid
         :type grid: str
-        :param imp_concept_level: pipe (|) separated list of implicit dimensions hierarchy levels
+        :param imp_concept_level: pipe (|) separated list of implicit
+            dimensions hierarchy levels
         :type imp_concept_level: str
         :param import_metadata: yes|no
         :type import_metadata: str
@@ -2950,9 +3261,12 @@ class Cube:
         :type nfrag: int
         :param nhost: number of hosts to use
         :type nhost: int
-        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :param subset_dims: pipe (|) separated list of dimensions on which to
+            apply the subsetting
         :type subset_dims: str
-        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :param subset_filter: pipe (|) separated list of filters, one per
+            dimension, composed of comma-separated microfilters
+            (e.g. 1,5,10:2:50)
         :type subset_filter: str
         :param time_filter: yes|no
         :type time_filter: str
@@ -2960,9 +3274,11 @@ class Cube:
         :type subset_type: str
         :param base_time: reference time
         :type base_time: str
-        :param calendar: calendar used (standard|gregorian|proleptic_gregorian|julian|360_day|no_leap|all_leap|user_defined)
+        :param calendar: calendar used (standard|gregorian|proleptic_gregorian|
+            julian|360_day|no_leap|all_leap|user_defined)
         :type calendar: str
-        :param hierarchy: pipe (|) separated list of dimension hierarchies (oph_base|oph_time)
+        :param hierarchy: pipe (|) separated list of dimension hierarchies
+            (oph_base|oph_time)
         :type hierarchy: str
         :param leap_month: leap month
         :type leap_month: int
@@ -2976,15 +3292,19 @@ class Cube:
         :type units: str
         :param vocabulary: metadata vocabulary
         :type vocabulary: str
-        :param policy: rule to select how data are distribuited over hosts (rr|port)
+        :param policy: rule to select how data are distribuited over hosts
+            (rr|port)
         :type policy: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the
+            output cube
         :type description: str
         :param check_grid: yes|no
         :type check_grid: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: obj or None
         :rtype: Cube or None
@@ -3108,7 +3428,9 @@ class Cube:
         save="yes",
         display=True,
     ):
-        """man(function=None, function_type='operator', function_version='latest', exec_mode='sync', save='yes', display=True) -> dict or None : wrapper of the operator OPH_MAN
+        """man(function=None, function_type='operator',
+            function_version='latest', exec_mode='sync', save='yes',
+            display=True) -> dict or None : wrapper of the operator OPH_MAN
 
         :param function: operator or primitive name
         :type function: str
@@ -3118,9 +3440,11 @@ class Cube:
         :type function_version: str
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -3167,7 +3491,9 @@ class Cube:
         save="yes",
         display=False,
     ):
-        """movecontainer(container=None, cwd=None, exec_mode='sync', save='yes', display=False) -> None : wrapper of the operator OPH_MOVECONTAINER
+        """movecontainer(container=None, cwd=None, exec_mode='sync',
+            save='yes', display=False) -> None : wrapper of the operator
+            OPH_MOVECONTAINER
 
         :param container: container name
         :type container: str
@@ -3175,9 +3501,11 @@ class Cube:
         :type cwd: str
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: None
         :rtype: None
@@ -3220,7 +3548,9 @@ class Cube:
         save="yes",
         display=True,
     ):
-        """operators(operator_filter=None, limit_filter=0, exec_mode='sync', save='yes', display=True) -> dict or None : wrapper of the operator OPH_OPERATORS_LIST
+        """operators(operator_filter=None, limit_filter=0, exec_mode='sync',
+            save='yes', display=True) -> dict or None : wrapper of the operator
+            OPH_OPERATORS_LIST
 
         :param operator_filter: filter on operator name
         :type operator_filter: str
@@ -3228,9 +3558,11 @@ class Cube:
         :type limit_filter: int
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -3280,8 +3612,10 @@ class Cube:
         save="yes",
         display=True,
     ):
-        """primitives(dbms_filter=None, level=1, limit_filter=0, primitive_filter=None, primitive_type=None, return_type=None, exec_mode='sync', objkey_filter='all', save='yes', display=True) ->
-           dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
+        """primitives(dbms_filter=None, level=1, limit_filter=0,
+            primitive_filter=None, primitive_type=None, return_type=None,
+            exec_mode='sync', objkey_filter='all', save='yes', display=True)
+            -> dict or None : wrapper of the operator OPH_PRIMITIVES_LIST
 
         :param dbms_filter: filter on DBMS
         :type dbms_filter: str
@@ -3297,9 +3631,11 @@ class Cube:
         :type return_type: str
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -3358,7 +3694,10 @@ class Cube:
         save="yes",
         display=False,
     ):
-        """script(script=':', args=' ', stdout='stdout', stderr='stderr', ncores=1, exec_mode='sync', list='no', space='no', python_code=False, save='yes', display=False) -> None : wrapper of the operator OPH_SCRIPT
+        """script(script=':', args=' ', stdout='stdout', stderr='stderr',
+            ncores=1, exec_mode='sync', list='no', space='no',
+            python_code=False, save='yes', display=False) -> None :
+            wrapper of the operator OPH_SCRIPT
 
         :param script: script/executable filename
         :type script: str
@@ -3378,9 +3717,11 @@ class Cube:
         :type ncores: int
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: None
         :rtype: None
@@ -3397,7 +3738,10 @@ class Cube:
 
             base_path = expanduser("~") + "/.ophidia/"
             script_path = (
-                base_path + function.__name__ + str(int(time() * 10**6)) + ".py"
+                base_path
+                + function.__name__
+                + str(int(time() * 10**6))
+                + ".py"
             )
 
             try:
@@ -3413,7 +3757,9 @@ class Cube:
                 script_args = "("
                 if fnct_args_num > 0:
                     for i in range(1, fnct_args_num + 1):
-                        script_args = script_args + "sys.argv[" + str(i) + "], "
+                        script_args = (
+                            script_args + "sys.argv[" + str(i) + "], "
+                        )
 
                     script_args = script_args[:-2] + ")"
                 else:
@@ -3444,7 +3790,9 @@ if __name__ == '__main__':
 
                 with open(script_path, "w") as file:
                     file.write(script_text)
-                    chmod(script_path, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP)
+                    chmod(
+                        script_path, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP
+                    )
 
             except (IOError, ValueError, TypeError, OSError) as e:
                 print(_get_linenumber(), "Python function error: ", e)
@@ -3462,7 +3810,8 @@ if __name__ == '__main__':
                 if python_code:
                     if sys.version_info[0] < 3:
                         raise RuntimeError(
-                            "Python 3 is required to use a Python function as a scripts"
+                            "Python 3 is required to use a Python function as"
+                            "a script"
                         )
                     else:
                         script_path = createScript(script)
@@ -3513,12 +3862,16 @@ if __name__ == '__main__':
         objkey_filter="all",
         display=True,
     ):
-        """resume(id=0, id_type='workflow', document_type='response', level=1, save='no', session='this', objkey_filter='all', user='',
-                  execute='no', checkpoint='all', display=True) -> dict or None : wrapper of the operator OPH_RESUME
+        """resume(id=0, id_type='workflow', document_type='response', level=1,
+            save='no', session='this', objkey_filter='all', user='',
+            execute='no', checkpoint='all', display=True) -> dict or None :
+            wrapper of the operator OPH_RESUME
 
-        :param session: identifier of the intended session, by default it is the working session
+        :param session: identifier of the intended session, by default it is
+            the working session
         :type session: str
-        :param id: identifier of the intended workflow or marker, by default no filter is applied
+        :param id: identifier of the intended workflow or marker, by default no
+            filter is applied
         :type id: int
         :param id_type: workflow|marker
         :type id_type: str
@@ -3526,20 +3879,20 @@ if __name__ == '__main__':
         :type document_type: str
         :param level: 0|1|2|3|4|5
         :type level: int
-        :param user: filter by name of the submitter, by default no filter is applied
+        :param user: filter by name of the submitter, by default no filter is
+            applied
         :type user: str
         :param status_filter: filter by job status (bitmap)
         :type status_filter: str
-
         :param execute: yes|no
         :type execute: str
-        :param checkpoint: retrieve the sub-workflow associated with a checkpoint
+        :param checkpoint: retrieve the sub-workflow associated with a
+            checkpoint
         :type checkpoint: str
-
-
         :param save: yes|no
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -3601,7 +3954,10 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', mode='i', hold_values='no', number=1, order='none', description='-', save='yes', display=False) -> Cube : wrapper of the operator OPH_MERGECUBES
+        """mergecubes(ncores=1, exec_mode='sync', cubes=None, schedule=0,
+            container='-', mode='i', hold_values='no', number=1, order='none',
+            description='-', save='yes', display=False) -> Cube : wrapper of
+            the operator OPH_MERGECUBES
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -3615,17 +3971,21 @@ if __name__ == '__main__':
         :type container: str
         :param mode: interlace or append measures
         :type mode: str
-        :param hold_values: enables the copy of the original values of implicit dimension
+        :param hold_values: enables the copy of the original values of implicit
+            dimension
         :type hold_values: str
         :param number: number of replies of the first cube
         :type number: int
         :param order: criteria on which input cubes are ordered before merging
         :type order: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the
+            output cube
         :type description: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -3690,7 +4050,10 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0, container='-', dim_type='long', number=1, order='none', description='-', dim='-', save='yes', display=False) -> Cube or None: wrapper of the operator OPH_MERGECUBES2
+        """mergecubes2(ncores=1, exec_mode='sync', cubes=None, schedule=0,
+            container='-', dim_type='long', number=1, order='none',
+            description='-', dim='-', save='yes', display=False)
+            -> Cube or None : wrapper of the operator OPH_MERGECUBES2
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -3708,13 +4071,16 @@ if __name__ == '__main__':
         :type number: int
         :param order: criteria on which input cubes are ordered before merging
         :type order: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the
+            output cube
         :type description: str
         :param dim: name of the new dimension to be created
         :type dim: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -3806,13 +4172,19 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto', imp_dim='auto', measure=None, src_path=None, cdd=None,
-                compressed='no', exp_concept_level='c', grid='-', imp_concept_level='c', import_metadata='no', check_compliance='no',
-                offset=0, ioserver='mysql_table', ncores=1, nfrag=0, nhost=0, subset_dims='none', subset_filter='all', time_filter='yes',
-                subset_type='index', exec_mode='sync', base_time='1900-01-01 00:00:00', calendar='standard', hierarchy='oph_base',
-                leap_month=2, leap_year=0, month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes', units='d', vocabulary='-',
-                description='-', policy='rr', schedule=0, pid=None, check_grid='no', save='yes', display=False) -> obj
-             or Cube(pid=None) -> obj
+        """Cube(container='-', cwd=None, exp_dim='auto', host_partition='auto',
+            imp_dim='auto', measure=None, src_path=None, cdd=None,
+            compressed='no', exp_concept_level='c', grid='-',
+            imp_concept_level='c', import_metadata='no', check_compliance='no',
+            offset=0, ioserver='mysql_table', ncores=1, nfrag=0, nhost=0,
+            subset_dims='none', subset_filter='all', time_filter='yes',
+            subset_type='index', exec_mode='sync',
+            base_time='1900-01-01 00:00:00', calendar='standard',
+            hierarchy='oph_base', leap_month=2, leap_year=0,
+            month_lengths='31,28,31,30,31,30,31,31,30,31,30,31', run='yes',
+            units='d', vocabulary='-', description='-', policy='rr',
+            schedule=0, pid=None, check_grid='no', save='yes', display=False)
+            -> obj or Cube(pid=None) -> obj
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -3834,15 +4206,18 @@ if __name__ == '__main__':
         :type measure: str
         :param src_path: path of file to be imported
         :type src_path: str
-        :param cdd: absolute path corresponding to the current directory on data repository
+        :param cdd: absolute path corresponding to the current directory on
+            data repository
         :type cdd: str
         :param compressed: yes|no
         :type compressed: str
-        :param exp_concept_level: pipe (|) separated list of explicit dimensions hierarchy levels
+        :param exp_concept_level: pipe (|) separated list of explicit
+            dimensions hierarchy levels
         :type exp_concept_level: str
         :param grid: optionally group dimensions in a grid
         :type grid: str
-        :param imp_concept_level: pipe (|) separated list of implicit dimensions hierarchy levels
+        :param imp_concept_level: pipe (|) separated list of implicit
+            dimensions hierarchy levels
         :type imp_concept_level: str
         :param import_metadata: yes|no
         :type import_metadata: str
@@ -3856,9 +4231,12 @@ if __name__ == '__main__':
         :type nfrag: int
         :param nhost: number of hosts to use
         :type nhost: int
-        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :param subset_dims: pipe (|) separated list of dimensions on which to
+            apply the subsetting
         :type subset_dims: str
-        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :param subset_filter: pipe (|) separated list of filters, one per
+            dimension, composed of comma-separated microfilters
+            (e.g. 1,5,10:2:50)
         :type subset_filter: str
         :param time_filter: yes|no
         :type time_filter: str
@@ -3866,9 +4244,11 @@ if __name__ == '__main__':
         :type subset_type: str
         :param base_time: reference time
         :type base_time: str
-        :param calendar: calendar used (standard|gregorian|proleptic_gregorian|julian|360_day|no_leap|all_leap|user_defined)
+        :param calendar: calendar used (standard|gregorian|proleptic_gregorian|
+            julian|360_day|no_leap|all_leap|user_defined)
         :type calendar: str
-        :param hierarchy: pipe (|) separated list of dimension hierarchies (oph_base|oph_time)
+        :param hierarchy: pipe (|) separated list of dimension hierarchies
+            (oph_base|oph_time)
         :type hierarchy: str
         :param leap_month: leap month
         :type leap_month: int
@@ -3882,17 +4262,22 @@ if __name__ == '__main__':
         :type units: str
         :param vocabulary: metadata vocabulary
         :type vocabulary: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the
+            output cube
         :type description: str
-        :param policy: rule to select how data are distribuited over hosts (rr|port)
+        :param policy: rule to select how data are distribuited over hosts
+            (rr|port)
         :type policy: str
-        :param pid: PID of an existing cube (if used all other parameters are ignored)
+        :param pid: PID of an existing cube (if used all other parameters are
+            ignored)
         :type pid: str
         :param check_grid: yes|no
         :type check_grid: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: obj or None
         :rtype: Cube or None
@@ -3928,7 +4313,9 @@ if __name__ == '__main__':
                     or measure is None
                     or src_path is None
                 ):
-                    raise RuntimeError("one or more required parameters are None")
+                    raise RuntimeError(
+                        "one or more required parameters are None"
+                    )
 
                 else:
                     query = "oph_importnc "
@@ -3952,15 +4339,23 @@ if __name__ == '__main__':
                     if compressed is not None:
                         query += "compressed=" + str(compressed) + ";"
                     if exp_concept_level is not None:
-                        query += "exp_concept_level=" + str(exp_concept_level) + ";"
+                        query += (
+                            "exp_concept_level=" + str(exp_concept_level) + ";"
+                        )
                     if grid is not None:
                         query += "grid=" + str(grid) + ";"
                     if imp_concept_level is not None:
-                        query += "imp_concept_level=" + str(imp_concept_level) + ";"
+                        query += (
+                            "imp_concept_level=" + str(imp_concept_level) + ";"
+                        )
                     if import_metadata is not None:
-                        query += "import_metadata=" + str(import_metadata) + ";"
+                        query += (
+                            "import_metadata=" + str(import_metadata) + ";"
+                        )
                     if check_compliance is not None:
-                        query += "check_compliance=" + str(check_compliance) + ";"
+                        query += (
+                            "check_compliance=" + str(check_compliance) + ";"
+                        )
                     if ioserver is not None:
                         query += "ioserver=" + str(ioserver) + ";"
                     if ncores is not None:
@@ -4049,9 +4444,11 @@ if __name__ == '__main__':
         del self.dim_info
 
     def info(self, display=True):
-        """info(display=True) -> None : call OPH_CUBESIZE and OPH_CUBESCHEMA to fill all Cube attributes
+        """info(display=True) -> None : call OPH_CUBESIZE and OPH_CUBESCHEMA to
+            fill all Cube attributes
 
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: None
         :rtype: None
@@ -4071,17 +4468,25 @@ if __name__ == '__main__':
             for res_i in res["response"]:
                 if res_i["objkey"] == "cubeschema_cubeinfo":
                     self.pid = res_i["objcontent"][0]["rowvalues"][0][0]
-                    self.creation_date = res_i["objcontent"][0]["rowvalues"][0][1]
+                    self.creation_date = res_i["objcontent"][0]["rowvalues"][
+                        0
+                    ][1]
                     self.measure = res_i["objcontent"][0]["rowvalues"][0][2]
-                    self.measure_type = res_i["objcontent"][0]["rowvalues"][0][3]
+                    self.measure_type = res_i["objcontent"][0]["rowvalues"][0][
+                        3
+                    ]
                     self.level = res_i["objcontent"][0]["rowvalues"][0][4]
                     self.nfragments = res_i["objcontent"][0]["rowvalues"][0][5]
-                    self.source_file = res_i["objcontent"][0]["rowvalues"][0][6]
+                    self.source_file = res_i["objcontent"][0]["rowvalues"][0][
+                        6
+                    ]
                 elif res_i["objkey"] == "cubeschema_morecubeinfo":
                     self.hostxcube = res_i["objcontent"][0]["rowvalues"][0][1]
                     self.fragxdb = res_i["objcontent"][0]["rowvalues"][0][2]
                     self.rowsxfrag = res_i["objcontent"][0]["rowvalues"][0][3]
-                    self.elementsxrow = res_i["objcontent"][0]["rowvalues"][0][4]
+                    self.elementsxrow = res_i["objcontent"][0]["rowvalues"][0][
+                        4
+                    ]
                     self.compressed = res_i["objcontent"][0]["rowvalues"][0][5]
                     self.size = (
                         res_i["objcontent"][0]["rowvalues"][0][6]
@@ -4119,8 +4524,10 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """exportnc(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, shuffle='no', deflate=0,
-                    exec_mode='sync', ncores=1, save='yes', display=False) -> None : wrapper of the operator OPH_EXPORTNC
+        """exportnc(misc='no', output_path='default', output_name='default',
+            cdd=None, force='no', export_metadata='yes', schedule=0,
+            shuffle='no', deflate=0, exec_mode='sync', ncores=1, save='yes',
+            display=False) -> None : wrapper of the operator OPH_EXPORTNC
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4132,7 +4539,8 @@ if __name__ == '__main__':
         :type export_metadata: str
         :param misc: yes|no
         :type misc: str
-        :param cdd: absolute path corresponding to the current directory on data repository
+        :param cdd: absolute path corresponding to the current directory on
+            data repository
         :type cdd: str
         :param force: yes|no
         :type force: str
@@ -4142,11 +4550,14 @@ if __name__ == '__main__':
         :type output_name: str
         :param shuffle: flag to activate shuffle filter on compression (yes|no)
         :type shuffle: str
-        :param deflate: deflate level (from 1 to 9) compression. 0 is no compression
+        :param deflate: deflate level (from 1 to 9) compression. 0 is no
+            compression
         :type deflate: int
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: None
         :rtype: None
@@ -4208,8 +4619,10 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """exportnc2(misc='no', output_path='default', output_name='default', cdd=None, force='no', export_metadata='yes', schedule=0, shuffle='no', deflate=0,
-                     exec_mode='sync', ncores=1, save='yes', display=False) -> None : wrapper of the operator OPH_EXPORTNC2
+        """exportnc2(misc='no', output_path='default', output_name='default',
+            cdd=None, force='no', export_metadata='yes', schedule=0,
+            shuffle='no', deflate=0, exec_mode='sync', ncores=1, save='yes',
+            display=False) -> None : wrapper of the operator OPH_EXPORTNC2
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4221,7 +4634,8 @@ if __name__ == '__main__':
         :type export_metadata: str
         :param misc: yes|no
         :type misc: str
-        :param cdd: absolute path corresponding to the current directory on data repository
+        :param cdd: absolute path corresponding to the current directory on
+            data repository
         :type cdd: str
         :param force: yes|no
         :type force: str
@@ -4231,11 +4645,14 @@ if __name__ == '__main__':
         :type output_name: str
         :param shuffle: flag to activate shuffle filter on compression (yes|no)
         :type shuffle: str
-        :param deflate: deflate level (from 1 to 9) compression. 0 is no compression
+        :param deflate: deflate level (from 1 to 9) compression. 0 is no
+            compression
         :type deflate: int
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: None
         :rtype: None
@@ -4297,8 +4714,11 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """aggregate( ncores=1, nthreads=1, exec_mode='sync', schedule=0, group_size='all', operation=None, missingvalue='-', grid='-', container='-', description='-', check_grid='no', save='yes', display=False)
-             -> Cube or None : wrapper of the operator OPH_AGGREGATE
+        """aggregate( ncores=1, nthreads=1, exec_mode='sync', schedule=0,
+            group_size='all', operation=None, missingvalue='-', grid='-',
+            container='-', description='-', check_grid='no', save='yes',
+            display=False) -> Cube or None : wrapper of the operator
+            OPH_AGGREGATE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4314,17 +4734,22 @@ if __name__ == '__main__':
         :type container: str
         :param grid: optionally group dimensions in a grid
         :type grid: str
-        :param group_size: number of tuples per group to consider in the aggregation function
+        :param group_size: number of tuples per group to consider in the
+            aggregation function
         :type group_size: int or str
-        :param missingvalue: missing value; by default it is the value from the file if defined, NAN otherwise (for float and double)
+        :param missingvalue: missing value; by default it is the value from the
+            file if defined, NAN otherwise (for float and double)
         :type missingvalue: float
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the
+            output cube
         :type description: str
         :param check_grid: yes|no
         :type check_grid: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -4395,9 +4820,11 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """aggregate2(ncores=1, nthreads=1, exec_mode='sync', schedule=0, dim='-', concept_level='A', midnight='24', operation=None, grid='-', missingvalue='-', container='-', description='-',
-                      check_grid='no', save='yes', display=False)
-             -> Cube or None : wrapper of the operator OPH_AGGREGATE2
+        """aggregate2(ncores=1, nthreads=1, exec_mode='sync', schedule=0,
+            dim='-', concept_level='A', midnight='24', operation=None,
+            grid='-', missingvalue='-', container='-', description='-',
+            check_grid='no', save='yes', display=False)
+            -> Cube or None : wrapper of the operator OPH_AGGREGATE2
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4411,23 +4838,30 @@ if __name__ == '__main__':
         :type dim: str
         :param operation: count|max|min|avg|sum
         :type operation: str
-        :param concept_level: concept level inside the hierarchy used for the operation
+        :param concept_level: concept level inside the hierarchy used for the
+            operation
         :type concept_level: str
-        :param container: name of the container to be used to store the output cube, by default it is the input container
+        :param container: name of the container to be used to store the output
+            cube, by default it is the input container
         :type container: str
-        :param grid: optional argument used to identify the grid of dimensions to be used or the one to be created
+        :param grid: optional argument used to identify the grid of dimensions
+            to be used or the one to be created
         :type grid: str
         :param midnight: 00|24
         :type midnight: str
-        :param missingvalue: missing value; by default it is the value from the file if defined, NAN otherwise (for float and double)
+        :param missingvalue: missing value; by default it is the value from the
+            file if defined, NAN otherwise (for float and double)
         :type missingvalue: float
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the
+            output cube
         :type description: str
         :param check_grid: yes|no
         :type check_grid: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -4503,8 +4937,12 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """apply(ncores=1, nthreads=1, exec_mode='sync', query='measure', dim_query='null', measure='null', measure_type='manual', dim_type='manual', check_type='yes', on_reduce='skip', compressed='auto',
-                 schedule=0, container='-', description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_APPLY
+        """apply(ncores=1, nthreads=1, exec_mode='sync', query='measure',
+            dim_query='null', measure='null', measure_type='manual',
+            dim_type='manual', check_type='yes', on_reduce='skip',
+            compressed='auto', schedule=0, container='-', description='-',
+            save='yes', display=False) -> Cube or None : wrapper of the
+            operator OPH_APPLY
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4522,21 +4960,26 @@ if __name__ == '__main__':
         :type on_reduce: str
         :param compressed: yes|no|auto
         :type compressed: str
-        :param container: name of the container to be used to store the output cube, by default it is the input container
+        :param container: name of the container to be used to store the output
+            cube, by default it is the input container
         :type container: str
         :param dim_query: optional query on dimension values
         :type dim_query: str
         :param dim_type: auto|manual
         :type dim_type: str
-        :param measure: name of the new measure resulting from the specified operation
+        :param measure: name of the new measure resulting from the specified
+            operation
         :type measure: str
         :param measure_type: auto|manual
         :type measure_type: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the
+            output cube
         :type description: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -4615,19 +5058,26 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
-        subset_filter='all', subset_type='index', time_filter='yes', ncores=1, exec_mode='sync', schedule=0, save='yes', display=False)
+        """concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes',
+            dim_offset='-', dim_continue='no', offset=0, description='-',
+            subset_dims='none', subset_filter='all', subset_type='index',
+            time_filter='yes', ncores=1, exec_mode='sync', schedule=0,
+            save='yes', display=False)
         -> Cube or None : wrapper of the operator OPH_CONCATNC
 
         :param src_path: path of file to be imported
         :type src_path: str
-        :param cdd: absolute path corresponding to the current directory on data repository
+        :param cdd: absolute path corresponding to the current directory on
+            data repository
         :type cdd: str
         :param grid: optionally group dimensions in a grid
         :type grid: str
-        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :param subset_dims: pipe (|) separated list of dimensions on which to
+            apply the subsetting
         :type subset_dims: str
-        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :param subset_filter: pipe (|) separated list of filters, one per
+            dimension, composed of comma-separated microfilters
+            (e.g. 1,5,10:2:50)
         :type subset_filter: str
         :param time_filter: yes|no
         :type time_filter: str
@@ -4643,15 +5093,19 @@ if __name__ == '__main__':
         :type offset: int
         :param check_exp_dim: yes|no
         :type check_exp_dim: str
-        :param dim_offset: offset to be added to dimension values of imported data
+        :param dim_offset: offset to be added to dimension values of imported
+            data
         :type dim_offset: float
         :param dim_continue: yes|no
         :type dim_continue: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the
+            output cube
         :type description: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -4736,19 +5190,26 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes', dim_offset='-', dim_continue='no', offset=0, description='-', subset_dims='none',
-        subset_filter='all', subset_type='index', time_filter='yes', ncores=1, nthreads=1, exec_mode='sync', schedule=0, save='yes', display=False)
+        """concatnc(src_path=None, cdd=None, grid='-', check_exp_dim='yes',
+            dim_offset='-', dim_continue='no', offset=0, description='-',
+            subset_dims='none', subset_filter='all', subset_type='index',
+            time_filter='yes', ncores=1, nthreads=1, exec_mode='sync',
+            schedule=0, save='yes', display=False)
         -> Cube or None : wrapper of the operator OPH_CONCATNC2
 
         :param src_path: path of file to be imported
         :type src_path: str
-        :param cdd: absolute path corresponding to the current directory on data repository
+        :param cdd: absolute path corresponding to the current directory on
+            data repository
         :type cdd: str
         :param grid: optionally group dimensions in a grid
         :type grid: str
-        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :param subset_dims: pipe (|) separated list of dimensions on which to
+            apply the subsetting
         :type subset_dims: str
-        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :param subset_filter: pipe (|) separated list of filters, one per
+            dimension, composed of comma-separated microfilters
+            (e.g. 1,5,10:2:50)
         :type subset_filter: str
         :param time_filter: yes|no
         :type time_filter: str
@@ -4766,15 +5227,19 @@ if __name__ == '__main__':
         :type offset: int
         :param check_exp_dim: yes|no
         :type check_exp_dim: str
-        :param dim_offset: offset to be added to dimension values of imported data
+        :param dim_offset: offset to be added to dimension values of imported
+            data
         :type dim_offset: float
         :param dim_continue: yes|no
         :type dim_continue: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the
+            output cube
         :type description: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -4848,15 +5313,19 @@ if __name__ == '__main__':
         save="yes",
         display=True,
     ):
-        """provenance(branch='all', exec_mode='sync', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_CUBEIO
+        """provenance(branch='all', exec_mode='sync', objkey_filter='all',
+            save='yes', display=True) -> dict or None : wrapper of the operator
+            OPH_CUBEIO
 
         :param branch: parent|children|all
         :type branch: str
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -4901,7 +5370,9 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """delete(ncores=1, nthreads=1, exec_mode='sync', schedule=0, save='yes', display=False) -> None : wrapper of the operator OPH_DELETE
+        """delete(ncores=1, nthreads=1, exec_mode='sync', schedule=0,
+            save='yes', display=False) -> None : wrapper of the operator
+            OPH_DELETE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4911,9 +5382,11 @@ if __name__ == '__main__':
         :type exec_mode: str
         :param schedule: 0
         :type schedule: int
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: None
         :rtype: None
@@ -4956,7 +5429,9 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """drilldown(ndim=1, container='-', ncores=1, exec_mode='sync', schedule=0, description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_DRILLDOWN
+        """drilldown(ndim=1, container='-', ncores=1, exec_mode='sync',
+            schedule=0, description='-', save='yes', display=False)
+            -> Cube or None : wrapper of the operator OPH_DRILLDOWN
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -4964,15 +5439,20 @@ if __name__ == '__main__':
         :type exec_mode: str
         :param schedule: 0
         :type schedule: int
-        :param ndim: number of implicit dimensions that will be transformed in explicit dimensions
+        :param ndim: number of implicit dimensions that will be transformed in
+            explicit dimensions
         :type ndim: int
-        :param container: name of the container to be used to store the output cube, by default it is the input container
+        :param container: name of the container to be used to store the output
+            cube, by default it is the input container
         :type container: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the
+            output cube
         :type description: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -5026,7 +5506,9 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """duplicate(container='-', ncores=1, nthreads=1, exec_mode='sync', description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_DUPLICATE
+        """duplicate(container='-', ncores=1, nthreads=1, exec_mode='sync',
+            description='-', save='yes', display=False) -> Cube or None :
+            wrapper of the operator OPH_DUPLICATE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -5036,13 +5518,17 @@ if __name__ == '__main__':
         :type exec_mode: str
         :param schedule: 0
         :type schedule: int
-        :param container: name of the container to be used to store the output cube, by default it is the input container
+        :param container: name of the container to be used to store the output
+            cube, by default it is the input container
         :type container: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the
+            output cube
         :type description: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -5107,8 +5593,13 @@ if __name__ == '__main__':
         save="yes",
         display=True,
     ):
-        """explore(schedule=0, limit_filter=100, subset_dims=None, subset_filter='all', time_filter='yes', subset_type='index', show_index='no', show_id='no', show_time='no', level=1, output_path='default',
-                   output_name='default', cdd=None, base64='no', ncores=1, exec_mode='sync', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_EXPLORECUBE
+        """explore(schedule=0, limit_filter=100, subset_dims=None,
+            subset_filter='all', time_filter='yes', subset_type='index',
+            show_index='no', show_id='no', show_time='no', level=1,
+            output_path='default', output_name='default', cdd=None,
+            base64='no', ncores=1, exec_mode='sync', objkey_filter='all',
+            save='yes', display=True) -> dict or None : wrapper of the operator
+            OPH_EXPLORECUBE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -5134,17 +5625,23 @@ if __name__ == '__main__':
         :type show_index: str
         :param show_time: yes|no
         :type show_time: str
-        :param cdd: absolute path corresponding to the current directory on data repository
+        :param cdd: absolute path corresponding to the current directory on
+            data repository
         :type cdd: str
         :param base64: yes|no
         :type base64: str
-        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :param subset_dims: pipe (|) separated list of dimensions on which to
+            apply the subsetting
         :type subset_dims: str
-        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :param subset_filter: pipe (|) separated list of filters, one per
+            dimension, composed of comma-separated microfilters
+            (e.g. 1,5,10:2:50)
         :type subset_filter: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -5223,7 +5720,9 @@ if __name__ == '__main__':
         save="yes",
         display=True,
     ):
-        """publish( ncores=1, content='all', exec_mode='sync', show_id= 'no', show_index='no', schedule=0, show_time='no', save='yes', display=True) -> dict or None : wrapper of the operator OPH_PUBLISH
+        """publish( ncores=1, content='all', exec_mode='sync', show_id= 'no',
+            show_index='no', schedule=0, show_time='no', save='yes',
+            display=True) -> dict or None : wrapper of the operator OPH_PUBLISH
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -5239,9 +5738,11 @@ if __name__ == '__main__':
         :type show_time: str
         :param content: all|data|metadata
         :type content: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -5286,13 +5787,16 @@ if __name__ == '__main__':
             return response
 
     def unpublish(self, exec_mode="sync", save="yes", display=False):
-        """unpublish( exec_mode='sync', save='yes', display=False) -> None : wrapper of the operator OPH_UNPUBLISH
+        """unpublish( exec_mode='sync', save='yes', display=False) -> None :
+            wrapper of the operator OPH_UNPUBLISH
 
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: None
         :rtype: None
@@ -5334,11 +5838,16 @@ if __name__ == '__main__':
         save="yes",
         display=True,
     ):
-        """cubeschema( objkey_filter='all', exec_mode='sync', level=0, dim=None, show_index='no', show_time='no', base64='no', action='read', concept_level='c', dim_level=1, dim_array='yes', save='yes', display=True) -> dict or None : wrapper of the operator OPH_CUBESCHEMA
+        """cubeschema( objkey_filter='all', exec_mode='sync', level=0,
+            dim=None, show_index='no', show_time='no', base64='no',
+            action='read', concept_level='c', dim_level=1, dim_array='yes',
+            save='yes', display=True) -> dict or None : wrapper of the operator
+            OPH_CUBESCHEMA
 
         :param level: 0|1|2
         :type level: int
-        :param dim: names of dimensions to show. Only valid with level bigger than 0
+        :param dim: names of dimensions to show. Only valid with level bigger
+            than 0
         :type dim: str
         :param show_index: yes|no
         :type show_index: str
@@ -5348,17 +5857,21 @@ if __name__ == '__main__':
         :type base64: str
         :param action: read|add|clear
         :type action: str
-        :param concept_level: hierarchy level of a new dimension to be added (default is 'c')
+        :param concept_level: hierarchy level of a new dimension to be added
+            (default is 'c')
         :type concept_level: str
-        :param dim_level: level of a new dimension to be added, greater than 0 (default is 1)
+        :param dim_level: level of a new dimension to be added, greater than 0
+            (default is 1)
         :type dim_level: int
         :param dim_array: yes|no
         :type dim_array: str
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -5421,7 +5934,10 @@ if __name__ == '__main__':
         save="yes",
         display=True,
     ):
-        """cubesize( schedule=0, ncores=1, byte_unit='MB', algorithm='euristic', objkey_filter='all', exec_mode='sync', save='yes', display=True) -> dict or None : wrapper of the operator OPH_CUBESIZE
+        """cubesize( schedule=0, ncores=1, byte_unit='MB',
+            algorithm='euristic', objkey_filter='all', exec_mode='sync',
+            save='yes', display=True) -> dict or None : wrapper of the operator
+            OPH_CUBESIZE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -5433,9 +5949,11 @@ if __name__ == '__main__':
         :type byte_unit: str
         :param algorithm: euristic|count
         :type algorithm: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -5487,7 +6005,9 @@ if __name__ == '__main__':
         save="yes",
         display=True,
     ):
-        """cubeelements( schedule=0, algorithm='dim_product', ncores=1, exec_mode='sync', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
+        """cubeelements( schedule=0, algorithm='dim_product', ncores=1,
+            exec_mode='sync', objkey_filter='all', save='yes', display=True)
+            -> dict or None : wrapper of the operator OPH_CUBEELEMENTS
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -5497,9 +6017,11 @@ if __name__ == '__main__':
         :type schedule: int
         :param algorithm: dim_product|count
         :type algorithm: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -5554,7 +6076,10 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """intercube(ncores=1, exec_mode='sync', cube2=None, cubes=None, operation='sub', missingvalue='-', measure='null', schedule=0, container='-', description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE
+        """intercube(ncores=1, exec_mode='sync', cube2=None, cubes=None,
+            operation='sub', missingvalue='-', measure='null', schedule=0,
+            container='-', description='-', save='yes', display=False)
+            -> Cube or None : wrapper of the operator OPH_INTERCUBE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -5566,19 +6091,25 @@ if __name__ == '__main__':
         :type cube2: str
         :param cubes: pipe (|) separated list of cubes
         :type cubes: str
-        :param operation: sum|sub|mul|div|abs|arg|corr|mask|max|min|arg_max|arg_min
+        :param operation: sum|sub|mul|div|abs|arg|corr|mask|max|min|arg_max|
+            arg_min
         :type operation: str
-        :param missingvalue: missing value; by default it is the value from the file if defined, NAN otherwise (for float and double)
+        :param missingvalue: missing value; by default it is the value from the
+            file if defined, NAN otherwise (for float and double)
         :type missingvalue: float
         :param measure: new measure name
         :type measure: str
-        :param container: name of the container to be used to store the output cube, by default it is the input container
+        :param container: name of the container to be used to store the output
+            cube, by default it is the input container
         :type container: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the output
+            cube
         :type description: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -5647,7 +6178,10 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """intercube2(ncores=1, exec_mode='sync', cubes=None, operation='avg', missingvalue='-', measure='null', schedule=0, container='-', description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_INTERCUBE2
+        """intercube2(ncores=1, exec_mode='sync', cubes=None, operation='avg',
+            missingvalue='-', measure='null', schedule=0, container='-',
+            description='-', save='yes', display=False) -> Cube or None :
+            wrapper of the operator OPH_INTERCUBE2
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -5659,17 +6193,22 @@ if __name__ == '__main__':
         :type cubes: str
         :param operation: sum|avg|mul|max|min|arg_max|arg_min
         :type operation: str
-        :param missingvalue: missing value; by default it is the value from the file if defined, NAN otherwise (for float and double)
+        :param missingvalue: missing value; by default it is the value from the
+            file if defined, NAN otherwise (for float and double)
         :type missingvalue: float
         :param measure: new measure name
         :type measure: str
-        :param container: name of the container to be used to store the output cube, by default it is the input container
+        :param container: name of the container to be used to store the output
+            cube, by default it is the input container
         :type container: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description associated with the output
+            cube
         :type description: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -5732,7 +6271,9 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """merge(nmerge=0, schedule=0, description='-', container='-', exec_mode='sync', ncores=1, save='yes', display=False) -> Cube or None : wrapper of the operator OPH_MERGE
+        """merge(nmerge=0, schedule=0, description='-', container='-',
+            exec_mode='sync', ncores=1, save='yes', display=False)
+            -> Cube or None : wrapper of the operator OPH_MERGE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -5740,15 +6281,20 @@ if __name__ == '__main__':
         :type exec_mode: str
         :param schedule: 0
         :type schedule: int
-        :param nmerge: number of input fragments to merge in an output fragment, 0 for all
+        :param nmerge: number of input fragments to merge in an output
+            fragment, 0 for all
         :type nmerge: int
-        :param container: name of the container to be used to store the output cube, by default it is the input container
+        :param container: name of the container to be used to store the output
+            cube, by default it is the input container
         :type container: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description to be associated with the
+            output cube
         :type description: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -5808,20 +6354,29 @@ if __name__ == '__main__':
         save="yes",
         display=True,
     ):
-        """metadata(mode='read', metadata_id=0, metadata_key='all', variable='global', metadata_type='text', metadata_value=None, variable_filter=None, metadata_type_filter=None,
-                    metadata_value_filter=None, force='no', exec_mode='sync', objkey_filter='all', save='yes', display=True) -> dict or None : wrapper of the operator OPH_METADATA
+        """metadata(mode='read', metadata_id=0, metadata_key='all',
+            variable='global', metadata_type='text', metadata_value=None,
+            variable_filter=None, metadata_type_filter=None,
+            metadata_value_filter=None, force='no', exec_mode='sync',
+            objkey_filter='all', save='yes', display=True) -> dict or None :
+            wrapper of the operator OPH_METADATA
 
         :param mode: insert|read|update|delete
         :type mode: str
-        :param metadata_id: id of the particular metadata instance to interact with
+        :param metadata_id: id of the particular metadata instance to interact
+            with
         :type metadata_id: int
-        :param metadata_key: name of the key (or the enumeration of keys) identifying requested metadata
+        :param metadata_key: name of the key (or the enumeration of keys)
+            identifying requested metadata
         :type metadata_key: str
-        :param variable: name of the variable to which we can associate a new metadata key
+        :param variable: name of the variable to which we can associate a new
+            metadata key
         :type variable: str
-        :param metadata_type: text|image|video|audio|url|double|float|long|int|short
+        :param metadata_type: text|image|video|audio|url|double|float|long|int|
+            short
         :type metadata_type: str
-        :param metadata_value: string value to be assigned to specified metadata
+        :param metadata_value: string value to be assigned to specified
+            metadata
         :type metadata_value: str
         :param variable_filter: filter on variable name
         :type variable_filter: str
@@ -5829,13 +6384,16 @@ if __name__ == '__main__':
         :type metadata_type_filter: str
         :param metadata_value_filter: filter on metadata value
         :type metadata_value_filter: str
-        :param force: force update or deletion of functional metadata associated to a vocabulary, default is no
+        :param force: force update or deletion of functional metadata
+            associated to a vocabulary, default is no
         :type force: str
         :param exec_mode: async or sync
         :type exec_mode: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is True)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is True)
         :type display: bool
         :returns: response or None
         :rtype: dict or None
@@ -5865,7 +6423,9 @@ if __name__ == '__main__':
         if metadata_type_filter is not None:
             query += "metadata_type_filter=" + str(metadata_type_filter) + ";"
         if metadata_value_filter is not None:
-            query += "metadata_value_filter=" + str(metadata_value_filter) + ";"
+            query += (
+                "metadata_value_filter=" + str(metadata_value_filter) + ";"
+            )
         if force is not None:
             query += "force=" + str(force) + ";"
         if exec_mode is not None:
@@ -5901,7 +6461,9 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """permute(dim_pos=None, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_PERMUTE
+        """permute(dim_pos=None, container='-', exec_mode='sync', ncores=1,
+            nthreads=1, schedule=0, description='-', save='yes', display=False)
+            -> Cube or None : wrapper of the operator OPH_PERMUTE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -5911,15 +6473,20 @@ if __name__ == '__main__':
         :type exec_mode: str
         :param schedule: 0
         :type schedule: int
-        :param dim_pos: permutation of implicit dimensions as a comma-separated list of dimension levels
+        :param dim_pos: permutation of implicit dimensions as a comma-separated
+            list of dimension levels
         :type dim_pos: str
-        :param container: name of the container to be used to store the output cube, by default it is the input container
+        :param container: name of the container to be used to store the output
+            cube, by default it is the input container
         :type container: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description to be associated with the
+            output cube
         :type description: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -5981,8 +6548,11 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """reduce(operation=None, container=None, exec_mode='sync', missingvalue='-', grid='-', group_size='all', ncores=1, nthreads=1, schedule=0, order=2, description='-', objkey_filter='all', check_grid='no', save='yes', display=False)
-             -> Cube or None : wrapper of the operator OPH_REDUCE
+        """reduce(operation=None, container=None, exec_mode='sync',
+            missingvalue='-', grid='-', group_size='all', ncores=1,
+            nthreads=1, schedule=0, order=2, description='-',
+            objkey_filter='all', check_grid='no', save='yes', display=False)
+            -> Cube or None : wrapper of the operator OPH_REDUCE
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -5992,25 +6562,34 @@ if __name__ == '__main__':
         :type exec_mode: str
         :param schedule: 0
         :type schedule: int
-        :param operation: count|max|min|avg|sum|std|var|cmoment|acmoment|rmoment|armoment|quantile|arg_max|arg_min
+        :param operation: count|max|min|avg|sum|std|var|cmoment|acmoment|
+            rmoment|armoment|quantile|arg_max|arg_min
         :type operation: str
-        :param order: order used in evaluation the moments or value of the quantile in range [0, 1]
+        :param order: order used in evaluation the moments or value of the
+            quantile in range [0, 1]
         :type order: float
-        :param missingvalue: missing value; by default it is the value from the file if defined, NAN otherwise (for float and double)
+        :param missingvalue: missing value; by default it is the value from the
+            file if defined, NAN otherwise (for float and double)
         :type missingvalue: float
-        :param container: name of the container to be used to store the output cube, by default it is the input container
+        :param container: name of the container to be used to store the output
+            cube, by default it is the input container
         :type container: str
-        :param grid: optional argument used to identify the grid of dimensions to be used or the one to be created
+        :param grid: optional argument used to identify the grid of dimensions
+            to be used or the one to be created
         :type grid: str
-        :param group_size: size of the aggregation set, all for the entire array
+        :param group_size: size of the aggregation set, all for the entire
+            array
         :type group_size: int or str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description to be associated with the
+            output cube
         :type description: str
         :param check_grid: yes|no
         :type check_grid: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -6084,8 +6663,11 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """reduce2(dim=None, operation=None, concept_level='A', container='-', exec_mode='sync', grid='-', midnight='24', order=2, missingvalue="-", description='-', schedule=0, ncores=1, nthreads=1, check_grid='no', save='yes', display=False)
-             -> Cube or None : wrapper of the operator OPH_REDUCE2
+        """reduce2(dim=None, operation=None, concept_level='A', container='-',
+            exec_mode='sync', grid='-', midnight='24', order=2,
+            missingvalue="-", description='-', schedule=0, ncores=1,
+            nthreads=1, check_grid='no', save='yes', display=False)
+            -> Cube or None : wrapper of the operator OPH_REDUCE2
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -6095,36 +6677,50 @@ if __name__ == '__main__':
         :type schedule: int
         :param dim: name of dimension on which the operation will be applied
         :type dim: str
-        :param operation: count|max|min|avg|sum|std|var|cmoment|acmoment|rmoment|armoment|quantile|arg_max|arg_min
+        :param operation: count|max|min|avg|sum|std|var|cmoment|acmoment|
+            rmoment|armoment|quantile|arg_max|arg_min
         :type operation: str
-        :param concept_level: concept level inside the hierarchy used for the operation
+        :param concept_level: concept level inside the hierarchy used for the
+            operation
         :type concept_level: str
-        :param container: name of the container to be used to store the output cube, by default it is the input container
+        :param container: name of the container to be used to store the output
+            cube, by default it is the input container
         :type container: str
-        :param grid: optional argument used to identify the grid of dimensions to be used or the one to be created
+        :param grid: optional argument used to identify the grid of dimensions
+            to be used or the one to be created
         :type grid: str
         :param midnight: 00|24
         :type midnight: str
-        :param order: order used in evaluation the moments or value of the quantile in range [0, 1]
+        :param order: order used in evaluation the moments or value of the
+            quantile in range [0, 1]
         :type order: float
-        :param missingvalue: missing value; by default it is the value from the file if defined, NAN otherwise (for float and double)
+        :param missingvalue: missing value; by default it is the value from the
+            file if defined, NAN otherwise (for float and double)
         :type missingvalue: float
-        :param description: additional description to be associated with the output cube
+        :param description: additional description to be associated with the
+            output cube
         :type description: str
         :param nthreads: number of threads to use
         :type nthreads: int
         :param check_grid: yes|no
         :type check_grid: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
         :raises: RuntimeError
         """
 
-        if Cube.client is None or self.pid is None or dim is None or operation is None:
+        if (
+            Cube.client is None
+            or self.pid is None
+            or dim is None
+            or operation is None
+        ):
             raise RuntimeError("Cube.client, pid, dim or operation is None")
         newcube = None
 
@@ -6188,7 +6784,9 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """rollup(ndim=1, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_ROLLUP
+        """rollup(ndim=1, container='-', exec_mode='sync', ncores=1,
+            nthreads=1, schedule=0, description='-', save='yes', display=False)
+            -> Cube or None : wrapper of the operator OPH_ROLLUP
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -6198,15 +6796,20 @@ if __name__ == '__main__':
         :type exec_mode: str
         :param schedule: 0
         :type schedule: int
-        :param ndim: number of explicit dimensions that will be transformed in implicit dimensions
+        :param ndim: number of explicit dimensions that will be transformed in
+            implicit dimensions
         :type ndim: int
-        :param container: name of the container to be used to store the output cube, by default it is the input container
+        :param container: name of the container to be used to store the output
+            cube, by default it is the input container
         :type container: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description to be associated with the
+            output cube
         :type description: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -6263,7 +6866,9 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """split(nsplit=2, container='-', exec_mode='sync', ncores=1, nthreads=1, schedule=0, description='-', save='yes', display=False) -> Cube or None : wrapper of the operator OPH_SPLIT
+        """split(nsplit=2, container='-', exec_mode='sync', ncores=1,
+            nthreads=1, schedule=0, description='-', save='yes', display=False)
+            -> Cube or None : wrapper of the operator OPH_SPLIT
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -6275,13 +6880,17 @@ if __name__ == '__main__':
         :type schedule: int
         :param nsplit: number of output fragments per input fragment
         :type nsplit: int
-        :param container: name of the container to be used to store the output cube, by default it is the input container
+        :param container: name of the container to be used to store the output
+            cube, by default it is the input container
         :type container: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description to be associated with the
+            output cube
         :type description: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -6344,9 +6953,11 @@ if __name__ == '__main__':
         save="yes",
         display=False,
     ):
-        """subset(subset_dims='none', subset_filter='all', container='-', exec_mode='sync', subset_type='index', time_filter='yes', offset=0, grid='-', ncores=1, nthreads=1, schedule=0, description='-',
-                  check_grid='no', save='yes', display=False)
-             -> Cube or None : wrapper of the operator OPH_SUBSET
+        """subset(subset_dims='none', subset_filter='all', container='-',
+            exec_mode='sync', subset_type='index', time_filter='yes', offset=0,
+            grid='-', ncores=1, nthreads=1, schedule=0, description='-',
+            check_grid='no', save='yes', display=False) -> Cube or None :
+            wrapper of the operator OPH_SUBSET
 
         :param ncores: number of cores to use
         :type ncores: int
@@ -6356,11 +6967,15 @@ if __name__ == '__main__':
         :type exec_mode: str
         :param schedule: 0
         :type schedule: int
-        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :param subset_dims: pipe (|) separated list of dimensions on which to
+            apply the subsetting
         :type subset_dims: str
-        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters on dimension indexes (e.g. 1,5,10:2:50)
+        :param subset_filter: pipe (|) separated list of filters, one per
+            dimension, composed of comma-separated microfilters on dimension
+            indexes (e.g. 1,5,10:2:50)
         :type subset_filter: str
-        :param container: name of the container to be used to store the output cube, by default it is the input container
+        :param container: name of the container to be used to store the output
+            cube, by default it is the input container
         :type container: str
         :param subset_type: index|coord
         :type subset_type: str
@@ -6368,15 +6983,19 @@ if __name__ == '__main__':
         :type time_filter: str
         :param offset: added to the bounds of subset intervals
         :type offset: int
-        :param grid: optional argument used to identify the grid of dimensions to be used or the one to be created
+        :param grid: optional argument used to identify the grid of dimensions
+            to be used or the one to be created
         :type grid: str
-        :param description: additional description to be associated with the output cube
+        :param description: additional description to be associated with the
+            output cube
         :type description: str
         :param check_grid: yes|no
         :type check_grid: str
-        :param save: option to enable/disable JSON response saving on the server-side (default is yes)
+        :param save: option to enable/disable JSON response saving on the
+            server-side (default is yes)
         :type save: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: new cube or None
         :rtype: Cube or None
@@ -6444,12 +7063,16 @@ if __name__ == '__main__':
         ncores=1,
         export_metadata="yes",
     ):
-        """to_b2drop(cdd=None, auth_path='-', dst_path='-', ncores=1, export_metadata='yes')
-          -> None : method that integrates the features of OPH_EXPORTNC2 and OPH_B2DROP operators to upload a cube to B2DROP as a NetCDF file
+        """to_b2drop(cdd=None, auth_path='-', dst_path='-', ncores=1,
+            export_metadata='yes') -> None : method that integrates the
+            features of OPH_EXPORTNC2 and OPH_B2DROP operators to upload a cube
+            to B2DROP as a NetCDF file
 
-        :param cdd: absolute path corresponding to the current directory on data repository
+        :param cdd: absolute path corresponding to the current directory on
+            data repository
         :type cdd: str
-        :param auth_path: absolute path to the netrc file containing the B2DROP credentials
+        :param auth_path: absolute path to the netrc file containing the B2DROP
+            credentials
         :type auth_path: str
         :param dst_path: path where the file will be uploaded on B2DROP
         :type dst_path: str
@@ -6457,7 +7080,8 @@ if __name__ == '__main__':
         :type ncores: int
         :param export_metadata: yes|no
         :type export_metadata: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: None
         :rtype: None
@@ -6486,7 +7110,8 @@ if __name__ == '__main__':
                     if (
                         response_i["objclass"] == "text"
                         and "title" in response_i["objcontent"][0]
-                        and response_i["objcontent"][0]["title"] == "Output File"
+                        and response_i["objcontent"][0]["title"]
+                        == "Output File"
                     ):
                         file_path = response_i["objcontent"][0]["message"]
                         break
@@ -6517,15 +7142,20 @@ if __name__ == '__main__':
         subset_filter=None,
         time_filter="no",
     ):
-        """export_array(show_id='no', show_time='no', subset_dims=None, subset_filter=None, time_filter='no') -> dict or None : return data from an Ophidia datacube into a Python structure
+        """export_array(show_id='no', show_time='no', subset_dims=None,
+            subset_filter=None, time_filter='no') -> dict or None : return data
+            from an Ophidia datacube into a Python structure
 
         :param show_id: yes|no
         :type show_id: str
         :param show_time: yes|no
         :type show_time: str
-        :param subset_dims: pipe (|) separated list of dimensions on which to apply the subsetting
+        :param subset_dims: pipe (|) separated list of dimensions on which to
+            apply the subsetting
         :type subset_dims: str
-        :param subset_filter: pipe (|) separated list of filters, one per dimension, composed of comma-separated microfilters (e.g. 1,5,10:2:50)
+        :param subset_filter: pipe (|) separated list of filters, one per
+            dimension, composed of comma-separated microfilters
+            (e.g. 1,5,10:2:50)
         :type subset_filter: str
         :param time_filter: yes|no
         :type time_filter: str
@@ -6538,7 +7168,10 @@ if __name__ == '__main__':
             raise RuntimeError("Cube.client or pid is None")
         response = None
 
-        query = "oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=0;save=no;"
+        query = (
+            "oph_explorecube ncore=1;base64=yes;level=2;show_index=yes;"
+            "subset_type=coord;limit_filter=0;save=no;"
+        )
 
         if time_filter is not None:
             query += "time_filter=" + str(time_filter) + ";"
@@ -6590,14 +7223,21 @@ if __name__ == '__main__':
                             dim_array = []
 
                             # Special case for time
-                            if show_time == "yes" and response_j["title"] == "time":
+                            if (
+                                show_time == "yes"
+                                and response_j["title"] == "time"
+                            ):
                                 for val in response_j["rowvalues"]:
-                                    dims = [s.strip() for s in val[1].split(",")]
+                                    dims = [
+                                        s.strip() for s in val[1].split(",")
+                                    ]
                                     for v in dims:
                                         dim_array.append(v)
                             else:
                                 for val in response_j["rowvalues"]:
-                                    decoded_bin = base64.b64decode(val[1] + "==")
+                                    decoded_bin = base64.b64decode(
+                                        val[1] + "=="
+                                    )
                                     length = _calculate_decoded_length(
                                         decoded_bin,
                                         response_j["rowfieldtypes"][1],
@@ -6614,7 +7254,8 @@ if __name__ == '__main__':
 
                         else:
                             raise RuntimeError(
-                                "Unable to get dimension name or values in response"
+                                "Unable to get dimension name or values in "
+                                "response"
                             )
 
                     dim_num = len(dimensions)
@@ -6625,7 +7266,9 @@ if __name__ == '__main__':
                     break
 
         except Exception as e:
-            print(_get_linenumber(), "Unable to get dimensions from response:", e)
+            print(
+                _get_linenumber(), "Unable to get dimensions from response:", e
+            )
             return None
 
         # Read values
@@ -6647,7 +7290,11 @@ if __name__ == '__main__':
 
                             if not adimCube:
                                 # Check that implicit dimension is just one
-                                if dim_num - (len(response_j["rowkeys"]) - 1) / 2.0 > 1:
+                                if (
+                                    dim_num
+                                    - (len(response_j["rowkeys"]) - 1) / 2.0
+                                    > 1
+                                ):
                                     raise RuntimeError(
                                         "More than one implicit dimension"
                                     )
@@ -6711,7 +7358,8 @@ if __name__ == '__main__':
             return data_values
 
     def to_dataset(self):
-        """to_dataset() -> xarray.core.dataset.Dataset or None : return data from an Ophidia datacube into a Xarray dataset
+        """to_dataset() -> xarray.core.dataset.Dataset or None : return data
+            from an Ophidia datacube into a Xarray dataset
 
         :returns: a 'xarray.core.dataset.Dataset' object or None
         :rtype: <class 'xarray.core.dataset.Dataset'>
@@ -6724,8 +7372,9 @@ if __name__ == '__main__':
 
         def _append_with_format(var, frmt):
             """_append_with_format(var, frmt) ->
-            numpy.float32|numpy.float64|numpy.int32|numpy.int64 converts a variable
-                to the appropriate format according to pyophidia's type
+                numpy.float32|numpy.float64|numpy.int32|numpy.int64
+                converts a variable to the appropriate format according to
+                pyophidia's type
             :param var: the variable to convert
             :type var: int|float|str
             :param frmt: a string representing pyophidias format
@@ -6765,9 +7414,11 @@ if __name__ == '__main__':
 
         def _add_coordinates(cube, ds, response, meta_info):
             """
-            _add_coordinates(cube, dr, response) -> xarray.core.dataset.Dataset,
+            _add_coordinates(cube, dr, response) ->
+                xarray.core.dataset.Dataset,
             int: a function that uses the response from
-                the oph_explorecube and adds coordinates to the dataarray object
+                the oph_explorecube and adds coordinates to the dataarray
+                object
             :param cube: the cube object
             :type cube:  <class 'pyophidia.cube.Cube'>
             :param ds: the xarray dataset object
@@ -6792,14 +7443,17 @@ if __name__ == '__main__':
                                     and response_j["rowfieldtypes"][1]
                                     and response_j["rowvalues"]
                                 ):
-                                    if response_j["title"] == _time_dimension_finder(
-                                        cube
-                                    ):
+                                    if response_j[
+                                        "title"
+                                    ] == _time_dimension_finder(cube):
                                         temp_array = []
-                                        lengths.append(len(response_j["rowvalues"]))
+                                        lengths.append(
+                                            len(response_j["rowvalues"])
+                                        )
                                         for val in response_j["rowvalues"]:
                                             dims = [
-                                                s.strip() for s in val[1].split(",")
+                                                s.strip()
+                                                for s in val[1].split(",")
                                             ]
                                             temp_array.append(dims[0])
                                         ds[response_j["title"]] = temp_array
@@ -6810,7 +7464,9 @@ if __name__ == '__main__':
                                             )
                                         )
                                     else:
-                                        lengths.append(len(response_j["rowvalues"]))
+                                        lengths.append(
+                                            len(response_j["rowvalues"])
+                                        )
                                         temp_array = []
                                         for val in response_j["rowvalues"]:
                                             decoded_bin = base64.b64decode(
@@ -6824,14 +7480,20 @@ if __name__ == '__main__':
                                                 length,
                                                 response_j["rowfieldtypes"][1],
                                             )
-                                            dims = struct.unpack(format, decoded_bin)
+                                            dims = struct.unpack(
+                                                format, decoded_bin
+                                            )
                                             temp_array.append(
                                                 _append_with_format(
                                                     dims[0],
-                                                    response_j["rowfieldtypes"][1],
+                                                    response_j[
+                                                        "rowfieldtypes"
+                                                    ][1],
                                                 )
                                             )
-                                        ds[response_j["title"]] = list(temp_array)
+                                        ds[response_j["title"]] = list(
+                                            temp_array
+                                        )
                                         ds[response_j["title"]].attrs = (
                                             _convert_to_metadict(
                                                 meta_info,
@@ -6840,8 +7502,8 @@ if __name__ == '__main__':
                                         )
                                 else:
                                     raise RuntimeError(
-                                        "Unable to get dimension name or values in "
-                                        "response"
+                                        "Unable to get dimension name or"
+                                        "values in response"
                                     )
                             break
             except Exception as e:
@@ -6856,8 +7518,8 @@ if __name__ == '__main__':
         def _add_measure(cube, ds, response, lengths, meta_info):
             """
             _add_measure(cube, dr, response) -> xarray.core.dataset.Dataset: a
-            function that uses the response from
-                the oph_explorecube and adds the measure to the dataarray object
+                function that uses the response from oph_explorecube and adds
+                the measure to the dataarray object
             :param cube: the cube object
             :type cube:  <class 'pyophidia.cube.Cube'>
             :param ds: the xarray dataset object
@@ -6885,13 +7547,16 @@ if __name__ == '__main__':
                                 ):
                                     measure_index = 0
 
-                                    for i, t in enumerate(response_j["rowkeys"]):
+                                    for i, t in enumerate(
+                                        response_j["rowkeys"]
+                                    ):
                                         if response_j["title"] == t:
                                             measure_index = i
                                             break
                                     if measure_index == 0:
                                         raise RuntimeError(
-                                            "Unable to get measure name in response"
+                                            "Unable to get measure name in "
+                                            "response"
                                         )
                                     values = []
                                     for val in response_j["rowvalues"]:
@@ -6900,19 +7565,25 @@ if __name__ == '__main__':
                                         )
                                         length = _calculate_decoded_length(
                                             decoded_bin,
-                                            response_j["rowfieldtypes"][measure_index],
+                                            response_j["rowfieldtypes"][
+                                                measure_index
+                                            ],
                                         )
                                         format = _get_unpack_format(
                                             length,
-                                            response_j["rowfieldtypes"][measure_index],
+                                            response_j["rowfieldtypes"][
+                                                measure_index
+                                            ],
                                         )
-                                        data_format = response_j["rowfieldtypes"][
-                                            measure_index
-                                        ]
-                                        measure = struct.unpack(format, decoded_bin)
-                                        if (type(measure)) is (tuple or list) and len(
-                                            measure
-                                        ) == 1:
+                                        data_format = response_j[
+                                            "rowfieldtypes"
+                                        ][measure_index]
+                                        measure = struct.unpack(
+                                            format, decoded_bin
+                                        )
+                                        if (type(measure)) is (
+                                            tuple or list
+                                        ) and len(measure) == 1:
                                             values.append(
                                                 _append_with_format(
                                                     measure[0], data_format
@@ -6921,13 +7592,17 @@ if __name__ == '__main__':
                                         else:
                                             for v in measure:
                                                 values.append(
-                                                    _append_with_format(v, data_format)
+                                                    _append_with_format(
+                                                        v, data_format
+                                                    )
                                                 )
                                     previous_array = []
                                     for i in range(len(lengths) - 1, -1, -1):
                                         current_array = []
                                         if i == len(lengths) - 1:
-                                            for j in range(0, len(values), lengths[i]):
+                                            for j in range(
+                                                0, len(values), lengths[i]
+                                            ):
                                                 current_array.append(
                                                     values[j : j + lengths[i]]
                                                 )
@@ -6938,13 +7613,16 @@ if __name__ == '__main__':
                                                 lengths[i],
                                             ):
                                                 current_array.append(
-                                                    previous_array[j : j + lengths[i]]
+                                                    previous_array[
+                                                        j : j + lengths[i]
+                                                    ]
                                                 )
                                         previous_array = current_array
                                     measure = previous_array[0]
                                 else:
                                     raise RuntimeError(
-                                        "Unable to get measure values in response"
+                                        "Unable to get measure values in "
+                                        "response"
                                     )
                                 break
                             break
@@ -6957,7 +7635,10 @@ if __name__ == '__main__':
             sorted_coordinates = []
             for ln in lengths:
                 for c in cube.dim_info:
-                    if ln == int(c["size"]) and c["name"] not in sorted_coordinates:
+                    if (
+                        ln == int(c["size"])
+                        and c["name"] not in sorted_coordinates
+                    ):
                         sorted_coordinates.append(c["name"])
                         break
             ds[cube.measure] = (
@@ -6977,9 +7658,9 @@ if __name__ == '__main__':
 
         def _get_meta_info(response):
             """
-            _get_meta_info(response) -> <class 'list'>: a function that uses the
-            response from
-                the oph_explorecube and returns metadata information
+            _get_meta_info(response) -> <class 'list'>: a function that uses
+                the response from oph_explorecube and returns metadata
+                information
             :param response: response from pyophidia query
             :type response:  <class 'dict'>
             :returns: list
@@ -6990,23 +7671,25 @@ if __name__ == '__main__':
                 for obj in response["response"]:
                     if "objcontent" in obj.keys() and "objkey" in obj.keys():
                         if obj["objkey"] == "explorecube_metadata":
-                            if ("rowvalues" and "rowkeys") in obj["objcontent"][
-                                0
-                            ].keys():
+                            if ("rowvalues" and "rowkeys") in obj[
+                                "objcontent"
+                            ][0].keys():
                                 (
                                     key_indx,
                                     value_indx,
                                     variable_indx,
                                     type_indx,
-                                ) = _get_meta_indexes(obj["objcontent"][0]["rowkeys"])
+                                ) = _get_meta_indexes(
+                                    obj["objcontent"][0]["rowkeys"]
+                                )
                                 for row in obj["objcontent"][0]["rowvalues"]:
                                     key = row[key_indx]
                                     value = row[value_indx]
                                     variable = row[variable_indx]
                                     _type = row[type_indx]
-                                    if (_type == "float" or _type == "int") and len(
-                                        str(value)
-                                    ) > 9:
+                                    if (
+                                        _type == "float" or _type == "int"
+                                    ) and len(str(value)) > 9:
                                         value = _scientific_notation(value)
                                     meta_list.append(
                                         {
@@ -7027,8 +7710,13 @@ if __name__ == '__main__':
                     meta_dict[d["key"]] = d["value"]
             return meta_dict
 
-        def _convert_missing_value(meta_info, measure_name, measure_type, data):
-            if measure_type.lower() != "int" and measure_type.lower() != "long":
+        def _convert_missing_value(
+            meta_info, measure_name, measure_type, data
+        ):
+            if (
+                measure_type.lower() != "int"
+                and measure_type.lower() != "long"
+            ):
                 try:
                     _dependency_check("numpy")
                     import numpy as np
@@ -7070,8 +7758,8 @@ if __name__ == '__main__':
             """
             _get_meta_indexes(response) -> <class 'int'>, <class 'int'>, <class
             'int'>, <class 'int'>: a function that takes as
-                input a list of strings and returns the indexes of the ones that
-                match Key and Value
+                input a list of strings and returns the indexes of the ones
+                that match Key and Value
             :param rowkeys: list of strings
             :type rowkeys:  <class 'list'>
             :returns: int, int, int, int
@@ -7092,8 +7780,8 @@ if __name__ == '__main__':
             """
             _get_dim_indexes(response) -> <class 'int'>, <class 'int'>, <class
             'int'>, <class 'int'>: a function that takes as
-                input a list of strings and returns the indexes of the ones that
-                match Key and Value
+                input a list of strings and returns the indexes of the ones
+                that match Key and Value
             :param rowkeys: list of strings
             :type rowkeys:  <class 'list'>
             :returns: int, int, int
@@ -7116,9 +7804,9 @@ if __name__ == '__main__':
 
         def _set_measure_info(self, response):
             """
-            _get_measure_info(response) -> <class 'list'>: a function that uses the
-            response from
-                the oph_explorecube and fills cube measure information
+            _get_measure_info(response) -> <class 'list'>: a function that uses
+                the response from oph_explorecube and fills cube measure
+                information
             :param response: response from pyophidia query
             :type response:  <class 'dict'>
             :returns: list
@@ -7130,12 +7818,12 @@ if __name__ == '__main__':
                         if obj["objkey"] == "explorecube_data":
                             if "title" in obj["objcontent"][0].keys():
                                 self.measure = obj["objcontent"][0]["title"]
-                            if ("rowfieldtypes" and "rowkeys") in obj["objcontent"][
-                                0
-                            ].keys():
-                                measure_indx = obj["objcontent"][0]["rowkeys"].index(
-                                    self.measure
-                                )
+                            if ("rowfieldtypes" and "rowkeys") in obj[
+                                "objcontent"
+                            ][0].keys():
+                                measure_indx = obj["objcontent"][0][
+                                    "rowkeys"
+                                ].index(self.measure)
                                 self.measure_type = obj["objcontent"][0][
                                     "rowfieldtypes"
                                 ][measure_indx]
@@ -7159,9 +7847,9 @@ if __name__ == '__main__':
                 for obj in response["response"]:
                     if "objcontent" in obj.keys() and "objkey" in obj.keys():
                         if obj["objkey"] == "explorecube_diminfo":
-                            if ("rowvalues" and "rowkeys") in obj["objcontent"][
-                                0
-                            ].keys():
+                            if ("rowvalues" and "rowkeys") in obj[
+                                "objcontent"
+                            ][0].keys():
                                 (
                                     name_indx,
                                     type_indx,
@@ -7171,7 +7859,9 @@ if __name__ == '__main__':
                                     array_indx,
                                     level_indx,
                                     lattice_indx,
-                                ) = _get_dim_indexes(obj["objcontent"][0]["rowkeys"])
+                                ) = _get_dim_indexes(
+                                    obj["objcontent"][0]["rowkeys"]
+                                )
                                 for row in obj["objcontent"][0]["rowvalues"]:
                                     element = dict()
                                     element["name"] = row[name_indx]
@@ -7194,9 +7884,9 @@ if __name__ == '__main__':
 
         query = (
             "oph_explorecube "
-            "ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=0;show_time=yes;export_metadata=yes;cube={0};".format(
-                self.pid
-            )
+            "ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;"
+            "limit_filter=0;show_time=yes;export_metadata=yes;"
+            "cube={0};".format(self.pid)
         )
         try:
             if Cube.client.submit(query, display=False) is None:
@@ -7250,7 +7940,8 @@ if __name__ == '__main__':
         return ds
 
     def to_dataframe(self):
-        """to_dataframe() -> pandas.core.frame.DataFrame or None : return data from an Ophidia datacube into a Pandas dataframe
+        """to_dataframe() -> pandas.core.frame.DataFrame or None : return data
+            from an Ophidia datacube into a Pandas dataframe
 
         :returns: a pandas.core.frame.DataFrame object or None
         :rtype: <class 'pandas.core.frame.DataFrame'>
@@ -7264,9 +7955,9 @@ if __name__ == '__main__':
         def _add_coordinates(cube, response):
             """
             _add_coordinates(cube,response) ->
-            pandas.core.indexes.multi.MultiIndex: a function that uses the response
-                from the oph_explorecube and converts dimensions to pandas
-                multiIndex format
+            pandas.core.indexes.multi.MultiIndex: a function that uses the
+                response from the oph_explorecube and converts dimensions to
+                pandas multiIndex format
             :param cube: the cube object
             :type cube:  <class 'pyophidia.cube.Cube'>
             :param response: response from pyophidia query
@@ -7285,16 +7976,23 @@ if __name__ == '__main__':
                                 and response_j["rowfieldtypes"][1]
                                 and response_j["rowvalues"]
                             ):
-                                if response_j["title"] == _time_dimension_finder(cube):
+                                if response_j[
+                                    "title"
+                                ] == _time_dimension_finder(cube):
                                     temp_array = []
                                     for val in response_j["rowvalues"]:
-                                        dims = [s.strip() for s in val[1].split(",")]
+                                        dims = [
+                                            s.strip()
+                                            for s in val[1].split(",")
+                                        ]
                                         temp_array.append(dims[0])
                                     indexes[response_j["title"]] = temp_array
                                 else:
                                     temp_array = []
                                     for val in response_j["rowvalues"]:
-                                        decoded_bin = base64.b64decode(val[1] + "==")
+                                        decoded_bin = base64.b64decode(
+                                            val[1] + "=="
+                                        )
                                         length = _calculate_decoded_length(
                                             decoded_bin,
                                             response_j["rowfieldtypes"][1],
@@ -7303,13 +8001,17 @@ if __name__ == '__main__':
                                             length,
                                             response_j["rowfieldtypes"][1],
                                         )
-                                        dims = struct.unpack(format, decoded_bin)
+                                        dims = struct.unpack(
+                                            format, decoded_bin
+                                        )
                                         temp_array.append(dims[0])
-                                    indexes[response_j["title"]] = list(temp_array)
+                                    indexes[response_j["title"]] = list(
+                                        temp_array
+                                    )
                             else:
                                 raise RuntimeError(
-                                    "Unable to get dimension name or values in "
-                                    "response"
+                                    "Unable to get dimension name or values "
+                                    "in response"
                                 )
                         break
             except Exception as e:
@@ -7354,7 +8056,8 @@ if __name__ == '__main__':
                                         break
                                 if measure_index == 0:
                                     raise RuntimeError(
-                                        "Unable to get measure name in response"
+                                        "Unable to get measure name in "
+                                        "response"
                                     )
                                 values = []
                                 for val in response_j["rowvalues"]:
@@ -7363,16 +8066,22 @@ if __name__ == '__main__':
                                     )
                                     length = _calculate_decoded_length(
                                         decoded_bin,
-                                        response_j["rowfieldtypes"][measure_index],
+                                        response_j["rowfieldtypes"][
+                                            measure_index
+                                        ],
                                     )
                                     format = _get_unpack_format(
                                         length,
-                                        response_j["rowfieldtypes"][measure_index],
+                                        response_j["rowfieldtypes"][
+                                            measure_index
+                                        ],
                                     )
-                                    measure = struct.unpack(format, decoded_bin)
-                                    if (type(measure)) is (tuple or list) and len(
-                                        measure
-                                    ) == 1:
+                                    measure = struct.unpack(
+                                        format, decoded_bin
+                                    )
+                                    if (type(measure)) is (
+                                        tuple or list
+                                    ) and len(measure) == 1:
                                         values.append(measure[0])
                                     else:
                                         for v in measure:
@@ -7438,14 +8147,18 @@ if __name__ == '__main__':
         buf += "-" * 30 + "\n"
         buf += "%30s: %s" % ("Creation Date", self.creation_date) + "\n"
         buf += (
-            "%30s: %s (%s)" % ("Measure (type)", self.measure, self.measure_type) + "\n"
+            "%30s: %s (%s)"
+            % ("Measure (type)", self.measure, self.measure_type)
+            + "\n"
         )
         buf += "%30s: %s" % ("Source file", self.source_file) + "\n"
         buf += "%30s: %s" % ("Level", self.level) + "\n"
         if self.compressed == "yes":
             buf += "%30s: %s (%s)" % ("Size", self.size, "compressed") + "\n"
         else:
-            buf += "%30s: %s (%s)" % ("Size", self.size, "not compressed") + "\n"
+            buf += (
+                "%30s: %s (%s)" % ("Size", self.size, "not compressed") + "\n"
+            )
         buf += "%30s: %s" % ("Num. of elements", self.nelements) + "\n"
         buf += "%30s: %s" % ("Num. of fragments", self.nfragments) + "\n"
         buf += "-" * 30 + "\n"

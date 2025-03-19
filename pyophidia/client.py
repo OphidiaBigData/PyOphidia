@@ -69,7 +69,12 @@ def _ophsubmit(username, password, server, port, query):
 
     OPH_WORKFLOW_DELIMITER = "?"
 
-    WRAPPING_WORKFLOW1 = '{\n  "name":"NAME",\n  "author":"AUTHOR",\n  "abstract":"Workflow generated automatically to wrap a command",\n  "command":"COMMAND",'
+    WRAPPING_WORKFLOW1 = (
+        '{\n  "name":"NAME",\n'
+        '  "author":"AUTHOR",\n'
+        '  "abstract":"Workflow generated automatically to wrap a command",\n'
+        '  "command":"COMMAND",'
+    )
     WRAPPING_WORKFLOW2 = '\n  "sessionid":"'
     WRAPPING_WORKFLOW2_1 = '",'
     WRAPPING_WORKFLOW3 = '\n  "exec_mode":"'
@@ -78,10 +83,9 @@ def _ophsubmit(username, password, server, port, query):
     WRAPPING_WORKFLOW4_1 = '",'
     WRAPPING_WORKFLOW5 = '\n  "project":"'
     WRAPPING_WORKFLOW5_1 = '",'
-    WRAPPING_WORKFLOW6 = (
-        '\n  "tasks": [\n    {\n      "name":"Task 0",\n      "operator":"'
-    )
-    WRAPPING_WORKFLOW6_1 = '",\n      "arguments": ['
+    WRAPPING_WORKFLOW6 = '\n  "tasks": [\n    {\n      "name":"'
+    WRAPPING_WORKFLOW6_1 = '",\n      "operator":"'
+    WRAPPING_WORKFLOW6_2 = '",\n      "arguments": ['
     WRAPPING_WORKFLOW7 = '"%s"'
     WRAPPING_WORKFLOW8 = ',"%s"'
     WRAPPING_WORKFLOW9 = "]\n    }\n  ]\n}"
@@ -94,12 +98,16 @@ def _ophsubmit(username, password, server, port, query):
 
             context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
             context.verify_mode = ssl.CERT_NONE
-            client = httplib.HTTPSConnection(str(server), str(port), context=context)
+            client = httplib.HTTPSConnection(
+                str(server), str(port), context=context
+            )
         client.putrequest("POST", "")
         client.putheader("User-Agent", "Ophidia Python client")
         client.putheader("Content-type", 'text/xml; charset="UTF-8"')
     except Exception as e:
-        print(_get_linenumber(), "Something went wrong in connection setup:", e)
+        print(
+            _get_linenumber(), "Something went wrong in connection setup:", e
+        )
         return (None, None, None, 1, e)
     request = str(query)
     if not request.lstrip(" \n\t").startswith("{"):
@@ -112,7 +120,7 @@ def _ophsubmit(username, password, server, port, query):
                 "operator="
                 + wrapped_query[: wrapped_query.find(" ")]
                 + ";"
-                + wrapped_query[wrapped_query.find(" ") + 1 : None]
+                + wrapped_query[wrapped_query.find(" ") + 1 :]
             )
         query_list = re.split(r"(?![^\[]*\]);+", wrapped_query)
         if not query_list:
@@ -137,7 +145,9 @@ def _ophsubmit(username, password, server, port, query):
                 element_list = element.split("=", 1)
                 if element_list[0] == "sessionid":
                     request += (
-                        WRAPPING_WORKFLOW2 + element_list[1] + WRAPPING_WORKFLOW2_1
+                        WRAPPING_WORKFLOW2
+                        + element_list[1]
+                        + WRAPPING_WORKFLOW2_1
                     )
                     break
         # exec_mode
@@ -146,7 +156,9 @@ def _ophsubmit(username, password, server, port, query):
                 element_list = element.split("=", 1)
                 if element_list[0] == "exec_mode":
                     request += (
-                        WRAPPING_WORKFLOW3 + element_list[1] + WRAPPING_WORKFLOW3_1
+                        WRAPPING_WORKFLOW3
+                        + element_list[1]
+                        + WRAPPING_WORKFLOW3_1
                     )
                     break
         # callback_url
@@ -155,7 +167,9 @@ def _ophsubmit(username, password, server, port, query):
                 element_list = element.split("=", 1)
                 if element_list[0] == "callback_url":
                     request += (
-                        WRAPPING_WORKFLOW4 + element_list[1] + WRAPPING_WORKFLOW4_1
+                        WRAPPING_WORKFLOW4
+                        + element_list[1]
+                        + WRAPPING_WORKFLOW4_1
                     )
                     break
         # project
@@ -164,10 +178,18 @@ def _ophsubmit(username, password, server, port, query):
                 element_list = element.split("=", 1)
                 if element_list[0] == "project":
                     request += (
-                        WRAPPING_WORKFLOW5 + element_list[1] + WRAPPING_WORKFLOW5_1
+                        WRAPPING_WORKFLOW5
+                        + element_list[1]
+                        + WRAPPING_WORKFLOW5_1
                     )
                     break
-        request += WRAPPING_WORKFLOW6 + operator + WRAPPING_WORKFLOW6_1
+        request += (
+            WRAPPING_WORKFLOW6
+            + operator
+            + WRAPPING_WORKFLOW6_1
+            + operator
+            + WRAPPING_WORKFLOW6_2
+        )
         # all remaining arguments
         step = 0
         for element in query_list:
@@ -233,9 +255,9 @@ def _ophsubmit(username, password, server, port, query):
             return (None, None, None, 1, statusmessage)
 
         xmltree = ET.fromstring(reply)
-        response = xmltree.findall(".//oph:ophResponse", namespaces={"oph": "urn:oph"})[
-            0
-        ]
+        response = xmltree.findall(
+            ".//oph:ophResponse", namespaces={"oph": "urn:oph"}
+        )[0]
         res_error, res_response, res_jobid = None, None, None
         if (
             len(response.findall("jobid")) > 0
@@ -284,11 +306,16 @@ def _ophsubmit(username, password, server, port, query):
                 if '"title": "Workflow Status"' in res_response:
                     error = "There was an error in one or more workflow tasks"
                 elif '"title": "Massive Operation Status"' in res_response:
-                    error = "There was an error in one or more tasks of the massive operation"
+                    error = (
+                        "There was an error in one or more tasks of the "
+                        "massive operation"
+                    )
                 else:
                     if '"message":' in res_response:
                         try:
-                            a = res_response.index('"message": "') + len('"message": "')
+                            a = res_response.index('"message": "') + len(
+                                '"message": "'
+                            )
                             b = res_response.index('\\n"', a)
                             error = res_response[a:b]
                         except Exception:
@@ -298,7 +325,9 @@ def _ophsubmit(username, password, server, port, query):
             if sys.version_info < (3, 0):
                 response = str(res_response.encode("ISO-8859-1"))
             else:
-                response = str(res_response.encode("ISO-8859-1").decode("UTF-8"))
+                response = str(
+                    res_response.encode("ISO-8859-1").decode("UTF-8")
+                )
         if res_jobid is not None:
             if len(res_jobid) != 0:
                 jobid = str(res_jobid)
@@ -386,7 +415,9 @@ def _ophsubmit(username, password, server, port, query):
 
 
 class Client:
-    """Client(username='', password='', server='', port='', token='', read_env=False, api_mode=True, local_mode=False, project=None) -> obj
+    """Client(username='', password='', server='', port='', token='',
+            read_env=False, api_mode=True, local_mode=False,
+            project=None) -> obj
 
     Attributes:
         username: Ophidia username
@@ -399,11 +430,12 @@ class Client:
         base_src_path: Base path for data files
         cube: Last produced cube PID
         host_partition: Name of default host partition
-        exec_mode: Execution mode, 'sync' for synchronous mode (default),'async' for asynchronous mode
+        exec_mode: Execution mode, 'sync' for synchronous mode (default),
+            'async' for asynchronous mode
         ncores: Number of cores for each operation (default is 1)
         last_request: Last submitted query
         last_response: Last response received from the server (JSON string)
-        last_response_status: Status of last response received from the server (string)
+        last_response_status: Status of last response received from the server
         last_jobid: Job ID associated to the last request
         last_return_value: Last return value associated to response
         last_error: Last error value associated to response
@@ -411,21 +443,35 @@ class Client:
         project: Project ID to be used for the resource manager (if required)
 
     Methods:
-        submit(query, display=False) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the
-            Ophidia server according to all login parameters of the Client and its state.
-        get_progress(id=None) -> dict : Get progress of a workflow, either specifying the id or from the last submitted one.
-        deserialize_response() -> dict : Return the last_response JSON string attribute as a Python dictionary.
-        get_base_path(display=False) -> self : Get base path for data from the Ophidia instance.
-        resume_session(display=False) -> self : Resume the last session the user was connected to.
-        resume_cdd(display=False) -> self : Resume the last cdd (current data directory) the user was located into.
-        resume_cwd(display=False) -> self : Resume the last cwd (current working directory) the user was located into.
-        resume_cube(display=False) -> self : Resume the last cube produced by the user.
-        wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series
+        submit(query, display=False) -> self : Submit a query like
+            'operator=myoperator;param1=value1;' or 'myoperator param1=value1;'
+            to the Ophidia server according to all login parameters of the
+            Client and its state.
+        get_progress(id=None) -> dict : Get progress of a workflow, either
+            specifying the id or from the last submitted one.
+        deserialize_response() -> dict : Return the last_response JSON string
+            attribute as a Python dictionary.
+        get_base_path(display=False) -> self : Get base path for data from the
+            Ophidia instance.
+        resume_session(display=False) -> self : Resume the last session the
+            user was connected to.
+        resume_cdd(display=False) -> self : Resume the last cdd (current data
+            directory) the user was located into.
+        resume_cwd(display=False) -> self : Resume the last cwd (current
+            working directory) the user was located into.
+        resume_cube(display=False) -> self : Resume the last cube produced by
+            the user.
+        wsubmit(workflow,*params) -> self : Submit an entire workflow passing
+            a JSON string or the path of a JSON file and an optional series
             of parameters that will replace $1, $2 etc. in the workflow.
-            The workflow will be validated against the Ophidia Workflow JSON Schema.
-        wisvalid(workflow,*params) -> bool,str : Return a pair of values: the former is True if the workflow (a JSON string or a Python dict)
-            is valid against the Ophidia Workflow JSON Schema; the latter is a text message describing it.
-        pretty_print(response, response_i) -> self : Prints the last_response JSON string attribute as a formatted response
+            The workflow will be validated against the Ophidia Workflow JSON
+            Schema.
+        wisvalid(workflow,*params) -> bool,str : Return a pair of values: the
+            former is True if the workflow (a JSON string or a Python dict)
+            is valid against the Ophidia Workflow JSON Schema; the latter is a
+            text message describing it.
+        pretty_print(response, response_i) -> self : Prints the last_response
+            JSON string attribute as a formatted response
     """
 
     def __init__(
@@ -440,7 +486,9 @@ class Client:
         local_mode=False,
         project=None,
     ):
-        """Client(username='', password='', server='', port='', token='', read_env=False, api_mode=True, local_mode=False, project=None) -> obj
+        """Client(username='', password='', server='', port='', token='',
+            read_env=False, api_mode=True, local_mode=False,
+            project=None) -> obj
         :param username: Ophidia username
         :type username: str
         :param password: Ophidia password
@@ -451,9 +499,11 @@ class Client:
         :type port: str
         :param token: Ophidia token
         :type token: str
-        :param read_env: If true read the client variables from the environment
+        :param read_env: If true read the client variables from the
+            environment
         :type read_env: bool
-        :param api_mode: If True, use the class as an API and catch also framework-level errors
+        :param api_mode: If True, use the class as an API and catch also
+            framework-level errors
         :type api_mode: bool
         :param local_mode: If True, use only the local feature from the class
         :type local_mode: bool
@@ -537,7 +587,8 @@ class Client:
             except Exception as e:
                 print(
                     _get_linenumber(),
-                    "Something went wrong in resuming last session, cwd or cube:",
+                    "Something went wrong in resuming last session, last cwd"
+                    "or cube:",
                     e,
                 )
             else:
@@ -582,11 +633,15 @@ class Client:
         del self.project
 
     def submit(self, query, display=False):
-        """submit(query,display=False) -> self : Submit a query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;' to the Ophidia server
-               according to all login parameters of the Client and its state.
-        :param query: query like 'operator=myoperator;param1=value1;' or 'myoperator param1=value1;'
+        """submit(query,display=False) -> self : Submit a query like
+            'operator=myoperator;param1=value1;' or 'myoperator param1=value1;'
+            to the Ophidia server according to all login parameters of the
+            Client and its state.
+        :param query: query like 'operator=myoperator;param1=value1;' or
+            'myoperator param1=value1;'
         :type query: str
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: self or None
         :rtype: Client or None
@@ -594,7 +649,9 @@ class Client:
         """
 
         if self.local_mode is True:
-            raise RuntimeError("this function cannot be run when local_mode is set")
+            raise RuntimeError(
+                "this function cannot be run when local_mode is set"
+            )
         if query is None:
             raise RuntimeError("query is not present")
         if (
@@ -636,7 +693,9 @@ class Client:
                 newsession,
                 self.last_return_value,
                 self.last_error,
-            ) = _ophsubmit(self.username, self.password, self.server, self.port, query)
+            ) = _ophsubmit(
+                self.username, self.password, self.server, self.port, query
+            )
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
             if (
@@ -657,7 +716,8 @@ class Client:
                 for response_i in response["response"]:
                     if (
                         response_i["objclass"] == "text"
-                        and response_i["objcontent"][0]["title"] == "Output Cube"
+                        and response_i["objcontent"][0]["title"]
+                        == "Output Cube"
                     ):
                         self.cube = response_i["objcontent"][0]["message"]
                         break
@@ -682,9 +742,9 @@ class Client:
                                 + response_i["objcontent"][0]["message"]
                             )
                         else:
-                            self.last_response_status = response_i["objcontent"][0][
-                                "title"
-                            ]
+                            self.last_response_status = response_i[
+                                "objcontent"
+                            ][0]["title"]
                         break
 
                 for response_i in response["response"]:
@@ -733,7 +793,8 @@ class Client:
         return self
 
     def get_progress(self, id=None):
-        """get_progress(id=None) -> dict : Get progress of a workflow, either specifying the id or from the last submitted one
+        """get_progress(id=None) -> dict : Get progress of a workflow, either
+            specifying the id or from the last submitted one
         :param id: id of the workflow to monitor
         :type id: int
         :returns: workflow progess rate or None
@@ -742,7 +803,9 @@ class Client:
         """
 
         if self.local_mode is True:
-            raise RuntimeError("this function cannot be run when local_mode is set")
+            raise RuntimeError(
+                "this function cannot be run when local_mode is set"
+            )
         if id is None and self.last_jobid is None:
             raise RuntimeError("no jobid specified")
         if (
@@ -776,7 +839,9 @@ class Client:
                         and response_i["objcontent"][0]["title"]
                         == "Workflow Progress Ratio"
                     ):
-                        submission_date = response_i["objcontent"][0]["rowvalues"][0][0]
+                        submission_date = response_i["objcontent"][0][
+                            "rowvalues"
+                        ][0][0]
                         progress_rate = float(
                             response_i["objcontent"][0]["rowvalues"][0][1]
                         )
@@ -792,7 +857,8 @@ class Client:
         }
 
     def deserialize_response(self):
-        """deserialize_response() -> dict : Return the last_response JSON string attribute as a Python dictionary
+        """deserialize_response() -> dict : Return the last_response JSON
+            string attribute as a Python dictionary
         :returns: deserialized response or None
         :rtype: dict or None
         """
@@ -802,10 +868,13 @@ class Client:
         return json.loads(self.last_response)
 
     def pretty_print(self, response, response_i):
-        """pretty_print(response, response_i) -> self : Prints the last_response JSON string attribute as a formatted response
-        :param response: Python dictionary derived from the last_response JSON string
+        """pretty_print(response, response_i) -> self : print the last_response
+            JSON string attribute as a formatted response
+        :param response: Python dictionary derived from the last_response JSON
+            string
         :type response: dict
-        :param response_i: each of the responses included in the list given by the dictionary key response['response']
+        :param response_i: each of the responses included in the list given by
+            the dictionary key response['response']
         :type response_i: dict
         :returns: self or None
         :rtype: Client or None
@@ -837,18 +906,26 @@ class Client:
                         and response_i["objcontent"][0]["title"] != "SUCCESS"
                     ):
                         print(response_i["objcontent"][0]["title"])
-                        title_length = len(response_i["objcontent"][0]["title"])
+                        title_length = len(
+                            response_i["objcontent"][0]["title"]
+                        )
                         print("-" * title_length)
                         print(response_i["objcontent"][0]["message"])
                         print("\n")
 
                     if response_i["objclass"] == "grid":
                         print(response_i["objcontent"][0]["title"])
-                        title_length = len(response_i["objcontent"][0]["title"])
+                        title_length = len(
+                            response_i["objcontent"][0]["title"]
+                        )
                         print(HORIZONTAL_CHAR * title_length)
-                        num_columns = len(response_i["objcontent"][0]["rowkeys"])
+                        num_columns = len(
+                            response_i["objcontent"][0]["rowkeys"]
+                        )
                         columns = range(num_columns)
-                        num_rows = len(response_i["objcontent"][0]["rowvalues"])
+                        num_rows = len(
+                            response_i["objcontent"][0]["rowvalues"]
+                        )
                         rows = range(num_rows)
                         max_column_width = []
                         for j in columns:
@@ -858,22 +935,30 @@ class Client:
                             )
                             for i in rows:
                                 # Replace tabs with 4 spaces
-                                response_i["objcontent"][0]["rowvalues"][i][j] = (
-                                    response_i["objcontent"][0]["rowvalues"][i][
-                                        j
-                                    ].replace("\t", "    ")
+                                response_i["objcontent"][0]["rowvalues"][i][
+                                    j
+                                ] = response_i["objcontent"][0]["rowvalues"][
+                                    i
+                                ][
+                                    j
+                                ].replace(
+                                    "\t", "    "
                                 )
                                 if (
-                                    len(response_i["objcontent"][0]["rowvalues"][i][j])
+                                    len(
+                                        response_i["objcontent"][0][
+                                            "rowvalues"
+                                        ][i][j]
+                                    )
                                     > max_column_width[j]
                                 ):
                                     # Compute max width based on line breaks
                                     max_column_width[j] = max(
                                         [
                                             len(s)
-                                            for s in response_i["objcontent"][0][
-                                                "rowvalues"
-                                            ][i][j].split("\n")
+                                            for s in response_i["objcontent"][
+                                                0
+                                            ]["rowvalues"][i][j].split("\n")
                                         ]
                                     )
                         available_width = sz.columns
@@ -884,7 +969,9 @@ class Client:
                         )
                         while needed_width > available_width:
                             if response_i["objkey"] == "explorecube_data":
-                                max_column_width[len(max_column_width) - 1] -= 1
+                                max_column_width[
+                                    len(max_column_width) - 1
+                                ] -= 1
                             else:
                                 for i in range(len(max_column_width)):
                                     if max_column_width[i] > 1:
@@ -896,7 +983,8 @@ class Client:
                             )
                         for j in columns:
                             print(
-                                JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j] + 2),
+                                JUNCTION_CHAR
+                                + BORDER_CHAR * (max_column_width[j] + 2),
                                 end="",
                             )
                         print(JUNCTION_CHAR)
@@ -927,17 +1015,20 @@ class Client:
                                     print(
                                         VERTICAL_CHAR
                                         + " "
-                                        + response_i["objcontent"][0]["rowkeys"][j][
-                                            start[j] : start[j] + max_column_width[j]
+                                        + response_i["objcontent"][0][
+                                            "rowkeys"
+                                        ][j][
+                                            start[j] : start[j]
+                                            + max_column_width[j]
                                         ]
                                         + " "
                                         * (
                                             (max_column_width[j] + 2)
                                             - (
                                                 len(
-                                                    response_i["objcontent"][0][
-                                                        "rowkeys"
-                                                    ][j][
+                                                    response_i["objcontent"][
+                                                        0
+                                                    ]["rowkeys"][j][
                                                         start[j] : start[j]
                                                         + max_column_width[j]
                                                     ]
@@ -950,13 +1041,15 @@ class Client:
                                     start[j] = start[j] + max_column_width[j]
                                 else:
                                     print(
-                                        VERTICAL_CHAR + " " * (max_column_width[j] + 2),
+                                        VERTICAL_CHAR
+                                        + " " * (max_column_width[j] + 2),
                                         end="",
                                     )
                             print(VERTICAL_CHAR)
                         for j in columns:
                             print(
-                                JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j] + 2),
+                                JUNCTION_CHAR
+                                + BORDER_CHAR * (max_column_width[j] + 2),
                                 end="",
                             )
                         print(JUNCTION_CHAR)
@@ -978,13 +1071,18 @@ class Client:
                                 start[i].append(j)
                                 num_rows_per_column[i].append(j)
                                 text_length[i][j] = len(
-                                    response_i["objcontent"][0]["rowvalues"][i][j]
+                                    response_i["objcontent"][0]["rowvalues"][
+                                        i
+                                    ][j]
                                 )
                                 start[i][j] = 0
-                                # Compute num of rows per column based on line breaks
+                                # Compute num of rows per column
                                 num_rows_per_column[i][j] = sum(
                                     [
-                                        (int)(len(s) / (max_column_width[j] + 1)) + 1
+                                        (int)(
+                                            len(s) / (max_column_width[j] + 1)
+                                        )
+                                        + 1
                                         for s in response_i["objcontent"][0][
                                             "rowvalues"
                                         ][i][j].split("\n")
@@ -995,7 +1093,9 @@ class Client:
                                 if maximum_rows[i] < num_rows_per_column[i][j]:
                                     maximum_rows[i] = num_rows_per_column[i][j]
                         for i in rows:
-                            rowvalues = response_i["objcontent"][0]["rowvalues"][i]
+                            rowvalues = response_i["objcontent"][0][
+                                "rowvalues"
+                            ][i]
                             for x in range(maximum_rows[i]):
                                 for j in columns:
                                     if start[i][j] < text_length[i][j]:
@@ -1006,7 +1106,9 @@ class Client:
                                         if index != -1:
                                             # Delete newline char
                                             rowvalues[j] = (
-                                                rowvalues[j][: start[i][j] + index]
+                                                rowvalues[j][
+                                                    : start[i][j] + index
+                                                ]
                                                 + rowvalues[j][
                                                     start[i][j] + index + 1 :
                                                 ]
@@ -1014,20 +1116,25 @@ class Client:
                                             actual_len = start[i][j] + index
                                         else:
                                             actual_len = (
-                                                start[i][j] + max_column_width[j]
+                                                start[i][j]
+                                                + max_column_width[j]
                                             )
 
                                         print(
                                             VERTICAL_CHAR
                                             + " "
-                                            + rowvalues[j][start[i][j] : actual_len]
+                                            + rowvalues[j][
+                                                start[i][j] : actual_len
+                                            ]
                                             + " "
                                             * (
                                                 (max_column_width[j] + 2)
                                                 - (
                                                     len(
                                                         rowvalues[j][
-                                                            start[i][j] : actual_len
+                                                            start[i][
+                                                                j
+                                                            ] : actual_len
                                                         ]
                                                     )
                                                     + 1
@@ -1047,7 +1154,8 @@ class Client:
                                 for j in columns:
                                     print(
                                         VERTICAL_CHAR
-                                        + HORIZONTAL_CHAR * (max_column_width[j] + 2),
+                                        + HORIZONTAL_CHAR
+                                        * (max_column_width[j] + 2),
                                         end="",
                                     )
                                 print(VERTICAL_CHAR)
@@ -1055,70 +1163,90 @@ class Client:
                                 for j in columns:
                                     print(
                                         JUNCTION_CHAR
-                                        + BORDER_CHAR * (max_column_width[j] + 2),
+                                        + BORDER_CHAR
+                                        * (max_column_width[j] + 2),
                                         end="",
                                     )
                                 print(JUNCTION_CHAR)
 
                     if response_i["objclass"] == "digraph":
                         print(response_i["objcontent"][0]["title"])
-                        title_length = len(response_i["objcontent"][0]["title"])
+                        title_length = len(
+                            response_i["objcontent"][0]["title"]
+                        )
                         print("-" * title_length)
                         print("Directed Graph DOT string :\n")
                         print("digraph DG {\n")
                         print("\tnode   [shape=box]\n")
-                        num_nodevalues = len(response_i["objcontent"][0]["nodevalues"])
+                        num_nodevalues = len(
+                            response_i["objcontent"][0]["nodevalues"]
+                        )
                         nodevalues = range(num_nodevalues)
                         for i in nodevalues:
                             print("\t" + str(i) + "\t[label=", end="")
-                            num_labels = len(response_i["objcontent"][0]["nodekeys"])
+                            num_labels = len(
+                                response_i["objcontent"][0]["nodekeys"]
+                            )
                             labels = range(num_labels)
                             print('"', end="")
                             for j in labels:
                                 print(
-                                    response_i["objcontent"][0]["nodekeys"][j] + " : ",
+                                    response_i["objcontent"][0]["nodekeys"][j]
+                                    + " : ",
                                     end="",
                                 )
                                 print(
-                                    response_i["objcontent"][0]["nodevalues"][i][j]
+                                    response_i["objcontent"][0]["nodevalues"][
+                                        i
+                                    ][j]
                                     + "  ",
                                     end="",
                                 )
                             print('"]\n')
                         print("\tedge\n")
-                        num_nodelinks = len(response_i["objcontent"][0]["nodelinks"])
+                        num_nodelinks = len(
+                            response_i["objcontent"][0]["nodelinks"]
+                        )
                         nodelinks = range(num_nodelinks)
                         for i in nodelinks:
                             if response_i["objcontent"][0]["nodelinks"][i]:
                                 for j in range(
-                                    len(response_i["objcontent"][0]["nodelinks"][i])
+                                    len(
+                                        response_i["objcontent"][0][
+                                            "nodelinks"
+                                        ][i]
+                                    )
                                 ):
                                     print(
                                         "\t"
                                         + str(i)
                                         + "=>"
-                                        + response_i["objcontent"][0]["nodelinks"][i][
-                                            j
-                                        ]["node"]
+                                        + response_i["objcontent"][0][
+                                            "nodelinks"
+                                        ][i][j]["node"]
                                         + '\t[label="'
-                                        + response_i["objcontent"][0]["nodelinks"][i][
-                                            j
-                                        ]["description"],
+                                        + response_i["objcontent"][0][
+                                            "nodelinks"
+                                        ][i][j]["description"],
                                         end="",
                                     )
                                 print('"]\n')
                         print("\n}\n")
 
                 except Exception as e:
-                    print(_get_linenumber(), "Error in parsing json response:", e)
+                    print(
+                        _get_linenumber(), "Error in parsing json response:", e
+                    )
 
             print("Execution time: " + str(self.last_exec_time) + " seconds")
 
         return self
 
     def get_base_path(self, display=False):
-        """get_base_path(display=False) -> self : Get base path for data from the Ophidia instance.
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        """get_base_path(display=False) -> self : Get base path for data from
+            the Ophidia instance.
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: self or None
         :rtype: Client or None
@@ -1126,7 +1254,9 @@ class Client:
         """
 
         if self.local_mode is True:
-            raise RuntimeError("this function cannot be run when local_mode is set")
+            raise RuntimeError(
+                "this function cannot be run when local_mode is set"
+            )
         if (
             self.username is None
             or self.password is None
@@ -1143,7 +1273,9 @@ class Client:
                 newsession,
                 self.last_return_value,
                 self.last_error,
-            ) = _ophsubmit(self.username, self.password, self.server, self.port, query)
+            ) = _ophsubmit(
+                self.username, self.password, self.server, self.port, query
+            )
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
             if (
@@ -1156,9 +1288,9 @@ class Client:
             if response is not None:
                 for response_i in response["response"]:
                     if response_i["objkey"] == "get_config":
-                        self.base_src_path = response_i["objcontent"][0]["rowvalues"][
-                            0
-                        ][1]
+                        self.base_src_path = response_i["objcontent"][0][
+                            "rowvalues"
+                        ][0][1]
 
                     if self.api_mode and display is True:
                         self.pretty_print(response_i, response)
@@ -1174,8 +1306,10 @@ class Client:
         return self
 
     def resume_session(self, display=False):
-        """resume_session(display=False) -> self : Resume the last session the user was connected to.
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        """resume_session(display=False) -> self : Resume the last session the
+            user was connected to.
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: self or None
         :rtype: Client or None
@@ -1183,7 +1317,9 @@ class Client:
         """
 
         if self.local_mode is True:
-            raise RuntimeError("this function cannot be run when local_mode is set")
+            raise RuntimeError(
+                "this function cannot be run when local_mode is set"
+            )
         if (
             self.username is None
             or self.password is None
@@ -1200,7 +1336,9 @@ class Client:
                 newsession,
                 self.last_return_value,
                 self.last_error,
-            ) = _ophsubmit(self.username, self.password, self.server, self.port, query)
+            ) = _ophsubmit(
+                self.username, self.password, self.server, self.port, query
+            )
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
             if (
@@ -1213,7 +1351,9 @@ class Client:
             if response is not None:
                 for response_i in response["response"]:
                     if response_i["objkey"] == "get_config":
-                        self.session = response_i["objcontent"][0]["rowvalues"][0][1]
+                        self.session = response_i["objcontent"][0][
+                            "rowvalues"
+                        ][0][1]
 
                     if self.api_mode and display is True:
                         self.pretty_print(response_i, response)
@@ -1229,8 +1369,10 @@ class Client:
         return self
 
     def resume_cdd(self, display=False):
-        """resume_cdd(display=False) -> self : Resume the last cdd (current data directory) the user was located into.
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        """resume_cdd(display=False) -> self : Resume the last cdd (current
+            data directory) the user was located into.
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: self or None
         :rtype: Client or None
@@ -1238,7 +1380,9 @@ class Client:
         """
 
         if self.local_mode is True:
-            raise RuntimeError("this function cannot be run when local_mode is set")
+            raise RuntimeError(
+                "this function cannot be run when local_mode is set"
+            )
         if (
             self.username is None
             or self.password is None
@@ -1255,7 +1399,9 @@ class Client:
                 newsession,
                 self.last_return_value,
                 self.last_error,
-            ) = _ophsubmit(self.username, self.password, self.server, self.port, query)
+            ) = _ophsubmit(
+                self.username, self.password, self.server, self.port, query
+            )
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
             if (
@@ -1268,7 +1414,9 @@ class Client:
             if response is not None:
                 for response_i in response["response"]:
                     if response_i["objkey"] == "get_config":
-                        self.cdd = response_i["objcontent"][0]["rowvalues"][0][1]
+                        self.cdd = response_i["objcontent"][0]["rowvalues"][0][
+                            1
+                        ]
 
                     if self.api_mode and display is True:
                         self.pretty_print(response_i, response)
@@ -1284,8 +1432,10 @@ class Client:
         return self
 
     def resume_cwd(self, display=False):
-        """resume_cwd(display=False) -> self : Resume the last cwd (current working directory) the user was located into.
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        """resume_cwd(display=False) -> self : Resume the last cwd (current
+            working directory) the user was located into.
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: self or None
         :rtype: Client or None
@@ -1293,7 +1443,9 @@ class Client:
         """
 
         if self.local_mode is True:
-            raise RuntimeError("this function cannot be run when local_mode is set")
+            raise RuntimeError(
+                "this function cannot be run when local_mode is set"
+            )
         if (
             self.username is None
             or self.password is None
@@ -1310,7 +1462,9 @@ class Client:
                 newsession,
                 self.last_return_value,
                 self.last_error,
-            ) = _ophsubmit(self.username, self.password, self.server, self.port, query)
+            ) = _ophsubmit(
+                self.username, self.password, self.server, self.port, query
+            )
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
             if (
@@ -1323,7 +1477,9 @@ class Client:
             if response is not None:
                 for response_i in response["response"]:
                     if response_i["objkey"] == "get_config":
-                        self.cwd = response_i["objcontent"][0]["rowvalues"][0][1]
+                        self.cwd = response_i["objcontent"][0]["rowvalues"][0][
+                            1
+                        ]
 
                     if self.api_mode and display is True:
                         self.pretty_print(response_i, response)
@@ -1339,8 +1495,10 @@ class Client:
         return self
 
     def resume_cube(self, display=False):
-        """resume_cube(display=False) -> self : Resume the last cube produced by the user.
-        :param display: option for displaying the response in a "pretty way" using the pretty_print function (default is False)
+        """resume_cube(display=False) -> self : Resume the last cube produced
+            by the user.
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
         :type display: bool
         :returns: self or None
         :rtype: Client or None
@@ -1348,7 +1506,9 @@ class Client:
         """
 
         if self.local_mode is True:
-            raise RuntimeError("this function cannot be run when local_mode is set")
+            raise RuntimeError(
+                "this function cannot be run when local_mode is set"
+            )
         if (
             self.username is None
             or self.password is None
@@ -1365,7 +1525,9 @@ class Client:
                 newsession,
                 self.last_return_value,
                 self.last_error,
-            ) = _ophsubmit(self.username, self.password, self.server, self.port, query)
+            ) = _ophsubmit(
+                self.username, self.password, self.server, self.port, query
+            )
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
             if (
@@ -1378,7 +1540,9 @@ class Client:
             if response is not None:
                 for response_i in response["response"]:
                     if response_i["objkey"] == "get_config":
-                        self.cube = response_i["objcontent"][0]["rowvalues"][0][1]
+                        self.cube = response_i["objcontent"][0]["rowvalues"][
+                            0
+                        ][1]
 
                     if self.api_mode and display is True:
                         self.pretty_print(response_i, response)
@@ -1455,10 +1619,8 @@ class Client:
         elif source in ["oph_else"]:
             allowed_dest = ["oph_endif"]
             disallowed_tasks = ["oph_endfor", "oph_elseif", "oph_else"]
-        # print("Task " + task["name"] + " (" + task["operator"] + ") from task " + current_source["name"] + " (" + source + ")")
         for next in task["dependents"]:
             ftask = next
-            # print("\tConsider " + ftask["name"] + " (" + ftask["operator"] + ") as next of " + task["operator"])
             if ftask["operator"] in disallowed_tasks:
                 return False, ftask
             if ftask["operator"] in allowed_dest:
@@ -1477,11 +1639,16 @@ class Client:
         return True, ftask
 
     def wsubmit(self, workflow, *params):
-        """wsubmit(workflow,*params) -> self : Submit an entire workflow passing a JSON string or the path of a JSON file and an optional series of
-           parameters that will replace $1, $2 etc. in the workflow. The workflow will be validated against the Ophidia Workflow JSON Schema.
-        :param workflow: JSON string or path of a JSON file containing an Ophidia workflow
+        """wsubmit(workflow,*params) -> self : Submit an entire workflow
+            passing a JSON string or the path of a JSON file and an optional
+            series of parameters that will replace $1, $2 etc. in workflow.
+            The workflow will be validated against the Ophidia Workflow JSON
+            Schema.
+        :param workflow: JSON string or path of a JSON file containing an
+            Ophidia workflow
         :type workflow: str
-        :param params: list of positional parameters that will replace $1, $2 etc. in the workflow
+        :param params: list of positional parameters that will replace $1,
+            $2 etc. in the workflow
         :type params: str
         :returns: self or None
         :rtype: Client or None
@@ -1489,7 +1656,9 @@ class Client:
         """
 
         if self.local_mode is True:
-            raise RuntimeError("this function cannot be run when local_mode is set")
+            raise RuntimeError(
+                "this function cannot be run when local_mode is set"
+            )
         if workflow is None:
             raise RuntimeError("workflow is not present")
         if (
@@ -1575,7 +1744,8 @@ class Client:
                 for response_i in response["response"]:
                     if (
                         response_i["objclass"] == "text"
-                        and response_i["objcontent"][0]["title"] == "Output Cube"
+                        and response_i["objcontent"][0]["title"]
+                        == "Output Cube"
                     ):
                         self.cube = response_i["objcontent"][0]["message"]
                         break
@@ -1600,9 +1770,9 @@ class Client:
                                 + response_i["objcontent"][0]["message"]
                             )
                         else:
-                            self.last_response_status = response_i["objcontent"][0][
-                                "title"
-                            ]
+                            self.last_response_status = response_i[
+                                "objcontent"
+                            ][0]["title"]
                         break
 
                 for response_i in response["response"]:
@@ -1650,9 +1820,12 @@ class Client:
         return self
 
     def wisvalid(self, workflow, *params):
-        """wisvalid(workflow,*params) -> bool,str : Return a pair of values: the former is True if the workflow (a JSON string or a Python dict)
-           is valid against the Ophidia Workflow JSON Schema; the latter is a validation/error message.
-        :param workflow: a JSON string or a Python dict containing an Ophidia workflow
+        """wisvalid(workflow,*params) -> bool,str : Return a pair of values:
+            the former is True if the workflow (a JSON string or a Python dict)
+            is valid against the Ophidia Workflow JSON Schema; the latter is a
+            validation/error message.
+        :param workflow: a JSON string or a Python dict containing an Ophidia
+            workflow
         :type workflow: str or dict
         :returns: True or False and validation message
         :rtype: bool
@@ -1700,11 +1873,19 @@ class Client:
             return False, "Global argument 'save' is not correct"
         if "nhost" in w and (not w["nhost"].isdigit() or int(w["nhost"]) < 0):
             return False, "Global argument 'nhost' is not correct"
-        if "ncores" in w and (not w["ncores"].isdigit() or int(w["ncores"]) <= 0):
+        if "ncores" in w and (
+            not w["ncores"].isdigit() or int(w["ncores"]) <= 0
+        ):
             return False, "Global argument 'ncores' is not correct"
-        if "nthreads" in w and (not w["nthreads"].isdigit() or int(w["nthreads"]) <= 0):
+        if "nthreads" in w and (
+            not w["nthreads"].isdigit() or int(w["nthreads"]) <= 0
+        ):
             return False, "Global argument 'nthreads' is not correct"
-        if "exec_mode" in w and w["exec_mode"] != "sync" and w["exec_mode"] != "async":
+        if (
+            "exec_mode" in w
+            and w["exec_mode"] != "sync"
+            and w["exec_mode"] != "async"
+        ):
             return False, "Global argument 'exec_mode' is not correct"
         if (
             "direct_output" in w
@@ -1781,7 +1962,8 @@ class Client:
                     if "task" not in dependency or not dependency["task"]:
                         return (
                             False,
-                            "Dependency 'task' is missing in task: " + task_name,
+                            "Dependency 'task' is missing in task: "
+                            + task_name,
                         )
                     if "type" in dependency:
                         if (
@@ -1811,7 +1993,8 @@ class Client:
                 except KeyError:
                     return (
                         False,
-                        "Task argument 'on_error' is not correct in task: " + task_name,
+                        "Task argument 'on_error' is not correct in task: "
+                        + task_name,
                     )
             if (
                 "on_exit" in task
@@ -1821,17 +2004,23 @@ class Client:
             ):
                 return (
                     False,
-                    "Task argument 'on_exit' is not correct in task: " + task_name,
+                    "Task argument 'on_exit' is not correct in task: "
+                    + task_name,
                 )
             if "run" in task and task["run"] != "yes" and task["run"] != "no":
                 return (
                     False,
                     "Task argument 'run' is not correct in task: " + task_name,
                 )
-            if "save" in task and task["save"] != "yes" and task["save"] != "no":
+            if (
+                "save" in task
+                and task["save"] != "yes"
+                and task["save"] != "no"
+            ):
                 return (
                     False,
-                    "Task argument 'save' is not correct in task: " + task_name,
+                    "Task argument 'save' is not correct in task: "
+                    + task_name,
                 )
 
         for index, task in enumerate(w["tasks"]):
@@ -1950,8 +2139,10 @@ class Client:
         return True, "Workflow is valid"
 
     def last_workflowid(self):
-        """last_workflowid(workflow) -> bool : Return the workflow identifier associated with the last command submitted.
-        :returns: an integer representing the workflow identifier associated with the last command submitted
+        """last_workflowid(workflow) -> bool : Return the workflow identifier
+            associated with the last command submitted.
+        :returns: an integer representing the workflow identifier associated
+            with the last command submitted
         :rtype: int
         """
 
@@ -1960,8 +2151,10 @@ class Client:
         return int(self.last_jobid.split("?")[1].split("#")[0], base=32)
 
     def last_markerid(self):
-        """last_markerid(workflow) -> bool : Return the markerid associated with the last command submitted.
-        :returns: an integer representing the markerid associated with the last command submitted
+        """last_markerid(workflow) -> bool : Return the markerid associated
+            with the last command submitted.
+        :returns: an integer representing the markerid associated with the last
+            command submitted
         :rtype: int
         """
 

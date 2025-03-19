@@ -91,7 +91,9 @@ class Task:
         self.type = type if type else "ophidia"
         self.name = name
         self.operator = operator
-        self.arguments = ["{0}={1}".format(k, arguments[k]) for k in arguments.keys()]
+        self.arguments = [
+            "{0}={1}".format(k, arguments[k]) for k in arguments.keys()
+        ]
         self.dependencies = []
         self.extra = {}
         self.__dict__.update(kwargs)
@@ -219,7 +221,9 @@ class Experiment:
     def __init__(self, name, author=None, abstract=None, **kwargs):
         for k in kwargs.keys():
             if k not in self.attributes:
-                raise AttributeError("Unknown experiment argument: {0}".format(k))
+                raise AttributeError(
+                    "Unknown experiment argument: {0}".format(k)
+                )
             self.active_attributes.append(k)
         self.name = name
         self.author = author if author is not None else ""
@@ -249,12 +253,16 @@ class Experiment:
                     and param["value"] is not None
                 ):
                     raise AttributeError(
-                        "{0} should be {1}".format(param["name"], param["type"])
+                        "{0} should be {1}".format(
+                            param["name"], param["type"]
+                        )
                     )
             else:
                 if not isinstance(param["value"], param["type"]):
                     raise AttributeError(
-                        "{0} should be {1}".format(param["name"], param["type"])
+                        "{0} should be {1}".format(
+                            param["name"], param["type"]
+                        )
                     )
 
     def workflow_to_json(self):
@@ -265,7 +273,9 @@ class Experiment:
             if k not in non_experiment_fields
         }
         if "tasks" in new_experiment.keys():
-            new_experiment["tasks"] = [t.__dict__ for t in new_experiment["tasks"]]
+            new_experiment["tasks"] = [
+                t.__dict__ for t in new_experiment["tasks"]
+            ]
         return new_experiment
 
     def __repr__(self):
@@ -314,7 +324,8 @@ class Experiment:
 
     def getTask(self, taskname):
         """
-        Retrieve the Task object from the workflow experiment with the given task name
+        Retrieve the Task object from the workflow experiment with the given
+            task name
 
         Parameters
         ----------
@@ -349,7 +360,8 @@ class Experiment:
         experimentname : str
             The path to the file where the experiment is being saved
         format : str
-            The format of the file to be created, extension to be append to the name
+            The format of the file to be created, extension to be append to the
+            file name
 
         Example
         -------
@@ -367,7 +379,9 @@ class Experiment:
         if not isinstance(experimentname, str):
             raise AttributeError("experimentname must be string")
         if len(experimentname) == 0:
-            raise AttributeError("experimentname must contain more than 1 characters")
+            raise AttributeError(
+                "experimentname must contain more than 1 characters"
+            )
         if not experimentname.endswith("." + format):
             experimentname += "." + format
         with open(os.path.join(os.getcwd(), experimentname), "w") as fp:
@@ -377,9 +391,12 @@ class Experiment:
             else:
                 raise AttributeError("format not allowed")
 
-    def newTask(self, operator, arguments={}, dependencies={}, name=None, **kwargs):
+    def newTask(
+        self, operator, arguments={}, dependencies={}, name=None, **kwargs
+    ):
         """
-        Add a new Task in the experiment without the need of creating a Task object
+        Add a new Task in the experiment without the need of creating a Task
+            object
 
         Attributes
         ----------
@@ -525,10 +542,15 @@ class Experiment:
                     new_task_arguments[k] = task_arguments[k]
             for k in task_arguments:
                 if re.search(r"(\$.*)", task_arguments[k]):
-                    if re.findall(r"(\$.*)", task_arguments[k])[0] in params.keys():
+                    if (
+                        re.findall(r"(\$.*)", task_arguments[k])[0]
+                        in params.keys()
+                    ):
                         new_task_arguments[k] = re.sub(
                             r"(\$.*)",
-                            params[re.findall(r"(\$.*)", task_arguments[k])[0]],
+                            params[
+                                re.findall(r"(\$.*)", task_arguments[k])[0]
+                            ],
                             task_arguments[k],
                         )
                     else:
@@ -555,7 +577,9 @@ class Experiment:
         validate_experiment(self, copied_experiment)
         copied_experiment = rename_tasks(copied_experiment)
         for task in copied_experiment.tasks:
-            new_arguments = check_replace_args(params, task.reverted_arguments())
+            new_arguments = check_replace_args(
+                params, task.reverted_arguments()
+            )
             task.arguments = new_arguments
             self.tasks.append(task)
         return copied_experiment.tasks[-1]
@@ -621,7 +645,8 @@ class Experiment:
                     operator=d["operator"],
                     name=d["name"],
                     arguments={
-                        a.split("=")[0]: a.split("=", 1)[1] for a in d["arguments"]
+                        a.split("=")[0]: a.split("=", 1)[1]
+                        for a in d["arguments"]
                     },
                 )
                 new_task.__dict__.update(
@@ -696,11 +721,11 @@ class Experiment:
 
         try:
             os.remove(json_request)
-        except:
+        except OSError:
             print("JSON file cannot be removed")
         try:
             os.rmdir(json_request.rsplit("/", 1)[0])
-        except:
+        except OSError:
             print("Temporary folder cannot be removed")
 
         return experiment
@@ -752,7 +777,8 @@ class Experiment:
 
     def check(self, filename="sample.dot", display=True, *params):
         """
-        Check the experiment definition validity, display the graph of the experiment structure and store the graph a file
+        Check the experiment definition validity, display the graph of the
+            experiment structure and store the graph a file
 
         Parameters
         ----------
@@ -796,7 +822,9 @@ class Experiment:
                     i for i, t in enumerate(list_of_operators) if t == "for"
                 ]
             ]
-            subgraphs_list = sorted(subgraphs_list, key=lambda i: i["start_index"])
+            subgraphs_list = sorted(
+                subgraphs_list, key=lambda i: i["start_index"]
+            )
             closing_indexes = sorted(
                 [
                     i
@@ -812,7 +840,9 @@ class Experiment:
                 new_dot = graphviz.Digraph(
                     name="cluster_{0}".format(str(cluster_counter))
                 )
-                for i in range(subgraph["start_index"], subgraph["end_index"] + 1):
+                for i in range(
+                    subgraph["start_index"], subgraph["end_index"] + 1
+                ):
                     new_dot.attr("node")
                     new_dot.node(
                         tasks[i].name,
@@ -927,7 +957,8 @@ class Workflow:
         client,
     ):
         """
-        Instantiate the Client, common for all Workflow objects, for submitting requests
+        Instantiate the Client, common for all Workflow objects, for submitting
+            requests
 
 
         Parameters
@@ -1107,12 +1138,15 @@ class Workflow:
                     i for i, t in enumerate(list_of_operators) if t == "for"
                 ]
             ]
-            subgraphs_list = sorted(subgraphs_list, key=lambda i: i["start_index"])
+            subgraphs_list = sorted(
+                subgraphs_list, key=lambda i: i["start_index"]
+            )
             closing_indexes = sorted(
                 [
                     i
                     for i, t in enumerate(list_of_operators)
-                    if re.match("(?i).*endfor", t) or re.match("(?i).*endif", t)
+                    if re.match("(?i).*endfor", t)
+                    or re.match("(?i).*endif", t)
                 ]
             )[::-1]
             for i in range(0, len(subgraphs_list)):
@@ -1123,7 +1157,9 @@ class Workflow:
                 new_dot = graphviz.Digraph(
                     name="cluster_{0}".format(str(cluster_counter))
                 )
-                for i in range(subgraph["start_index"], subgraph["end_index"] + 1):
+                for i in range(
+                    subgraph["start_index"], subgraph["end_index"] + 1
+                ):
                     new_dot.attr("node")
                     new_dot.node(
                         tasks[i].name,
@@ -1156,9 +1192,14 @@ class Workflow:
                         "END TIME",
                     ]
                     index = []
-                    if all(idx in res["objcontent"][0]["rowkeys"] for idx in exec_keys):
+                    if all(
+                        idx in res["objcontent"][0]["rowkeys"]
+                        for idx in exec_keys
+                    ):
                         for k in exec_keys:
-                            index.append(int(res["objcontent"][0]["rowkeys"].index(k)))
+                            index.append(
+                                int(res["objcontent"][0]["rowkeys"].index(k))
+                            )
                         for task in res["objcontent"][0]["rowvalues"]:
                             task_dict[task[index[0]]] = dict(
                                 (exec_keys[i], task[index[i]])
@@ -1196,7 +1237,9 @@ class Workflow:
             new_tasks = []
             for res in json_response["response"]:
                 if res["objkey"] == "resume":
-                    task_name_index = res["objcontent"][0]["rowkeys"].index("COMMAND")
+                    task_name_index = res["objcontent"][0]["rowkeys"].index(
+                        "COMMAND"
+                    )
                     tasks = json.loads(
                         res["objcontent"][0]["rowvalues"][0][task_name_index]
                     )
@@ -1220,7 +1263,9 @@ class Workflow:
         def _add_runtimeinfo_task(status_response, tasks):
             task_dict = _extract_info(status_response)
             if task_dict is None:
-                raise RuntimeError("Unable to extract information from JSON response")
+                raise RuntimeError(
+                    "Unable to extract information from JSON response"
+                )
             task_list = []
             for task in tasks:
                 if task.name in task_dict:
@@ -1319,7 +1364,9 @@ class Workflow:
         workflow_status = _check_workflow_status(status_response)
 
         self.client.submit(
-            "oph_resume document_type=request;level=3;id={0};".format(self.workflow_id)
+            "oph_resume document_type=request;level=3;id={0};".format(
+                self.workflow_id
+            )
         )
         json_response = json.loads(self.client.last_response)
         tasks = _modify_task(json_response)
@@ -1332,7 +1379,9 @@ class Workflow:
                         status_response, self.runtime_task_graph
                     )
                 except Exception as e:
-                    print(_get_linenumber(), "Unable to build status graph:", e)
+                    print(
+                        _get_linenumber(), "Unable to build status graph:", e
+                    )
                     print(workflow_status)
 
                 if display is True:
@@ -1346,9 +1395,8 @@ class Workflow:
 
                 if new_tasks is True:
                     self.client.submit(
-                        "oph_resume document_type=request;level=3;id={0};".format(
-                            self.workflow_id
-                        )
+                        "oph_resume document_type=request;level=3;"
+                        "id={0};".format(self.workflow_id)
                     )
                     json_response = json.loads(self.client.last_response)
                     tasks = _modify_task(json_response)
@@ -1356,7 +1404,9 @@ class Workflow:
 
                 time.sleep(frequency)
 
-                self.client.submit("oph_resume id={0};".format(self.workflow_id))
+                self.client.submit(
+                    "oph_resume id={0};".format(self.workflow_id)
+                )
                 status_response = json.loads(self.client.last_response)
                 workflow_status = _check_workflow_status(status_response)
         else:
@@ -1382,12 +1432,16 @@ class Workflow:
                     and param["value"] is not None
                 ):
                     raise AttributeError(
-                        "{0} should be {1}".format(param["name"], param["type"])
+                        "{0} should be {1}".format(
+                            param["name"], param["type"]
+                        )
                     )
             else:
                 if not isinstance(param["value"], param["type"]):
                     raise AttributeError(
-                        "{0} should be {1}".format(param["name"], param["type"])
+                        "{0} should be {1}".format(
+                            param["name"], param["type"]
+                        )
                     )
 
     @staticmethod
@@ -1406,7 +1460,9 @@ class Workflow:
     def workflow_to_json(self):
         if self.runtime_task_graph:
             new_workflow = {}
-            new_workflow["tasks"] = [t.__dict__ for t in self.runtime_task_graph]
+            new_workflow["tasks"] = [
+                t.__dict__ for t in self.runtime_task_graph
+            ]
             return new_workflow
         elif self.experiment_object.__class__.__name__ == "Experiment":
             non_workflow_fields = [
@@ -1422,22 +1478,28 @@ class Workflow:
                 if k not in non_workflow_fields
             }
             if "tasks" in new_workflow.keys():
-                new_workflow["tasks"] = [t.__dict__ for t in new_workflow["tasks"]]
+                new_workflow["tasks"] = [
+                    t.__dict__ for t in new_workflow["tasks"]
+                ]
             return new_workflow
 
     def __repr__(self):
         return json.dumps(self.workflow_to_json())
 
-    def build_provenance(self, output_file, output_format="json", display=True):
+    def build_provenance(
+        self, output_file, output_format="json", display=True
+    ):
         """
-        Build the provenance file associated with the workflow, provided that it has been completed
+        Build the provenance file associated with the workflow, provided that
+            it has been completed
 
         Parameters
         ----------
         output_file : str
             name (without any extension) of the file to be created
         output_format : str, optional
-            format of the file to be created, extension to be append to the name
+            format of the file to be created, extension to be append to the
+            file name
         display: bool
             True for receiving the workflow status as an image or False to
             receive updates only in text
@@ -1454,7 +1516,9 @@ class Workflow:
         prov_doc = ProvDocument()
         prov_doc.add_namespace("ophidia", "http://ophidia.cmcc.it/")
         prov_doc.add_namespace("prov", "http://www.w3.org/ns/prov#")
-        prov_doc.add_namespace("nc", "https://www.unidata.ucar.edu/software/netcdf/")
+        prov_doc.add_namespace(
+            "nc", "https://www.unidata.ucar.edu/software/netcdf/"
+        )
 
         # Global dictionaries of operator names
         multiInputsOperators = [
@@ -1619,7 +1683,9 @@ class Workflow:
                             prov_doc.wasDerivedFrom(eo, ei)
                             prov_doc.used(a, ei)
 
-        prov_doc.serialize(output_file + "." + output_format, format=output_format)
+        prov_doc.serialize(
+            output_file + "." + output_format, format=output_format
+        )
 
         if display:
             figure = prov_to_dot(prov_doc)

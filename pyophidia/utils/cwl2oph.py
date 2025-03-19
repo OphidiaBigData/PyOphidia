@@ -34,15 +34,23 @@ def run():
     # GENERAL TASK PARAMETERS
     parser.add_argument("--cube", type=str, help="Input cube", default="")
     parser.add_argument("--cube2", type=str, help="Input cube", default="")
-    parser.add_argument("--description", type=str, help="Task description", default="-")
-    parser.add_argument("--dependencies", type=str, help="Task on which it depends")
+    parser.add_argument(
+        "--description", type=str, help="Task description", default="-"
+    )
+    parser.add_argument(
+        "--dependencies", type=str, help="Task on which it depends"
+    )
     parser.add_argument("--experiment", type=str, help="JSON Experiment")
     parser.add_argument("--experiment1", type=str, help="JSON Experiment")
     parser.add_argument("--experiment2", type=str, help="JSON Experiment")
     parser.add_argument("--input", type=str, help="Input", default="")
     parser.add_argument("--name", type=str, help="Task name", required=True)
-    parser.add_argument("--ncores", type=int, help="Number of cores", default=1)
-    parser.add_argument("--nthreads", type=int, help="Number of threads", default=1)
+    parser.add_argument(
+        "--ncores", type=int, help="Number of cores", default=1
+    )
+    parser.add_argument(
+        "--nthreads", type=int, help="Number of threads", default=1
+    )
     parser.add_argument(
         "--on_error",
         type=str,
@@ -245,7 +253,9 @@ def run():
         )
     elif args.operator == "oph_importnc":
         if not args.measure or not args.src_path:
-            parser.error("Import operator requires measure and input path parameters")
+            parser.error(
+                "Import operator requires measure and input path parameters"
+            )
         e1.newTask(
             name=args.name,
             type="ophidia",
@@ -270,7 +280,9 @@ def run():
         )
     elif args.operator == "oph_importnc2":
         if not args.measure or not args.src_path:
-            parser.error("Import operator requires measure and input path parameters")
+            parser.error(
+                "Import operator requires measure and input path parameters"
+            )
         e1.newTask(
             name=args.name,
             type="ophidia",
@@ -440,7 +452,9 @@ def run():
             dependencies={t1: arg_cube} if t1 else {},
         )
     else:
-        # TODO: this part should be completed in order to set up a task 'oph_generic' used to run possible non-Ophidia tasks
+        # TODO
+        # This part should be completed in order to set up a task
+        # 'oph_generic' used to run possible non-Ophidia tasks
         if args.command != ":":
             string_element = args.command.split()
             args.script = string_element.pop(0)
