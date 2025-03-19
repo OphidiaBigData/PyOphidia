@@ -1,6 +1,6 @@
 #
 #     PyOphidia - Python bindings for Ophidia
-#     Copyright (C) 2015-2024 CMCC Foundation
+#     Copyright (C) 2015-2025 CMCC Foundation
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -78,7 +78,9 @@ def _ophsubmit(username, password, server, port, query):
     WRAPPING_WORKFLOW4_1 = '",'
     WRAPPING_WORKFLOW5 = '\n  "project":"'
     WRAPPING_WORKFLOW5_1 = '",'
-    WRAPPING_WORKFLOW6 = '\n  "tasks": [\n    {\n      "name":"Task 0",\n      "operator":"'
+    WRAPPING_WORKFLOW6 = (
+        '\n  "tasks": [\n    {\n      "name":"Task 0",\n      "operator":"'
+    )
     WRAPPING_WORKFLOW6_1 = '",\n      "arguments": ['
     WRAPPING_WORKFLOW7 = '"%s"'
     WRAPPING_WORKFLOW8 = ',"%s"'
@@ -106,7 +108,12 @@ def _ophsubmit(username, password, server, port, query):
             if not wrapped_query.startswith("oph_"):
                 return (None, None, None, 3, "Invalid request")
         if wrapped_query.startswith("oph_"):
-            wrapped_query = "operator=" + wrapped_query[: wrapped_query.find(" ")] + ";" + wrapped_query[wrapped_query.find(" ") + 1 :]
+            wrapped_query = (
+                "operator="
+                + wrapped_query[: wrapped_query.find(" ")]
+                + ";"
+                + wrapped_query[wrapped_query.find(" ") + 1 : None]
+            )
         query_list = re.split(r"(?![^\[]*\]);+", wrapped_query)
         if not query_list:
             return (None, None, None, 3, "Invalid request")
@@ -115,7 +122,11 @@ def _ophsubmit(username, password, server, port, query):
             if element:
                 element_list = element.split("=", 1)
                 if element_list[0] == "operator":
-                    request = WRAPPING_WORKFLOW1.replace("NAME", element_list[1]).replace("AUTHOR", str(username)).replace("COMMAND", request)
+                    request = (
+                        WRAPPING_WORKFLOW1.replace("NAME", element_list[1])
+                        .replace("AUTHOR", str(username))
+                        .replace("COMMAND", request)
+                    )
                     operator = element_list[1]
                     break
         else:
@@ -125,28 +136,36 @@ def _ophsubmit(username, password, server, port, query):
             if element:
                 element_list = element.split("=", 1)
                 if element_list[0] == "sessionid":
-                    request += WRAPPING_WORKFLOW2 + element_list[1] + WRAPPING_WORKFLOW2_1
+                    request += (
+                        WRAPPING_WORKFLOW2 + element_list[1] + WRAPPING_WORKFLOW2_1
+                    )
                     break
         # exec_mode
         for element in query_list:
             if element:
                 element_list = element.split("=", 1)
                 if element_list[0] == "exec_mode":
-                    request += WRAPPING_WORKFLOW3 + element_list[1] + WRAPPING_WORKFLOW3_1
+                    request += (
+                        WRAPPING_WORKFLOW3 + element_list[1] + WRAPPING_WORKFLOW3_1
+                    )
                     break
         # callback_url
         for element in query_list:
             if element:
                 element_list = element.split("=", 1)
                 if element_list[0] == "callback_url":
-                    request += WRAPPING_WORKFLOW4 + element_list[1] + WRAPPING_WORKFLOW4_1
+                    request += (
+                        WRAPPING_WORKFLOW4 + element_list[1] + WRAPPING_WORKFLOW4_1
+                    )
                     break
         # project
         for element in query_list:
             if element:
                 element_list = element.split("=", 1)
                 if element_list[0] == "project":
-                    request += WRAPPING_WORKFLOW5 + element_list[1] + WRAPPING_WORKFLOW5_1
+                    request += (
+                        WRAPPING_WORKFLOW5 + element_list[1] + WRAPPING_WORKFLOW5_1
+                    )
                     break
         request += WRAPPING_WORKFLOW6 + operator + WRAPPING_WORKFLOW6_1
         # all remaining arguments
@@ -154,7 +173,13 @@ def _ophsubmit(username, password, server, port, query):
         for element in query_list:
             if element:
                 element_list = element.split("=", 1)
-                if element_list[0] != "operator" and element_list[0] != "sessionid" and element_list[0] != "exec_mode" and element_list[0] != "callback_url" and element_list[0] != "project":
+                if (
+                    element_list[0] != "operator"
+                    and element_list[0] != "sessionid"
+                    and element_list[0] != "exec_mode"
+                    and element_list[0] != "callback_url"
+                    and element_list[0] != "project"
+                ):
                     step += 1
                     if step == 1:
                         request += WRAPPING_WORKFLOW7.replace("%s", element)
@@ -176,7 +201,9 @@ def _ophsubmit(username, password, server, port, query):
         if sys.version_info < (3, 0):
             auth = "Basic " + base64.b64encode(user)
         else:
-            auth = "Basic " + base64.b64encode(bytes(user, "utf-8")).decode("ISO-8859-1")
+            auth = "Basic " + base64.b64encode(bytes(user, "utf-8")).decode(
+                "ISO-8859-1"
+            )
 
         client.putheader("Authorization", auth)
         client.endheaders()
@@ -197,30 +224,62 @@ def _ophsubmit(username, password, server, port, query):
             reply = _res.read()
 
         if statuscode != 200:
-            print(_get_linenumber(), "Something went wrong in submitting the request:", statuscode, statusmessage)
+            print(
+                _get_linenumber(),
+                "Something went wrong in submitting the request:",
+                statuscode,
+                statusmessage,
+            )
             return (None, None, None, 1, statusmessage)
 
         xmltree = ET.fromstring(reply)
-        response = xmltree.findall(".//oph:ophResponse", namespaces={"oph": "urn:oph"})[0]
+        response = xmltree.findall(".//oph:ophResponse", namespaces={"oph": "urn:oph"})[
+            0
+        ]
         res_error, res_response, res_jobid = None, None, None
-        if len(response.findall("jobid")) > 0 and response.findall("jobid")[0].text is not None:
+        if (
+            len(response.findall("jobid")) > 0
+            and response.findall("jobid")[0].text is not None
+        ):
             res_jobid = response.findall("jobid")[0].text
-        if len(response.findall("error")) > 0 and response.findall("error")[0].text is not None:
+        if (
+            len(response.findall("error")) > 0
+            and response.findall("error")[0].text is not None
+        ):
             res_error = int(response.findall("error")[0].text)
-        if len(response.findall("response")) > 0 and response.findall("response")[0].text is not None:
+        if (
+            len(response.findall("response")) > 0
+            and response.findall("response")[0].text is not None
+        ):
             res_response = response.findall("response")[0].text
     except Exception as e:
-        print(_get_linenumber(), "Something went wrong in submitting the request:", e)
+        print(
+            _get_linenumber(),
+            "Something went wrong in submitting the request:",
+            e,
+        )
         return (None, None, None, 1, e)
     if res_error is None:
         return (None, None, None, 1, "Invalid response")
     if res_error == OPH_SERVER_OK:
-        response, jobid, newsession, return_value, error = None, None, None, 0, None
+        response, jobid, newsession, return_value, error = (
+            None,
+            None,
+            None,
+            0,
+            None,
+        )
         if res_response is not None:
             if (
                 '"title": "ERROR"' in res_response
-                or ('"title": "Workflow Status"' in res_response and '"message": "OPH_STATUS_ERROR"' in res_response)
-                or ('"title": "Massive Operation Status"' in res_response and '"message": "OPH_STATUS_ERROR"' in res_response)
+                or (
+                    '"title": "Workflow Status"' in res_response
+                    and '"message": "OPH_STATUS_ERROR"' in res_response
+                )
+                or (
+                    '"title": "Massive Operation Status"' in res_response
+                    and '"message": "OPH_STATUS_ERROR"' in res_response
+                )
             ):
                 if '"title": "Workflow Status"' in res_response:
                     error = "There was an error in one or more workflow tasks"
@@ -253,23 +312,77 @@ def _ophsubmit(username, password, server, port, query):
                 newsession = str()
         return (response, jobid, newsession, return_value, error)
     elif res_error == OPH_SERVER_UNKNOWN:
-        return (None, None, None, res_error, "Error on serving request: server unknown")
+        return (
+            None,
+            None,
+            None,
+            res_error,
+            "Error on serving request: server unknown",
+        )
     elif res_error == OPH_SERVER_NULL_POINTER:
-        return (None, None, None, res_error, "Error on serving request: server null pointer")
+        return (
+            None,
+            None,
+            None,
+            res_error,
+            "Error on serving request: server null pointer",
+        )
     elif res_error == OPH_SERVER_ERROR:
-        return (None, None, None, res_error, "Error on serving request: server error")
+        return (
+            None,
+            None,
+            None,
+            res_error,
+            "Error on serving request: server error",
+        )
     elif res_error == OPH_SERVER_IO_ERROR:
-        return (None, None, None, res_error, "Error on serving request: server IO error")
+        return (
+            None,
+            None,
+            None,
+            res_error,
+            "Error on serving request: server IO error",
+        )
     elif res_error == OPH_SERVER_AUTH_ERROR:
-        return (None, None, None, res_error, "Error on serving request: server authentication error")
+        return (
+            None,
+            None,
+            None,
+            res_error,
+            "Error on serving request: server authentication error",
+        )
     elif res_error == OPH_SERVER_SYSTEM_ERROR:
-        return (None, None, None, res_error, "Error on serving request: server system error")
+        return (
+            None,
+            None,
+            None,
+            res_error,
+            "Error on serving request: server system error",
+        )
     elif res_error == OPH_SERVER_WRONG_PARAMETER_ERROR:
-        return (None, None, None, res_error, "Error on serving request: server wrong parameter error")
+        return (
+            None,
+            None,
+            None,
+            res_error,
+            "Error on serving request: server wrong parameter error",
+        )
     elif res_error == OPH_SERVER_NO_RESPONSE:
-        return (None, None, None, res_error, "Error on serving request: server no response")
+        return (
+            None,
+            None,
+            None,
+            res_error,
+            "Error on serving request: server no response",
+        )
     else:
-        return (None, None, None, res_error, "Error on serving request: error undefined")
+        return (
+            None,
+            None,
+            None,
+            res_error,
+            "Error on serving request: error undefined",
+        )
 
 
 class Client:
@@ -315,7 +428,18 @@ class Client:
         pretty_print(response, response_i) -> self : Prints the last_response JSON string attribute as a formatted response
     """
 
-    def __init__(self, username="", password="", server="", port="11732", token="", read_env=False, api_mode=True, local_mode=False, project=None):
+    def __init__(
+        self,
+        username="",
+        password="",
+        server="",
+        port="11732",
+        token="",
+        read_env=False,
+        api_mode=True,
+        local_mode=False,
+        project=None,
+    ):
         """Client(username='', password='', server='', port='', token='', read_env=False, api_mode=True, local_mode=False, project=None) -> obj
         :param username: Ophidia username
         :type username: str
@@ -395,7 +519,12 @@ class Client:
                 self.password = access_token
                 self.username = "__token__"
 
-            if not self.username or not self.password or not self.server or not self.port:
+            if (
+                not self.username
+                or not self.password
+                or not self.server
+                or not self.port
+            ):
                 raise RuntimeError("one or more login parameters are None")
             try:
                 if self.api_mode:
@@ -406,7 +535,11 @@ class Client:
                         self.resume_cwd()
                         self.resume_cube()
             except Exception as e:
-                print(_get_linenumber(), "Something went wrong in resuming last session, cwd or cube:", e)
+                print(
+                    _get_linenumber(),
+                    "Something went wrong in resuming last session, cwd or cube:",
+                    e,
+                )
             else:
                 if self.api_mode:
                     if self.cdd:
@@ -464,7 +597,12 @@ class Client:
             raise RuntimeError("this function cannot be run when local_mode is set")
         if query is None:
             raise RuntimeError("query is not present")
-        if self.username is None or self.password is None or self.server is None or self.port is None:
+        if (
+            self.username is None
+            or self.password is None
+            or self.server is None
+            or self.port is None
+        ):
             raise RuntimeError("one or more login parameters are None")
         # Check if the query contains only the oph operator
         r = query.split()
@@ -492,10 +630,20 @@ class Client:
             query += "project=" + str(self.project) + ";"
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit(self.username, self.password, self.server, self.port, query)
+            (
+                self.last_response,
+                self.last_jobid,
+                newsession,
+                self.last_return_value,
+                self.last_error,
+            ) = _ophsubmit(self.username, self.password, self.server, self.port, query)
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
-            if self.api_mode and not self.last_return_value and self.last_error is not None:
+            if (
+                self.api_mode
+                and not self.last_return_value
+                and self.last_error is not None
+            ):
                 raise RuntimeError(self.last_error)
             if newsession is not None:
                 if len(newsession) == 0:
@@ -507,7 +655,10 @@ class Client:
             response = self.deserialize_response()
             if response is not None:
                 for response_i in response["response"]:
-                    if response_i["objclass"] == "text" and response_i["objcontent"][0]["title"] == "Output Cube":
+                    if (
+                        response_i["objclass"] == "text"
+                        and response_i["objcontent"][0]["title"] == "Output Cube"
+                    ):
                         self.cube = response_i["objcontent"][0]["message"]
                         break
                 else:
@@ -520,20 +671,37 @@ class Client:
                             index += 1
 
                 for response_i in response["response"]:
-                    if response_i["objclass"] == "text" and response_i["objkey"] == "status":
+                    if (
+                        response_i["objclass"] == "text"
+                        and response_i["objkey"] == "status"
+                    ):
                         if "message" in response_i["objcontent"][0]:
-                            self.last_response_status = response_i["objcontent"][0]["title"] + ": " + response_i["objcontent"][0]["message"]
+                            self.last_response_status = (
+                                response_i["objcontent"][0]["title"]
+                                + ": "
+                                + response_i["objcontent"][0]["message"]
+                            )
                         else:
-                            self.last_response_status = response_i["objcontent"][0]["title"]
+                            self.last_response_status = response_i["objcontent"][0][
+                                "title"
+                            ]
                         break
 
                 for response_i in response["response"]:
-                    if response_i["objclass"] == "text" and response_i["objcontent"][0]["title"] == "Current Working Directory":
+                    if (
+                        response_i["objclass"] == "text"
+                        and response_i["objcontent"][0]["title"]
+                        == "Current Working Directory"
+                    ):
                         self.cwd = response_i["objcontent"][0]["message"]
                         break
 
                 for response_i in response["response"]:
-                    if response_i["objclass"] == "text" and response_i["objcontent"][0]["title"] == "Current Data Directory":
+                    if (
+                        response_i["objclass"] == "text"
+                        and response_i["objcontent"][0]["title"]
+                        == "Current Data Directory"
+                    ):
                         self.cdd = response_i["objcontent"][0]["message"]
                         break
 
@@ -541,7 +709,9 @@ class Client:
                 if "extra" in response:
                     for response_i in response["extra"]["keys"]:
                         if response_i == "execution_time":
-                            self.last_exec_time = float(response["extra"]["values"][index])
+                            self.last_exec_time = float(
+                                response["extra"]["values"][index]
+                            )
                         elif response_i == "access_token":
                             self.password = response["extra"]["values"][index]
                         elif response_i == "cwd":
@@ -554,7 +724,11 @@ class Client:
                     self.pretty_print(response_i, response)
 
         except Exception as e:
-            print(_get_linenumber(), "Something went wrong in submitting the request:", e)
+            print(
+                _get_linenumber(),
+                "Something went wrong in submitting the request:",
+                e,
+            )
             return None
         return self
 
@@ -571,7 +745,12 @@ class Client:
             raise RuntimeError("this function cannot be run when local_mode is set")
         if id is None and self.last_jobid is None:
             raise RuntimeError("no jobid specified")
-        if self.username is None or self.password is None or self.server is None or self.port is None:
+        if (
+            self.username is None
+            or self.password is None
+            or self.server is None
+            or self.port is None
+        ):
             raise RuntimeError("one or more login parameters are None")
 
         query = "oph_resume level=0;"
@@ -592,16 +771,25 @@ class Client:
 
             if response is not None:
                 for response_i in response["response"]:
-                    if response_i["objclass"] == "grid" and response_i["objcontent"][0]["title"] == "Workflow Progress Ratio":
+                    if (
+                        response_i["objclass"] == "grid"
+                        and response_i["objcontent"][0]["title"]
+                        == "Workflow Progress Ratio"
+                    ):
                         submission_date = response_i["objcontent"][0]["rowvalues"][0][0]
-                        progress_rate = float(response_i["objcontent"][0]["rowvalues"][0][1])
+                        progress_rate = float(
+                            response_i["objcontent"][0]["rowvalues"][0][1]
+                        )
                         break
 
         except Exception as e:
             print(_get_linenumber(), "Something went wrong:", e)
             return None
 
-        return {"submission date": submission_date, "progress rate": progress_rate}
+        return {
+            "submission date": submission_date,
+            "progress rate": progress_rate,
+        }
 
     def deserialize_response(self):
         """deserialize_response() -> dict : Return the last_response JSON string attribute as a Python dictionary
@@ -624,7 +812,9 @@ class Client:
         """
 
         response = self.deserialize_response()
-        if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] < 3):
+        if sys.version_info[0] < 3 or (
+            sys.version_info[0] == 3 and sys.version_info[1] < 3
+        ):
             from collections import namedtuple
 
             terminal_size = namedtuple("terminal_size", ["columns", "lines"])
@@ -642,7 +832,10 @@ class Client:
         if response is not None:
             for response_i in response["response"]:
                 try:
-                    if response_i["objclass"] == "text" and response_i["objcontent"][0]["title"] != "SUCCESS":
+                    if (
+                        response_i["objclass"] == "text"
+                        and response_i["objcontent"][0]["title"] != "SUCCESS"
+                    ):
                         print(response_i["objcontent"][0]["title"])
                         title_length = len(response_i["objcontent"][0]["title"])
                         print("-" * title_length)
@@ -660,15 +853,35 @@ class Client:
                         max_column_width = []
                         for j in columns:
                             max_column_width.append(j)
-                            max_column_width[j] = len(response_i["objcontent"][0]["rowkeys"][j])
+                            max_column_width[j] = len(
+                                response_i["objcontent"][0]["rowkeys"][j]
+                            )
                             for i in rows:
                                 # Replace tabs with 4 spaces
-                                response_i["objcontent"][0]["rowvalues"][i][j] = response_i["objcontent"][0]["rowvalues"][i][j].replace("\t", "    ")
-                                if len(response_i["objcontent"][0]["rowvalues"][i][j]) > max_column_width[j]:
+                                response_i["objcontent"][0]["rowvalues"][i][j] = (
+                                    response_i["objcontent"][0]["rowvalues"][i][
+                                        j
+                                    ].replace("\t", "    ")
+                                )
+                                if (
+                                    len(response_i["objcontent"][0]["rowvalues"][i][j])
+                                    > max_column_width[j]
+                                ):
                                     # Compute max width based on line breaks
-                                    max_column_width[j] = max([len(s) for s in response_i["objcontent"][0]["rowvalues"][i][j].split("\n")])
+                                    max_column_width[j] = max(
+                                        [
+                                            len(s)
+                                            for s in response_i["objcontent"][0][
+                                                "rowvalues"
+                                            ][i][j].split("\n")
+                                        ]
+                                    )
                         available_width = sz.columns
-                        needed_width = sum(i for i in max_column_width) + (num_columns + 1) + (2 * num_columns)
+                        needed_width = (
+                            sum(i for i in max_column_width)
+                            + (num_columns + 1)
+                            + (2 * num_columns)
+                        )
                         while needed_width > available_width:
                             if response_i["objkey"] == "explorecube_data":
                                 max_column_width[len(max_column_width) - 1] -= 1
@@ -676,9 +889,16 @@ class Client:
                                 for i in range(len(max_column_width)):
                                     if max_column_width[i] > 1:
                                         max_column_width[i] -= 1
-                            needed_width = sum(i for i in max_column_width) + (num_columns + 1) + (2 * num_columns)
+                            needed_width = (
+                                sum(i for i in max_column_width)
+                                + (num_columns + 1)
+                                + (2 * num_columns)
+                            )
                         for j in columns:
-                            print(JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j] + 2), end="")
+                            print(
+                                JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j] + 2),
+                                end="",
+                            )
                         print(JUNCTION_CHAR)
                         header_length = []
                         start = []
@@ -687,9 +907,13 @@ class Client:
                             header_length.append(j)
                             start.append(j)
                             num_rows_per_column.append(j)
-                            header_length[j] = len(response_i["objcontent"][0]["rowkeys"][j])
+                            header_length[j] = len(
+                                response_i["objcontent"][0]["rowkeys"][j]
+                            )
                             start[j] = 0
-                            num_rows_per_column[j] = (int)(header_length[j] / max_column_width[j]) + 1
+                            num_rows_per_column[j] = (int)(
+                                header_length[j] / max_column_width[j]
+                            ) + 1
 
                         maximum_rows = num_rows_per_column[0]
                         for j in columns:
@@ -703,16 +927,38 @@ class Client:
                                     print(
                                         VERTICAL_CHAR
                                         + " "
-                                        + response_i["objcontent"][0]["rowkeys"][j][start[j] : start[j] + max_column_width[j]]
-                                        + " " * ((max_column_width[j] + 2) - (len(response_i["objcontent"][0]["rowkeys"][j][start[j] : start[j] + max_column_width[j]]) + 1)),
+                                        + response_i["objcontent"][0]["rowkeys"][j][
+                                            start[j] : start[j] + max_column_width[j]
+                                        ]
+                                        + " "
+                                        * (
+                                            (max_column_width[j] + 2)
+                                            - (
+                                                len(
+                                                    response_i["objcontent"][0][
+                                                        "rowkeys"
+                                                    ][j][
+                                                        start[j] : start[j]
+                                                        + max_column_width[j]
+                                                    ]
+                                                )
+                                                + 1
+                                            )
+                                        ),
                                         end="",
                                     )
                                     start[j] = start[j] + max_column_width[j]
                                 else:
-                                    print(VERTICAL_CHAR + " " * (max_column_width[j] + 2), end="")
+                                    print(
+                                        VERTICAL_CHAR + " " * (max_column_width[j] + 2),
+                                        end="",
+                                    )
                             print(VERTICAL_CHAR)
                         for j in columns:
-                            print(JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j] + 2), end="")
+                            print(
+                                JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j] + 2),
+                                end="",
+                            )
                         print(JUNCTION_CHAR)
                         text_length = []
                         start = []
@@ -731,10 +977,19 @@ class Client:
                                 text_length[i].append(j)
                                 start[i].append(j)
                                 num_rows_per_column[i].append(j)
-                                text_length[i][j] = len(response_i["objcontent"][0]["rowvalues"][i][j])
+                                text_length[i][j] = len(
+                                    response_i["objcontent"][0]["rowvalues"][i][j]
+                                )
                                 start[i][j] = 0
                                 # Compute num of rows per column based on line breaks
-                                num_rows_per_column[i][j] = sum([(int)(len(s) / (max_column_width[j] + 1)) + 1 for s in response_i["objcontent"][0]["rowvalues"][i][j].split("\n")])
+                                num_rows_per_column[i][j] = sum(
+                                    [
+                                        (int)(len(s) / (max_column_width[j] + 1)) + 1
+                                        for s in response_i["objcontent"][0][
+                                            "rowvalues"
+                                        ][i][j].split("\n")
+                                    ]
+                                )
                             maximum_rows[i] = num_rows_per_column[i][0]
                             for j in columns:
                                 if maximum_rows[i] < num_rows_per_column[i][j]:
@@ -744,28 +999,65 @@ class Client:
                             for x in range(maximum_rows[i]):
                                 for j in columns:
                                     if start[i][j] < text_length[i][j]:
-                                        index = rowvalues[j][start[i][j] : start[i][j] + max_column_width[j]].find("\n")
+                                        index = rowvalues[j][
+                                            start[i][j] : start[i][j]
+                                            + max_column_width[j]
+                                        ].find("\n")
                                         if index != -1:
                                             # Delete newline char
-                                            rowvalues[j] = rowvalues[j][: start[i][j] + index] + rowvalues[j][start[i][j] + index + 1 :]
+                                            rowvalues[j] = (
+                                                rowvalues[j][: start[i][j] + index]
+                                                + rowvalues[j][
+                                                    start[i][j] + index + 1 :
+                                                ]
+                                            )
                                             actual_len = start[i][j] + index
                                         else:
-                                            actual_len = start[i][j] + max_column_width[j]
+                                            actual_len = (
+                                                start[i][j] + max_column_width[j]
+                                            )
 
                                         print(
-                                            VERTICAL_CHAR + " " + rowvalues[j][start[i][j] : actual_len] + " " * ((max_column_width[j] + 2) - (len(rowvalues[j][start[i][j] : actual_len]) + 1)), end=""
+                                            VERTICAL_CHAR
+                                            + " "
+                                            + rowvalues[j][start[i][j] : actual_len]
+                                            + " "
+                                            * (
+                                                (max_column_width[j] + 2)
+                                                - (
+                                                    len(
+                                                        rowvalues[j][
+                                                            start[i][j] : actual_len
+                                                        ]
+                                                    )
+                                                    + 1
+                                                )
+                                            ),
+                                            end="",
                                         )
                                         start[i][j] = actual_len
                                     else:
-                                        print(VERTICAL_CHAR + " " * (max_column_width[j] + 2), end="")
+                                        print(
+                                            VERTICAL_CHAR
+                                            + " " * (max_column_width[j] + 2),
+                                            end="",
+                                        )
                                 print(VERTICAL_CHAR)
                             if i != rows[len(rows) - 1]:
                                 for j in columns:
-                                    print(VERTICAL_CHAR + HORIZONTAL_CHAR * (max_column_width[j] + 2), end="")
+                                    print(
+                                        VERTICAL_CHAR
+                                        + HORIZONTAL_CHAR * (max_column_width[j] + 2),
+                                        end="",
+                                    )
                                 print(VERTICAL_CHAR)
                             else:
                                 for j in columns:
-                                    print(JUNCTION_CHAR + BORDER_CHAR * (max_column_width[j] + 2), end="")
+                                    print(
+                                        JUNCTION_CHAR
+                                        + BORDER_CHAR * (max_column_width[j] + 2),
+                                        end="",
+                                    )
                                 print(JUNCTION_CHAR)
 
                     if response_i["objclass"] == "digraph":
@@ -783,17 +1075,35 @@ class Client:
                             labels = range(num_labels)
                             print('"', end="")
                             for j in labels:
-                                print(response_i["objcontent"][0]["nodekeys"][j] + " : ", end="")
-                                print(response_i["objcontent"][0]["nodevalues"][i][j] + "  ", end="")
+                                print(
+                                    response_i["objcontent"][0]["nodekeys"][j] + " : ",
+                                    end="",
+                                )
+                                print(
+                                    response_i["objcontent"][0]["nodevalues"][i][j]
+                                    + "  ",
+                                    end="",
+                                )
                             print('"]\n')
                         print("\tedge\n")
                         num_nodelinks = len(response_i["objcontent"][0]["nodelinks"])
                         nodelinks = range(num_nodelinks)
                         for i in nodelinks:
                             if response_i["objcontent"][0]["nodelinks"][i]:
-                                for j in range(len(response_i["objcontent"][0]["nodelinks"][i])):
+                                for j in range(
+                                    len(response_i["objcontent"][0]["nodelinks"][i])
+                                ):
                                     print(
-                                        "\t" + str(i) + "=>" + response_i["objcontent"][0]["nodelinks"][i][j]["node"] + '\t[label="' + response_i["objcontent"][0]["nodelinks"][i][j]["description"],
+                                        "\t"
+                                        + str(i)
+                                        + "=>"
+                                        + response_i["objcontent"][0]["nodelinks"][i][
+                                            j
+                                        ]["node"]
+                                        + '\t[label="'
+                                        + response_i["objcontent"][0]["nodelinks"][i][
+                                            j
+                                        ]["description"],
                                         end="",
                                     )
                                 print('"]\n')
@@ -817,28 +1127,49 @@ class Client:
 
         if self.local_mode is True:
             raise RuntimeError("this function cannot be run when local_mode is set")
-        if self.username is None or self.password is None or self.server is None or self.port is None:
+        if (
+            self.username is None
+            or self.password is None
+            or self.server is None
+            or self.port is None
+        ):
             raise RuntimeError("one or more login parameters are None")
         query = "operator=oph_get_config;key=OPH_BASE_SRC_PATH;"
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit(self.username, self.password, self.server, self.port, query)
+            (
+                self.last_response,
+                self.last_jobid,
+                newsession,
+                self.last_return_value,
+                self.last_error,
+            ) = _ophsubmit(self.username, self.password, self.server, self.port, query)
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
-            if self.api_mode and not self.last_return_value and self.last_error is not None:
+            if (
+                self.api_mode
+                and not self.last_return_value
+                and self.last_error is not None
+            ):
                 raise RuntimeError(self.last_error)
             response = self.deserialize_response()
             if response is not None:
                 for response_i in response["response"]:
                     if response_i["objkey"] == "get_config":
-                        self.base_src_path = response_i["objcontent"][0]["rowvalues"][0][1]
+                        self.base_src_path = response_i["objcontent"][0]["rowvalues"][
+                            0
+                        ][1]
 
                     if self.api_mode and display is True:
                         self.pretty_print(response_i, response)
 
                     break
         except Exception as e:
-            print(_get_linenumber(), "Something went wrong in retrieving base data path:", e)
+            print(
+                _get_linenumber(),
+                "Something went wrong in retrieving base data path:",
+                e,
+            )
             return None
         return self
 
@@ -853,15 +1184,30 @@ class Client:
 
         if self.local_mode is True:
             raise RuntimeError("this function cannot be run when local_mode is set")
-        if self.username is None or self.password is None or self.server is None or self.port is None:
+        if (
+            self.username is None
+            or self.password is None
+            or self.server is None
+            or self.port is None
+        ):
             raise RuntimeError("one or more login parameters are None")
         query = "operator=oph_get_config;key=OPH_SESSION_ID;"
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit(self.username, self.password, self.server, self.port, query)
+            (
+                self.last_response,
+                self.last_jobid,
+                newsession,
+                self.last_return_value,
+                self.last_error,
+            ) = _ophsubmit(self.username, self.password, self.server, self.port, query)
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
-            if self.api_mode and not self.last_return_value and self.last_error is not None:
+            if (
+                self.api_mode
+                and not self.last_return_value
+                and self.last_error is not None
+            ):
                 raise RuntimeError(self.last_error)
             response = self.deserialize_response()
             if response is not None:
@@ -874,7 +1220,11 @@ class Client:
 
                     break
         except Exception as e:
-            print(_get_linenumber(), "Something went wrong in resuming last session:", e)
+            print(
+                _get_linenumber(),
+                "Something went wrong in resuming last session:",
+                e,
+            )
             return None
         return self
 
@@ -889,15 +1239,30 @@ class Client:
 
         if self.local_mode is True:
             raise RuntimeError("this function cannot be run when local_mode is set")
-        if self.username is None or self.password is None or self.server is None or self.port is None:
+        if (
+            self.username is None
+            or self.password is None
+            or self.server is None
+            or self.port is None
+        ):
             raise RuntimeError("one or more login parameters are None")
         query = "operator=oph_get_config;key=OPH_CDD;"
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit(self.username, self.password, self.server, self.port, query)
+            (
+                self.last_response,
+                self.last_jobid,
+                newsession,
+                self.last_return_value,
+                self.last_error,
+            ) = _ophsubmit(self.username, self.password, self.server, self.port, query)
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
-            if self.api_mode and not self.last_return_value and self.last_error is not None:
+            if (
+                self.api_mode
+                and not self.last_return_value
+                and self.last_error is not None
+            ):
                 raise RuntimeError(self.last_error)
             response = self.deserialize_response()
             if response is not None:
@@ -910,7 +1275,11 @@ class Client:
 
                     break
         except Exception as e:
-            print(_get_linenumber(), "Something went wrong in resuming last cdd:", e)
+            print(
+                _get_linenumber(),
+                "Something went wrong in resuming last cdd:",
+                e,
+            )
             return None
         return self
 
@@ -925,15 +1294,30 @@ class Client:
 
         if self.local_mode is True:
             raise RuntimeError("this function cannot be run when local_mode is set")
-        if self.username is None or self.password is None or self.server is None or self.port is None:
+        if (
+            self.username is None
+            or self.password is None
+            or self.server is None
+            or self.port is None
+        ):
             raise RuntimeError("one or more login parameters are None")
         query = "operator=oph_get_config;key=OPH_CWD;"
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit(self.username, self.password, self.server, self.port, query)
+            (
+                self.last_response,
+                self.last_jobid,
+                newsession,
+                self.last_return_value,
+                self.last_error,
+            ) = _ophsubmit(self.username, self.password, self.server, self.port, query)
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
-            if self.api_mode and not self.last_return_value and self.last_error is not None:
+            if (
+                self.api_mode
+                and not self.last_return_value
+                and self.last_error is not None
+            ):
                 raise RuntimeError(self.last_error)
             response = self.deserialize_response()
             if response is not None:
@@ -946,7 +1330,11 @@ class Client:
 
                     break
         except Exception as e:
-            print(_get_linenumber(), "Something went wrong in resuming last cwd:", e)
+            print(
+                _get_linenumber(),
+                "Something went wrong in resuming last cwd:",
+                e,
+            )
             return None
         return self
 
@@ -961,15 +1349,30 @@ class Client:
 
         if self.local_mode is True:
             raise RuntimeError("this function cannot be run when local_mode is set")
-        if self.username is None or self.password is None or self.server is None or self.port is None:
+        if (
+            self.username is None
+            or self.password is None
+            or self.server is None
+            or self.port is None
+        ):
             raise RuntimeError("one or more login parameters are None")
         query = "operator=oph_get_config;key=OPH_DATACUBE;"
         self.last_request = query
         try:
-            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit(self.username, self.password, self.server, self.port, query)
+            (
+                self.last_response,
+                self.last_jobid,
+                newsession,
+                self.last_return_value,
+                self.last_error,
+            ) = _ophsubmit(self.username, self.password, self.server, self.port, query)
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
-            if self.api_mode and not self.last_return_value and self.last_error is not None:
+            if (
+                self.api_mode
+                and not self.last_return_value
+                and self.last_error is not None
+            ):
                 raise RuntimeError(self.last_error)
             response = self.deserialize_response()
             if response is not None:
@@ -982,7 +1385,11 @@ class Client:
 
                     break
         except Exception as e:
-            print(_get_linenumber(), "Something went wrong in resuming last cube:", e)
+            print(
+                _get_linenumber(),
+                "Something went wrong in resuming last cube:",
+                e,
+            )
             return None
         return self
 
@@ -1009,13 +1416,21 @@ class Client:
         try:
             for index, param in enumerate(params, start=1):
                 buffer = buffer.replace("${" + str(index) + "}", str(param))
-                buffer = re.sub(r"(\$" + str(index) + r")([^0-9]|$)", str(param) + r"\g<2>", buffer)
+                buffer = re.sub(
+                    r"(\$" + str(index) + r")([^0-9]|$)",
+                    str(param) + r"\g<2>",
+                    buffer,
+                )
                 params_list += " " + str(param)
             buffer = re.sub(r"(\$\{?(\d*)\}?)", "", buffer)
             buffer = __class__.remove_comments(buffer)
             return json.loads(buffer), params_list
         except Exception as e:
-            print(get_linenumber(), "Something went wrong in parsing the string:", e)
+            print(
+                _get_linenumber(),
+                "Something went wrong in parsing the string:",
+                e,
+            )
             return None, None
 
     @staticmethod
@@ -1077,7 +1492,12 @@ class Client:
             raise RuntimeError("this function cannot be run when local_mode is set")
         if workflow is None:
             raise RuntimeError("workflow is not present")
-        if self.username is None or self.password is None or self.server is None or self.port is None:
+        if (
+            self.username is None
+            or self.password is None
+            or self.server is None
+            or self.port is None
+        ):
             raise RuntimeError("one or more login parameters are None")
 
         buffer = workflow
@@ -1087,7 +1507,11 @@ class Client:
                 buffer = file.read()
                 file.close()
             except Exception as e:
-                print(_get_linenumber(), "Something went wrong in reading the file:", e)
+                print(
+                    _get_linenumber(),
+                    "Something went wrong in reading the file:",
+                    e,
+                )
                 return None
 
         request, params_list = self.set_params(buffer, *params)
@@ -1118,10 +1542,26 @@ class Client:
             if not err:
                 print("The workflow is not valid: " + str(err_msg))
                 return None
-            self.last_response, self.last_jobid, newsession, self.last_return_value, self.last_error = _ophsubmit(self.username, self.password, self.server, self.port, self.last_request)
+            (
+                self.last_response,
+                self.last_jobid,
+                newsession,
+                self.last_return_value,
+                self.last_error,
+            ) = _ophsubmit(
+                self.username,
+                self.password,
+                self.server,
+                self.port,
+                self.last_request,
+            )
             if self.last_return_value:
                 raise RuntimeError(self.last_error)
-            if self.api_mode and not self.last_return_value and self.last_error is not None:
+            if (
+                self.api_mode
+                and not self.last_return_value
+                and self.last_error is not None
+            ):
                 raise RuntimeError(self.last_error)
 
             if newsession is not None:
@@ -1133,7 +1573,10 @@ class Client:
             response = self.deserialize_response()
             if response is not None:
                 for response_i in response["response"]:
-                    if response_i["objclass"] == "text" and response_i["objcontent"][0]["title"] == "Output Cube":
+                    if (
+                        response_i["objclass"] == "text"
+                        and response_i["objcontent"][0]["title"] == "Output Cube"
+                    ):
                         self.cube = response_i["objcontent"][0]["message"]
                         break
                 else:
@@ -1146,20 +1589,37 @@ class Client:
                             index += 1
 
                 for response_i in response["response"]:
-                    if response_i["objclass"] == "text" and response_i["objkey"] == "status":
+                    if (
+                        response_i["objclass"] == "text"
+                        and response_i["objkey"] == "status"
+                    ):
                         if "message" in response_i["objcontent"][0]:
-                            self.last_response_status = response_i["objcontent"][0]["title"] + ": " + response_i["objcontent"][0]["message"]
+                            self.last_response_status = (
+                                response_i["objcontent"][0]["title"]
+                                + ": "
+                                + response_i["objcontent"][0]["message"]
+                            )
                         else:
-                            self.last_response_status = response_i["objcontent"][0]["title"]
+                            self.last_response_status = response_i["objcontent"][0][
+                                "title"
+                            ]
                         break
 
                 for response_i in response["response"]:
-                    if response_i["objclass"] == "text" and response_i["objcontent"][0]["title"] == "Current Working Directory":
+                    if (
+                        response_i["objclass"] == "text"
+                        and response_i["objcontent"][0]["title"]
+                        == "Current Working Directory"
+                    ):
                         self.cwd = response_i["objcontent"][0]["message"]
                         break
 
                 for response_i in response["response"]:
-                    if response_i["objclass"] == "text" and response_i["objcontent"][0]["title"] == "Current Data Directory":
+                    if (
+                        response_i["objclass"] == "text"
+                        and response_i["objcontent"][0]["title"]
+                        == "Current Data Directory"
+                    ):
                         self.cdd = response_i["objcontent"][0]["message"]
                         break
 
@@ -1167,7 +1627,9 @@ class Client:
                 if "extra" in response:
                     for response_i in response["extra"]["keys"]:
                         if response_i == "execution_time":
-                            self.last_exec_time = float(response["extra"]["values"][index])
+                            self.last_exec_time = float(
+                                response["extra"]["values"][index]
+                            )
                         elif response_i == "access_token":
                             self.password = response["extra"]["values"][index]
                         elif response_i == "cwd":
@@ -1179,7 +1641,11 @@ class Client:
                 self.pretty_print(response_i, response)
 
         except Exception as e:
-            print(_get_linenumber(), "Something went wrong in submitting the request:", e)
+            print(
+                _get_linenumber(),
+                "Something went wrong in submitting the request:",
+                e,
+            )
             return None
         return self
 
@@ -1211,11 +1677,22 @@ class Client:
             return False, "Mandatory global argument 'name' is missing"
         if "on_error" in w:
             try:
-                if w["on_error"] != "skip" and w["on_error"] != "continue" and w["on_error"] != "break" and w["on_error"] != "abort" and w["on_error"][:7] != "repeat ":
+                if (
+                    w["on_error"] != "skip"
+                    and w["on_error"] != "continue"
+                    and w["on_error"] != "break"
+                    and w["on_error"] != "abort"
+                    and w["on_error"][:7] != "repeat "
+                ):
                     return False, "Global argument 'on_error' is not correct"
             except KeyError:
                 return False, "Global argument 'on_error' is missing"
-        if "on_exit" in w and w["on_exit"] != "nop" and w["on_exit"] != "oph_delete" and w["on_exit"] != "oph_deletecontainer":
+        if (
+            "on_exit" in w
+            and w["on_exit"] != "nop"
+            and w["on_exit"] != "oph_delete"
+            and w["on_exit"] != "oph_deletecontainer"
+        ):
             return False, "Global argument 'on_exit' is not correct"
         if "run" in w and w["run"] != "yes" and w["run"] != "no":
             return False, "Global argument 'run' is not correct"
@@ -1229,9 +1706,19 @@ class Client:
             return False, "Global argument 'nthreads' is not correct"
         if "exec_mode" in w and w["exec_mode"] != "sync" and w["exec_mode"] != "async":
             return False, "Global argument 'exec_mode' is not correct"
-        if "direct_output" in w and w["direct_output"] != "yes" and w["direct_output"] != "no":
+        if (
+            "direct_output" in w
+            and w["direct_output"] != "yes"
+            and w["direct_output"] != "no"
+        ):
             return False, "Global argument 'direct_output' is not correct"
-        if "output_format" in w and w["output_format"] != "classic" and w["output_format"] != "compact" and w["output_format"] != "extended" and w["output_format"] != "extended_compact":
+        if (
+            "output_format" in w
+            and w["output_format"] != "classic"
+            and w["output_format"] != "compact"
+            and w["output_format"] != "extended"
+            and w["output_format"] != "extended_compact"
+        ):
             return False, "Global argument 'output_format' is not correct"
         if "tasks" not in w or not w["tasks"]:
             return False, "Workflow task section is missing"
@@ -1243,59 +1730,137 @@ class Client:
             else:
                 task_name = str(task["name"])
             if "operator" not in task or not task["operator"]:
-                return False, "Task 'operator' is missing in task: " + task_name
+                return (
+                    False,
+                    "Task 'operator' is missing in task: " + task_name,
+                )
             if "arguments" in task and task["arguments"]:
                 for argument in task["arguments"]:
                     if not pattern.match(argument):
-                        return False, "Task argument '" + str(argument) + "' is not valid in task: " + task_name
+                        return (
+                            False,
+                            "Task argument '"
+                            + str(argument)
+                            + "' is not valid in task: "
+                            + task_name,
+                        )
                     variable_value = argument.split("=")
                     try:
-                        if variable_value[0] == "ncores" and (not variable_value[1].isdigit() or int(variable_value[1]) <= 0):
-                            return False, "Global argument 'ncores' is not correct"
+                        if variable_value[0] == "ncores" and (
+                            not variable_value[1].isdigit()
+                            or int(variable_value[1]) <= 0
+                        ):
+                            return (
+                                False,
+                                "Global argument 'ncores' is not correct",
+                            )
                     except IndexError:
-                        return False, "Task argument 'ncores' is not correct in task: " + task_name
+                        return (
+                            False,
+                            "Task argument 'ncores' is not correct in task: "
+                            + task_name,
+                        )
                     try:
-                        if variable_value[0] == "nthreads" and (not variable_value[1].isdigit() or int(variable_value[1]) <= 0):
-                            return False, "Global argument 'nthreads' is not correct"
+                        if variable_value[0] == "nthreads" and (
+                            not variable_value[1].isdigit()
+                            or int(variable_value[1]) <= 0
+                        ):
+                            return (
+                                False,
+                                "Global argument 'nthreads' is not correct",
+                            )
                     except IndexError:
-                        return False, "Task argument 'nthreads' is not correct in task: " + task_name
+                        return (
+                            False,
+                            "Task argument 'nthreads' is not correct in task: "
+                            + task_name,
+                        )
 
             if "dependencies" in task and task["dependencies"]:
                 for dependency in task["dependencies"]:
                     if "task" not in dependency or not dependency["task"]:
-                        return False, "Dependency 'task' is missing in task: " + task_name
+                        return (
+                            False,
+                            "Dependency 'task' is missing in task: " + task_name,
+                        )
                     if "type" in dependency:
-                        if dependency["type"] != "all" and dependency["type"] != "single" and dependency["type"] != "embedded":
-                            return False, "Dependency 'type' is not correct in task: " + task_name
+                        if (
+                            dependency["type"] != "all"
+                            and dependency["type"] != "single"
+                            and dependency["type"] != "embedded"
+                        ):
+                            return (
+                                False,
+                                "Dependency 'type' is not correct in task: "
+                                + task_name,
+                            )
             if "on_error" in task:
                 try:
-                    if task["on_error"] != "skip" and task["on_error"] != "continue" and task["on_error"] != "break" and task["on_error"] != "abort" and task["on_error"][:7] != "repeat ":
-                        return False, "Task argument 'on_error' is not correct in task: " + task_name
+                    if (
+                        task["on_error"] != "skip"
+                        and task["on_error"] != "continue"
+                        and task["on_error"] != "break"
+                        and task["on_error"] != "abort"
+                        and task["on_error"][:7] != "repeat "
+                    ):
+                        return (
+                            False,
+                            "Task argument 'on_error' is not correct in task: "
+                            + task_name,
+                        )
                 except KeyError:
-                    return False, "Task argument 'on_error' is not correct in task: " + task_name
-            if "on_exit" in task and task["on_exit"] != "nop" and task["on_exit"] != "oph_delete" and task["on_exit"] != "oph_deletecontainer":
-                return False, "Task argument 'on_exit' is not correct in task: " + task_name
+                    return (
+                        False,
+                        "Task argument 'on_error' is not correct in task: " + task_name,
+                    )
+            if (
+                "on_exit" in task
+                and task["on_exit"] != "nop"
+                and task["on_exit"] != "oph_delete"
+                and task["on_exit"] != "oph_deletecontainer"
+            ):
+                return (
+                    False,
+                    "Task argument 'on_exit' is not correct in task: " + task_name,
+                )
             if "run" in task and task["run"] != "yes" and task["run"] != "no":
-                return False, "Task argument 'run' is not correct in task: " + task_name
+                return (
+                    False,
+                    "Task argument 'run' is not correct in task: " + task_name,
+                )
             if "save" in task and task["save"] != "yes" and task["save"] != "no":
-                return False, "Task argument 'save' is not correct in task: " + task_name
+                return (
+                    False,
+                    "Task argument 'save' is not correct in task: " + task_name,
+                )
 
         for index, task in enumerate(w["tasks"]):
             if "dependencies" in task and task["dependencies"]:
                 for dependency in task["dependencies"]:
                     if dependency["task"] == task["name"]:
-                        return False, "Task dependency points to same task: " + str(dependency["task"])
+                        return (
+                            False,
+                            "Task dependency points to same task: "
+                            + str(dependency["task"]),
+                        )
                     for index2, task2 in enumerate(w["tasks"]):
                         if dependency["task"] == task2["name"]:
                             dependency["task_index"] = index2
-                            if "dependents_indexes" not in task2 or not task2["dependents_indexes"]:
+                            if (
+                                "dependents_indexes" not in task2
+                                or not task2["dependents_indexes"]
+                            ):
                                 task2["dependents_indexes"] = []
                                 task2["dependents"] = []
                             task2["dependents_indexes"].append(index)
                             task2["dependents"].append(task)
                             break
                     else:
-                        return False, "Task dependency points to not existing task: " + str(dependency["task"])
+                        return (
+                            False,
+                            "Task dependency points to not existing task: "
+                            + str(dependency["task"]),
+                        )
 
         class WorkflowNode:
             def __init__(self):
@@ -1374,7 +1939,13 @@ class Client:
             if task["operator"] in fm_tasks:
                 result, ftask = self.check_fm_task(task, task)
                 if result is False:
-                    return False, "Task '" + task["name"] + "' is not correclty associated" + ((" (see also task '" + ftask["name"] + "')") if ftask is not None else "")
+                    return False, "Task '" + task[
+                        "name"
+                    ] + "' is not correclty associated" + (
+                        (" (see also task '" + ftask["name"] + "')")
+                        if ftask is not None
+                        else ""
+                    )
 
         return True, "Workflow is valid"
 

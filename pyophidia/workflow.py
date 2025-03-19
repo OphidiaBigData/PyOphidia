@@ -1,6 +1,6 @@
 #
 #     PyOphidia - Python bindings for Ophidia
-#     Copyright (C) 2015-2024 CMCC Foundation
+#     Copyright (C) 2015-2025 CMCC Foundation
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -44,7 +44,8 @@ def _dependency_check(dependency):
             raise ImportError("prov and/or pydot are not installed")
     elif dependency == "cwltool":
         try:
-            import cwltool, cwltool.factory
+            import cwltool
+            import cwltool.factory
         except ModuleNotFoundError:
             raise ImportError("cwltool is not installed")
     elif dependency == "graphviz":
@@ -243,15 +244,26 @@ class Experiment:
     def __param_check(self, params=[]):
         for param in params:
             if "NoneValue" in param.keys():
-                if not isinstance(param["value"], param["type"]) and param["value"] is not None:
-                    raise AttributeError("{0} should be {1}".format(param["name"], param["type"]))
+                if (
+                    not isinstance(param["value"], param["type"])
+                    and param["value"] is not None
+                ):
+                    raise AttributeError(
+                        "{0} should be {1}".format(param["name"], param["type"])
+                    )
             else:
                 if not isinstance(param["value"], param["type"]):
-                    raise AttributeError("{0} should be {1}".format(param["name"], param["type"]))
+                    raise AttributeError(
+                        "{0} should be {1}".format(param["name"], param["type"])
+                    )
 
     def workflow_to_json(self):
         non_experiment_fields = ["task_name_counter"]
-        new_experiment = {k: dict(self.__dict__)[k] for k in dict(self.__dict__).keys() if k not in non_experiment_fields}
+        new_experiment = {
+            k: dict(self.__dict__)[k]
+            for k in dict(self.__dict__).keys()
+            if k not in non_experiment_fields
+        }
         if "tasks" in new_experiment.keys():
             new_experiment["tasks"] = [t.__dict__ for t in new_experiment["tasks"]]
         return new_experiment
@@ -293,7 +305,9 @@ class Experiment:
             raise AttributeError("task already exists")
         if task.__dict__["dependencies"]:
             for dependency in task.__dict__["dependencies"]:
-                if dependency["task"] not in [task.__dict__["name"] for task in self.tasks]:
+                if dependency["task"] not in [
+                    task.__dict__["name"] for task in self.tasks
+                ]:
                     raise AttributeError("dependency not fulfilled")
         self.task_name_counter += 1
         self.tasks.append(task)
@@ -409,7 +423,12 @@ class Experiment:
                 {"name": "operator", "value": operator, "type": str},
                 {"name": "arguments", "value": arguments, "type": dict},
                 {"name": "dependencies", "value": dependencies, "type": dict},
-                {"name": "name", "value": name, "type": str, "NoneValue": True},
+                {
+                    "name": "name",
+                    "value": name,
+                    "type": str,
+                    "NoneValue": True,
+                },
             ]
         )
         t = Task(operator=operator, arguments=arguments, name=name)
@@ -473,14 +492,18 @@ class Experiment:
                 greatest_id = 1
                 for task in self.tasks:
                     if "_{subexperiment_" in task.name:
-                        task_id = int(re.findall(r"_{subexperiment_(.*)}", task.name)[0])
+                        task_id = int(
+                            re.findall(r"_{subexperiment_(.*)}", task.name)[0]
+                        )
                         if task_id >= greatest_id:
                             greatest_id = task_id + 1
                 return greatest_id
 
             flag_id = _get_flag_id()
             for task in e2.tasks:
-                task.name = task.name + "_{subexperiment_ID}".replace("ID", str(flag_id))
+                task.name = task.name + "_{subexperiment_ID}".replace(
+                    "ID", str(flag_id)
+                )
             return e2
 
         def check_replace_args(params, task_arguments):
@@ -517,7 +540,11 @@ class Experiment:
 
         self.__param_check(
             [
-                {"name": "experiment", "value": experiment, "type": Experiment},
+                {
+                    "name": "experiment",
+                    "value": experiment,
+                    "type": Experiment,
+                },
                 {"name": "params", "value": params, "type": dict},
                 {"name": "dependency", "value": dependency, "type": dict},
                 # {"name": "name", "value": name, "type": str,
@@ -593,9 +620,17 @@ class Experiment:
                 new_task = Task(
                     operator=d["operator"],
                     name=d["name"],
-                    arguments={a.split("=")[0]: a.split("=", 1)[1] for a in d["arguments"]},
+                    arguments={
+                        a.split("=")[0]: a.split("=", 1)[1] for a in d["arguments"]
+                    },
                 )
-                new_task.__dict__.update({k: d[k] for k in d if k != "name" and k != "operator" and k != "arguments"})
+                new_task.__dict__.update(
+                    {
+                        k: d[k]
+                        for k in d
+                        if k != "name" and k != "operator" and k != "arguments"
+                    }
+                )
                 experiment.addTask(new_task)
             return experiment
 
@@ -637,7 +672,8 @@ class Experiment:
             raise IOError("File does not exist")
 
         _dependency_check("cwltool")
-        import cwltool, cwltool.factory
+        import cwltool
+        import cwltool.factory
 
         cwl_args = {}
         param = None
@@ -748,21 +784,43 @@ class Experiment:
 
         def _find_subgraphs(tasks):
             list_of_operators = [t.operator for t in tasks]
-            subgraphs_list = [{"start_index": start_index, "operator": "if"} for start_index in [i for i, t in enumerate(list_of_operators) if t == "if"]]
-            subgraphs_list += [{"start_index": start_index, "operator": "for"} for start_index in [i for i, t in enumerate(list_of_operators) if t == "for"]]
+            subgraphs_list = [
+                {"start_index": start_index, "operator": "if"}
+                for start_index in [
+                    i for i, t in enumerate(list_of_operators) if t == "if"
+                ]
+            ]
+            subgraphs_list += [
+                {"start_index": start_index, "operator": "for"}
+                for start_index in [
+                    i for i, t in enumerate(list_of_operators) if t == "for"
+                ]
+            ]
             subgraphs_list = sorted(subgraphs_list, key=lambda i: i["start_index"])
-            closing_indexes = sorted([i for i, t in enumerate(list_of_operators) if t == "endfor" or t == "endif"])[::-1]
+            closing_indexes = sorted(
+                [
+                    i
+                    for i, t in enumerate(list_of_operators)
+                    if t == "endfor" or t == "endif"
+                ]
+            )[::-1]
             for i in range(0, len(subgraphs_list)):
                 subgraphs_list[i]["end_index"] = closing_indexes[i]
 
             cluster_counter = 0
             for subgraph in subgraphs_list:
-                new_dot = graphviz.Digraph(name="cluster_{0}".format(str(cluster_counter)))
+                new_dot = graphviz.Digraph(
+                    name="cluster_{0}".format(str(cluster_counter))
+                )
                 for i in range(subgraph["start_index"], subgraph["end_index"] + 1):
                     new_dot.attr("node")
                     new_dot.node(
                         tasks[i].name,
-                        _trim_text(tasks[i].name) + "\n" + _trim_text(tasks[i].type) + "\n" + _trim_text(tasks[i].operator),
+                        _trim_text(tasks[i].name)
+                        + "\n"
+                        + _trim_text(tasks[i].type)
+                        + "\n"
+                        + _trim_text(tasks[i].operator),
                     )
                 subgraph["dot"] = new_dot
                 cluster_counter += 1
@@ -782,7 +840,13 @@ class Experiment:
         hexagonal_commands = ["for", "endfor"]
         dot = graphviz.Digraph(comment=self.name)
         for task in self.tasks:
-            dot.attr("node", shape="circle", width="1", penwidth="1", fontsize="10pt")
+            dot.attr(
+                "node",
+                shape="circle",
+                width="1",
+                penwidth="1",
+                fontsize="10pt",
+            )
             dot.attr("edge", penwidth="1")
             if task.operator in diamond_commands:
                 dot.attr("node", shape="diamond")
@@ -790,7 +854,11 @@ class Experiment:
                 dot.attr("node", shape="hexagon")
             dot.node(
                 task.name,
-                _trim_text(task.name) + "\n" + _trim_text(task.type) + "\n" + _trim_text(task.operator),
+                _trim_text(task.name)
+                + "\n"
+                + _trim_text(task.type)
+                + "\n"
+                + _trim_text(task.operator),
             )
             dot.attr("edge", style="solid")
             for d in task.dependencies:
@@ -906,8 +974,12 @@ class Workflow:
         w1.cancel()
         """
         if Workflow.client is None or self.workflow_id is None:
-            raise AttributeError("Cancel requires workflow_id or Workflow.client is None")
-        self.client.submit(query="oph_cancel id={0};exec_mode=async;".format(self.workflow_id))
+            raise AttributeError(
+                "Cancel requires workflow_id or Workflow.client is None"
+            )
+        self.client.submit(
+            query="oph_cancel id={0};exec_mode=async;".format(self.workflow_id)
+        )
 
     def submit(self, *args, checkpoint="all"):
         """
@@ -940,7 +1012,9 @@ class Workflow:
         if checkpoint == "all":
 
             if self.workflow_id is not None:
-                raise AttributeError("You can't submit a workflow that was already" "submitted")
+                raise AttributeError(
+                    "You can't submit a workflow that was already" "submitted"
+                )
             dict_workflow = json.dumps(self.workflow_to_json())
             str_workflow = str(dict_workflow)
             self.client.wsubmit(str_workflow, *args)
@@ -953,7 +1027,12 @@ class Workflow:
             self.client.submit(query)
 
         if self.client.last_jobid is None:
-            raise AttributeError("Something went wrong during the submission: " + str(self.client.last_error) if self.client.last_error is not None else "")
+            raise AttributeError(
+                "Something went wrong during the submission: "
+                + str(self.client.last_error)
+                if self.client.last_error is not None
+                else ""
+            )
         self.workflow_id = self.client.last_jobid.split("?")[1].split("#")[0]
         self.experiment_object.exec_mode = exec_mode
         return self.workflow_id
@@ -1008,27 +1087,51 @@ class Workflow:
 
         def _check_workflow_validity():
             self.__runtime_connect()
-            workflow_validity = self.client.wisvalid(json.dumps(self.workflow_to_json()))
+            workflow_validity = self.client.wisvalid(
+                json.dumps(self.workflow_to_json())
+            )
             if workflow_validity[0] is False:
                 raise AttributeError(workflow_validity[1])
 
         def _find_subgraphs(tasks):
             list_of_operators = [t.operator for t in tasks]
-            subgraphs_list = [{"start_index": start_index, "operator": "if"} for start_index in [i for i, t in enumerate(list_of_operators) if t == "if"]]
-            subgraphs_list += [{"start_index": start_index, "operator": "for"} for start_index in [i for i, t in enumerate(list_of_operators) if t == "for"]]
+            subgraphs_list = [
+                {"start_index": start_index, "operator": "if"}
+                for start_index in [
+                    i for i, t in enumerate(list_of_operators) if t == "if"
+                ]
+            ]
+            subgraphs_list += [
+                {"start_index": start_index, "operator": "for"}
+                for start_index in [
+                    i for i, t in enumerate(list_of_operators) if t == "for"
+                ]
+            ]
             subgraphs_list = sorted(subgraphs_list, key=lambda i: i["start_index"])
-            closing_indexes = sorted([i for i, t in enumerate(list_of_operators) if re.match("(?i).*endfor", t) or re.match("(?i).*endif", t)])[::-1]
+            closing_indexes = sorted(
+                [
+                    i
+                    for i, t in enumerate(list_of_operators)
+                    if re.match("(?i).*endfor", t) or re.match("(?i).*endif", t)
+                ]
+            )[::-1]
             for i in range(0, len(subgraphs_list)):
                 subgraphs_list[i]["end_index"] = closing_indexes[i]
 
             cluster_counter = 0
             for subgraph in subgraphs_list:
-                new_dot = graphviz.Digraph(name="cluster_{0}".format(str(cluster_counter)))
+                new_dot = graphviz.Digraph(
+                    name="cluster_{0}".format(str(cluster_counter))
+                )
                 for i in range(subgraph["start_index"], subgraph["end_index"] + 1):
                     new_dot.attr("node")
                     new_dot.node(
                         tasks[i].name,
-                        _trim_text(tasks[i].name) + "\n" + _trim_text(tasks[i].type) + "\n" + _trim_text(tasks[i].operator),
+                        _trim_text(tasks[i].name)
+                        + "\n"
+                        + _trim_text(tasks[i].type)
+                        + "\n"
+                        + _trim_text(tasks[i].operator),
                     )
                 subgraph["dot"] = new_dot
                 cluster_counter += 1
@@ -1044,13 +1147,23 @@ class Workflow:
             for res in json_response["response"]:
                 print(res)
                 if res["objkey"] == "workflow_list":
-                    exec_keys = ["TASK NAME", "EXIT STATUS", "INPUT", "OUTPUT", "BEGIN TIME", "END TIME"]
+                    exec_keys = [
+                        "TASK NAME",
+                        "EXIT STATUS",
+                        "INPUT",
+                        "OUTPUT",
+                        "BEGIN TIME",
+                        "END TIME",
+                    ]
                     index = []
                     if all(idx in res["objcontent"][0]["rowkeys"] for idx in exec_keys):
                         for k in exec_keys:
                             index.append(int(res["objcontent"][0]["rowkeys"].index(k)))
                         for task in res["objcontent"][0]["rowvalues"]:
-                            task_dict[task[index[0]]] = dict((exec_keys[i], task[index[i]]) for i in range(1, len(exec_keys)))
+                            task_dict[task[index[0]]] = dict(
+                                (exec_keys[i], task[index[i]])
+                                for i in range(1, len(exec_keys))
+                            )
                         return task_dict
                     else:
                         return None
@@ -1065,9 +1178,15 @@ class Workflow:
             sorted_tasks = []
             for i in range(0, len(tasks)):
                 if re.findall(r".*?(\([0-9].*\))", tasks[i].name):
-                    clean_name = tasks[i].name.replace(re.findall(r".*?(\([0-9].*\))", tasks[i].name)[0], "")
+                    clean_name = tasks[i].name.replace(
+                        re.findall(r".*?(\([0-9].*\))", tasks[i].name)[0], ""
+                    )
                     for task in tasks[i:]:
-                        if clean_name in task.name and task.name not in [t.name for t in sorted_tasks] and re.findall(r".*?(\([0-9].*\))", task.name):
+                        if (
+                            clean_name in task.name
+                            and task.name not in [t.name for t in sorted_tasks]
+                            and re.findall(r".*?(\([0-9].*\))", task.name)
+                        ):
                             sorted_tasks.append(task)
                 else:
                     sorted_tasks.append(tasks[i])
@@ -1078,7 +1197,9 @@ class Workflow:
             for res in json_response["response"]:
                 if res["objkey"] == "resume":
                     task_name_index = res["objcontent"][0]["rowkeys"].index("COMMAND")
-                    tasks = json.loads(res["objcontent"][0]["rowvalues"][0][task_name_index])
+                    tasks = json.loads(
+                        res["objcontent"][0]["rowvalues"][0][task_name_index]
+                    )
             self.experiment_name = tasks["name"]
             for task in tasks["tasks"]:
                 arguments = {}
@@ -1133,7 +1254,9 @@ class Workflow:
                 if "EXIT STATUS" in task.extra and status_color_dictionary:
                     dot.attr(
                         "node",
-                        fillcolor=_find_matches(status_color_dictionary, task.extra["EXIT STATUS"]),
+                        fillcolor=_find_matches(
+                            status_color_dictionary, task.extra["EXIT STATUS"]
+                        ),
                         style="filled",
                     )
                 dot.attr("edge", penwidth="1")
@@ -1143,7 +1266,11 @@ class Workflow:
                     dot.attr("node", shape="hexagon")
                 dot.node(
                     task.name,
-                    _trim_text(task.name) + "\n" + _trim_text(task.type) + "\n" + _trim_text(task.operator),
+                    _trim_text(task.name)
+                    + "\n"
+                    + _trim_text(task.type)
+                    + "\n"
+                    + _trim_text(task.operator),
                 )
                 dot.attr("edge", style="solid")
                 for d in task.dependencies:
@@ -1191,7 +1318,9 @@ class Workflow:
         status_response = json.loads(self.client.last_response)
         workflow_status = _check_workflow_status(status_response)
 
-        self.client.submit("oph_resume document_type=request;level=3;id={0};".format(self.workflow_id))
+        self.client.submit(
+            "oph_resume document_type=request;level=3;id={0};".format(self.workflow_id)
+        )
         json_response = json.loads(self.client.last_response)
         tasks = _modify_task(json_response)
         self.runtime_task_graph = _sort_tasks(tasks)
@@ -1199,7 +1328,9 @@ class Workflow:
         if iterative is True:
             while True:
                 try:
-                    self.runtime_task_graph, new_tasks = _add_runtimeinfo_task(status_response, self.runtime_task_graph)
+                    self.runtime_task_graph, new_tasks = _add_runtimeinfo_task(
+                        status_response, self.runtime_task_graph
+                    )
                 except Exception as e:
                     print(_get_linenumber(), "Unable to build status graph:", e)
                     print(workflow_status)
@@ -1208,11 +1339,17 @@ class Workflow:
                     _draw(self.runtime_task_graph, status_color_dictionary)
                 else:
                     print(workflow_status)
-                if not re.match("(?i).*RUNNING", workflow_status) and (not re.match("(?i).*PENDING", workflow_status)):
+                if not re.match("(?i).*RUNNING", workflow_status) and (
+                    not re.match("(?i).*PENDING", workflow_status)
+                ):
                     return workflow_status
 
                 if new_tasks is True:
-                    self.client.submit("oph_resume document_type=request;level=3;id={0};".format(self.workflow_id))
+                    self.client.submit(
+                        "oph_resume document_type=request;level=3;id={0};".format(
+                            self.workflow_id
+                        )
+                    )
                     json_response = json.loads(self.client.last_response)
                     tasks = _modify_task(json_response)
                     self.runtime_task_graph = _sort_tasks(tasks)
@@ -1224,7 +1361,9 @@ class Workflow:
                 workflow_status = _check_workflow_status(status_response)
         else:
             try:
-                self.runtime_task_graph, new_tasks = _add_runtimeinfo_task(status_response, self.runtime_task_graph)
+                self.runtime_task_graph, new_tasks = _add_runtimeinfo_task(
+                    status_response, self.runtime_task_graph
+                )
             except Exception as e:
                 print(_get_linenumber(), "Unable to build status graph:", e)
                 return workflow_status
@@ -1238,11 +1377,18 @@ class Workflow:
     def __param_check(self, params=[]):
         for param in params:
             if "NoneValue" in param.keys():
-                if not isinstance(param["value"], param["type"]) and param["value"] is not None:
-                    raise AttributeError("{0} should be {1}".format(param["name"], param["type"]))
+                if (
+                    not isinstance(param["value"], param["type"])
+                    and param["value"] is not None
+                ):
+                    raise AttributeError(
+                        "{0} should be {1}".format(param["name"], param["type"])
+                    )
             else:
                 if not isinstance(param["value"], param["type"]):
-                    raise AttributeError("{0} should be {1}".format(param["name"], param["type"]))
+                    raise AttributeError(
+                        "{0} should be {1}".format(param["name"], param["type"])
+                    )
 
     @staticmethod
     def _notebook_check():
@@ -1270,7 +1416,11 @@ class Workflow:
                 "runtime_task_graph",
             ]
 
-            new_workflow = {k: dict(self.experiment_object.__dict__)[k] for k in dict(self.experiment_object.__dict__).keys() if k not in non_workflow_fields}
+            new_workflow = {
+                k: dict(self.experiment_object.__dict__)[k]
+                for k in dict(self.experiment_object.__dict__).keys()
+                if k not in non_workflow_fields
+            }
             if "tasks" in new_workflow.keys():
                 new_workflow["tasks"] = [t.__dict__ for t in new_workflow["tasks"]]
             return new_workflow
@@ -1307,10 +1457,36 @@ class Workflow:
         prov_doc.add_namespace("nc", "https://www.unidata.ucar.edu/software/netcdf/")
 
         # Global dictionaries of operator names
-        multiInputsOperators = ["oph_mergecubes", "oph_mergecubes2", "oph_intercube", "oph_intercube2", "oph_importncs", "oph_concatnc", "oph_concatnc2"]  # N input, 1 output
-        dataOperators = ["oph_aggregate", "oph_aggregate2", "oph_apply", "oph_drilldown", "oph_duplicate", "oph_merge", "oph_permute", "oph_reduce", "oph_reduce2", "oph_rollup", "oph_subset"]
+        multiInputsOperators = [
+            "oph_mergecubes",
+            "oph_mergecubes2",
+            "oph_intercube",
+            "oph_intercube2",
+            "oph_importncs",
+            "oph_concatnc",
+            "oph_concatnc2",
+        ]  # N input, 1 output
+        dataOperators = [
+            "oph_aggregate",
+            "oph_aggregate2",
+            "oph_apply",
+            "oph_drilldown",
+            "oph_duplicate",
+            "oph_merge",
+            "oph_permute",
+            "oph_reduce",
+            "oph_reduce2",
+            "oph_rollup",
+            "oph_subset",
+        ]
         specialOperators = ["oph_script", "oph_metadata", "oph_delete"]
-        importOperators = ["oph_importnc", "oph_importnc2", "oph_importfits", "oph_randcube", "oph_randcube2"]
+        importOperators = [
+            "oph_importnc",
+            "oph_importnc2",
+            "oph_importfits",
+            "oph_randcube",
+            "oph_randcube2",
+        ]
         exportOperators = ["oph_exportnc", "oph_exportnc2", "oph_explorecube"]
         skippedOperators = ["oph_createcontainer", "for", "endfor"]
 
@@ -1343,18 +1519,32 @@ class Workflow:
                 op_end = task.extra["END TIME"]
                 op_args = task.arguments
 
-                activity_extra = {"prov:type": "ophidia:operator", "ophidia:status": op_status, "ophidia:arguments": ",".join(op_args)}
+                activity_extra = {
+                    "prov:type": "ophidia:operator",
+                    "ophidia:status": op_status,
+                    "ophidia:arguments": ",".join(op_args),
+                }
 
                 if class_type == "multiInput":
 
                     inputs = op_input.split("|")
-                    a = prov_doc.activity("ophidia:" + op_id, op_begin, op_end, activity_extra)
-                    eo = prov_doc.entity("ophidia:" + op_output, {"prov:type": "ophidia:datacube"})
+                    a = prov_doc.activity(
+                        "ophidia:" + op_id, op_begin, op_end, activity_extra
+                    )
+                    eo = prov_doc.entity(
+                        "ophidia:" + op_output,
+                        {"prov:type": "ophidia:datacube"},
+                    )
                     prov_doc.wasGeneratedBy(eo, a)
 
                     if "oph_concatnc" in op_name:
-                        ei1 = prov_doc.entity("nc:" + inputs[0], {"prov:type": "nc:file"})
-                        ei2 = prov_doc.entity("ophidia:" + inputs[1], {"prov:type": "ophidia:datacube"})
+                        ei1 = prov_doc.entity(
+                            "nc:" + inputs[0], {"prov:type": "nc:file"}
+                        )
+                        ei2 = prov_doc.entity(
+                            "ophidia:" + inputs[1],
+                            {"prov:type": "ophidia:datacube"},
+                        )
                         prov_doc.wasDerivedFrom(eo, ei1)
                         prov_doc.used(a, ei1)
                         prov_doc.wasDerivedFrom(eo, ei2)
@@ -1362,9 +1552,14 @@ class Workflow:
                     else:
                         for i in range(0, len(inputs)):
                             if "oph_importncs" in op_name:
-                                ei = prov_doc.entity("nc:" + inputs[i], {"prov:type": "nc:file"})
+                                ei = prov_doc.entity(
+                                    "nc:" + inputs[i], {"prov:type": "nc:file"}
+                                )
                             else:
-                                ei = prov_doc.entity("ophidia:" + inputs[i], {"prov:type": "ophidia:datacube"})
+                                ei = prov_doc.entity(
+                                    "ophidia:" + inputs[i],
+                                    {"prov:type": "ophidia:datacube"},
+                                )
 
                             prov_doc.wasDerivedFrom(eo, ei)
                             prov_doc.used(a, ei)
@@ -1374,7 +1569,9 @@ class Workflow:
                     inputs = op_input.split("|")
                     outputs = op_output.split("|")
 
-                    a = prov_doc.activity("ophidia:" + op_id, op_begin, op_end, activity_extra)
+                    a = prov_doc.activity(
+                        "ophidia:" + op_id, op_begin, op_end, activity_extra
+                    )
 
                     for k in range(len(inputs)):
 
@@ -1382,20 +1579,39 @@ class Workflow:
                             continue
 
                         if class_type == "export":
-                            ei = prov_doc.entity("ophidia:" + inputs[k], {"prov:type": "ophidia:datacube"})
-                            eo = prov_doc.entity("nc:" + outputs[k], {"prov:type": "nc:file"})
+                            ei = prov_doc.entity(
+                                "ophidia:" + inputs[k],
+                                {"prov:type": "ophidia:datacube"},
+                            )
+                            eo = prov_doc.entity(
+                                "nc:" + outputs[k], {"prov:type": "nc:file"}
+                            )
 
                         if class_type == "datacube":
-                            ei = prov_doc.entity("ophidia:" + inputs[k], {"prov:type": "ophidia:datacube"})
-                            eo = prov_doc.entity("ophidia:" + outputs[k], {"prov:type": "ophidia:datacube"})
+                            ei = prov_doc.entity(
+                                "ophidia:" + inputs[k],
+                                {"prov:type": "ophidia:datacube"},
+                            )
+                            eo = prov_doc.entity(
+                                "ophidia:" + outputs[k],
+                                {"prov:type": "ophidia:datacube"},
+                            )
 
                         if class_type == "import":
                             if "randcube" in op_name:
                                 ei = None
-                                eo = prov_doc.entity("ophidia:" + outputs[k], {"prov:type": "ophidia:datacube"})
+                                eo = prov_doc.entity(
+                                    "ophidia:" + outputs[k],
+                                    {"prov:type": "ophidia:datacube"},
+                                )
                             else:
-                                ei = prov_doc.entity("nc:" + inputs[k], {"prov:type": "nc:file"})
-                                eo = prov_doc.entity("ophidia:" + outputs[k], {"prov:type": "ophidia:datacube"})
+                                ei = prov_doc.entity(
+                                    "nc:" + inputs[k], {"prov:type": "nc:file"}
+                                )
+                                eo = prov_doc.entity(
+                                    "ophidia:" + outputs[k],
+                                    {"prov:type": "ophidia:datacube"},
+                                )
 
                         prov_doc.wasGeneratedBy(eo, a)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 #     PyOphidia - Python bindings for Ophidia
-#     Copyright (C) 2015-2024 CMCC Foundation
+#     Copyright (C) 2015-2025 CMCC Foundation
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -17,13 +17,14 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import sys, os
+import sys
+import os
 import click
+from pyophidia import Workflow, Experiment, Client
 
 previous_dir = os.path.dirname(os.getcwd())
 sys.path.insert(0, os.path.dirname(previous_dir))
 sys.path.insert(0, "..")
-from pyophidia import Workflow, Experiment, Client
 
 
 def verbose_check_display(verbose, text):
@@ -96,7 +97,18 @@ def print_help():
     metavar="<document type>",
 )
 @click.argument("workflow_args", nargs=-1, type=click.UNPROCESSED)
-def run(verbose, monitor, sync_mode, cancel, workflow, workflow_args, id, checkpoint, type, display):
+def run(
+    verbose,
+    monitor,
+    sync_mode,
+    cancel,
+    workflow,
+    workflow_args,
+    id,
+    checkpoint,
+    type,
+    display,
+):
     """Command Line Interface to run an experiment\n
     Example: wclient -w experiment.json 1 2"""
 
@@ -129,7 +141,8 @@ def run(verbose, monitor, sync_mode, cancel, workflow, workflow_args, id, checkp
         workflow_type = modify_args(type) if type is not None else None
         if workflow_type == "cwl":
             try:
-                import cwltool, cwltool.factory
+                import cwltool
+                import cwltool.factory
 
                 cwl_args = {}
                 param = None

@@ -1,6 +1,6 @@
 #
 #     PyOphidia - Python bindings for Ophidia
-#     Copyright (C) 2015-2024 CMCC Foundation
+#     Copyright (C) 2015-2025 CMCC Foundation
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -508,7 +508,11 @@ class Cube:
 
         response = None
         try:
-            if Cube.client is None or container is None or (cwd is None and Cube.client.cwd is None):
+            if (
+                Cube.client is None
+                or container is None
+                or (cwd is None and Cube.client.cwd is None)
+            ):
                 raise RuntimeError("Cube.client, container or cwd is None")
 
             query = "oph_containerschema "
@@ -601,8 +605,16 @@ class Cube:
         """
 
         try:
-            if Cube.client is None or container is None or dim is None or dim_type is None or (cwd is None and Cube.client.cwd is None):
-                raise RuntimeError("Cube.client, container, dim, dim_type or cwd is None")
+            if (
+                Cube.client is None
+                or container is None
+                or dim is None
+                or dim_type is None
+                or (cwd is None and Cube.client.cwd is None)
+            ):
+                raise RuntimeError(
+                    "Cube.client, container, dim, dim_type or cwd is None"
+                )
 
             query = "oph_createcontainer "
 
@@ -684,8 +696,13 @@ class Cube:
         """
 
         try:
-            if Cube.client is None or ((container is None or (cwd is None and Cube.client.cwd is None)) and container_pid == "-"):
-                raise RuntimeError("Cube.client, container and container_pid or cwd is None")
+            if Cube.client is None or (
+                (container is None or (cwd is None and Cube.client.cwd is None))
+                and container_pid == "-"
+            ):
+                raise RuntimeError(
+                    "Cube.client, container and container_pid or cwd is None"
+                )
 
             query = "oph_deletecontainer "
 
@@ -1163,7 +1180,9 @@ class Cube:
             if job_status_filter is not None:
                 query += "job_status_filter=" + str(job_status_filter) + ";"
             if submission_string_filter is not None:
-                query += "submission_string_filter=" + str(submission_string_filter) + ";"
+                query += (
+                    "submission_string_filter=" + str(submission_string_filter) + ";"
+                )
             if job_start_filter is not None:
                 query += "job_start_filter=" + str(job_start_filter) + ";"
             if job_end_filter is not None:
@@ -1217,7 +1236,11 @@ class Cube:
         """
 
         try:
-            if Cube.client is None or command is None or (cwd is None and Cube.client.cwd is None):
+            if (
+                Cube.client is None
+                or command is None
+                or (cwd is None and Cube.client.cwd is None)
+            ):
                 raise RuntimeError("Cube.client, command or cwd is None")
 
             query = "oph_folder "
@@ -1581,7 +1604,11 @@ class Cube:
 
         response = None
         try:
-            if Cube.client is None or container is None or (cwd is None and Cube.client.cwd is None):
+            if (
+                Cube.client is None
+                or container is None
+                or (cwd is None and Cube.client.cwd is None)
+            ):
                 raise RuntimeError("Cube.client, container or cwd is None")
 
             query = "oph_showgrid "
@@ -1954,7 +1981,9 @@ class Cube:
             or dim is None
             or dim_size is None
         ):
-            raise RuntimeError("Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None")
+            raise RuntimeError(
+                "Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None"
+            )
         newcube = None
 
         query = "oph_randcube "
@@ -2120,7 +2149,9 @@ class Cube:
             or dim is None
             or dim_size is None
         ):
-            raise RuntimeError("Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None")
+            raise RuntimeError(
+                "Cube.client, cwd, container, nfrag, ntuple, measure, measure_type, exp_ndim, dim or dim_size is None"
+            )
         newcube = None
 
         query = "oph_randcube2 "
@@ -2995,7 +3026,7 @@ class Cube:
         if measure is not None:
             query += "measure=" + str(measure) + ";"
         if src_path is not None:
-            if type(src_path) == list:
+            if isinstance(src_path, list):
                 query += "src_path="
                 for i in range(0, len(src_path)):
                     query += str(src_path[i])
@@ -3154,7 +3185,11 @@ class Cube:
         """
 
         try:
-            if Cube.client is None or container is None or (cwd is None and Cube.client.cwd is None):
+            if (
+                Cube.client is None
+                or container is None
+                or (cwd is None and Cube.client.cwd is None)
+            ):
                 raise RuntimeError("Cube.client, container or cwd is None")
 
             query = "oph_movecontainer "
@@ -3361,7 +3396,9 @@ class Cube:
             from time import time
 
             base_path = expanduser("~") + "/.ophidia/"
-            script_path = base_path + function.__name__ + str(int(time() * 10**6)) + ".py"
+            script_path = (
+                base_path + function.__name__ + str(int(time() * 10**6)) + ".py"
+            )
 
             try:
                 # Check if hidden folder exists or create it otherwise
@@ -3424,7 +3461,9 @@ if __name__ == '__main__':
             if script is not None:
                 if python_code:
                     if sys.version_info[0] < 3:
-                        raise RuntimeError("Python 3 is required to use a Python function as a scripts")
+                        raise RuntimeError(
+                            "Python 3 is required to use a Python function as a scripts"
+                        )
                     else:
                         script_path = createScript(script)
                         query += "script=" + str(script_path) + ";"
@@ -3881,8 +3920,14 @@ if __name__ == '__main__':
                 raise RuntimeError("Cube.client is None")
             self.pid = pid
         else:
-            if (Cube.client is not None) and (cwd is not None or measure is not None or src_path is not None):
-                if (cwd is None and Cube.client.cwd is None) or measure is None or src_path is None:
+            if (Cube.client is not None) and (
+                cwd is not None or measure is not None or src_path is not None
+            ):
+                if (
+                    (cwd is None and Cube.client.cwd is None)
+                    or measure is None
+                    or src_path is None
+                ):
                     raise RuntimeError("one or more required parameters are None")
 
                 else:
@@ -3976,7 +4021,11 @@ if __name__ == '__main__':
                             if Cube.client.cube:
                                 self.pid = Cube.client.cube
                     except Exception as e:
-                        print(_get_linenumber(), "Something went wrong in instantiating the cube", e)
+                        print(
+                            _get_linenumber(),
+                            "Something went wrong in instantiating the cube",
+                            e,
+                        )
                         raise RuntimeError()
                     else:
                         if self.pid:
@@ -4034,7 +4083,11 @@ if __name__ == '__main__':
                     self.rowsxfrag = res_i["objcontent"][0]["rowvalues"][0][3]
                     self.elementsxrow = res_i["objcontent"][0]["rowvalues"][0][4]
                     self.compressed = res_i["objcontent"][0]["rowvalues"][0][5]
-                    self.size = res_i["objcontent"][0]["rowvalues"][0][6] + " " + res_i["objcontent"][0]["rowvalues"][0][7]
+                    self.size = (
+                        res_i["objcontent"][0]["rowvalues"][0][6]
+                        + " "
+                        + res_i["objcontent"][0]["rowvalues"][0][7]
+                    )
                     self.nelements = res_i["objcontent"][0]["rowvalues"][0][8]
                 elif res_i["objkey"] == "cubeschema_diminfo":
                     self.dim_info = list()
@@ -5532,7 +5585,9 @@ if __name__ == '__main__':
         :raises: RuntimeError
         """
 
-        if Cube.client is None or ((self.pid is None or cube2 is None) and cubes is None):
+        if Cube.client is None or (
+            (self.pid is None or cube2 is None) and cubes is None
+        ):
             raise RuntimeError("Cube.client, pid, cube2 or cubes is None")
         newcube = None
 
@@ -6428,7 +6483,11 @@ if __name__ == '__main__':
                 response = Cube.client.deserialize_response()
 
                 for response_i in response["response"]:
-                    if response_i["objclass"] == "text" and "title" in response_i["objcontent"][0] and response_i["objcontent"][0]["title"] == "Output File":
+                    if (
+                        response_i["objclass"] == "text"
+                        and "title" in response_i["objcontent"][0]
+                        and response_i["objcontent"][0]["title"] == "Output File"
+                    ):
                         file_path = response_i["objcontent"][0]["message"]
                         break
 
@@ -6518,7 +6577,12 @@ if __name__ == '__main__':
                     adimCube = False
 
                     for response_j in response_i["objcontent"]:
-                        if response_j["title"] and response_j["rowfieldtypes"] and response_j["rowfieldtypes"][1] and response_j["rowvalues"]:
+                        if (
+                            response_j["title"]
+                            and response_j["rowfieldtypes"]
+                            and response_j["rowfieldtypes"][1]
+                            and response_j["rowvalues"]
+                        ):
                             curr_dim = {}
                             curr_dim["name"] = response_j["title"]
 
@@ -6534,8 +6598,13 @@ if __name__ == '__main__':
                             else:
                                 for val in response_j["rowvalues"]:
                                     decoded_bin = base64.b64decode(val[1] + "==")
-                                    length = _calculate_decoded_length(decoded_bin, response_j["rowfieldtypes"][1])
-                                    format = _get_unpack_format(length, response_j["rowfieldtypes"][1])
+                                    length = _calculate_decoded_length(
+                                        decoded_bin,
+                                        response_j["rowfieldtypes"][1],
+                                    )
+                                    format = _get_unpack_format(
+                                        length, response_j["rowfieldtypes"][1]
+                                    )
                                     dims = struct.unpack(format, decoded_bin)
                                     for v in dims:
                                         dim_array.append(v)
@@ -6544,7 +6613,9 @@ if __name__ == '__main__':
                             dimensions.append(curr_dim)
 
                         else:
-                            raise RuntimeError("Unable to get dimension name or values in response")
+                            raise RuntimeError(
+                                "Unable to get dimension name or values in response"
+                            )
 
                     dim_num = len(dimensions)
                     if dim_num == 0:
@@ -6564,7 +6635,12 @@ if __name__ == '__main__':
                 if response_i["objkey"] == "explorecube_data":
 
                     for response_j in response_i["objcontent"]:
-                        if response_j["title"] and response_j["rowkeys"] and response_j["rowfieldtypes"] and response_j["rowvalues"]:
+                        if (
+                            response_j["title"]
+                            and response_j["rowkeys"]
+                            and response_j["rowfieldtypes"]
+                            and response_j["rowvalues"]
+                        ):
                             curr_mes = {}
                             measure_name = ""
                             measure_index = 0
@@ -6572,7 +6648,9 @@ if __name__ == '__main__':
                             if not adimCube:
                                 # Check that implicit dimension is just one
                                 if dim_num - (len(response_j["rowkeys"]) - 1) / 2.0 > 1:
-                                    raise RuntimeError("More than one implicit dimension")
+                                    raise RuntimeError(
+                                        "More than one implicit dimension"
+                                    )
 
                             for i, t in enumerate(response_j["rowkeys"]):
                                 if response_j["title"] == t:
@@ -6581,16 +6659,26 @@ if __name__ == '__main__':
                                     break
 
                             if measure_index == 0:
-                                raise RuntimeError("Unable to get measure name in response")
+                                raise RuntimeError(
+                                    "Unable to get measure name in response"
+                                )
 
                             curr_mes["name"] = measure_name
 
                             # Append actual values
                             measure_value = []
                             for val in response_j["rowvalues"]:
-                                decoded_bin = base64.b64decode(val[measure_index] + "==")
-                                length = _calculate_decoded_length(decoded_bin, response_j["rowfieldtypes"][measure_index])
-                                format = _get_unpack_format(length, response_j["rowfieldtypes"][measure_index])
+                                decoded_bin = base64.b64decode(
+                                    val[measure_index] + "=="
+                                )
+                                length = _calculate_decoded_length(
+                                    decoded_bin,
+                                    response_j["rowfieldtypes"][measure_index],
+                                )
+                                format = _get_unpack_format(
+                                    length,
+                                    response_j["rowfieldtypes"][measure_index],
+                                )
                                 measure = struct.unpack(format, decoded_bin)
                                 curr_line = []
                                 for v in measure:
@@ -6602,7 +6690,9 @@ if __name__ == '__main__':
                             measures.append(curr_mes)
 
                         else:
-                            raise RuntimeError("Unable to get measure values in response")
+                            raise RuntimeError(
+                                "Unable to get measure values in response"
+                            )
 
                         break
 
@@ -6690,34 +6780,76 @@ if __name__ == '__main__':
             lengths = []
             try:
                 for response_i in response["response"]:
-                    if "objcontent" in response_i.keys() and "objkey" in response_i.keys():
+                    if (
+                        "objcontent" in response_i.keys()
+                        and "objkey" in response_i.keys()
+                    ):
                         if response_i["objkey"] == "explorecube_dimvalues":
                             for response_j in response_i["objcontent"]:
-                                if response_j["title"] and response_j["rowfieldtypes"] and response_j["rowfieldtypes"][1] and response_j["rowvalues"]:
-                                    if response_j["title"] == _time_dimension_finder(cube):
+                                if (
+                                    response_j["title"]
+                                    and response_j["rowfieldtypes"]
+                                    and response_j["rowfieldtypes"][1]
+                                    and response_j["rowvalues"]
+                                ):
+                                    if response_j["title"] == _time_dimension_finder(
+                                        cube
+                                    ):
                                         temp_array = []
                                         lengths.append(len(response_j["rowvalues"]))
                                         for val in response_j["rowvalues"]:
-                                            dims = [s.strip() for s in val[1].split(",")]
+                                            dims = [
+                                                s.strip() for s in val[1].split(",")
+                                            ]
                                             temp_array.append(dims[0])
                                         ds[response_j["title"]] = temp_array
-                                        ds[response_j["title"]].attrs = _convert_to_metadict(meta_info, filter=response_j["title"])
+                                        ds[response_j["title"]].attrs = (
+                                            _convert_to_metadict(
+                                                meta_info,
+                                                filter=response_j["title"],
+                                            )
+                                        )
                                     else:
                                         lengths.append(len(response_j["rowvalues"]))
                                         temp_array = []
                                         for val in response_j["rowvalues"]:
-                                            decoded_bin = base64.b64decode(val[1] + "==")
-                                            length = _calculate_decoded_length(decoded_bin, response_j["rowfieldtypes"][1])
-                                            format = _get_unpack_format(length, response_j["rowfieldtypes"][1])
+                                            decoded_bin = base64.b64decode(
+                                                val[1] + "=="
+                                            )
+                                            length = _calculate_decoded_length(
+                                                decoded_bin,
+                                                response_j["rowfieldtypes"][1],
+                                            )
+                                            format = _get_unpack_format(
+                                                length,
+                                                response_j["rowfieldtypes"][1],
+                                            )
                                             dims = struct.unpack(format, decoded_bin)
-                                            temp_array.append(_append_with_format(dims[0], response_j["rowfieldtypes"][1]))
+                                            temp_array.append(
+                                                _append_with_format(
+                                                    dims[0],
+                                                    response_j["rowfieldtypes"][1],
+                                                )
+                                            )
                                         ds[response_j["title"]] = list(temp_array)
-                                        ds[response_j["title"]].attrs = _convert_to_metadict(meta_info, filter=response_j["title"])
+                                        ds[response_j["title"]].attrs = (
+                                            _convert_to_metadict(
+                                                meta_info,
+                                                filter=response_j["title"],
+                                            )
+                                        )
                                 else:
-                                    raise RuntimeError("Unable to get dimension name or values in " "response")
+                                    raise RuntimeError(
+                                        "Unable to get dimension name or values in "
+                                        "response"
+                                    )
                             break
             except Exception as e:
-                print(_get_linenumber(), "Unable to get dimensions from response:", e)
+                print(
+                    _get_linenumber(),
+                    "Unable to get dimensions from response:",
+                    e,
+                )
                 return None
             return ds, lengths
 
@@ -6739,10 +6871,18 @@ if __name__ == '__main__':
             """
             try:
                 for response_i in response["response"]:
-                    if "objcontent" in response_i.keys() and "objkey" in response_i.keys():
+                    if (
+                        "objcontent" in response_i.keys()
+                        and "objkey" in response_i.keys()
+                    ):
                         if response_i["objkey"] == "explorecube_data":
                             for response_j in response_i["objcontent"]:
-                                if response_j["title"] and response_j["rowkeys"] and response_j["rowfieldtypes"] and response_j["rowvalues"]:
+                                if (
+                                    response_j["title"]
+                                    and response_j["rowkeys"]
+                                    and response_j["rowfieldtypes"]
+                                    and response_j["rowvalues"]
+                                ):
                                     measure_index = 0
 
                                     for i, t in enumerate(response_j["rowkeys"]):
@@ -6750,32 +6890,62 @@ if __name__ == '__main__':
                                             measure_index = i
                                             break
                                     if measure_index == 0:
-                                        raise RuntimeError("Unable to get measure name in response")
+                                        raise RuntimeError(
+                                            "Unable to get measure name in response"
+                                        )
                                     values = []
                                     for val in response_j["rowvalues"]:
-                                        decoded_bin = base64.b64decode(val[measure_index] + "==")
-                                        length = _calculate_decoded_length(decoded_bin, response_j["rowfieldtypes"][measure_index])
-                                        format = _get_unpack_format(length, response_j["rowfieldtypes"][measure_index])
-                                        data_format = response_j["rowfieldtypes"][measure_index]
+                                        decoded_bin = base64.b64decode(
+                                            val[measure_index] + "=="
+                                        )
+                                        length = _calculate_decoded_length(
+                                            decoded_bin,
+                                            response_j["rowfieldtypes"][measure_index],
+                                        )
+                                        format = _get_unpack_format(
+                                            length,
+                                            response_j["rowfieldtypes"][measure_index],
+                                        )
+                                        data_format = response_j["rowfieldtypes"][
+                                            measure_index
+                                        ]
                                         measure = struct.unpack(format, decoded_bin)
-                                        if (type(measure)) is (tuple or list) and len(measure) == 1:
-                                            values.append(_append_with_format(measure[0], data_format))
+                                        if (type(measure)) is (tuple or list) and len(
+                                            measure
+                                        ) == 1:
+                                            values.append(
+                                                _append_with_format(
+                                                    measure[0], data_format
+                                                )
+                                            )
                                         else:
                                             for v in measure:
-                                                values.append(_append_with_format(v, data_format))
+                                                values.append(
+                                                    _append_with_format(v, data_format)
+                                                )
                                     previous_array = []
                                     for i in range(len(lengths) - 1, -1, -1):
                                         current_array = []
                                         if i == len(lengths) - 1:
                                             for j in range(0, len(values), lengths[i]):
-                                                current_array.append(values[j : j + lengths[i]])
+                                                current_array.append(
+                                                    values[j : j + lengths[i]]
+                                                )
                                         else:
-                                            for j in range(0, len(previous_array), lengths[i]):
-                                                current_array.append(previous_array[j : j + lengths[i]])
+                                            for j in range(
+                                                0,
+                                                len(previous_array),
+                                                lengths[i],
+                                            ):
+                                                current_array.append(
+                                                    previous_array[j : j + lengths[i]]
+                                                )
                                         previous_array = current_array
                                     measure = previous_array[0]
                                 else:
-                                    raise RuntimeError("Unable to get measure values in response")
+                                    raise RuntimeError(
+                                        "Unable to get measure values in response"
+                                    )
                                 break
                             break
                 if len(measure) == 0:
@@ -6794,8 +6964,15 @@ if __name__ == '__main__':
                 sorted_coordinates,
                 measure,
             )
-            ds[cube.measure].attrs = _convert_to_metadict(meta_info, filter=response_j["title"])
-            ds[cube.measure].data = _convert_missing_value(meta_info, response_j["title"], cube.measure_type, ds[cube.measure].data)
+            ds[cube.measure].attrs = _convert_to_metadict(
+                meta_info, filter=response_j["title"]
+            )
+            ds[cube.measure].data = _convert_missing_value(
+                meta_info,
+                response_j["title"],
+                cube.measure_type,
+                ds[cube.measure].data,
+            )
             return ds
 
         def _get_meta_info(response):
@@ -6813,16 +6990,31 @@ if __name__ == '__main__':
                 for obj in response["response"]:
                     if "objcontent" in obj.keys() and "objkey" in obj.keys():
                         if obj["objkey"] == "explorecube_metadata":
-                            if ("rowvalues" and "rowkeys") in obj["objcontent"][0].keys():
-                                key_indx, value_indx, variable_indx, type_indx = _get_meta_indexes(obj["objcontent"][0]["rowkeys"])
+                            if ("rowvalues" and "rowkeys") in obj["objcontent"][
+                                0
+                            ].keys():
+                                (
+                                    key_indx,
+                                    value_indx,
+                                    variable_indx,
+                                    type_indx,
+                                ) = _get_meta_indexes(obj["objcontent"][0]["rowkeys"])
                                 for row in obj["objcontent"][0]["rowvalues"]:
                                     key = row[key_indx]
                                     value = row[value_indx]
                                     variable = row[variable_indx]
                                     _type = row[type_indx]
-                                    if (_type == "float" or _type == "int") and len(str(value)) > 9:
+                                    if (_type == "float" or _type == "int") and len(
+                                        str(value)
+                                    ) > 9:
                                         value = _scientific_notation(value)
-                                    meta_list.append({"key": key, "value": value, "variable": variable})
+                                    meta_list.append(
+                                        {
+                                            "key": key,
+                                            "value": value,
+                                            "variable": variable,
+                                        }
+                                    )
             except Exception as e:
                 print("Unable to parse meta info from response:", e)
                 return None
@@ -6868,7 +7060,10 @@ if __name__ == '__main__':
             coordinates = [c["name"] for c in cube.dim_info]
             if len(coordinates) == 0:
                 raise RuntimeError("No coordinates")
-            ds = xr.Dataset({cube.measure: ""}, attrs=_convert_to_metadict(meta_info, filter=""))
+            ds = xr.Dataset(
+                {cube.measure: ""},
+                attrs=_convert_to_metadict(meta_info, filter=""),
+            )
             return ds
 
         def _get_meta_indexes(rowkeys):
@@ -6883,7 +7078,12 @@ if __name__ == '__main__':
             :rtype: <class 'int'>, <class 'int'>|None
             """
             try:
-                return rowkeys.index("Key"), rowkeys.index("Value"), rowkeys.index("Variable"), rowkeys.index("Type")
+                return (
+                    rowkeys.index("Key"),
+                    rowkeys.index("Value"),
+                    rowkeys.index("Variable"),
+                    rowkeys.index("Type"),
+                )
             except Exception as e:
                 print("Unable to parse meta info from response:", e)
                 return None
@@ -6930,9 +7130,15 @@ if __name__ == '__main__':
                         if obj["objkey"] == "explorecube_data":
                             if "title" in obj["objcontent"][0].keys():
                                 self.measure = obj["objcontent"][0]["title"]
-                            if ("rowfieldtypes" and "rowkeys") in obj["objcontent"][0].keys():
-                                measure_indx = obj["objcontent"][0]["rowkeys"].index(self.measure)
-                                self.measure_type = obj["objcontent"][0]["rowfieldtypes"][measure_indx]
+                            if ("rowfieldtypes" and "rowkeys") in obj["objcontent"][
+                                0
+                            ].keys():
+                                measure_indx = obj["objcontent"][0]["rowkeys"].index(
+                                    self.measure
+                                )
+                                self.measure_type = obj["objcontent"][0][
+                                    "rowfieldtypes"
+                                ][measure_indx]
             except Exception as e:
                 print("Unable to parse measure info from response:", e)
                 return False
@@ -6953,8 +7159,19 @@ if __name__ == '__main__':
                 for obj in response["response"]:
                     if "objcontent" in obj.keys() and "objkey" in obj.keys():
                         if obj["objkey"] == "explorecube_diminfo":
-                            if ("rowvalues" and "rowkeys") in obj["objcontent"][0].keys():
-                                name_indx, type_indx, size_indx, hier_indx, clev_indx, array_indx, level_indx, lattice_indx = _get_dim_indexes(obj["objcontent"][0]["rowkeys"])
+                            if ("rowvalues" and "rowkeys") in obj["objcontent"][
+                                0
+                            ].keys():
+                                (
+                                    name_indx,
+                                    type_indx,
+                                    size_indx,
+                                    hier_indx,
+                                    clev_indx,
+                                    array_indx,
+                                    level_indx,
+                                    lattice_indx,
+                                ) = _get_dim_indexes(obj["objcontent"][0]["rowkeys"])
                                 for row in obj["objcontent"][0]["rowvalues"]:
                                     element = dict()
                                     element["name"] = row[name_indx]
@@ -6975,7 +7192,12 @@ if __name__ == '__main__':
         _dependency_check(dependency="xarray")
         import xarray as xr
 
-        query = "oph_explorecube " "ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=0;show_time=yes;export_metadata=yes;cube={0};".format(self.pid)
+        query = (
+            "oph_explorecube "
+            "ncore=1;base64=yes;level=2;show_index=yes;subset_type=coord;limit_filter=0;show_time=yes;export_metadata=yes;cube={0};".format(
+                self.pid
+            )
+        )
         try:
             if Cube.client.submit(query, display=False) is None:
                 raise RuntimeError()
@@ -6991,23 +7213,39 @@ if __name__ == '__main__':
             _set_measure_info(self, response)
             _set_dim_info(self, response)
         except Exception as e:
-            print(_get_linenumber(), "Something is wrong with the cube info, error: ", e)
+            print(
+                _get_linenumber(),
+                "Something is wrong with the cube info, error: ",
+                e,
+            )
             return None
         try:
             meta_list = _get_meta_info(response)
             ds = _initiate_xarray_object(self, meta_list)
         except Exception as e:
-            print(_get_linenumber(), "Something is wrong with the metadata, error: ", e)
+            print(
+                _get_linenumber(),
+                "Something is wrong with the metadata, error: ",
+                e,
+            )
             return None
         try:
             ds, lengths = _add_coordinates(self, ds, response, meta_list)
         except Exception as e:
-            print(_get_linenumber(), "Something is wrong with the coordinates, error: ", e)
+            print(
+                _get_linenumber(),
+                "Something is wrong with the coordinates, error: ",
+                e,
+            )
             return None
         try:
             ds = _add_measure(self, ds, response, lengths, meta_list)
         except Exception as e:
-            print(_get_linenumber(), "Something is wrong with the measure, error: ", e)
+            print(
+                _get_linenumber(),
+                "Something is wrong with the measure, error: ",
+                e,
+            )
             return None
         return ds
 
@@ -7041,7 +7279,12 @@ if __name__ == '__main__':
                 for response_i in response["response"]:
                     if response_i["objkey"] == "explorecube_dimvalues":
                         for response_j in response_i["objcontent"]:
-                            if response_j["title"] and response_j["rowfieldtypes"] and response_j["rowfieldtypes"][1] and response_j["rowvalues"]:
+                            if (
+                                response_j["title"]
+                                and response_j["rowfieldtypes"]
+                                and response_j["rowfieldtypes"][1]
+                                and response_j["rowvalues"]
+                            ):
                                 if response_j["title"] == _time_dimension_finder(cube):
                                     temp_array = []
                                     for val in response_j["rowvalues"]:
@@ -7052,18 +7295,33 @@ if __name__ == '__main__':
                                     temp_array = []
                                     for val in response_j["rowvalues"]:
                                         decoded_bin = base64.b64decode(val[1] + "==")
-                                        length = _calculate_decoded_length(decoded_bin, response_j["rowfieldtypes"][1])
-                                        format = _get_unpack_format(length, response_j["rowfieldtypes"][1])
+                                        length = _calculate_decoded_length(
+                                            decoded_bin,
+                                            response_j["rowfieldtypes"][1],
+                                        )
+                                        format = _get_unpack_format(
+                                            length,
+                                            response_j["rowfieldtypes"][1],
+                                        )
                                         dims = struct.unpack(format, decoded_bin)
                                         temp_array.append(dims[0])
                                     indexes[response_j["title"]] = list(temp_array)
                             else:
-                                raise RuntimeError("Unable to get dimension name or values in " "response")
+                                raise RuntimeError(
+                                    "Unable to get dimension name or values in "
+                                    "response"
+                                )
                         break
             except Exception as e:
-                print(_get_linenumber(), "Unable to get dimensions from response:", e)
+                print(
+                    _get_linenumber(),
+                    "Unable to get dimensions from response:",
+                    e,
+                )
                 return None
-            return pd.MultiIndex.from_product(list(indexes.values()), names=list(indexes.keys()))
+            return pd.MultiIndex.from_product(
+                list(indexes.values()), names=list(indexes.keys())
+            )
 
         def _add_measure(cube, indexes, response):
             """
@@ -7083,27 +7341,46 @@ if __name__ == '__main__':
                 for response_i in response["response"]:
                     if response_i["objkey"] == "explorecube_data":
                         for response_j in response_i["objcontent"]:
-                            if response_j["title"] and response_j["rowkeys"] and response_j["rowfieldtypes"] and response_j["rowvalues"]:
+                            if (
+                                response_j["title"]
+                                and response_j["rowkeys"]
+                                and response_j["rowfieldtypes"]
+                                and response_j["rowvalues"]
+                            ):
                                 measure_index = 0
                                 for i, t in enumerate(response_j["rowkeys"]):
                                     if response_j["title"] == t:
                                         measure_index = i
                                         break
                                 if measure_index == 0:
-                                    raise RuntimeError("Unable to get measure name in response")
+                                    raise RuntimeError(
+                                        "Unable to get measure name in response"
+                                    )
                                 values = []
                                 for val in response_j["rowvalues"]:
-                                    decoded_bin = base64.b64decode(val[measure_index] + "==")
-                                    length = _calculate_decoded_length(decoded_bin, response_j["rowfieldtypes"][measure_index])
-                                    format = _get_unpack_format(length, response_j["rowfieldtypes"][measure_index])
+                                    decoded_bin = base64.b64decode(
+                                        val[measure_index] + "=="
+                                    )
+                                    length = _calculate_decoded_length(
+                                        decoded_bin,
+                                        response_j["rowfieldtypes"][measure_index],
+                                    )
+                                    format = _get_unpack_format(
+                                        length,
+                                        response_j["rowfieldtypes"][measure_index],
+                                    )
                                     measure = struct.unpack(format, decoded_bin)
-                                    if (type(measure)) is (tuple or list) and len(measure) == 1:
+                                    if (type(measure)) is (tuple or list) and len(
+                                        measure
+                                    ) == 1:
                                         values.append(measure[0])
                                     else:
                                         for v in measure:
                                             values.append(v)
                             else:
-                                raise RuntimeError("Unable to get measure values in response")
+                                raise RuntimeError(
+                                    "Unable to get measure values in response"
+                                )
                             break
                         break
                 if len(measure) == 0:
@@ -7117,7 +7394,12 @@ if __name__ == '__main__':
         _dependency_check(dependency="pandas")
         import pandas as pd
 
-        query = "oph_explorecube " "ncore=1;base64=yes;level=2;show_time=yes;show_index=yes" ";subset_type=coord;" "limit_filter=0;cube={0};".format(self.pid)
+        query = (
+            "oph_explorecube "
+            "ncore=1;base64=yes;level=2;show_time=yes;show_index=yes"
+            ";subset_type=coord;"
+            "limit_filter=0;cube={0};".format(self.pid)
+        )
 
         try:
             if Cube.client.submit(query, display=False) is None:
@@ -7133,12 +7415,20 @@ if __name__ == '__main__':
         try:
             indexes = _add_coordinates(self, response)
         except Exception as e:
-            print(_get_linenumber(), "Something is wrong with the coordinates, error: ", e)
+            print(
+                _get_linenumber(),
+                "Something is wrong with the coordinates, error: ",
+                e,
+            )
             return None
         try:
             df = _add_measure(self, indexes, response)
         except Exception as e:
-            print(_get_linenumber(), "Something is wrong with the measure, error: ", e)
+            print(
+                _get_linenumber(),
+                "Something is wrong with the measure, error: ",
+                e,
+            )
             return None
         return df
 
@@ -7147,7 +7437,9 @@ if __name__ == '__main__':
         buf += "%30s: %s" % ("Cube", self.pid) + "\n"
         buf += "-" * 30 + "\n"
         buf += "%30s: %s" % ("Creation Date", self.creation_date) + "\n"
-        buf += "%30s: %s (%s)" % ("Measure (type)", self.measure, self.measure_type) + "\n"
+        buf += (
+            "%30s: %s (%s)" % ("Measure (type)", self.measure, self.measure_type) + "\n"
+        )
         buf += "%30s: %s" % ("Source file", self.source_file) + "\n"
         buf += "%30s: %s" % ("Level", self.level) + "\n"
         if self.compressed == "yes":
@@ -7181,7 +7473,10 @@ if __name__ == '__main__':
             % (
                 "Num. of elements/row (total)",
                 self.elementsxrow,
-                int(self.elementsxrow) * int(self.rowsxfrag) * int(self.fragxdb) * int(self.hostxcube),
+                int(self.elementsxrow)
+                * int(self.rowsxfrag)
+                * int(self.fragxdb)
+                * int(self.hostxcube),
             )
             + "\n"
         )
