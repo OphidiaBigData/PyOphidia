@@ -37,6 +37,7 @@ def _get_linenumber():
 
 def _dependency_check(dependency):
     from importlib.util import find_spec
+
     if dependency == "prov":
         if not find_spec("prov.model") or not find_spec("prov.dot"):
             raise ImportError("prov and/or pydot are not installed")
