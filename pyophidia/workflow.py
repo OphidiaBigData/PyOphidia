@@ -36,23 +36,15 @@ def _get_linenumber():
 
 
 def _dependency_check(dependency):
+    from importlib.util import find_spec
     if dependency == "prov":
-        try:
-            from prov.model import ProvDocument
-            from prov.dot import prov_to_dot
-        except ModuleNotFoundError:
+        if not find_spec("prov.model") or not find_spec("prov.dot"):
             raise ImportError("prov and/or pydot are not installed")
     elif dependency == "cwltool":
-        try:
-            import cwltool
-            import cwltool.factory
-        except ModuleNotFoundError:
+        if not find_spec("cwltool") or not find_spec("cwltool.factory"):
             raise ImportError("cwltool is not installed")
     elif dependency == "graphviz":
-        try:
-            import graphviz
-            from IPython.display import display, clear_output
-        except ModuleNotFoundError:
+        if not find_spec("graphviz") or not find_spec("IPython.display"):
             raise ImportError("graphviz and/or ipython are not installed")
     else:
         raise AttributeError("Dependency must be prov, cwl or graphviz")

@@ -34,21 +34,10 @@ def _get_linenumber():
 
 
 def _dependency_check(dependency):
-    if dependency == "pandas":
-        try:
-            import pandas
-        except ModuleNotFoundError:
-            raise ImportError("pandas is not installed")
-    elif dependency == "xarray":
-        try:
-            import xarray
-        except ModuleNotFoundError:
-            raise ImportError("xarray is not installed")
-    elif dependency == "numpy":
-        try:
-            import numpy
-        except ModuleNotFoundError:
-            raise ImportError("numpy is not installed")
+    from importlib.util import find_spec
+    if dependency == "pandas" or dependency == "xarray" or  dependency == "numpy":
+        if not find_spec(dependency):
+            raise ImportError(dependency+" is not installed")
     else:
         raise AttributeError("Dependency must be xarray, numpy or pandas")
 
