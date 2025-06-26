@@ -6,7 +6,7 @@ label: oph_subset
 baseCommand: [cwl2oph, oph_subset]
 inputs:
   experiment:
-    type: File[]
+    type: File?
     inputBinding:
       prefix: --experiment
       separate: true

@@ -6,7 +6,7 @@ label: oph_rollup
 baseCommand: [cwl2oph, oph_rollup]
 inputs:
   experiment:
-    type: File[]
+    type: File?
     inputBinding:
       prefix: --experiment
       separate: true

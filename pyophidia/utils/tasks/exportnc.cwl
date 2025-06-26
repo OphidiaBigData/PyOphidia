@@ -6,7 +6,7 @@ label: oph_exportnc
 baseCommand: [cwl2oph, oph_exportnc]
 inputs:
   experiment:
-    type: File[]
+    type: File?
     inputBinding:
       prefix: --experiment
       separate: true

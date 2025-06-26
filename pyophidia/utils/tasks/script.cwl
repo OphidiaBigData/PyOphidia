@@ -6,7 +6,7 @@ label: oph_script
 baseCommand: [cwl2oph, oph_script]
 inputs:
   experiment:
-    type: File[]
+    type: File?
     inputBinding:
       prefix: --experiment
       separate: true

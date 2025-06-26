@@ -307,6 +307,8 @@ def run():
             "parallel": args.parallel,
             "description": description,
         }
+        for task in dependencies.keys():
+            dependencies[task] = ""
         if args.cube and len(args.cube) > 0:
             arguments["cube"] = args.cube
         e1.newTask(

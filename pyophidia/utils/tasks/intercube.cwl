@@ -6,12 +6,12 @@ label: oph_intercube
 baseCommand: [cwl2oph, oph_intercube]
 inputs:
   experiment1:
-    type: File
+    type: File?
     inputBinding:
       prefix: --experiment1
       separate: true
   experiment2:
-    type: File
+    type: File?
     inputBinding:
       prefix: --experiment2
       separate: true

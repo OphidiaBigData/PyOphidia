@@ -6,7 +6,7 @@ label: oph_delete
 baseCommand: [cwl2oph, oph_delete]
 inputs:
   experiment:
-    type: File[]
+    type: File?
     inputBinding:
       prefix: --experiment
       separate: true
