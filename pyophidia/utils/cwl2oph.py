@@ -115,9 +115,8 @@ def run():
     e1 = None
     t1 = None
 
-    # Other parent task (if any)
-    e2 = None
-    t2 = None
+    # Other parent tasks (if any)
+    en = []
 
     if args.experiment:
         exps = args.experiment.split(",")
@@ -125,13 +124,9 @@ def run():
         if nexps > 0:
             e1 = Experiment.load(exps[0])
             t1 = e1.tasks[-1]
-        if nexps > 1:
-            e2 = Experiment.load(exps[1])
-            t2 = e2.tasks[-1]
-        if nexps > 2:
-            parser.error(
-                "Support for more than 2 input dependencies is not provided yet"
-            )
+            if nexps > 1:
+                for i in range(1, nexps):
+                    en.append(Experiment.load(exps[i]))
     elif args.experiment1:
         e1 = Experiment.load(args.experiment1)
         t1 = e1.tasks[-1]
@@ -169,6 +164,17 @@ def run():
     if args.cube2 and len(args.cube2) > 0:
         arg_cube2 = ""
 
+    # DEPENDENCIES
+    dependencies = {t1: arg_cube} if t1 else {}
+    for ee in en:
+        for task in ee.tasks:
+            if e1.getTask(task.name) is None:
+                e1.addTask(task)
+                print("Add task '" + task.name + "'", file=sys.stderr)
+        tt = ee.tasks[-1]
+        if tt:
+            dependencies[tt] = arg_cube
+
     # OPERATORS
     if args.operator == "oph_apply":
         arguments = {
@@ -186,9 +192,11 @@ def run():
             operator=args.operator,
             on_error=on_error,
             arguments=arguments,
-            dependencies={t1: arg_cube} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_createcontainer":
+        for task in dependencies.keys():
+            dependencies[task] = ""
         e1.newTask(
             name=args.name,
             type="ophidia",
@@ -201,7 +209,7 @@ def run():
                 "hierarchy": args.hierarchy,
                 "description": description,
             },
-            dependencies={t1: ""} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_delete":
         arguments = {
@@ -218,9 +226,11 @@ def run():
             operator=args.operator,
             on_error=on_error,
             arguments=arguments,
-            dependencies={t1: arg_cube} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_deletecontainer":
+        for task in dependencies.keys():
+            dependencies[task] = ""
         e1.newTask(
             name=args.name,
             type="ophidia",
@@ -231,7 +241,7 @@ def run():
                 "force": args.force,
                 "description": description,
             },
-            dependencies={t1: ""} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_endfor":
         arguments = {
@@ -239,14 +249,6 @@ def run():
         }
         if args.cube and len(args.cube) > 0:
             arguments["cube"] = args.cube
-        dependencies = {t1: arg_cube} if t1 else {}
-        if e2 is not None:
-            for task in e2.tasks:
-                if e1.getTask(task.name) is None:
-                    e1.addTask(task)
-                    print("Add task '" + task.name + "'", file=sys.stderr)
-            if t2:
-                dependencies[t2] = arg_cube
         e1.newTask(
             name=args.name,
             type="ophidia",
@@ -273,7 +275,7 @@ def run():
             operator=args.operator,
             on_error=on_error,
             arguments=arguments,
-            dependencies={t1: arg_cube} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_exportnc2":
         arguments = {
@@ -294,7 +296,7 @@ def run():
             operator=args.operator,
             on_error=on_error,
             arguments=arguments,
-            dependencies={t1: arg_cube} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_for":
         arguments = {
@@ -313,9 +315,11 @@ def run():
             operator=args.operator,
             on_error=on_error,
             arguments=arguments,
-            dependencies={t1: arg_cube} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_importnc":
+        for task in dependencies.keys():
+            dependencies[task] = ""
         if not args.measure or not args.src_path:
             parser.error(
                 "Import operator requires measure and input path parameters"
@@ -343,9 +347,11 @@ def run():
                 "description": description,
                 "input": args.src_path,
             },
-            dependencies={t1: ""} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_importnc2":
+        for task in dependencies.keys():
+            dependencies[task] = ""
         if not args.measure or not args.src_path:
             parser.error(
                 "Import operator requires measure and input path parameters"
@@ -373,7 +379,7 @@ def run():
                 "description": description,
                 "input": args.src_path,
             },
-            dependencies={t1: ""} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_intercube":
         if e2 is None:
@@ -420,7 +426,7 @@ def run():
             operator=args.operator,
             on_error=on_error,
             arguments=arguments,
-            dependencies={t1: arg_cube} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_permute":
         arguments = {
@@ -437,11 +443,13 @@ def run():
             operator=args.operator,
             on_error=on_error,
             arguments=arguments,
-            dependencies={t1: arg_cube} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_randcube":
         if not args.container:
             parser.error("Randcube operator requires container parameter")
+        for task in dependencies.keys():
+            dependencies[task] = ""
         e1.newTask(
             name=args.name,
             type="ophidia",
@@ -462,11 +470,13 @@ def run():
                 "ncores": str(args.ncores),
                 "description": description,
             },
-            dependencies={t1: ""} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_randcube2":
         if not args.container:
             parser.error("Randcube operator requires container parameter")
+        for task in dependencies.keys():
+            dependencies[task] = ""
         e1.newTask(
             name=args.name,
             type="ophidia",
@@ -487,7 +497,7 @@ def run():
                 "nthreads": str(args.nthreads),
                 "description": description,
             },
-            dependencies={t1: ""} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_reduce":
         arguments = {
@@ -505,7 +515,7 @@ def run():
             operator=args.operator,
             on_error=on_error,
             arguments=arguments,
-            dependencies={t1: arg_cube} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_reduce2":
         if not args.operation:
@@ -526,7 +536,7 @@ def run():
             operator=args.operator,
             on_error=on_error,
             arguments=arguments,
-            dependencies={t1: arg_cube} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_rollup":
         arguments = {
@@ -543,9 +553,11 @@ def run():
             operator=args.operator,
             on_error=on_error,
             arguments=arguments,
-            dependencies={t1: arg_cube} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_script":
+        for task in dependencies.keys():
+            dependencies[task] = ""
         e1.newTask(
             name=args.name,
             type="ophidia",
@@ -557,7 +569,7 @@ def run():
                 "space": args.space,
                 "description": description,
             },
-            dependencies={t1: ""} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_subset":
         arguments = {
@@ -576,7 +588,7 @@ def run():
             operator=args.operator,
             on_error=on_error,
             arguments=arguments,
-            dependencies={t1: arg_cube} if t1 else {},
+            dependencies=dependencies,
         )
     else:
         # TODO
@@ -587,6 +599,8 @@ def run():
             args.script = string_element.pop(0)
             if len(string_element) > 0:
                 args.args += " " + " ".join(str(x) for x in string_element)
+        for task in dependencies.keys():
+            dependencies[task] = ""
         e1.newTask(
             name=args.name,
             type="ophidia",
@@ -599,7 +613,7 @@ def run():
                 "output": "null",
                 "description": description,
             },  # Used to skip this Ophidia parameter
-            dependencies={t1: ""} if t1 else {},
+            dependencies=dependencies,
         )
     print("Add task '" + args.name + "'", file=sys.stderr)
     print(repr(e1))
