@@ -82,7 +82,6 @@ def run():
     parser.add_argument("--imp_concept_level", type=str, default="c")
     parser.add_argument("--imp_dim", type=str, default="auto")
     parser.add_argument("--import_metadata", type=str, default="yes")
-    parser.add_argument("--input", type=str, default="")
     parser.add_argument("--ioserver", type=str, default="ophidiaio_memory")
     parser.add_argument("--key", type=str)
     parser.add_argument("--measure", type=str)
@@ -98,6 +97,7 @@ def run():
     parser.add_argument("--operation", type=str, default="sub")
     parser.add_argument("--output_name", type=str, default="default")
     parser.add_argument("--output_path", type=str, default="default")
+    parser.add_argument("--parallel", type=str, default="no")
     parser.add_argument("--query", type=str, default="measure")
     parser.add_argument("--script", type=str, default=":")
     parser.add_argument("--space", type=str, default="no")
@@ -120,8 +120,18 @@ def run():
     t2 = None
 
     if args.experiment:
-        e1 = Experiment.load(args.experiment)
-        t1 = e1.tasks[-1]
+        exps = args.experiment.split(",")
+        nexps = len(exps)
+        if nexps > 0:
+            e1 = Experiment.load(exps[0])
+            t1 = e1.tasks[-1]
+        if nexps > 1:
+            e2 = Experiment.load(exps[1])
+            t2 = e2.tasks[-1]
+        if nexps > 2:
+            parser.error(
+                "Support for more than 2 input dependencies is not provided yet"
+            )
     elif args.experiment1:
         e1 = Experiment.load(args.experiment1)
         t1 = e1.tasks[-1]
@@ -229,13 +239,21 @@ def run():
         }
         if args.cube and len(args.cube) > 0:
             arguments["cube"] = args.cube
+        dependencies = {t1: arg_cube} if t1 else {}
+        if e2 is not None:
+            for task in e2.tasks:
+                if e1.getTask(task.name) is None:
+                    e1.addTask(task)
+                    print("Add task '" + task.name + "'", file=sys.stderr)
+            if t2:
+                dependencies[t2] = arg_cube
         e1.newTask(
             name=args.name,
             type="ophidia",
             operator=args.operator,
             on_error=on_error,
             arguments=arguments,
-            dependencies={t1: arg_cube} if t1 else {},
+            dependencies=dependencies,
         )
     elif args.operator == "oph_exportnc":
         arguments = {
