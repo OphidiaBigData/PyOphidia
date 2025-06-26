@@ -2,18 +2,13 @@
 
 cwlVersion: v1.0
 class: CommandLineTool
-label: oph_intercube
-baseCommand: [cwl2oph, oph_intercube]
+label: oph_rollup
+baseCommand: [cwl2oph, oph_rollup]
 inputs:
-  experiment1:
-    type: File
+  experiment:
+    type: File?
     inputBinding:
-      prefix: --experiment1
-      separate: true
-  experiment2:
-    type: File
-    inputBinding:
-      prefix: --experiment2
+      prefix: --experiment
       separate: true
   name:
     type: string
@@ -25,35 +20,30 @@ inputs:
     inputBinding:
       prefix: --cube
       separate: true
-  cube2:
+  mode:
     type: string?
     inputBinding:
-      prefix: --cube2
+      prefix: --mode
       separate: true
-  operation:
+  metadata_key:
     type: string?
     inputBinding:
-      prefix: --operation
+      prefix: --metadata_key
       separate: true
-  measure:
+  metadata_type:
     type: string?
     inputBinding:
-      prefix: --measure
+      prefix: --metadata_type
       separate: true
-  cube2_is_array:
+  metadata_value:
     type: string?
     inputBinding:
-      prefix: --cube2_is_array
+      prefix: --metadata_value
       separate: true
-  extension_type:
+  variable:
     type: string?
     inputBinding:
-      prefix: --extension_type
-      separate: true
-  ncores:
-    type: int?
-    inputBinding:
-      prefix: --ncores
+      prefix: --variable
       separate: true
   description:
     type: string?
@@ -71,6 +61,6 @@ inputs:
       prefix: --dependencies
       separate: true
 outputs:
-  experiment:
+  experiment: 
     type: stdout
 

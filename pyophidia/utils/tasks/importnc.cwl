@@ -80,6 +80,21 @@ inputs:
     inputBinding:
       prefix: --ioserver
       separate: true
+  subset_dims:
+    type: string?
+    inputBinding:
+      prefix: --subset_dims
+      separate: true
+  subset_filter:
+    type: string?
+    inputBinding:
+      prefix: --subset_filter
+      separate: true
+  subset_type:
+    type: string?
+    inputBinding:
+      prefix: --subset_type
+      separate: true
   ncores:
     type: int?
     inputBinding:

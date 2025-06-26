@@ -64,13 +64,17 @@ def run():
     parser.add_argument("--concept_level", type=str, default="c")
     parser.add_argument("--concept_level_reduce", type=str, default="A")
     parser.add_argument("--container", type=str, default="-")
+    parser.add_argument("--counter", type=str, default="-")
+    parser.add_argument("--cube2_is_array", type=str, default="no")
     parser.add_argument("--dim", type=str, default="-")
+    parser.add_argument("--dim_pos", type=str)
     parser.add_argument("--dim_size", type=str)
     parser.add_argument("--dim_type", type=str, default="double")
     parser.add_argument("--exp_concept_level", type=str, default="c")
     parser.add_argument("--exp_dim", type=str, default="auto")
     parser.add_argument("--exp_ndim", type=int)
     parser.add_argument("--export_metadata", type=str, default="yes")
+    parser.add_argument("--extension_type", type=str, default="none")
     parser.add_argument("--force", type=str, default="no")
     parser.add_argument("--group_size", type=str, default="all")
     parser.add_argument("--hierarchy", type=str, default="oph_base")
@@ -78,9 +82,16 @@ def run():
     parser.add_argument("--imp_concept_level", type=str, default="c")
     parser.add_argument("--imp_dim", type=str, default="auto")
     parser.add_argument("--import_metadata", type=str, default="yes")
+    parser.add_argument("--input", type=str, default="")
     parser.add_argument("--ioserver", type=str, default="ophidiaio_memory")
+    parser.add_argument("--key", type=str)
     parser.add_argument("--measure", type=str)
     parser.add_argument("--measure_type", type=str, default="double")
+    parser.add_argument("--metadata_key", type=str, default="all")
+    parser.add_argument("--metadata_type", type=str, default="text")
+    parser.add_argument("--metadata_value", type=str, default="-")
+    parser.add_argument("--mode", type=str, default="read")
+    parser.add_argument("--ndim", type=int, default=1)
     parser.add_argument("--nfrag", type=int, default=0)
     parser.add_argument("--ntuple", type=int, default=1)
     parser.add_argument("--nhost", type=int, default=0)
@@ -90,10 +101,12 @@ def run():
     parser.add_argument("--query", type=str, default="measure")
     parser.add_argument("--script", type=str, default=":")
     parser.add_argument("--space", type=str, default="no")
-    parser.add_argument("--src_path", type=str)
+    parser.add_argument("--src_path", type=str, default="")
     parser.add_argument("--subset_dims", type=str, default="none")
     parser.add_argument("--subset_filter", type=str, default="all")
     parser.add_argument("--subset_type", type=str, default="index")
+    parser.add_argument("--values", type=str, default="-")
+    parser.add_argument("--variable", type=str, default="global")
     args = parser.parse_args()
 
     print("Process task '" + args.name + "'", file=sys.stderr)
@@ -210,6 +223,20 @@ def run():
             },
             dependencies={t1: ""} if t1 else {},
         )
+    elif args.operator == "oph_endfor":
+        arguments = {
+            "description": description,
+        }
+        if args.cube and len(args.cube) > 0:
+            arguments["cube"] = args.cube
+        e1.newTask(
+            name=args.name,
+            type="ophidia",
+            operator=args.operator,
+            on_error=on_error,
+            arguments=arguments,
+            dependencies={t1: arg_cube} if t1 else {},
+        )
     elif args.operator == "oph_exportnc":
         arguments = {
             "force": args.force,
@@ -251,6 +278,25 @@ def run():
             arguments=arguments,
             dependencies={t1: arg_cube} if t1 else {},
         )
+    elif args.operator == "oph_for":
+        arguments = {
+            "key": args.key,
+            "values": args.values,
+            "counter": args.counter,
+            "input": args.input,
+            "parallel": args.parallel,
+            "description": description,
+        }
+        if args.cube and len(args.cube) > 0:
+            arguments["cube"] = args.cube
+        e1.newTask(
+            name=args.name,
+            type="ophidia",
+            operator=args.operator,
+            on_error=on_error,
+            arguments=arguments,
+            dependencies={t1: arg_cube} if t1 else {},
+        )
     elif args.operator == "oph_importnc":
         if not args.measure or not args.src_path:
             parser.error(
@@ -272,6 +318,9 @@ def run():
                 "hierarchy": args.hierarchy,
                 "host_partition": args.host_partition,
                 "ioserver": str(args.ioserver),
+                "subset_dims": args.subset_dims,
+                "subset_filter": args.subset_filter,
+                "subset_type": args.subset_type,
                 "ncores": str(args.ncores),
                 "description": description,
                 "input": args.src_path,
@@ -298,6 +347,9 @@ def run():
                 "imp_concept_level": args.imp_concept_level,
                 "hierarchy": args.hierarchy,
                 "host_partition": args.host_partition,
+                "subset_dims": args.subset_dims,
+                "subset_filter": args.subset_filter,
+                "subset_type": args.subset_type,
                 "ncores": str(args.ncores),
                 "nthreads": str(args.nthreads),
                 "description": description,
@@ -314,6 +366,9 @@ def run():
                 print("Add task '" + task.name + "'", file=sys.stderr)
         arguments = {
             "operation": args.operation,
+            "measure": args.measure,
+            "cube2_is_array": args.cube2_is_array,
+            "extension_type": args.extension_type,
             "ncores": str(args.ncores),
             "description": description,
         }
@@ -328,6 +383,43 @@ def run():
             on_error=on_error,
             arguments=arguments,
             dependencies={t1: arg_cube, t2: arg_cube2} if t1 and t2 else {},
+        )
+    elif args.operator == "oph_metadata":
+        arguments = {
+            "mode": args.mode,
+            "variable": args.variable,
+            "metadata_key": args.metadata_key,
+            "metadata_type": args.metadata_type,
+            "metadata_value": args.metadata_value,
+            "force": args.force,
+            "description": description,
+        }
+        if args.cube and len(args.cube) > 0:
+            arguments["cube"] = args.cube
+        e1.newTask(
+            name=args.name,
+            type="ophidia",
+            operator=args.operator,
+            on_error=on_error,
+            arguments=arguments,
+            dependencies={t1: arg_cube} if t1 else {},
+        )
+    elif args.operator == "oph_permute":
+        arguments = {
+            "dim_pos": args.dim_pos,
+            "ncores": str(args.ncores),
+            "nthreads": str(args.nthreads),
+            "description": description,
+        }
+        if args.cube and len(args.cube) > 0:
+            arguments["cube"] = args.cube
+        e1.newTask(
+            name=args.name,
+            type="ophidia",
+            operator=args.operator,
+            on_error=on_error,
+            arguments=arguments,
+            dependencies={t1: arg_cube} if t1 else {},
         )
     elif args.operator == "oph_randcube":
         if not args.container:
@@ -404,6 +496,23 @@ def run():
             "operation": args.operation,
             "dim": args.dim,
             "concept_level": args.concept_level_reduce,
+            "ncores": str(args.ncores),
+            "nthreads": str(args.nthreads),
+            "description": description,
+        }
+        if args.cube and len(args.cube) > 0:
+            arguments["cube"] = args.cube
+        e1.newTask(
+            name=args.name,
+            type="ophidia",
+            operator=args.operator,
+            on_error=on_error,
+            arguments=arguments,
+            dependencies={t1: arg_cube} if t1 else {},
+        )
+    elif args.operator == "oph_rollup":
+        arguments = {
+            "ndim": str(args.ndim),
             "ncores": str(args.ncores),
             "nthreads": str(args.nthreads),
             "description": description,

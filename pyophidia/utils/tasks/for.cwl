@@ -2,18 +2,13 @@
 
 cwlVersion: v1.0
 class: CommandLineTool
-label: oph_intercube
-baseCommand: [cwl2oph, oph_intercube]
+label: oph_for
+baseCommand: [cwl2oph, oph_for]
 inputs:
-  experiment1:
-    type: File
+  experiment:
+    type: File?
     inputBinding:
-      prefix: --experiment1
-      separate: true
-  experiment2:
-    type: File
-    inputBinding:
-      prefix: --experiment2
+      prefix: --experiment
       separate: true
   name:
     type: string
@@ -25,35 +20,30 @@ inputs:
     inputBinding:
       prefix: --cube
       separate: true
-  cube2:
+  key:
+    type: string
+    inputBinding:
+      prefix: --key
+      separate: true
+  values:
     type: string?
     inputBinding:
-      prefix: --cube2
+      prefix: --values
       separate: true
-  operation:
+  counter:
     type: string?
     inputBinding:
-      prefix: --operation
+      prefix: --counter
       separate: true
-  measure:
+  input:
     type: string?
     inputBinding:
-      prefix: --measure
+      prefix: --input
       separate: true
-  cube2_is_array:
+  parallel:
     type: string?
     inputBinding:
-      prefix: --cube2_is_array
-      separate: true
-  extension_type:
-    type: string?
-    inputBinding:
-      prefix: --extension_type
-      separate: true
-  ncores:
-    type: int?
-    inputBinding:
-      prefix: --ncores
+      prefix: --force
       separate: true
   description:
     type: string?
@@ -71,6 +61,6 @@ inputs:
       prefix: --dependencies
       separate: true
 outputs:
-  experiment:
+  experiment: 
     type: stdout
 
