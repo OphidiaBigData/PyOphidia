@@ -6,10 +6,11 @@ label: oph_deletecontainer
 baseCommand: [cwl2oph, oph_deletecontainer]
 inputs:
   experiment:
-    type: File?
+    type: File[]
     inputBinding:
       prefix: --experiment
       separate: true
+      itemSeparator: ","
   name:
     type: string
     inputBinding:

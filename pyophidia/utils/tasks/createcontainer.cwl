@@ -6,10 +6,11 @@ label: oph_createcontainer
 baseCommand: [cwl2oph, oph_createcontainer]
 inputs:
   experiment:
-    type: File?
+    type: File[]
     inputBinding:
       prefix: --experiment
       separate: true
+      itemSeparator: ","
   name:
     type: string
     inputBinding:

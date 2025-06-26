@@ -6,10 +6,11 @@ label: oph_exportnc2
 baseCommand: [cwl2oph, oph_exportnc2]
 inputs:
   experiment:
-    type: File?
+    type: File[]
     inputBinding:
       prefix: --experiment
       separate: true
+      itemSeparator: ","
   name:
     type: string
     inputBinding:

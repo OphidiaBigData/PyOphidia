@@ -6,10 +6,11 @@ label: oph_permute
 baseCommand: [cwl2oph, oph_permute]
 inputs:
   experiment:
-    type: File?
+    type: File[]
     inputBinding:
       prefix: --experiment
       separate: true
+      itemSeparator: ","
   name:
     type: string
     inputBinding:
