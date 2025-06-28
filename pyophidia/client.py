@@ -1566,7 +1566,7 @@ class Client:
                 return match.group(1)
 
         # Remove python-like comments
-        pattern = r"(\".*?(?<!#)\"|\'.*?(?<!#)\')|((?m)^ *#.*\n?|#[^\r\n]*$)"
+        pattern = r"(\".*?(?<!#)\"|\'.*?(?<!#)\')|(?m:^ *#.*\n?|#[^\r\n]*$)"
         regex = re.compile(pattern, re.MULTILINE | re.DOTALL)
         checked_workflow = regex.sub(_replacer, workflow)
         # Remove C-like comments
