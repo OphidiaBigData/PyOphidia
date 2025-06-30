@@ -34,6 +34,7 @@ def run():
     # GENERAL TASK PARAMETERS
     parser.add_argument("--cube", type=str, help="Input cube", default="")
     parser.add_argument("--cube2", type=str, help="Input cube", default="")
+    parser.add_argument("--cubes", type=str, help="Input cube", default="")
     parser.add_argument(
         "--description", type=str, help="Task description", default="-"
     )
@@ -78,6 +79,7 @@ def run():
     parser.add_argument("--force", type=str, default="no")
     parser.add_argument("--group_size", type=str, default="all")
     parser.add_argument("--hierarchy", type=str, default="oph_base")
+    parser.add_argument("--hold_values", type=str, default="no")
     parser.add_argument("--host_partition", type=str, default="auto")
     parser.add_argument("--imp_concept_level", type=str, default="c")
     parser.add_argument("--imp_dim", type=str, default="auto")
@@ -92,8 +94,9 @@ def run():
     parser.add_argument("--mode", type=str, default="read")
     parser.add_argument("--ndim", type=int, default=1)
     parser.add_argument("--nfrag", type=int, default=0)
-    parser.add_argument("--ntuple", type=int, default=1)
     parser.add_argument("--nhost", type=int, default=0)
+    parser.add_argument("--number", type=int, default=1)
+    parser.add_argument("--ntuple", type=int, default=1)
     parser.add_argument("--operation", type=str, default="sub")
     parser.add_argument("--output_name", type=str, default="default")
     parser.add_argument("--output_path", type=str, default="default")
@@ -351,7 +354,7 @@ def run():
             },
             dependencies=dependencies,
         )
-    elif args.operator == "oph_importnc2":
+    elif args.operator == "oph_importnc2" or args.operator == "oph_importncs":
         for task in dependencies.keys():
             dependencies[task] = ""
         if not args.measure or not args.src_path:
@@ -395,6 +398,7 @@ def run():
             "measure": args.measure,
             "cube2_is_array": args.cube2_is_array,
             "extension_type": args.extension_type,
+            "container": args.container,
             "ncores": str(args.ncores),
             "description": description,
         }
@@ -409,6 +413,62 @@ def run():
             on_error=on_error,
             arguments=arguments,
             dependencies={t1: arg_cube, t2: arg_cube2} if t1 and t2 else {},
+        )
+    elif args.operator == "oph_intercube2":
+        arguments = {
+            "operation": args.operation,
+            "measure": args.measure,
+            "ncores": str(args.ncores),
+            "container": args.container,
+            "description": description,
+        }
+        if args.cubes and len(args.cubes) > 0:
+            arguments["cubes"] = args.cubes
+        e1.newTask(
+            name=args.name,
+            type="ophidia",
+            operator=args.operator,
+            on_error=on_error,
+            arguments=arguments,
+            dependencies=dependencies,
+        )
+    elif args.operator == "oph_mergecubes":
+        arguments = {
+            "mode": args.mode,
+            "hold_values": args.hold_values,
+            "number": str(args.number),
+            "ncores": str(args.ncores),
+            "container": args.container,
+            "description": description,
+        }
+        if args.cubes and len(args.cubes) > 0:
+            arguments["cubes"] = args.cubes
+        e1.newTask(
+            name=args.name,
+            type="ophidia",
+            operator=args.operator,
+            on_error=on_error,
+            arguments=arguments,
+            dependencies=dependencies,
+        )
+    elif args.operator == "oph_mergecubes2":
+        arguments = {
+            "dim": args.dim,
+            "dim_type": args.dim_type,
+            "number": str(args.number),
+            "ncores": str(args.ncores),
+            "container": args.container,
+            "description": description,
+        }
+        if args.cubes and len(args.cubes) > 0:
+            arguments["cubes"] = args.cubes
+        e1.newTask(
+            name=args.name,
+            type="ophidia",
+            operator=args.operator,
+            on_error=on_error,
+            arguments=arguments,
+            dependencies=dependencies,
         )
     elif args.operator == "oph_metadata":
         arguments = {
