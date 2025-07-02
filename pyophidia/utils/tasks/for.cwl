@@ -44,7 +44,7 @@ inputs:
   parallel:
     type: string?
     inputBinding:
-      prefix: --force
+      prefix: --parallel
       separate: true
   description:
     type: string?

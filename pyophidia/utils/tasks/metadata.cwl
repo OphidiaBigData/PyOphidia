@@ -2,8 +2,8 @@
 
 cwlVersion: v1.0
 class: CommandLineTool
-label: oph_rollup
-baseCommand: [cwl2oph, oph_rollup]
+label: oph_metadata
+baseCommand: [cwl2oph, oph_metadata]
 inputs:
   experiment:
     type: File?

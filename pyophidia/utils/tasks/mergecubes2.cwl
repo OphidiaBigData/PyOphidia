@@ -2,8 +2,8 @@
 
 cwlVersion: v1.0
 class: CommandLineTool
-label: oph_mergecubes
-baseCommand: [cwl2oph, oph_mergecubes]
+label: oph_mergecubes2
+baseCommand: [cwl2oph, oph_mergecubes2]
 inputs:
   experiment:
     type: File?
@@ -18,7 +18,7 @@ inputs:
   cubes:
     type: string?
     inputBinding:
-      prefix: --cube
+      prefix: --cubes
       separate: true
   container:
     type: string?

@@ -87,7 +87,7 @@ def run():
     parser.add_argument("--ioserver", type=str, default="ophidiaio_memory")
     parser.add_argument("--key", type=str)
     parser.add_argument("--measure", type=str)
-    parser.add_argument("--measure_type", type=str, default="double")
+    parser.add_argument("--measure_type", type=str, default="manual")
     parser.add_argument("--metadata_key", type=str, default="all")
     parser.add_argument("--metadata_type", type=str, default="text")
     parser.add_argument("--metadata_value", type=str, default="-")
@@ -310,8 +310,6 @@ def run():
             "parallel": args.parallel,
             "description": description,
         }
-        for task in dependencies.keys():
-            dependencies[task] = ""
         if args.cube and len(args.cube) > 0:
             arguments["cube"] = args.cube
         e1.newTask(
@@ -415,6 +413,8 @@ def run():
             dependencies={t1: arg_cube, t2: arg_cube2} if t1 and t2 else {},
         )
     elif args.operator == "oph_intercube2":
+        for task in dependencies.keys():
+            dependencies[task] = "cubes"
         arguments = {
             "operation": args.operation,
             "measure": args.measure,
@@ -433,6 +433,8 @@ def run():
             dependencies=dependencies,
         )
     elif args.operator == "oph_mergecubes":
+        for task in dependencies.keys():
+            dependencies[task] = "cubes"
         arguments = {
             "mode": args.mode,
             "hold_values": args.hold_values,
@@ -452,6 +454,8 @@ def run():
             dependencies=dependencies,
         )
     elif args.operator == "oph_mergecubes2":
+        for task in dependencies.keys():
+            dependencies[task] = "cubes"
         arguments = {
             "dim": args.dim,
             "dim_type": args.dim_type,

@@ -18,7 +18,7 @@ inputs:
   cubes:
     type: string?
     inputBinding:
-      prefix: --cube
+      prefix: --cubes
       separate: true
   operation:
     type: string?
