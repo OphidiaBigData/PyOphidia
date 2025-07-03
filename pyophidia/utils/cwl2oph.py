@@ -64,6 +64,7 @@ def run():
     parser.add_argument("--command", type=str, default=":")
     parser.add_argument("--concept_level", type=str, default="c")
     parser.add_argument("--concept_level_reduce", type=str, default="A")
+    parser.add_argument("--condition", type=str, default="1")
     parser.add_argument("--container", type=str, default="-")
     parser.add_argument("--counter", type=str, default="-")
     parser.add_argument("--cube2_is_array", type=str, default="no")
@@ -77,6 +78,7 @@ def run():
     parser.add_argument("--export_metadata", type=str, default="yes")
     parser.add_argument("--extension_type", type=str, default="none")
     parser.add_argument("--force", type=str, default="no")
+    parser.add_argument("--forward", type=str, default="no")
     parser.add_argument("--group_size", type=str, default="all")
     parser.add_argument("--hierarchy", type=str, default="oph_base")
     parser.add_argument("--hold_values", type=str, default="no")
@@ -86,6 +88,7 @@ def run():
     parser.add_argument("--import_metadata", type=str, default="yes")
     parser.add_argument("--ioserver", type=str, default="ophidiaio_memory")
     parser.add_argument("--key", type=str)
+    parser.add_argument("--keys", type=str, default="-")
     parser.add_argument("--measure", type=str)
     parser.add_argument("--measure_type", type=str, default="manual")
     parser.add_argument("--metadata_key", type=str, default="all")
@@ -108,6 +111,7 @@ def run():
     parser.add_argument("--subset_dims", type=str, default="none")
     parser.add_argument("--subset_filter", type=str, default="all")
     parser.add_argument("--subset_type", type=str, default="index")
+    parser.add_argument("--value", type=str, default="-")
     parser.add_argument("--values", type=str, default="-")
     parser.add_argument("--variable", type=str, default="global")
     args = parser.parse_args()
@@ -246,8 +250,27 @@ def run():
             },
             dependencies=dependencies,
         )
-    elif args.operator == "oph_endfor":
+    elif (
+        args.operator == "oph_else"
+        or args.operator == "oph_endif"
+        or args.operator == "oph_endfor"
+    ):
         arguments = {
+            "description": description,
+        }
+        if args.cube and len(args.cube) > 0:
+            arguments["cube"] = args.cube
+        e1.newTask(
+            name=args.name,
+            type="ophidia",
+            operator=args.operator,
+            on_error=on_error,
+            arguments=arguments,
+            dependencies=dependencies,
+        )
+    elif args.operator == "oph_elseif":
+        arguments = {
+            "condition": args.condition,
             "description": description,
         }
         if args.cube and len(args.cube) > 0:
@@ -308,6 +331,22 @@ def run():
             "counter": args.counter,
             "input": args.input,
             "parallel": args.parallel,
+            "description": description,
+        }
+        if args.cube and len(args.cube) > 0:
+            arguments["cube"] = args.cube
+        e1.newTask(
+            name=args.name,
+            type="ophidia",
+            operator=args.operator,
+            on_error=on_error,
+            arguments=arguments,
+            dependencies=dependencies,
+        )
+    elif args.operator == "oph_if":
+        arguments = {
+            "condition": args.condition,
+            "forward": args.forward,
             "description": description,
         }
         if args.cube and len(args.cube) > 0:
@@ -635,6 +674,23 @@ def run():
                 "space": args.space,
                 "description": description,
             },
+            dependencies=dependencies,
+        )
+    elif args.operator == "oph_set":
+        arguments = {
+            "key": args.key,
+            "keys": args.keys,
+            "value": args.value,
+            "description": description,
+        }
+        if args.cube and len(args.cube) > 0:
+            arguments["cube"] = args.cube
+        e1.newTask(
+            name=args.name,
+            type="ophidia",
+            operator=args.operator,
+            on_error=on_error,
+            arguments=arguments,
             dependencies=dependencies,
         )
     elif args.operator == "oph_subset":
