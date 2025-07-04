@@ -703,7 +703,10 @@ class Client:
                 and not self.last_return_value
                 and self.last_error is not None
             ):
-                raise RuntimeError(self.last_error)
+                if display is True:
+                    print("WARNING: " + self.last_error)
+                else:
+                    raise RuntimeError(self.last_error)
             if newsession is not None:
                 if len(newsession) == 0:
                     self.session = None
@@ -1283,7 +1286,10 @@ class Client:
                 and not self.last_return_value
                 and self.last_error is not None
             ):
-                raise RuntimeError(self.last_error)
+                if display is True:
+                    print("WARNING: " + self.last_error)
+                else:
+                    raise RuntimeError(self.last_error)
             response = self.deserialize_response()
             if response is not None:
                 for response_i in response["response"]:
@@ -1346,7 +1352,10 @@ class Client:
                 and not self.last_return_value
                 and self.last_error is not None
             ):
-                raise RuntimeError(self.last_error)
+                if display is True:
+                    print("WARNING: " + self.last_error)
+                else:
+                    raise RuntimeError(self.last_error)
             response = self.deserialize_response()
             if response is not None:
                 for response_i in response["response"]:
@@ -1409,7 +1418,10 @@ class Client:
                 and not self.last_return_value
                 and self.last_error is not None
             ):
-                raise RuntimeError(self.last_error)
+                if display is True:
+                    print("WARNING: " + self.last_error)
+                else:
+                    raise RuntimeError(self.last_error)
             response = self.deserialize_response()
             if response is not None:
                 for response_i in response["response"]:
@@ -1472,7 +1484,10 @@ class Client:
                 and not self.last_return_value
                 and self.last_error is not None
             ):
-                raise RuntimeError(self.last_error)
+                if display is True:
+                    print("WARNING: " + self.last_error)
+                else:
+                    raise RuntimeError(self.last_error)
             response = self.deserialize_response()
             if response is not None:
                 for response_i in response["response"]:
@@ -1535,7 +1550,10 @@ class Client:
                 and not self.last_return_value
                 and self.last_error is not None
             ):
-                raise RuntimeError(self.last_error)
+                if display is True:
+                    print("WARNING: " + self.last_error)
+                else:
+                    raise RuntimeError(self.last_error)
             response = self.deserialize_response()
             if response is not None:
                 for response_i in response["response"]:
@@ -1638,7 +1656,7 @@ class Client:
                 return False, ftask
         return True, ftask
 
-    def wsubmit(self, workflow, *params):
+    def wsubmit(self, workflow, display=False, *params):
         """wsubmit(workflow,*params) -> self : Submit an entire workflow
             passing a JSON string or the path of a JSON file and an optional
             series of parameters that will replace $1, $2 etc. in workflow.
@@ -1647,6 +1665,9 @@ class Client:
         :param workflow: JSON string or path of a JSON file containing an
             Ophidia workflow
         :type workflow: str
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
+        :type display: bool
         :param params: list of positional parameters that will replace $1,
             $2 etc. in the workflow
         :type params: str
@@ -1731,8 +1752,10 @@ class Client:
                 and not self.last_return_value
                 and self.last_error is not None
             ):
-                raise RuntimeError(self.last_error)
-
+                if display is True:
+                    print("WARNING: " + self.last_error)
+                else:
+                    raise RuntimeError(self.last_error)
             if newsession is not None:
                 if len(newsession) == 0:
                     self.session = None
@@ -1808,7 +1831,8 @@ class Client:
                             self.cdd = response["extra"]["values"][index]
                         index += 1
 
-                self.pretty_print(response_i, response)
+                if self.api_mode and display is True:
+                    self.pretty_print(response_i, response)
 
         except Exception as e:
             print(
