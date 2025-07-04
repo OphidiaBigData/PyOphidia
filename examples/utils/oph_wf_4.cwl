@@ -29,6 +29,8 @@ steps:
       args: inputfile
       description:
         default: "Download file"
+      on_error:
+        default: "skip"
     out: [experiment]
   Import:
     run: tasks/importnc2.cwl
