@@ -1,1 +1,1 @@
-oph_wf_1.cwl
+oph_wf_4.cwl
