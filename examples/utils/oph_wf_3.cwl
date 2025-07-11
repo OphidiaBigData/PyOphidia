@@ -27,6 +27,8 @@ steps:
       args: inputfile
       description:
         default: "Download file"
+      on_error:
+        default: "repeat 10"
     out: [experiment]
   Import:
     run: tasks/importnc2.cwl
