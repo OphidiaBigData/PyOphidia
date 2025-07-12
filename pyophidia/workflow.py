@@ -62,15 +62,15 @@ class Task:
 
     Parameters
     ----------
-    operator : str
+    operator: str
         operator name
-    arguments : dict, optional
+    arguments: dict, optional
         list of user-defined operator arguments as key=value pairs
-    name : str, optional
+    name: str, optional
         unique task name
-    type : str, optional
+    type: str, optional
         type of the task
-    on_error : str, optional
+    on_error: str, optional
         behaviour in case of error
     """
 
@@ -104,9 +104,9 @@ class Task:
 
         Parameters
         ----------
-        task : <class 'pyophidia.workflow.Task'>
+        task: <class 'pyophidia.workflow.Task'>
             task the current one depends on
-        argument : str, optional
+        argument: str, optional
             argument to be set with the output of the task 'task'
 
         Raises
@@ -143,7 +143,7 @@ class Task:
 
         Parameters
         ----------
-        dependency : dict
+        dependency: dict
             Copy a dependency to a task
         """
         self.dependencies.append(dependency)
@@ -154,7 +154,7 @@ class Task:
 
         Returns
         -------
-        arguments : dict
+        arguments: dict
             returns the arguments with the newest format
         """
         arguments = {}
@@ -287,7 +287,7 @@ class Experiment:
 
         Parameters
         ----------
-        task : <class 'pyophidia.workflow.Task'>
+        task: <class 'pyophidia.workflow.Task'>
             Task to be added to the experiment
 
         Raises
@@ -322,14 +322,14 @@ class Experiment:
 
         Parameters
         ----------
-        taskname : str
+        taskname: str
             The name of the task to be found in the experiment
 
         Returns
         -------
-        task : <class 'pyophidia.workflow.Task'>
+        task: <class 'pyophidia.workflow.Task'>
             Returns the first task found
-        None : Nonetype
+        None: Nonetype
             If no task was found then returns None
 
         Example
@@ -350,9 +350,9 @@ class Experiment:
 
         Parameters
         ----------
-        experimentname : str
+        experimentname: str
             The path to the file where the experiment is being saved
-        format : str
+        format: str
             The format of the file to be created, extension to be append to the
             file name
 
@@ -393,26 +393,26 @@ class Experiment:
 
         Attributes
         ----------
-        operator : str
+        operator: str
             operator name
-        arguments : dict, optional
+        arguments: dict, optional
             dict of user-defined operator arguments as key=value pairs
-        dependencies : dict, optional
+        dependencies: dict, optional
             a dict of dependencies for the task
-        name : str, optional
+        name: str, optional
             the name of the task
-        type : str, optional
+        type: str, optional
             type of the task
-        on_error : str, optional
+        on_error: str, optional
             behaviour in case of error
         on_exit: str, optional
             behaviour in case of completion
-        run : str, optional
+        run: str, optional
             enable actual execution, yes or no
 
         Returns
         -------
-        t : <class 'pyophidia.workflow.Task'>
+        t: <class 'pyophidia.workflow.Task'>
             Returns the task that was created and added to the experiment
 
         Raises
@@ -461,12 +461,12 @@ class Experiment:
 
         Parameters
         ----------
-        experiment : <class 'pyophidia.workflow.Experiment'>
+        experiment: <class 'pyophidia.workflow.Experiment'>
             The experiment that will be embeded into our main experiment
-        params : dict of keywords
+        params: dict of keywords
             a dict of keywords that will be used to replace placeholders in
             the tasks
-        dependencies : dict, optional
+        dependencies: dict, optional
             list of dependencies
 
         Returns
@@ -603,12 +603,12 @@ class Experiment:
 
         Parameters
         ----------
-        file : str
+        file: str
             The path/name of the file to be loaded
 
         Returns
         -------
-        experiment : <class 'pyophidia.workflow.Experiment'>
+        experiment: <class 'pyophidia.workflow.Experiment'>
             Returns the experiment object as it was loaded from the file
 
         Raises
@@ -668,12 +668,12 @@ class Experiment:
 
         Parameters
         ----------
-        file : str
+        file: str
             The path/name of the file to be loaded
 
         Returns
         -------
-        experiment : <class 'pyophidia.workflow.Experiment'>
+        experiment: <class 'pyophidia.workflow.Experiment'>
             Returns the experiment object as it was loaded from the file
 
         Raises
@@ -768,18 +768,20 @@ class Experiment:
         experiment_validity = self.__validate(self.workflow_to_json(), *params)
         return experiment_validity[0]
 
-    def check(self, filename="sample.dot", display=True, *params):
+    def check(self, filename="", display=True, save=False, *params):
         """
         Check the experiment definition validity, display the graph of the
             experiment structure and store the graph a file
 
         Parameters
         ----------
-        filename  : str, optional
+        filename: str, optional
             The name of the file that will contain the diagram
         display: bool
             True for receiving the workflow status as an image or False to
             receive updates only in text
+        save: bool
+            True to save the image
 
         Returns
         -------
@@ -854,6 +856,7 @@ class Experiment:
             [
                 {"name": "filename", "value": filename, "type": str},
                 {"name": "display", "value": display, "type": bool},
+                {"name": "save", "value": save, "type": bool},
             ]
         )
         if display is False:
@@ -899,7 +902,9 @@ class Experiment:
             from IPython.display import display
 
             display(dot)
-        else:
+        if notebook_check is False or save is True:
+            if not filename:
+                filename = self.name
             dot.render(filename, view=True)
         return experiment_validity
 
@@ -956,7 +961,7 @@ class Workflow:
 
         Parameters
         ----------
-        client : <class 'pyophidia.client.Client'>
+        client: <class 'pyophidia.client.Client'>
             PyOhidia client object
 
         Returns
@@ -1011,9 +1016,9 @@ class Workflow:
 
         Parameters
         ----------
-        args : list
+        args: list
             list of arguments to be substituted in the workflow
-        checkpoint : str, optional
+        checkpoint: str, optional
             name of the checkpoint which the execution has to start from
 
         Raises
@@ -1061,24 +1066,35 @@ class Workflow:
         self.experiment_object.exec_mode = exec_mode
         return self.workflow_id
 
-    def monitor(self, frequency=10, iterative=True, display=True):
+    def monitor(
+        self,
+        frequency=10,
+        iterative=True,
+        filename="",
+        display=True,
+        save=False,
+    ):
         """
         Monitor the progress of the workflow execution
 
         Parameters
         ----------
-        frequency : int
+        frequency: int
             The frequency in seconds to receive the updates
         iterative: bool
             True for receiving updates periodically, based on the frequency, or
             False to receive updates only once
+        filename: str, optional
+            The name of the file that will contain the diagram
         display: bool
             True for receiving the workflow status as an image or False to
             receive updates only in text
+        save: bool
+            True to save the image
 
         Returns
         -------
-        workflow_status : <class 'str'>
+        workflow_status: <class 'str'>
             Returns the workflow status as a string
 
         Raises
@@ -1274,6 +1290,7 @@ class Workflow:
         def _draw(
             tasks,
             status_color_dictionary=None,
+            filename="",
         ):
             diamond_commands = ["if", "endif", "else"]
             hexagonal_commands = ["for", "endfor"]
@@ -1327,14 +1344,18 @@ class Workflow:
 
                 clear_output(wait=True)
                 display(dot)
-            else:
-                dot.render("sample", view=True)
+            if notebook_check is False or save is True:
+                if not filename:
+                    filename = self.experiment_name
+                dot.render(filename, view=True)
 
         self.__param_check(
             params=[
                 {"name": "frequency", "value": frequency, "type": int},
                 {"name": "iterative", "value": iterative, "type": bool},
+                {"name": "filename", "value": filename, "type": str},
                 {"name": "display", "value": display, "type": bool},
+                {"name": "save", "value": save, "type": bool},
             ]
         )
         status_color_dictionary = {
@@ -1378,7 +1399,11 @@ class Workflow:
                     print(workflow_status)
 
                 if display is True:
-                    _draw(self.runtime_task_graph, status_color_dictionary)
+                    _draw(
+                        self.runtime_task_graph,
+                        status_color_dictionary,
+                        filename,
+                    )
                 else:
                     print(workflow_status)
                 if not re.match("(?i).*RUNNING", workflow_status) and (
@@ -1480,7 +1505,7 @@ class Workflow:
         return json.dumps(self.workflow_to_json())
 
     def build_provenance(
-        self, output_file, output_format="json", display=True
+        self, output_file="", output_format="json", display=True
     ):
         """
         Build the provenance file associated with the workflow, provided that
@@ -1488,9 +1513,9 @@ class Workflow:
 
         Parameters
         ----------
-        output_file : str
+        output_file: str, optional
             name (without any extension) of the file to be created
-        output_format : str, optional
+        output_format: str, optional
             format of the file to be created, extension to be append to the
             file name
         display: bool
@@ -1676,6 +1701,8 @@ class Workflow:
                             prov_doc.wasDerivedFrom(eo, ei)
                             prov_doc.used(a, ei)
 
+        if not output_file:
+            output_file = self.experiment_name
         prov_doc.serialize(
             output_file + "." + output_format, format=output_format
         )
