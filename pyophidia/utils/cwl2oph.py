@@ -669,7 +669,7 @@ def run():
             operator=args.operator,
             on_error=on_error,
             arguments={
-                "command": args.script,
+                "script": args.script,
                 "args": args.args,
                 "space": args.space,
                 "description": description,
