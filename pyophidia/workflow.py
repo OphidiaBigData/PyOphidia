@@ -1547,6 +1547,8 @@ class Workflow:
             "oph_importncs",
             "oph_concatnc",
             "oph_concatnc2",
+            "oph_concatesdm",
+            "oph_concatesdm2",
         ]  # N input, 1 output
         dataOperators = [
             "oph_aggregate",
@@ -1559,22 +1561,65 @@ class Workflow:
             "oph_reduce",
             "oph_reduce2",
             "oph_rollup",
+            "oph_split",
             "oph_subset",
         ]
-        specialOperators = ["oph_script", "oph_metadata", "oph_delete"]
+        specialOperators = [
+            "oph_cdo",
+            "oph_delete",
+            "oph_folder",
+            "oph_fs",
+            "oph_generic",
+            "oph_hierarchy",
+            "oph_instances",
+            "oph_list",
+            "oph_metadata",
+            "oph_script",
+            "oph_showgrid",
+        ]
         importOperators = [
             "oph_importnc",
             "oph_importnc2",
             "oph_importfits",
+            "oph_importesdm",
+            "oph_importesdm2",
             "oph_randcube",
             "oph_randcube2",
         ]
-        exportOperators = ["oph_exportnc", "oph_exportnc2", "oph_explorecube"]
-        skippedOperators = ["oph_createcontainer", "for", "endfor"]
+        exportOperators = [
+            "oph_exportnc",
+            "oph_exportnc2",
+            "oph_exportesdm",
+            "oph_exportesdm2",
+            "oph_explorecube",
+            "oph_explorenc",
+        ]
+        skippedOperators = [
+            "oph_containerschema",
+            "oph_createcontainer",
+            "oph_cubeelements",
+            "oph_cubeio",
+            "oph_cubeschema",
+            "oph_cubesize",
+            "oph_deletecontainer",
+            "oph_for",
+            "oph_endfor",
+            "oph_if",
+            "oph_elseif",
+            "oph_else",
+            "oph_endif",
+            "oph_input",
+            "oph_movecontainer",
+            "oph_set",
+            "oph_wait",
+        ]
 
         data = self.runtime_task_graph
 
         for task in data:
+
+            if not bool(task.extra):
+                continue
 
             op_name = task.operator
 
@@ -1593,6 +1638,7 @@ class Workflow:
                 class_type = "multiInput"
 
             if class_type is not None and class_type != "skip":
+
                 op_id = task.name.replace(" ", "_")
                 op_input = task.extra["INPUT"]
                 op_output = task.extra["OUTPUT"]
@@ -1619,10 +1665,16 @@ class Workflow:
                     )
                     prov_doc.wasGeneratedBy(eo, a)
 
-                    if "oph_concatnc" in op_name:
-                        ei1 = prov_doc.entity(
-                            "nc:" + inputs[0], {"prov:type": "nc:file"}
-                        )
+                    if "oph_concat" in op_name:
+                        if "oph_concatnc" in op_name:
+                            ei1 = prov_doc.entity(
+                                "nc:" + inputs[0], {"prov:type": "nc:file"}
+                            )
+                        else:
+                            ei1 = prov_doc.entity(
+                                "esdm:" + inputs[0],
+                                {"prov:type": "esdm:dataset"},
+                            )
                         ei2 = prov_doc.entity(
                             "ophidia:" + inputs[1],
                             {"prov:type": "ophidia:datacube"},
@@ -1665,9 +1717,16 @@ class Workflow:
                                 "ophidia:" + inputs[k],
                                 {"prov:type": "ophidia:datacube"},
                             )
-                            eo = prov_doc.entity(
-                                "nc:" + outputs[k], {"prov:type": "nc:file"}
-                            )
+                            if "oph_exportnc" in op_name:
+                                eo = prov_doc.entity(
+                                    "nc:" + outputs[k],
+                                    {"prov:type": "nc:file"},
+                                )
+                            else:
+                                eo = prov_doc.entity(
+                                    "esdm:" + outputs[k],
+                                    {"prov:type": "esdm:dataset"},
+                                )
 
                         if class_type == "datacube":
                             ei = prov_doc.entity(
@@ -1687,9 +1746,21 @@ class Workflow:
                                     {"prov:type": "ophidia:datacube"},
                                 )
                             else:
-                                ei = prov_doc.entity(
-                                    "nc:" + inputs[k], {"prov:type": "nc:file"}
-                                )
+                                if "oph_importnc" in op_name:
+                                    ei = prov_doc.entity(
+                                        "nc:" + inputs[k],
+                                        {"prov:type": "nc:file"},
+                                    )
+                                elif "oph_importesdm" in op_name:
+                                    ei = prov_doc.entity(
+                                        "esdm:" + inputs[k],
+                                        {"prov:type": "esdm:dataset"},
+                                    )
+                                else:
+                                    ei = prov_doc.entity(
+                                        "fits:" + inputs[k],
+                                        {"prov:type": "fits:file"},
+                                    )
                                 eo = prov_doc.entity(
                                     "ophidia:" + outputs[k],
                                     {"prov:type": "ophidia:datacube"},
