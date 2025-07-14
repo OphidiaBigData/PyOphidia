@@ -1564,18 +1564,14 @@ class Workflow:
             "oph_split",
             "oph_subset",
         ]
-        specialOperators = [
+        fileOperators = [
             "oph_cdo",
-            "oph_delete",
-            "oph_folder",
-            "oph_fs",
             "oph_generic",
-            "oph_hierarchy",
-            "oph_instances",
-            "oph_list",
+        ]
+        specialOperators = [
+            "oph_delete",
             "oph_metadata",
             "oph_script",
-            "oph_showgrid",
         ]
         importOperators = [
             "oph_importnc",
@@ -1602,15 +1598,21 @@ class Workflow:
             "oph_cubeschema",
             "oph_cubesize",
             "oph_deletecontainer",
-            "oph_for",
-            "oph_endfor",
-            "oph_if",
-            "oph_elseif",
             "oph_else",
+            "oph_elseif",
+            "oph_endfor",
             "oph_endif",
+            "oph_folder",
+            "oph_for",
+            "oph_fs",
+            "oph_hierarchy",
+            "oph_if",
             "oph_input",
+            "oph_instances",
+            "oph_list",
             "oph_movecontainer",
             "oph_set",
+            "oph_showgrid",
             "oph_wait",
         ]
 
@@ -1628,6 +1630,8 @@ class Workflow:
                 class_type = "export"
             elif op_name in dataOperators:
                 class_type = "datacube"
+            elif op_name in fileOperators:
+                class_type = "file"
             elif op_name in importOperators:
                 class_type = "import"
             elif op_name in specialOperators:
@@ -1646,6 +1650,9 @@ class Workflow:
                 op_begin = task.extra["BEGIN TIME"]
                 op_end = task.extra["END TIME"]
                 op_args = task.arguments
+
+                if op_input == op_output:
+                    continue
 
                 activity_extra = {
                     "prov:type": "ophidia:operator",
@@ -1738,6 +1745,28 @@ class Workflow:
                                 {"prov:type": "ophidia:datacube"},
                             )
 
+                        if class_type == "file":
+                            if "esdm://" in inputs[k]:
+                                ei = prov_doc.entity(
+                                    "esdm:" + inputs[k],
+                                    {"prov:type": "esdm:dataset"},
+                                )
+                            else:
+                                ei = prov_doc.entity(
+                                    "nc:" + inputs[k],
+                                    {"prov:type": "nc:file"},
+                                )
+                            if "esdm://" in outputs[k]:
+                                eo = prov_doc.entity(
+                                    "esdm:" + outputs[k],
+                                    {"prov:type": "esdm:dataset"},
+                                )
+                            else:
+                                eo = prov_doc.entity(
+                                    "nc:" + outputs[k],
+                                    {"prov:type": "nc:file"},
+                                )
+
                         if class_type == "import":
                             if "randcube" in op_name:
                                 ei = None
@@ -1747,10 +1776,16 @@ class Workflow:
                                 )
                             else:
                                 if "oph_importnc" in op_name:
-                                    ei = prov_doc.entity(
-                                        "nc:" + inputs[k],
-                                        {"prov:type": "nc:file"},
-                                    )
+                                    if "esdm://" in inputs[k]:
+                                        ei = prov_doc.entity(
+                                            "esdm:" + inputs[k],
+                                            {"prov:type": "esdm:dataset"},
+                                        )
+                                    else:
+                                        ei = prov_doc.entity(
+                                            "nc:" + inputs[k],
+                                            {"prov:type": "nc:file"},
+                                        )
                                 elif "oph_importesdm" in op_name:
                                     ei = prov_doc.entity(
                                         "esdm:" + inputs[k],
