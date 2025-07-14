@@ -90,6 +90,7 @@ def run():
     parser.add_argument("--key", type=str)
     parser.add_argument("--keys", type=str, default="-")
     parser.add_argument("--measure", type=str)
+    parser.add_argument("--measure_name", type=str, default="-")
     parser.add_argument("--measure_type", type=str, default="manual")
     parser.add_argument("--metadata_key", type=str, default="all")
     parser.add_argument("--metadata_type", type=str, default="text")
@@ -193,6 +194,8 @@ def run():
         }
         if args.cube and len(args.cube) > 0:
             arguments["cube"] = args.cube
+        if args.measure_name != "-":
+            arguments["measure"] = args.measure_name
         e1.newTask(
             name=args.name,
             type="ophidia",

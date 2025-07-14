@@ -26,6 +26,11 @@ inputs:
     inputBinding:
       prefix: --query
       separate: true
+  measure:
+    type: string?
+    inputBinding:
+      prefix: --measure_name
+      separate: true
   measure_type:
     type: string?
     inputBinding:
