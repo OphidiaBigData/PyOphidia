@@ -343,6 +343,31 @@ def run():
             arguments=arguments,
             dependencies=dependencies,
         )
+    elif args.operator == "oph_generic":
+        if args.command == ":":
+            parser.error("Generic operator requires a command")
+        for task in dependencies.keys():
+            dependencies[task] = ""
+        arguments = {
+            "command": args.command,
+            "args": args.args,
+            "space": args.space,
+            "input": args.input,
+            "output": args.output,
+            "output_path": args.output_path,
+            "output_name": args.output_name,
+            "force": args.force,
+            "ncores": str(args.ncores),
+            "description": description,
+        }
+        e1.newTask(
+            name=args.name,
+            type="ophidia",
+            operator=args.operator,
+            on_error=on_error,
+            arguments=arguments,
+            dependencies=dependencies,
+        )
     elif args.operator == "oph_if":
         arguments = {
             "condition": args.condition,

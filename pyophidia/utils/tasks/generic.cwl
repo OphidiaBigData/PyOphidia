@@ -21,11 +21,6 @@ inputs:
     inputBinding:
       prefix: --command
       separate: true
-  script:
-    type: string?
-    inputBinding:
-      prefix: --script
-      separate: true
   args:
     type: string?
     inputBinding:
@@ -35,6 +30,11 @@ inputs:
     type: string?
     inputBinding:
       prefix: --space
+      separate: true
+  input:
+    type: string?
+    inputBinding:
+      prefix: --input
       separate: true
   output:
     type: string?
@@ -50,6 +50,16 @@ inputs:
     type: string?
     inputBinding:
       prefix: --output_name
+      separate: true
+  force:
+    type: string?
+    inputBinding:
+      prefix: --force
+      separate: true
+  ncores:
+    type: int?
+    inputBinding:
+      prefix: --ncores
       separate: true
   description:
     type: string?

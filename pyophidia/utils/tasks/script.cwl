@@ -16,11 +16,6 @@ inputs:
     inputBinding:
       prefix: --name
       separate: true
-  command:
-    type: string?
-    inputBinding:
-      prefix: --command
-      separate: true
   script:
     type: string?
     inputBinding:
