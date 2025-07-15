@@ -1570,6 +1570,8 @@ class Workflow:
         ]
         specialOperators = [
             "oph_delete",
+            "oph_explorecube",
+            "oph_explorenc",
             "oph_metadata",
             "oph_script",
         ]
@@ -1587,8 +1589,6 @@ class Workflow:
             "oph_exportnc2",
             "oph_exportesdm",
             "oph_exportesdm2",
-            "oph_explorecube",
-            "oph_explorenc",
         ]
         skippedOperators = [
             "oph_containerschema",
@@ -1734,10 +1734,16 @@ class Workflow:
                                 {"prov:type": "ophidia:datacube"},
                             )
                             if "oph_exportnc" in op_name:
-                                eo = prov_doc.entity(
-                                    "nc:" + outputs[ko],
-                                    {"prov:type": "nc:file"},
-                                )
+                                if "esdm://" in outputs[ko]:
+                                    eo = prov_doc.entity(
+                                        "esdm:" + outputs[ko],
+                                        {"prov:type": "esdm:dataset"},
+                                    )
+                                else:
+                                    eo = prov_doc.entity(
+                                        "nc:" + outputs[ko],
+                                        {"prov:type": "nc:file"},
+                                    )
                             else:
                                 eo = prov_doc.entity(
                                     "esdm:" + outputs[ko],
