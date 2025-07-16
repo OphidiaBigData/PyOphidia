@@ -39,7 +39,9 @@ def run():
         "--description", type=str, help="Task description", default="-"
     )
     parser.add_argument(
-        "--dependencies", type=str, help="Task on which it depends"
+        "--dependencies",
+        type=str,
+        help="Comma-separated parameter list to be assigned",
     )
     parser.add_argument("--experiment", type=str, help="JSON Experiment")
     parser.add_argument("--experiment1", type=str, help="JSON Experiment")
@@ -155,8 +157,9 @@ def run():
     #        args.output_name = args.output # TODO
 
     # DEPENDENCIES between tasks
+    dep_arguments = []
     if args.dependencies and len(args.dependencies) > 0:
-        t1 = e1.getTask(taskname=args.dependencies)
+        dep_arguments = args.dependencies.split(",")
 
     # ON_ERROR argument
     on_error = args.on_error if args.on_error else "abort"
@@ -173,15 +176,26 @@ def run():
         arg_cube2 = ""
 
     # DEPENDENCIES
-    dependencies = {t1: arg_cube} if t1 else {}
+    n = 0
+    c_arg_cube = (
+        dep_arguments[0]
+        if dep_arguments and len(dep_arguments) > 0
+        else arg_cube
+    )
+    dependencies = {t1: c_arg_cube} if t1 else {}
     for ee in en:
         for task in ee.tasks:
             if e1.getTask(task.name) is None:
                 e1.addTask(task)
                 print("Add task '" + task.name + "'", file=sys.stderr)
         tt = ee.tasks[-1]
+        n += 1
         if tt:
-            dependencies[tt] = arg_cube
+            dependencies[tt] = (
+                dep_arguments[n]
+                if dep_arguments and len(dep_arguments) > n
+                else arg_cube
+            )
 
     # OPERATORS
     if args.operator == "oph_apply":
