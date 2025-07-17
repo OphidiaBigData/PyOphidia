@@ -1889,6 +1889,7 @@ class Client:
             and w["on_exit"] != "nop"
             and w["on_exit"] != "oph_delete"
             and w["on_exit"] != "oph_deletecontainer"
+            and w["on_exit"] != "oph_fastdelete"
         ):
             return False, "Global argument 'on_exit' is not correct"
         if "run" in w and w["run"] != "yes" and w["run"] != "no":
@@ -2025,6 +2026,7 @@ class Client:
                 and task["on_exit"] != "nop"
                 and task["on_exit"] != "oph_delete"
                 and task["on_exit"] != "oph_deletecontainer"
+                and task["on_exit"] != "oph_fastdelete"
             ):
                 return (
                     False,
