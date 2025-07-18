@@ -5,6 +5,7 @@ v2.0.0 - 2025-02-20
 Added:
 ~~~~~~
 
+- Options to filter or truncate outputs of submit()
 - Argument to set workflow parameters for validation methods
 - Some examples and notebooks
 - Provenance support  `#46 <https://github.com/OphidiaBigData/PyOphidia/pull/46>`_

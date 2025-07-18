@@ -632,7 +632,7 @@ class Client:
         del self.last_error
         del self.project
 
-    def submit(self, query, display=False):
+    def submit(self, query, display=False, filter=None, truncate=None):
         """submit(query,display=False) -> self : Submit a query like
             'operator=myoperator;param1=value1;' or 'myoperator param1=value1;'
             to the Ophidia server according to all login parameters of the
@@ -643,6 +643,10 @@ class Client:
         :param display: option for displaying the response in a "pretty way"
             using the pretty_print function (default is False)
         :type display: bool
+        :param filter: display only the grid rows containing this filter
+        :type filter: string
+        :param truncate: truncate grid elements to header field size
+        :type truncate: int
         :returns: self or None
         :rtype: Client or None
         :raises: RuntimeError
@@ -784,7 +788,9 @@ class Client:
                         index += 1
 
                 if self.api_mode and display is True:
-                    self.pretty_print(response_i, response)
+                    self.pretty_print(
+                        response_i, response, filter=filter, truncate=truncate
+                    )
 
         except Exception as e:
             print(
@@ -870,7 +876,7 @@ class Client:
             return None
         return json.loads(self.last_response)
 
-    def pretty_print(self, response, response_i):
+    def pretty_print(self, response, response_i, filter=None, truncate=None):
         """pretty_print(response, response_i) -> self : print the last_response
             JSON string attribute as a formatted response
         :param response: Python dictionary derived from the last_response JSON
@@ -879,6 +885,10 @@ class Client:
         :param response_i: each of the responses included in the list given by
             the dictionary key response['response']
         :type response_i: dict
+        :param filter: print only the grid rows containing this filter
+        :type filter: string
+        :param truncate: truncate grid elements to header field size
+        :type truncate: int
         :returns: self or None
         :rtype: Client or None
         """
@@ -947,6 +957,27 @@ class Client:
                                 ].replace(
                                     "\t", "    "
                                 )
+                                if truncate:
+                                    max_size = max(
+                                        4, max_column_width[j], truncate
+                                    )
+                                    if (
+                                        len(
+                                            response_i["objcontent"][0][
+                                                "rowvalues"
+                                            ][i][j]
+                                        )
+                                        > max_size
+                                    ):
+                                        max_size = max_size - 3
+                                        response_i["objcontent"][0][
+                                            "rowvalues"
+                                        ][i][j] = (
+                                            response_i["objcontent"][0][
+                                                "rowvalues"
+                                            ][i][j][:max_size]
+                                            + "..."
+                                        )
                                 if (
                                     len(
                                         response_i["objcontent"][0][
@@ -1065,7 +1096,6 @@ class Client:
                             text_length.append(i)
                             start.append(i)
                             num_rows_per_column.append(i)
-
                             text_length[i] = []
                             start[i] = []
                             num_rows_per_column[i] = []
@@ -1095,10 +1125,24 @@ class Client:
                             for j in columns:
                                 if maximum_rows[i] < num_rows_per_column[i][j]:
                                     maximum_rows[i] = num_rows_per_column[i][j]
+                        print_something = False
                         for i in rows:
                             rowvalues = response_i["objcontent"][0][
                                 "rowvalues"
                             ][i]
+                            if filter and not [
+                                s for s in rowvalues if filter in s
+                            ]:
+                                continue
+                            if print_something:
+                                for j in columns:
+                                    print(
+                                        VERTICAL_CHAR
+                                        + HORIZONTAL_CHAR
+                                        * (max_column_width[j] + 2),
+                                        end="",
+                                    )
+                                print(VERTICAL_CHAR)
                             for x in range(maximum_rows[i]):
                                 for j in columns:
                                     if start[i][j] < text_length[i][j]:
@@ -1153,24 +1197,15 @@ class Client:
                                             end="",
                                         )
                                 print(VERTICAL_CHAR)
-                            if i != rows[len(rows) - 1]:
-                                for j in columns:
-                                    print(
-                                        VERTICAL_CHAR
-                                        + HORIZONTAL_CHAR
-                                        * (max_column_width[j] + 2),
-                                        end="",
-                                    )
-                                print(VERTICAL_CHAR)
-                            else:
-                                for j in columns:
-                                    print(
-                                        JUNCTION_CHAR
-                                        + BORDER_CHAR
-                                        * (max_column_width[j] + 2),
-                                        end="",
-                                    )
-                                print(JUNCTION_CHAR)
+                            print_something = True
+                        if print_something:
+                            for j in columns:
+                                print(
+                                    JUNCTION_CHAR
+                                    + BORDER_CHAR * (max_column_width[j] + 2),
+                                    end="",
+                                )
+                            print(JUNCTION_CHAR)
 
                     if response_i["objclass"] == "digraph":
                         print(response_i["objcontent"][0]["title"])
