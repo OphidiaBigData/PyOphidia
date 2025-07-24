@@ -1531,6 +1531,11 @@ class Workflow:
         from prov.model import ProvDocument
         from prov.dot import prov_to_dot
 
+        def prov_doc_entity(doc, entity_id, attributes=None):
+            if attributes and doc.get_record(entity_id):
+                return doc.entity(entity_id)
+            return doc.entity(entity_id, attributes)
+
         prov_doc = ProvDocument()
         prov_doc.add_namespace("ophidia", "http://ophidia.cmcc.it/")
         prov_doc.add_namespace("prov", "http://www.w3.org/ns/prov#")
@@ -1666,7 +1671,8 @@ class Workflow:
                     a = prov_doc.activity(
                         "ophidia:" + op_id, op_begin, op_end, activity_extra
                     )
-                    eo = prov_doc.entity(
+                    eo = prov_doc_entity(
+                        prov_doc,
                         "ophidia:" + op_output,
                         {"prov:type": "ophidia:datacube"},
                     )
@@ -1674,15 +1680,19 @@ class Workflow:
 
                     if "oph_concat" in op_name:
                         if "oph_concatnc" in op_name:
-                            ei1 = prov_doc.entity(
-                                "nc:" + inputs[0], {"prov:type": "nc:file"}
+                            ei1 = prov_doc_entity(
+                                prov_doc,
+                                "nc:" + inputs[0],
+                                {"prov:type": "nc:file"},
                             )
                         else:
-                            ei1 = prov_doc.entity(
+                            ei1 = prov_doc_entity(
+                                prov_doc,
                                 "esdm:" + inputs[0],
                                 {"prov:type": "esdm:dataset"},
                             )
-                        ei2 = prov_doc.entity(
+                        ei2 = prov_doc_entity(
+                            prov_doc,
                             "ophidia:" + inputs[1],
                             {"prov:type": "ophidia:datacube"},
                         )
@@ -1693,11 +1703,14 @@ class Workflow:
                     else:
                         for i in range(0, len(inputs)):
                             if "oph_importncs" in op_name:
-                                ei = prov_doc.entity(
-                                    "nc:" + inputs[i], {"prov:type": "nc:file"}
+                                ei = prov_doc_entity(
+                                    prov_doc,
+                                    "nc:" + inputs[i],
+                                    {"prov:type": "nc:file"},
                                 )
                             else:
-                                ei = prov_doc.entity(
+                                ei = prov_doc_entity(
+                                    prov_doc,
                                     "ophidia:" + inputs[i],
                                     {"prov:type": "ophidia:datacube"},
                                 )
@@ -1720,7 +1733,13 @@ class Workflow:
                         len_inputs if len_inputs > len_outputs else len_outputs
                     )
 
+                    ki = -1
+                    ko = -1
+
                     for k in range(length):
+
+                        pki = ki
+                        pko = ko
 
                         ki = k if k < len_inputs else 0
                         ko = k if k < len_outputs else 0
@@ -1729,98 +1748,127 @@ class Workflow:
                             continue
 
                         if class_type == "export":
-                            ei = prov_doc.entity(
-                                "ophidia:" + inputs[ki],
-                                {"prov:type": "ophidia:datacube"},
-                            )
-                            if "oph_exportnc" in op_name:
-                                if "esdm://" in outputs[ko]:
-                                    eo = prov_doc.entity(
-                                        "esdm:" + outputs[ko],
-                                        {"prov:type": "esdm:dataset"},
-                                    )
-                                else:
-                                    eo = prov_doc.entity(
-                                        "nc:" + outputs[ko],
-                                        {"prov:type": "nc:file"},
-                                    )
-                            else:
-                                eo = prov_doc.entity(
-                                    "esdm:" + outputs[ko],
-                                    {"prov:type": "esdm:dataset"},
-                                )
-
-                        if class_type == "datacube":
-                            ei = prov_doc.entity(
-                                "ophidia:" + inputs[ki],
-                                {"prov:type": "ophidia:datacube"},
-                            )
-                            eo = prov_doc.entity(
-                                "ophidia:" + outputs[ko],
-                                {"prov:type": "ophidia:datacube"},
-                            )
-
-                        if class_type == "file":
-                            if "esdm://" in inputs[ki]:
-                                ei = prov_doc.entity(
-                                    "esdm:" + inputs[ki],
-                                    {"prov:type": "esdm:dataset"},
-                                )
-                            else:
-                                ei = prov_doc.entity(
-                                    "nc:" + inputs[ki],
-                                    {"prov:type": "nc:file"},
-                                )
-                            if "esdm://" in outputs[ko]:
-                                eo = prov_doc.entity(
-                                    "esdm:" + outputs[ko],
-                                    {"prov:type": "esdm:dataset"},
-                                )
-                            else:
-                                eo = prov_doc.entity(
-                                    "nc:" + outputs[ko],
-                                    {"prov:type": "nc:file"},
-                                )
-
-                        if class_type == "import":
-                            if "randcube" in op_name:
-                                ei = None
-                                eo = prov_doc.entity(
-                                    "ophidia:" + outputs[ko],
+                            if pki < ki:
+                                ei = prov_doc_entity(
+                                    prov_doc,
+                                    "ophidia:" + inputs[ki],
                                     {"prov:type": "ophidia:datacube"},
                                 )
-                            else:
-                                if "oph_importnc" in op_name:
-                                    if "esdm://" in inputs[ki]:
-                                        ei = prov_doc.entity(
-                                            "esdm:" + inputs[ki],
+                            if pko < ko:
+                                if "oph_exportnc" in op_name:
+                                    if "esdm://" in outputs[ko]:
+                                        eo = prov_doc_entity(
+                                            prov_doc,
+                                            "esdm:" + outputs[ko],
                                             {"prov:type": "esdm:dataset"},
                                         )
                                     else:
-                                        ei = prov_doc.entity(
-                                            "nc:" + inputs[ki],
+                                        eo = prov_doc_entity(
+                                            prov_doc,
+                                            "nc:" + outputs[ko],
                                             {"prov:type": "nc:file"},
                                         )
-                                elif "oph_importesdm" in op_name:
-                                    ei = prov_doc.entity(
+                                else:
+                                    eo = prov_doc_entity(
+                                        prov_doc,
+                                        "esdm:" + outputs[ko],
+                                        {"prov:type": "esdm:dataset"},
+                                    )
+
+                        if class_type == "datacube":
+                            if pki < ki:
+                                ei = prov_doc_entity(
+                                    prov_doc,
+                                    "ophidia:" + inputs[ki],
+                                    {"prov:type": "ophidia:datacube"},
+                                )
+                            if pko < ko:
+                                eo = prov_doc_entity(
+                                    prov_doc,
+                                    "ophidia:" + outputs[ko],
+                                    {"prov:type": "ophidia:datacube"},
+                                )
+
+                        if class_type == "file":
+                            if pki < ki:
+                                if "esdm://" in inputs[ki]:
+                                    ei = prov_doc_entity(
+                                        prov_doc,
                                         "esdm:" + inputs[ki],
                                         {"prov:type": "esdm:dataset"},
                                     )
                                 else:
-                                    ei = prov_doc.entity(
-                                        "fits:" + inputs[ki],
-                                        {"prov:type": "fits:file"},
+                                    ei = prov_doc_entity(
+                                        prov_doc,
+                                        "nc:" + inputs[ki],
+                                        {"prov:type": "nc:file"},
                                     )
-                                eo = prov_doc.entity(
-                                    "ophidia:" + outputs[ko],
-                                    {"prov:type": "ophidia:datacube"},
-                                )
+                            if pko < ko:
+                                if "esdm://" in outputs[ko]:
+                                    eo = prov_doc_entity(
+                                        prov_doc,
+                                        "esdm:" + outputs[ko],
+                                        {"prov:type": "esdm:dataset"},
+                                    )
+                                else:
+                                    eo = prov_doc_entity(
+                                        prov_doc,
+                                        "nc:" + outputs[ko],
+                                        {"prov:type": "nc:file"},
+                                    )
 
-                        prov_doc.wasGeneratedBy(eo, a)
+                        if class_type == "import":
+                            if "randcube" in op_name:
+                                ei = None
+                                if pko < ko:
+                                    eo = prov_doc_entity(
+                                        prov_doc,
+                                        "ophidia:" + outputs[ko],
+                                        {"prov:type": "ophidia:datacube"},
+                                    )
+                            else:
+                                if pki < ki:
+                                    if "oph_importnc" in op_name:
+                                        if "esdm://" in inputs[ki]:
+                                            ei = prov_doc_entity(
+                                                prov_doc,
+                                                "esdm:" + inputs[ki],
+                                                {"prov:type": "esdm:dataset"},
+                                            )
+                                        else:
+                                            ei = prov_doc_entity(
+                                                prov_doc,
+                                                "nc:" + inputs[ki],
+                                                {"prov:type": "nc:file"},
+                                            )
+                                    elif "oph_importesdm" in op_name:
+                                        ei = prov_doc_entity(
+                                            prov_doc,
+                                            "esdm:" + inputs[ki],
+                                            {"prov:type": "esdm:dataset"},
+                                        )
+                                    else:
+                                        ei = prov_doc_entity(
+                                            prov_doc,
+                                            "fits:" + inputs[ki],
+                                            {"prov:type": "fits:file"},
+                                        )
+                                if pko < ko:
+                                    eo = prov_doc_entity(
+                                        prov_doc,
+                                        "ophidia:" + outputs[ko],
+                                        {"prov:type": "ophidia:datacube"},
+                                    )
+
+                        if pko < ko:
+                            prov_doc.wasGeneratedBy(eo, a)
 
                         if ei is not None:
-                            prov_doc.wasDerivedFrom(eo, ei)
-                            prov_doc.used(a, ei)
+                            if pki < ki:
+                                prov_doc.used(a, ei)
+                                prov_doc.wasDerivedFrom(eo, ei)
+                            elif pko < ko:
+                                prov_doc.wasDerivedFrom(eo, ei)
 
         if not output_file:
             output_file = self.experiment_name
