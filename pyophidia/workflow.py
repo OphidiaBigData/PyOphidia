@@ -1533,7 +1533,7 @@ class Workflow:
 
         def prov_doc_entity(doc, entity_id, attributes=None):
             if attributes and doc.get_record(entity_id):
-                return doc.entity(entity_id)
+                return entity_id
             return doc.entity(entity_id, attributes)
 
         prov_doc = ProvDocument()
