@@ -1010,7 +1010,7 @@ class Workflow:
             query="oph_cancel id={0};exec_mode=async;".format(self.workflow_id)
         )
 
-    def submit(self, *args, checkpoint="all"):
+    def submit(self, *args, checkpoint="all", exec_mode="async"):
         """
         Submit the experiment on the Ophidia Server
 
@@ -1034,8 +1034,8 @@ class Workflow:
 
         if Workflow.client is None:
             raise AttributeError("Workflow.client is None")
-        exec_mode = self.experiment_object.exec_mode
-        self.experiment_object.exec_mode = "async"
+        inner_exec_mode = self.experiment_object.exec_mode
+        self.experiment_object.exec_mode = exec_mode
         self.experiment_object.output_format = "extended_compact"
 
         if checkpoint == "all":
@@ -1063,7 +1063,7 @@ class Workflow:
                 else ""
             )
         self.workflow_id = self.client.last_jobid.split("?")[1].split("#")[0]
-        self.experiment_object.exec_mode = exec_mode
+        self.experiment_object.exec_mode = inner_exec_mode
         return self.workflow_id
 
     def monitor(
