@@ -662,7 +662,7 @@ class Experiment:
         return experiment
 
     @staticmethod
-    def load_cwl(file, args=""):
+    def load_cwl(file, args="", log_file="/dev/null"):
         """
         Load an experiment from the CWL document
 
@@ -692,6 +692,7 @@ class Experiment:
         _dependency_check("cwltool")
         import cwltool
         import cwltool.factory
+        import logging
 
         cwl_args = {}
         param = None
@@ -703,10 +704,19 @@ class Experiment:
                     cwl_args[param[2:]] = int(i) if i.isdigit() else i
                     param = None
 
+        prev_stderr = sys.stderr
+        sys.stderr = open(log_file, "w")
+
+        logging.getLogger("cwltool").setLevel(logging.ERROR)
+        logging.getLogger("salad").setLevel(logging.ERROR)
+        logging.getLogger("schema_salad").setLevel(logging.ERROR)
+
         fac = cwltool.factory.Factory()
         fac.runtime_context.rm_tmpdir = False
         cwl_tool = fac.make(file)
         result = cwl_tool(**cwl_args)
+
+        sys.stderr = prev_stderr
 
         json_request = result["outputexperiment"]["location"][7:]
 
