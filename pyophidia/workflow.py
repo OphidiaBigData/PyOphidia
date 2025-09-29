@@ -1370,7 +1370,7 @@ class Workflow:
         )
         status_color_dictionary = {
             "(?i).*RUNNING$": "orange",
-            "(?i).*UNSELECTED": "grey",
+            "(?i).*UNSELECTED": "lightgrey",
             "(?i).*UNKNOWN": "lightgrey",
             "(?i).*PENDING": "pink",
             "(?i).*WAITING": "cyan",
