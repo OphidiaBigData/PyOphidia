@@ -1209,6 +1209,7 @@ class Workflow:
                         "OUTPUT",
                         "BEGIN TIME",
                         "END TIME",
+                        "ARGUMENTS",
                     ]
                     index = []
                     if all(
@@ -1664,7 +1665,7 @@ class Workflow:
                 op_status = task.extra["EXIT STATUS"]
                 op_begin = task.extra["BEGIN TIME"]
                 op_end = task.extra["END TIME"]
-                op_args = task.arguments
+                op_args = task.extra["ARGUMENTS"]
 
                 if op_input == op_output:
                     continue
