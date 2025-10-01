@@ -1673,7 +1673,7 @@ class Workflow:
                 activity_extra = {
                     "prov:type": "ophidia:operator",
                     "ophidia:status": op_status,
-                    "ophidia:arguments": ",".join(op_args),
+                    "ophidia:arguments": op_args,
                 }
 
                 if class_type == "multiInput":
