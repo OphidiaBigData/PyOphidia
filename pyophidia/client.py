@@ -1611,7 +1611,11 @@ class Client:
         return self
 
     @staticmethod
-    def remove_comments(workflow):
+    def remove_comments(
+        workflow,
+        remove_python_like_comments=False,
+        remove_C_like_comments=True,
+    ):
         def _replacer(match):
             if match.group(2) is not None:
                 return " "
@@ -1619,13 +1623,21 @@ class Client:
                 return match.group(1)
 
         # Remove python-like comments
-        pattern = r"(\".*?(?<!#)\"|\'.*?(?<!#)\')|(?m:(^ *#.*\n?|#[^\r\n]*$))"
-        regex = re.compile(pattern, re.MULTILINE | re.DOTALL)
-        checked_workflow = regex.sub(_replacer, workflow)
+        checked_workflow = workflow
+        if remove_python_like_comments:
+            pattern = (
+                r"(\".*?(?<!#)\"|\'.*?(?<!#)\')|(?m:(^ *#.*\n?|#[^\r\n]*$))"
+            )
+            regex = re.compile(pattern, re.MULTILINE | re.DOTALL)
+            checked_workflow = regex.sub(_replacer, checked_workflow)
         # Remove C-like comments
-        pattern = r"(\".*?(?<!\\)\"|\'.*?(?<!\\)\')|(/\*.*?\*/|//[^\r\n]*$)"
-        regex = re.compile(pattern, re.MULTILINE | re.DOTALL)
-        return regex.sub(_replacer, checked_workflow)
+        if remove_C_like_comments:
+            pattern = (
+                r"(\".*?(?<!\\)\"|\'.*?(?<!\\)\')|(/\*.*?\*/|//[^\r\n]*$)"
+            )
+            regex = re.compile(pattern, re.MULTILINE | re.DOTALL)
+            checked_workflow = regex.sub(_replacer, checked_workflow)
+        return checked_workflow
 
     @staticmethod
     def set_params(buffer, *params):
