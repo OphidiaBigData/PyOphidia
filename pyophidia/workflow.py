@@ -1209,6 +1209,7 @@ class Workflow:
                         "OUTPUT",
                         "BEGIN TIME",
                         "END TIME",
+                        "PROCESS TIME",
                         "ARGUMENTS",
                     ]
                     index = []
