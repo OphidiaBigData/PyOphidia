@@ -2243,13 +2243,12 @@ class Client:
         ndbms=1,
         exec_mode="async",
     ):
-        """cluster(action,host_partition,nhost,ndbms,
+        """cluster(host_partition,action,nhost,ndbms,
             exec_mode) -> self : Deploy/undeploy a cluster.
-        :returns: start/stop a cluster
-        :param action: deploy or undeploy a cluster
-        :type action: str
         :param host_partition: name of the cluster
         :type host_partition: str
+        :param action: deploy or undeploy a cluster
+        :type action: str
         :param nhost: number of nodes of the cluster
         :type nhost: int
         :param ndbms: number of dbms running over each node of the cluster
@@ -2275,7 +2274,7 @@ class Client:
         )
 
     def get_cluster_size(self):
-        """get_cluster_size() -> int : Get the number of running nodes of a cluster.
+        """get_cluster_size() -> int : Get the total size of clusters.
         :returns: the number of reserved nodes for clusters
         :rtype: int
         """
