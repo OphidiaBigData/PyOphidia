@@ -1,10 +1,11 @@
 
-v2.0.0 - 2025-02-20
+v2.0.0 - 2026-02-18
 -------------------
 
 Added:
 ~~~~~~
 
+- Methods 'cluster()' and 'get_cluster_size()' to class Client
 - Options to filter or truncate outputs of submit()
 - Argument to set workflow parameters for validation methods
 - Some examples and notebooks

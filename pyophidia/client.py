@@ -2212,7 +2212,7 @@ class Client:
         return True, "Workflow is valid"
 
     def last_workflowid(self):
-        """last_workflowid(workflow) -> bool : Return the workflow identifier
+        """last_workflowid() -> bool : Return the workflow identifier
             associated with the last command submitted.
         :returns: an integer representing the workflow identifier associated
             with the last command submitted
@@ -2224,7 +2224,7 @@ class Client:
         return int(self.last_jobid.split("?")[1].split("#")[0], base=32)
 
     def last_markerid(self):
-        """last_markerid(workflow) -> bool : Return the markerid associated
+        """last_markerid() -> bool : Return the markerid associated
             with the last command submitted.
         :returns: an integer representing the markerid associated with the last
             command submitted
@@ -2234,3 +2234,59 @@ class Client:
         if self.last_jobid is None:
             raise RuntimeError("no jobid specified")
         return int(self.last_jobid.split("?")[1].split("#")[1], base=32)
+
+    def cluster(
+        self,
+        host_partition,
+        action="deploy",
+        nhost=1,
+        ndbms=1,
+        exec_mode="async",
+    ):
+        """cluster(action,host_partition,nhost,ndbms,
+            exec_mode) -> self : Deploy/undeploy a cluster.
+        :returns: start/stop a cluster
+        :param action: deploy or undeploy a cluster
+        :type action: str
+        :param host_partition: name of the cluster
+        :type host_partition: str
+        :param nhost: number of nodes of the cluster
+        :type nhost: int
+        :param ndbms: number of dbms running over each node of the cluster
+        :type ndbms: int
+        :param exec_mode: execution mode
+        :type exec_mode: str
+        :returns: self or None
+        :rtype: Client or None
+        """
+
+        return self.submit(
+            "oph_cluster host_partition="
+            + host_partition
+            + ";action="
+            + action
+            + ";nhost="
+            + str(nhost)
+            + ";ndbms="
+            + str(ndbms)
+            + ";exec_mode="
+            + exec_mode
+            + ";"
+        )
+
+    def get_cluster_size(self):
+        """get_cluster_size() -> int : Get the number of running nodes of a cluster.
+        :returns: the number of reserved nodes for clusters
+        :rtype: int
+        """
+
+        self.submit("oph_cluster exec_mode=sync;")
+        try:
+            result = int(
+                self.deserialize_response()["response"][0]["objcontent"][0][
+                    "rowvalues"
+                ][0][2]
+            )
+        except Exception:
+            result = 0
+        return result
