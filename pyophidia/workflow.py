@@ -1548,12 +1548,32 @@ class Workflow:
                 return entity_id
             return doc.entity(entity_id, attributes)
 
+        def add_namespace(prov_doc, entity_id, namespace_added):
+            if entity_id not in namespace_added:
+                if entity_id == "ophidia":
+                    prov_doc.add_namespace(
+                        "ophidia", "http://ophidia.cmcc.it/"
+                    )
+                if entity_id == "nc":
+                    prov_doc.add_namespace(
+                        "nc", "http://www.unidata.ucar.edu/software/netcdf/"
+                    )
+                if entity_id == "zarr":
+                    prov_doc.add_namespace("zarr", "http://zarr.dev/")
+                if entity_id == "esdm":
+                    prov_doc.add_namespace(
+                        "esdm", "http://github.com/ESiWACE/esdm"
+                    )
+                if entity_id == "pid":
+                    prov_doc.add_namespace(
+                        "pid", "http://typeregistry.lab.pidconsortium.net/"
+                    )
+                namespace_added.append(entity_id)
+
+        namespace_added = []
+
         prov_doc = ProvDocument()
-        prov_doc.add_namespace("ophidia", "http://ophidia.cmcc.it/")
         prov_doc.add_namespace("prov", "http://www.w3.org/ns/prov#")
-        prov_doc.add_namespace(
-            "nc", "https://www.unidata.ucar.edu/software/netcdf/"
-        )
 
         # Global dictionaries of operator names
         multiInputsOperators = [
@@ -1677,8 +1697,11 @@ class Workflow:
                     "ophidia:arguments": op_args,
                 }
 
+                ei = ei1 = ei2 = eo = None
+
                 if class_type == "multiInput":
 
+                    add_namespace(prov_doc, "ophidia", namespace_added)
                     inputs = op_input.split("|")
                     a = prov_doc.activity(
                         "ophidia:" + op_id, op_begin, op_end, activity_extra
@@ -1692,17 +1715,30 @@ class Workflow:
 
                     if "oph_concat" in op_name:
                         if "oph_concatnc" in op_name:
-                            ei1 = prov_doc_entity(
-                                prov_doc,
-                                "nc:" + inputs[0],
-                                {"prov:type": "nc:file"},
-                            )
+                            if "#mode=zarr" in inputs[0]:
+                                add_namespace(
+                                    prov_doc, "zarr", namespace_added
+                                )
+                                ei1 = prov_doc_entity(
+                                    prov_doc,
+                                    "zarr:" + inputs[0],
+                                    {"prov:type": "zarr:dataset"},
+                                )
+                            else:
+                                add_namespace(prov_doc, "nc", namespace_added)
+                                ei1 = prov_doc_entity(
+                                    prov_doc,
+                                    "nc:" + inputs[0],
+                                    {"prov:type": "nc:file"},
+                                )
                         else:
+                            add_namespace(prov_doc, "esdm", namespace_added)
                             ei1 = prov_doc_entity(
                                 prov_doc,
                                 "esdm:" + inputs[0],
                                 {"prov:type": "esdm:dataset"},
                             )
+                        add_namespace(prov_doc, "ophidia", namespace_added)
                         ei2 = prov_doc_entity(
                             prov_doc,
                             "ophidia:" + inputs[1],
@@ -1715,12 +1751,28 @@ class Workflow:
                     else:
                         for i in range(0, len(inputs)):
                             if "oph_importncs" in op_name:
-                                ei = prov_doc_entity(
-                                    prov_doc,
-                                    "nc:" + inputs[i],
-                                    {"prov:type": "nc:file"},
-                                )
+                                if "#mode=zarr" in inputs[i]:
+                                    add_namespace(
+                                        prov_doc, "zarr", namespace_added
+                                    )
+                                    ei = prov_doc_entity(
+                                        prov_doc,
+                                        "zarr:" + inputs[i],
+                                        {"prov:type": "zarr:dataset"},
+                                    )
+                                else:
+                                    add_namespace(
+                                        prov_doc, "nc", namespace_added
+                                    )
+                                    ei = prov_doc_entity(
+                                        prov_doc,
+                                        "nc:" + inputs[i],
+                                        {"prov:type": "nc:file"},
+                                    )
                             else:
+                                add_namespace(
+                                    prov_doc, "ophidia", namespace_added
+                                )
                                 ei = prov_doc_entity(
                                     prov_doc,
                                     "ophidia:" + inputs[i],
@@ -1735,6 +1787,7 @@ class Workflow:
                     inputs = op_input.split("|")
                     outputs = op_output.split("|")
 
+                    add_namespace(prov_doc, "ophidia", namespace_added)
                     a = prov_doc.activity(
                         "ophidia:" + op_id, op_begin, op_end, activity_extra
                     )
@@ -1761,6 +1814,9 @@ class Workflow:
 
                         if class_type == "export":
                             if pki < ki:
+                                add_namespace(
+                                    prov_doc, "ophidia", namespace_added
+                                )
                                 ei = prov_doc_entity(
                                     prov_doc,
                                     "ophidia:" + inputs[ki],
@@ -1769,18 +1825,36 @@ class Workflow:
                             if pko < ko:
                                 if "oph_exportnc" in op_name:
                                     if "esdm://" in outputs[ko]:
+                                        add_namespace(
+                                            prov_doc, "esdm", namespace_added
+                                        )
                                         eo = prov_doc_entity(
                                             prov_doc,
                                             "esdm:" + outputs[ko],
                                             {"prov:type": "esdm:dataset"},
                                         )
+                                    elif "#mode=zarr" in outputs[ko]:
+                                        add_namespace(
+                                            prov_doc, "zarr", namespace_added
+                                        )
+                                        eo = prov_doc_entity(
+                                            prov_doc,
+                                            "zarr:" + outputs[ko],
+                                            {"prov:type": "zarr:dataset"},
+                                        )
                                     else:
+                                        add_namespace(
+                                            prov_doc, "nc", namespace_added
+                                        )
                                         eo = prov_doc_entity(
                                             prov_doc,
                                             "nc:" + outputs[ko],
                                             {"prov:type": "nc:file"},
                                         )
                                 else:
+                                    add_namespace(
+                                        prov_doc, "esdm", namespace_added
+                                    )
                                     eo = prov_doc_entity(
                                         prov_doc,
                                         "esdm:" + outputs[ko],
@@ -1789,12 +1863,18 @@ class Workflow:
 
                         if class_type == "datacube":
                             if pki < ki:
+                                add_namespace(
+                                    prov_doc, "ophidia", namespace_added
+                                )
                                 ei = prov_doc_entity(
                                     prov_doc,
                                     "ophidia:" + inputs[ki],
                                     {"prov:type": "ophidia:datacube"},
                                 )
                             if pko < ko:
+                                add_namespace(
+                                    prov_doc, "ophidia", namespace_added
+                                )
                                 eo = prov_doc_entity(
                                     prov_doc,
                                     "ophidia:" + outputs[ko],
@@ -1803,13 +1883,39 @@ class Workflow:
 
                         if class_type == "file":
                             if pki < ki:
-                                if "esdm://" in inputs[ki]:
+                                if len(inputs[ki]) == 0:
+                                    ei = None
+                                elif "pid:" in inputs[ki]:
+                                    add_namespace(
+                                        prov_doc, "pid", namespace_added
+                                    )
+                                    ei = prov_doc_entity(
+                                        prov_doc,
+                                        inputs[ki],
+                                        {"prov:type": "pid:catalog"},
+                                    )
+                                elif "esdm://" in inputs[ki]:
+                                    add_namespace(
+                                        prov_doc, "esdm", namespace_added
+                                    )
                                     ei = prov_doc_entity(
                                         prov_doc,
                                         "esdm:" + inputs[ki],
                                         {"prov:type": "esdm:dataset"},
                                     )
+                                elif "#mode=zarr" in inputs[ki]:
+                                    add_namespace(
+                                        prov_doc, "zarr", namespace_added
+                                    )
+                                    ei = prov_doc_entity(
+                                        prov_doc,
+                                        "zarr:" + inputs[ki],
+                                        {"prov:type": "zarr:dataset"},
+                                    )
                                 else:
+                                    add_namespace(
+                                        prov_doc, "nc", namespace_added
+                                    )
                                     ei = prov_doc_entity(
                                         prov_doc,
                                         "nc:" + inputs[ki],
@@ -1817,12 +1923,27 @@ class Workflow:
                                     )
                             if pko < ko:
                                 if "esdm://" in outputs[ko]:
+                                    add_namespace(
+                                        prov_doc, "esdm", namespace_added
+                                    )
                                     eo = prov_doc_entity(
                                         prov_doc,
                                         "esdm:" + outputs[ko],
                                         {"prov:type": "esdm:dataset"},
                                     )
+                                elif "#mode=zarr" in outputs[ko]:
+                                    add_namespace(
+                                        prov_doc, "zarr", namespace_added
+                                    )
+                                    eo = prov_doc_entity(
+                                        prov_doc,
+                                        "zarr:" + outputs[ko],
+                                        {"prov:type": "zarr:dataset"},
+                                    )
                                 else:
+                                    add_namespace(
+                                        prov_doc, "nc", namespace_added
+                                    )
                                     eo = prov_doc_entity(
                                         prov_doc,
                                         "nc:" + outputs[ko],
@@ -1833,6 +1954,9 @@ class Workflow:
                             if "randcube" in op_name:
                                 ei = None
                                 if pko < ko:
+                                    add_namespace(
+                                        prov_doc, "ophidia", namespace_added
+                                    )
                                     eo = prov_doc_entity(
                                         prov_doc,
                                         "ophidia:" + outputs[ko],
@@ -1842,18 +1966,40 @@ class Workflow:
                                 if pki < ki:
                                     if "oph_importnc" in op_name:
                                         if "esdm://" in inputs[ki]:
+                                            add_namespace(
+                                                prov_doc,
+                                                "esdm",
+                                                namespace_added,
+                                            )
                                             ei = prov_doc_entity(
                                                 prov_doc,
                                                 "esdm:" + inputs[ki],
                                                 {"prov:type": "esdm:dataset"},
                                             )
+                                        elif "#mode=zarr" in inputs[ki]:
+                                            add_namespace(
+                                                prov_doc,
+                                                "zarr",
+                                                namespace_added,
+                                            )
+                                            ei = prov_doc_entity(
+                                                prov_doc,
+                                                "zarr:" + inputs[ki],
+                                                {"prov:type": "zarr:dataset"},
+                                            )
                                         else:
+                                            add_namespace(
+                                                prov_doc, "nc", namespace_added
+                                            )
                                             ei = prov_doc_entity(
                                                 prov_doc,
                                                 "nc:" + inputs[ki],
                                                 {"prov:type": "nc:file"},
                                             )
                                     elif "oph_importesdm" in op_name:
+                                        add_namespace(
+                                            prov_doc, "esdm", namespace_added
+                                        )
                                         ei = prov_doc_entity(
                                             prov_doc,
                                             "esdm:" + inputs[ki],
@@ -1866,6 +2012,9 @@ class Workflow:
                                             {"prov:type": "fits:file"},
                                         )
                                 if pko < ko:
+                                    add_namespace(
+                                        prov_doc, "ophidia", namespace_added
+                                    )
                                     eo = prov_doc_entity(
                                         prov_doc,
                                         "ophidia:" + outputs[ko],
