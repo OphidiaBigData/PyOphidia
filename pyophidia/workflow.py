@@ -1715,7 +1715,7 @@ class Workflow:
 
                     if "oph_concat" in op_name:
                         if "oph_concatnc" in op_name:
-                            if "#mode=zarr" in inputs[0]:
+                            if inputs[0].endswith("#mode=zarr"):
                                 add_namespace(
                                     prov_doc, "zarr", namespace_added
                                 )
@@ -1751,7 +1751,7 @@ class Workflow:
                     else:
                         for i in range(0, len(inputs)):
                             if "oph_importncs" in op_name:
-                                if "#mode=zarr" in inputs[i]:
+                                if inputs[i].endswith("#mode=zarr"):
                                     add_namespace(
                                         prov_doc, "zarr", namespace_added
                                     )
@@ -1824,7 +1824,7 @@ class Workflow:
                                 )
                             if pko < ko:
                                 if "oph_exportnc" in op_name:
-                                    if "esdm://" in outputs[ko]:
+                                    if outputs[ko].startswith("esdm://"):
                                         add_namespace(
                                             prov_doc, "esdm", namespace_added
                                         )
@@ -1833,7 +1833,7 @@ class Workflow:
                                             "esdm:" + outputs[ko],
                                             {"prov:type": "esdm:dataset"},
                                         )
-                                    elif "#mode=zarr" in outputs[ko]:
+                                    elif outputs[ko].endswith("#mode=zarr"):
                                         add_namespace(
                                             prov_doc, "zarr", namespace_added
                                         )
@@ -1885,7 +1885,7 @@ class Workflow:
                             if pki < ki:
                                 if len(inputs[ki]) == 0:
                                     ei = None
-                                elif "pid:" in inputs[ki]:
+                                elif inputs[ki].startswith("pid:"):
                                     add_namespace(
                                         prov_doc, "pid", namespace_added
                                     )
@@ -1894,7 +1894,7 @@ class Workflow:
                                         inputs[ki],
                                         {"prov:type": "pid:catalog"},
                                     )
-                                elif "esdm://" in inputs[ki]:
+                                elif inputs[ki].startswith("esdm://"):
                                     add_namespace(
                                         prov_doc, "esdm", namespace_added
                                     )
@@ -1903,7 +1903,7 @@ class Workflow:
                                         "esdm:" + inputs[ki],
                                         {"prov:type": "esdm:dataset"},
                                     )
-                                elif "#mode=zarr" in inputs[ki]:
+                                elif inputs[ki].endswith("#mode=zarr"):
                                     add_namespace(
                                         prov_doc, "zarr", namespace_added
                                     )
@@ -1922,7 +1922,7 @@ class Workflow:
                                         {"prov:type": "nc:file"},
                                     )
                             if pko < ko:
-                                if "esdm://" in outputs[ko]:
+                                if outputs[ko].startswith("esdm://"):
                                     add_namespace(
                                         prov_doc, "esdm", namespace_added
                                     )
@@ -1931,7 +1931,7 @@ class Workflow:
                                         "esdm:" + outputs[ko],
                                         {"prov:type": "esdm:dataset"},
                                     )
-                                elif "#mode=zarr" in outputs[ko]:
+                                elif outputs[ko].endswith("#mode=zarr"):
                                     add_namespace(
                                         prov_doc, "zarr", namespace_added
                                     )
@@ -1965,7 +1965,7 @@ class Workflow:
                             else:
                                 if pki < ki:
                                     if "oph_importnc" in op_name:
-                                        if "esdm://" in inputs[ki]:
+                                        if inputs[ki].startswith("esdm://"):
                                             add_namespace(
                                                 prov_doc,
                                                 "esdm",
@@ -1976,7 +1976,7 @@ class Workflow:
                                                 "esdm:" + inputs[ki],
                                                 {"prov:type": "esdm:dataset"},
                                             )
-                                        elif "#mode=zarr" in inputs[ki]:
+                                        elif inputs[ki].endswith("#mode=zarr"):
                                             add_namespace(
                                                 prov_doc,
                                                 "zarr",
