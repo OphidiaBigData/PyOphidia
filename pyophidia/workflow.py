@@ -1564,9 +1564,9 @@ class Workflow:
                     prov_doc.add_namespace(
                         "esdm", "http://github.com/ESiWACE/esdm"
                     )
-                if entity_id == "pid":
+                if entity_id == "catalog":
                     prov_doc.add_namespace(
-                        "pid", "http://typeregistry.lab.pidconsortium.net/"
+                        "catalog", "http://typeregistry.lab.pidconsortium.net/"
                     )
                 namespace_added.append(entity_id)
 
@@ -1885,14 +1885,14 @@ class Workflow:
                             if pki < ki:
                                 if len(inputs[ki]) == 0:
                                     ei = None
-                                elif inputs[ki].startswith("pid:"):
+                                elif inputs[ki].startswith("catalog:"):
                                     add_namespace(
-                                        prov_doc, "pid", namespace_added
+                                        prov_doc, "catalog", namespace_added
                                     )
                                     ei = prov_doc_entity(
                                         prov_doc,
                                         inputs[ki],
-                                        {"prov:type": "pid:catalog"},
+                                        {"prov:type": "catalog:pid"},
                                     )
                                 elif inputs[ki].startswith("esdm://"):
                                     add_namespace(
