@@ -1667,13 +1667,18 @@ class Workflow:
                 class_type = "export"
             elif op_name in dataOperators:
                 class_type = "datacube"
-            elif op_name in fileOperators:
+            elif (
+                op_name in fileOperators
+                or task.type == "cdo"
+                or task.type == "generic"
+                or task.type == "discovery"
+            ):
                 class_type = "file"
             elif op_name in importOperators:
                 class_type = "import"
             elif op_name in specialOperators:
                 class_type = "special"
-            elif op_name in skippedOperators:
+            elif op_name in skippedOperators or task.type == "control":
                 class_type = "skip"
             elif op_name in multiInputsOperators:
                 class_type = "multiInput"
