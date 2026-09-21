@@ -1200,7 +1200,7 @@ class Workflow:
         def _extract_info(json_response):
             task_dict = {}
             for res in json_response["response"]:
-                print(res)
+                # print(res)
                 if res["objkey"] == "workflow_list":
                     exec_keys = [
                         "TASK NAME",
