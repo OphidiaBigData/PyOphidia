@@ -1703,8 +1703,8 @@ class Client:
                 return False, ftask
         return True, ftask
 
-    def wsubmit(self, workflow, display=False, *params):
-        """wsubmit(workflow,*params) -> self : Submit an entire workflow
+    def wsubmit(self, workflow, *params, display=False):
+        """wsubmit(workflow,*params,display) -> self : Submit a workflow
             passing a JSON string or the path of a JSON file and an optional
             series of parameters that will replace $1, $2 etc. in workflow.
             The workflow will be validated against the Ophidia Workflow JSON
@@ -1712,12 +1712,12 @@ class Client:
         :param workflow: JSON string or path of a JSON file containing an
             Ophidia workflow
         :type workflow: str
-        :param display: option for displaying the response in a "pretty way"
-            using the pretty_print function (default is False)
-        :type display: bool
         :param params: list of positional parameters that will replace $1,
             $2 etc. in the workflow
         :type params: str
+        :param display: option for displaying the response in a "pretty way"
+            using the pretty_print function (default is False)
+        :type display: bool
         :returns: self or None
         :rtype: Client or None
         :raises: RuntimeError

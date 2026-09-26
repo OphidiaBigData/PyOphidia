@@ -16,6 +16,7 @@ Added:
 Fixed:
 ~~~~~~
 
+- Workflow parameters passing from class Workflow to class Client
 - Warning related to the argument of a call of re.findall
 - Workflow validation issues `#44 <https://github.com/OphidiaBigData/PyOphidia/issues/44>`_
 
