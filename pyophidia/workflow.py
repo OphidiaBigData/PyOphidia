@@ -1047,6 +1047,7 @@ class Workflow:
         inner_exec_mode = self.experiment_object.exec_mode
         self.experiment_object.exec_mode = exec_mode
         self.experiment_object.output_format = "extended_compact"
+        self.args = args
 
         if checkpoint == "all":
 
@@ -1075,6 +1076,9 @@ class Workflow:
         self.workflow_id = self.client.last_jobid.split("?")[1].split("#")[0]
         self.experiment_object.exec_mode = inner_exec_mode
         return self.workflow_id
+
+    def get_args(self):
+        return self.args
 
     def monitor(
         self,
