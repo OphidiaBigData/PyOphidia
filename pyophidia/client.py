@@ -40,7 +40,7 @@ def _get_linenumber():
     return __file__, cf.f_back.f_lineno
 
 
-def _ophsubmit(username, password, server, port, query):
+def _ophsubmit(username, password, server, port, query, on_error="abort"):
     # Constant definitions
     SOAP_MESSAGE_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
     <SOAP-ENV:Envelope
@@ -183,6 +183,7 @@ def _ophsubmit(username, password, server, port, query):
                         + WRAPPING_WORKFLOW5_1
                     )
                     break
+        request += '\n  "on_error":"' + on_error + '",'
         request += (
             WRAPPING_WORKFLOW6
             + operator
@@ -632,7 +633,14 @@ class Client:
         del self.last_error
         del self.project
 
-    def submit(self, query, display=False, filter=None, truncate=None):
+    def submit(
+        self,
+        query,
+        display=False,
+        filter=None,
+        truncate=None,
+        on_error="abort",
+    ):
         """submit(query,display=False) -> self : Submit a query like
             'operator=myoperator;param1=value1;' or 'myoperator param1=value1;'
             to the Ophidia server according to all login parameters of the
@@ -698,7 +706,12 @@ class Client:
                 self.last_return_value,
                 self.last_error,
             ) = _ophsubmit(
-                self.username, self.password, self.server, self.port, query
+                self.username,
+                self.password,
+                self.server,
+                self.port,
+                query,
+                on_error,
             )
             if self.last_return_value:
                 raise RuntimeError(self.last_error)

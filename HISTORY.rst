@@ -5,6 +5,7 @@ v2.0.0 - 2026-02-18
 Added:
 ~~~~~~
 
+- Option 'on_error' to Client.submit()
 - Methods 'cluster()' and 'get_cluster_size()' to class Client
 - Options to filter or truncate outputs of submit()
 - Argument to set workflow parameters for validation methods
