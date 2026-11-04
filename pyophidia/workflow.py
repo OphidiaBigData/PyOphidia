@@ -852,9 +852,9 @@ class Experiment:
                     new_dot.node(
                         tasks[i].name,
                         _trim_text(tasks[i].name)
-                        + "\\\n"
+                        + "\n"
                         + _trim_text(tasks[i].type)
-                        + "\\\n"
+                        + "\n"
                         + _trim_text(tasks[i].operator),
                     )
                 subgraph["dot"] = new_dot
@@ -891,9 +891,9 @@ class Experiment:
             dot.node(
                 task.name,
                 _trim_text(task.name)
-                + "\\\n"
+                + "\n"
                 + _trim_text(task.type)
-                + "\\\n"
+                + "\n"
                 + _trim_text(task.operator),
             )
             dot.attr("edge", style="solid")
@@ -1187,9 +1187,9 @@ class Workflow:
                     new_dot.node(
                         tasks[i].name,
                         _trim_text(tasks[i].name)
-                        + "\\\n"
+                        + "\n"
                         + _trim_text(tasks[i].type)
-                        + "\\\n"
+                        + "\n"
                         + _trim_text(tasks[i].operator),
                     )
                 subgraph["dot"] = new_dot
@@ -1338,9 +1338,9 @@ class Workflow:
                 dot.node(
                     task.name,
                     _trim_text(task.name)
-                    + "\\\n"
+                    + "\n"
                     + _trim_text(task.type)
-                    + "\\\n"
+                    + "\n"
                     + _trim_text(task.operator),
                 )
                 dot.attr("edge", style="solid")
