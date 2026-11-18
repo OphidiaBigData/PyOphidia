@@ -1696,6 +1696,8 @@ class Workflow:
                 op_begin = task.extra["BEGIN TIME"]
                 op_end = task.extra["END TIME"]
                 op_args = task.extra["ARGUMENTS"]
+                op_sha = task.extra["CHECKSUM"]
+                op_tid = task.extra["TRACKING_ID"]
 
                 if op_input == op_output:
                     continue
@@ -1731,14 +1733,22 @@ class Workflow:
                                 ei1 = prov_doc_entity(
                                     prov_doc,
                                     "zarr:" + inputs[0],
-                                    {"prov:type": "zarr:dataset"},
+                                    {
+                                        "prov:type": "zarr:dataset",
+                                        "nc:checksum": op_sha,
+                                        "nc:trackingid": op_tid,
+                                    },
                                 )
                             else:
                                 add_namespace(prov_doc, "nc", namespace_added)
                                 ei1 = prov_doc_entity(
                                     prov_doc,
                                     "nc:" + inputs[0],
-                                    {"prov:type": "nc:file"},
+                                    {
+                                        "prov:type": "nc:file",
+                                        "nc:checksum": op_sha,
+                                        "nc:trackingid": op_tid,
+                                    },
                                 )
                         else:
                             add_namespace(prov_doc, "esdm", namespace_added)
@@ -1767,7 +1777,11 @@ class Workflow:
                                     ei = prov_doc_entity(
                                         prov_doc,
                                         "zarr:" + inputs[i],
-                                        {"prov:type": "zarr:dataset"},
+                                        {
+                                            "prov:type": "zarr:dataset",
+                                            "nc:checksum": op_sha,
+                                            "nc:trackingid": op_tid,
+                                        },
                                     )
                                 else:
                                     add_namespace(
@@ -1776,7 +1790,11 @@ class Workflow:
                                     ei = prov_doc_entity(
                                         prov_doc,
                                         "nc:" + inputs[i],
-                                        {"prov:type": "nc:file"},
+                                        {
+                                            "prov:type": "nc:file",
+                                            "nc:checksum": op_sha,
+                                            "nc:trackingid": op_tid,
+                                        },
                                     )
                             else:
                                 add_namespace(
@@ -1849,7 +1867,11 @@ class Workflow:
                                         eo = prov_doc_entity(
                                             prov_doc,
                                             "zarr:" + outputs[ko],
-                                            {"prov:type": "zarr:dataset"},
+                                            {
+                                                "prov:type": "zarr:dataset",
+                                                "nc:checksum": op_sha,
+                                                "nc:trackingid": op_tid,
+                                            },
                                         )
                                     else:
                                         add_namespace(
@@ -1858,7 +1880,11 @@ class Workflow:
                                         eo = prov_doc_entity(
                                             prov_doc,
                                             "nc:" + outputs[ko],
-                                            {"prov:type": "nc:file"},
+                                            {
+                                                "prov:type": "nc:file",
+                                                "nc:checksum": op_sha,
+                                                "nc:trackingid": op_tid,
+                                            },
                                         )
                                 else:
                                     add_namespace(
@@ -1919,7 +1945,11 @@ class Workflow:
                                     ei = prov_doc_entity(
                                         prov_doc,
                                         "zarr:" + inputs[ki],
-                                        {"prov:type": "zarr:dataset"},
+                                        {
+                                            "prov:type": "zarr:dataset",
+                                            "nc:checksum": op_sha,
+                                            "nc:trackingid": op_tid,
+                                        },
                                     )
                                 else:
                                     add_namespace(
@@ -1928,7 +1958,11 @@ class Workflow:
                                     ei = prov_doc_entity(
                                         prov_doc,
                                         "nc:" + inputs[ki],
-                                        {"prov:type": "nc:file"},
+                                        {
+                                            "prov:type": "nc:file",
+                                            "nc:checksum": op_sha,
+                                            "nc:trackingid": op_tid,
+                                        },
                                     )
                             if pko < ko:
                                 if outputs[ko].startswith("esdm://"):
@@ -1947,7 +1981,11 @@ class Workflow:
                                     eo = prov_doc_entity(
                                         prov_doc,
                                         "zarr:" + outputs[ko],
-                                        {"prov:type": "zarr:dataset"},
+                                        {
+                                            "prov:type": "zarr:dataset",
+                                            "nc:checksum": op_sha,
+                                            "nc:trackingid": op_tid,
+                                        },
                                     )
                                 else:
                                     add_namespace(
@@ -1956,7 +1994,11 @@ class Workflow:
                                     eo = prov_doc_entity(
                                         prov_doc,
                                         "nc:" + outputs[ko],
-                                        {"prov:type": "nc:file"},
+                                        {
+                                            "prov:type": "nc:file",
+                                            "nc:checksum": op_sha,
+                                            "nc:trackingid": op_tid,
+                                        },
                                     )
 
                         if class_type == "import":
@@ -1994,7 +2036,11 @@ class Workflow:
                                             ei = prov_doc_entity(
                                                 prov_doc,
                                                 "zarr:" + inputs[ki],
-                                                {"prov:type": "zarr:dataset"},
+                                                {
+                                                    "prov:type": "zarr:dataset",
+                                                    "nc:checksum": op_sha,
+                                                    "nc:trackingid": op_tid,
+                                                },
                                             )
                                         else:
                                             add_namespace(
@@ -2003,7 +2049,11 @@ class Workflow:
                                             ei = prov_doc_entity(
                                                 prov_doc,
                                                 "nc:" + inputs[ki],
-                                                {"prov:type": "nc:file"},
+                                                {
+                                                    "prov:type": "nc:file",
+                                                    "nc:checksum": op_sha,
+                                                    "nc:trackingid": op_tid,
+                                                },
                                             )
                                     elif "oph_importesdm" in op_name:
                                         add_namespace(
