@@ -1221,6 +1221,8 @@ class Workflow:
                         "END TIME",
                         "PROCESS TIME",
                         "ARGUMENTS",
+                        "CHECKSUM",
+                        "TRACKING ID",
                     ]
                     index = []
                     if all(
@@ -1703,7 +1705,7 @@ class Workflow:
                 op_end = task.extra["END TIME"]
                 op_args = task.extra["ARGUMENTS"]
                 op_sha = task.extra["CHECKSUM"]
-                op_tid = task.extra["TRACKING_ID"]
+                op_tid = task.extra["TRACKING ID"]
 
                 if op_input == op_output:
                     continue
