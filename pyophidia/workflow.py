@@ -861,6 +861,12 @@ class Experiment:
                 cluster_counter += 1
             return subgraphs_list
 
+        def _match_shapes(operator, commands):
+            for command in commands:
+                if re.match("(?i).*" + command, operator):
+                    return True
+            return False
+
         experiment_validity = self.isvalid(*params)
         self.__param_check(
             [
@@ -872,7 +878,7 @@ class Experiment:
         if display is False:
             return experiment_validity
 
-        diamond_commands = ["if", "endif", "else"]
+        diamond_commands = ["if", "elseif", "else", "endif"]
         hexagonal_commands = ["for", "endfor"]
         dot = graphviz.Digraph(comment=self.name)
         for task in self.tasks:
@@ -884,9 +890,9 @@ class Experiment:
                 fontsize="10pt",
             )
             dot.attr("edge", penwidth="1")
-            if task.operator in diamond_commands:
+            if _match_shapes(task.operator, diamond_commands):
                 dot.attr("node", shape="diamond")
-            elif task.operator in hexagonal_commands:
+            elif _match_shapes(task.operator, hexagonal_commands):
                 dot.attr("node", shape="hexagon")
             dot.node(
                 task.name,
@@ -1308,7 +1314,7 @@ class Workflow:
             status_color_dictionary=None,
             filename="",
         ):
-            diamond_commands = ["if", "endif", "else"]
+            diamond_commands = ["if", "elseif", "else", "endif"]
             hexagonal_commands = ["for", "endfor"]
             dot = graphviz.Digraph(comment=self.experiment_name)
             for task in tasks:
