@@ -1556,9 +1556,24 @@ class Workflow:
         from prov.dot import prov_to_dot
 
         def prov_doc_entity(doc, entity_id, attributes=None):
-            if attributes and doc.get_record(entity_id):
-                return entity_id
-            return doc.entity(entity_id, attributes)
+            entity = doc.get_record(entity_id)
+            if entity is None:
+                return doc.entity(entity_id, attributes)
+            if attributes:
+                prefix = (
+                    "zarr"
+                    if attributes["prov:type"] == "zarr:dataset"
+                    else "nc"
+                )
+                old_sha = next(
+                    iter(entity.get_attribute(f"{prefix}:checksum")), ""
+                )
+                old_tid = next(
+                    iter(entity.get_attribute(f"{prefix}:trackingid")), ""
+                )
+                if old_sha == "" or old_tid == "":
+                    entity.set_attributes(attributes)
+            return entity
 
         def add_namespace(prov_doc, entity_id, namespace_added):
             if entity_id not in namespace_added:
@@ -1743,8 +1758,8 @@ class Workflow:
                                     "zarr:" + inputs[0],
                                     {
                                         "prov:type": "zarr:dataset",
-                                        "nc:checksum": op_sha,
-                                        "nc:trackingid": op_tid,
+                                        "zarr:checksum": op_sha,
+                                        "zarr:trackingid": op_tid,
                                     },
                                 )
                             else:
@@ -1787,8 +1802,8 @@ class Workflow:
                                         "zarr:" + inputs[i],
                                         {
                                             "prov:type": "zarr:dataset",
-                                            "nc:checksum": op_sha,
-                                            "nc:trackingid": op_tid,
+                                            "zarr:checksum": op_sha,
+                                            "zarr:trackingid": op_tid,
                                         },
                                     )
                                 else:
@@ -1877,8 +1892,8 @@ class Workflow:
                                             "zarr:" + outputs[ko],
                                             {
                                                 "prov:type": "zarr:dataset",
-                                                "nc:checksum": op_sha,
-                                                "nc:trackingid": op_tid,
+                                                "zarr:checksum": op_sha,
+                                                "zarr:trackingid": op_tid,
                                             },
                                         )
                                     else:
@@ -1955,8 +1970,8 @@ class Workflow:
                                         "zarr:" + inputs[ki],
                                         {
                                             "prov:type": "zarr:dataset",
-                                            "nc:checksum": op_sha,
-                                            "nc:trackingid": op_tid,
+                                            "zarr:checksum": op_sha,
+                                            "zarr:trackingid": op_tid,
                                         },
                                     )
                                 else:
@@ -1991,8 +2006,8 @@ class Workflow:
                                         "zarr:" + outputs[ko],
                                         {
                                             "prov:type": "zarr:dataset",
-                                            "nc:checksum": op_sha,
-                                            "nc:trackingid": op_tid,
+                                            "zarr:checksum": op_sha,
+                                            "zarr:trackingid": op_tid,
                                         },
                                     )
                                 else:
@@ -2046,8 +2061,8 @@ class Workflow:
                                                 "zarr:" + inputs[ki],
                                                 {
                                                     "prov:type": "zarr:dataset",
-                                                    "nc:checksum": op_sha,
-                                                    "nc:trackingid": op_tid,
+                                                    "zarr:checksum": op_sha,
+                                                    "zarr:trackingid": op_tid,
                                                 },
                                             )
                                         else:
