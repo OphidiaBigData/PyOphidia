@@ -1555,27 +1555,20 @@ class Workflow:
         from prov.model import ProvDocument
         from prov.dot import prov_to_dot
 
-        def _get_value(record, key):
-            for k, v in record.attributes:
-                if str(k) == key:
-                    return v
-            return ""
-
         def prov_doc_entity(doc, entity_id, attributes=None):
+            if attributes:
+                attributes = {k: v for k, v in attributes.items() if v != ""}
             entity = doc.get_record(entity_id)
-            if entity is None:
+            if not entity:
                 return doc.entity(entity_id, attributes)
             if attributes:
-                prefix = (
-                    "zarr"
-                    if attributes["prov:type"] == "zarr:dataset"
-                    else "nc"
-                )
-                old_sha = _get_value(entity, f"{prefix}:checksum")
-                old_tid = _get_value(entity, f"{prefix}:trackingid")
-                if old_sha == "" or old_tid == "":
-                    entity.set_attributes(attributes)
-            return entity
+                for e in entity:
+                    b = dict(e.attributes)
+                    a = {
+                        k: attributes[k] for k in attributes.keys() - b.keys()
+                    }
+                    e.add_attributes(a)
+            return entity_id
 
         def add_namespace(prov_doc, entity_id, namespace_added):
             if entity_id not in namespace_added:
