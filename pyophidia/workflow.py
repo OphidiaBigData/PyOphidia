@@ -1590,6 +1590,10 @@ class Workflow:
                     prov_doc.add_namespace(
                         "catalog", "http://typeregistry.lab.pidconsortium.net/"
                     )
+                if entity_id == "zip":
+                    prov_doc.add_namespace(
+                        "zip", "http://www.iso.org/standard/60101.html"
+                    )
                 namespace_added.append(entity_id)
 
         namespace_added = []
@@ -1891,6 +1895,15 @@ class Workflow:
                                                 "zarr:trackingid": op_tid,
                                             },
                                         )
+                                    elif outputs[ko].endswith(".zip"):
+                                        add_namespace(
+                                            prov_doc, "zip", namespace_added
+                                        )
+                                        eo = prov_doc_entity(
+                                            prov_doc,
+                                            "zip:" + outputs[ko],
+                                            {"prov:type": "zip:dataset"},
+                                        )
                                     else:
                                         add_namespace(
                                             prov_doc, "nc", namespace_added
@@ -2004,6 +2017,15 @@ class Workflow:
                                             "zarr:checksum": op_sha,
                                             "zarr:trackingid": op_tid,
                                         },
+                                    )
+                                elif outputs[ko].endswith(".zip"):
+                                    add_namespace(
+                                        prov_doc, "zip", namespace_added
+                                    )
+                                    eo = prov_doc_entity(
+                                        prov_doc,
+                                        "zip:" + outputs[ko],
+                                        {"prov:type": "zip:dataset"},
                                     )
                                 else:
                                     add_namespace(
