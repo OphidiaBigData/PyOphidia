@@ -1555,6 +1555,12 @@ class Workflow:
         from prov.model import ProvDocument
         from prov.dot import prov_to_dot
 
+        def _get_value(record, key):
+            for k, v in record.attributes:
+                if str(k) == key:
+                    return v
+            return ""
+
         def prov_doc_entity(doc, entity_id, attributes=None):
             entity = doc.get_record(entity_id)
             if entity is None:
@@ -1565,12 +1571,8 @@ class Workflow:
                     if attributes["prov:type"] == "zarr:dataset"
                     else "nc"
                 )
-                old_sha = next(
-                    iter(entity.get_attribute(f"{prefix}:checksum")), ""
-                )
-                old_tid = next(
-                    iter(entity.get_attribute(f"{prefix}:trackingid")), ""
-                )
+                old_sha = _get_value(entity, f"{prefix}:checksum")
+                old_tid = _get_value(entity, f"{prefix}:trackingid")
                 if old_sha == "" or old_tid == "":
                     entity.set_attributes(attributes)
             return entity
