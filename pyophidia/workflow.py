@@ -1757,8 +1757,8 @@ class Workflow:
                                     "zarr:" + inputs[0],
                                     {
                                         "prov:type": "zarr:dataset",
-                                        "zarr:checksum": op_sha,
-                                        "zarr:trackingid": op_tid,
+                                        "zarr:sha256": op_sha,
+                                        "zarr:trackingId": op_tid,
                                     },
                                 )
                             else:
@@ -1768,8 +1768,8 @@ class Workflow:
                                     "nc:" + inputs[0],
                                     {
                                         "prov:type": "nc:file",
-                                        "nc:checksum": op_sha,
-                                        "nc:trackingid": op_tid,
+                                        "nc:sha256": op_sha,
+                                        "nc:trackingId": op_tid,
                                     },
                                 )
                         else:
@@ -1801,8 +1801,8 @@ class Workflow:
                                         "zarr:" + inputs[i],
                                         {
                                             "prov:type": "zarr:dataset",
-                                            "zarr:checksum": op_sha,
-                                            "zarr:trackingid": op_tid,
+                                            "zarr:sha256": op_sha,
+                                            "zarr:trackingId": op_tid,
                                         },
                                     )
                                 else:
@@ -1814,8 +1814,8 @@ class Workflow:
                                         "nc:" + inputs[i],
                                         {
                                             "prov:type": "nc:file",
-                                            "nc:checksum": op_sha,
-                                            "nc:trackingid": op_tid,
+                                            "nc:sha256": op_sha,
+                                            "nc:trackingId": op_tid,
                                         },
                                     )
                             else:
@@ -1891,8 +1891,8 @@ class Workflow:
                                             "zarr:" + outputs[ko],
                                             {
                                                 "prov:type": "zarr:dataset",
-                                                "zarr:checksum": op_sha,
-                                                "zarr:trackingid": op_tid,
+                                                "zarr:sha256": op_sha,
+                                                "zarr:trackingId": op_tid,
                                             },
                                         )
                                     elif outputs[ko].endswith(".zip"):
@@ -1913,8 +1913,8 @@ class Workflow:
                                             "nc:" + outputs[ko],
                                             {
                                                 "prov:type": "nc:file",
-                                                "nc:checksum": op_sha,
-                                                "nc:trackingid": op_tid,
+                                                "nc:sha256": op_sha,
+                                                "nc:trackingId": op_tid,
                                             },
                                         )
                                 else:
@@ -1978,8 +1978,8 @@ class Workflow:
                                         "zarr:" + inputs[ki],
                                         {
                                             "prov:type": "zarr:dataset",
-                                            "zarr:checksum": op_sha,
-                                            "zarr:trackingid": op_tid,
+                                            "zarr:sha256": op_sha,
+                                            "zarr:trackingId": op_tid,
                                         },
                                     )
                                 else:
@@ -1991,8 +1991,8 @@ class Workflow:
                                         "nc:" + inputs[ki],
                                         {
                                             "prov:type": "nc:file",
-                                            "nc:checksum": op_sha,
-                                            "nc:trackingid": op_tid,
+                                            "nc:sha256": op_sha,
+                                            "nc:trackingId": op_tid,
                                         },
                                     )
                             if pko < ko:
@@ -2014,8 +2014,8 @@ class Workflow:
                                         "zarr:" + outputs[ko],
                                         {
                                             "prov:type": "zarr:dataset",
-                                            "zarr:checksum": op_sha,
-                                            "zarr:trackingid": op_tid,
+                                            "zarr:sha256": op_sha,
+                                            "zarr:trackingId": op_tid,
                                         },
                                     )
                                 elif outputs[ko].endswith(".zip"):
@@ -2036,8 +2036,8 @@ class Workflow:
                                         "nc:" + outputs[ko],
                                         {
                                             "prov:type": "nc:file",
-                                            "nc:checksum": op_sha,
-                                            "nc:trackingid": op_tid,
+                                            "nc:sha256": op_sha,
+                                            "nc:trackingId": op_tid,
                                         },
                                     )
 
@@ -2078,8 +2078,8 @@ class Workflow:
                                                 "zarr:" + inputs[ki],
                                                 {
                                                     "prov:type": "zarr:dataset",
-                                                    "zarr:checksum": op_sha,
-                                                    "zarr:trackingid": op_tid,
+                                                    "zarr:sha256": op_sha,
+                                                    "zarr:trackingId": op_tid,
                                                 },
                                             )
                                         else:
@@ -2091,8 +2091,8 @@ class Workflow:
                                                 "nc:" + inputs[ki],
                                                 {
                                                     "prov:type": "nc:file",
-                                                    "nc:checksum": op_sha,
-                                                    "nc:trackingid": op_tid,
+                                                    "nc:sha256": op_sha,
+                                                    "nc:trackingId": op_tid,
                                                 },
                                             )
                                     elif "oph_importesdm" in op_name:
